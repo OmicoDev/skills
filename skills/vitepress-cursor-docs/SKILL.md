@@ -1,74 +1,124 @@
 ---
 name: vitepress-cursor-docs
-description: Maintain and extend the VitePress docs site generated from Cursor rules, skills, and commands. Use when adding a docs section, changing sidebar or nav behavior, editing generate-docs.mjs or config.mts, debugging the docs build, or replicating this setup elsewhere.
+description: >-
+  Use this skill for VitePress sites that publish Cursor rules, commands, and agent skills
+  through docs/scripts/generate-docs.mjs (bootstrap from template/generate-docs.mjs and
+  template/config.mts when starting fresh).
+  Apply it when editing docs/.vitepress/config.mts and themeConfig.nav,
+  sidebar.generated.mts, GITHUB_BASE, PATHS, FLAT_SECTIONS, the recursive .cursor/skills
+  walker, npm scripts docs:prepare/docs:dev/docs:build, gitignore for generated docs/src
+  trees, or CI paths and workflows for docs.
+  Use it when the user wants to publish or sync .cursor content into docs, fix a broken
+  docs build, add a generated section, replicate this pipeline in another repo, or mentions
+  VitePress together with Cursor rules, commands, or skills—even if they never name
+  generate-docs.mjs or this skill.
+  Do not use it for VitePress-only docs with hand-written Markdown and no
+  generate-docs.mjs pipeline from .cursor, or for generic site styling and content work
+  unrelated to this Cursor-to-docs sync (prefer the general VitePress skill).
 ---
 
 # VitePress docs from Cursor (rules, skills, commands)
 
-This setup uses **`docs/scripts/generate-docs.mjs`** to turn Cursor rules, commands, and skills into VitePress content. Site navigation lives in **`docs/.vitepress/config.mts`**. The sidebar output in **`docs/.vitepress/sidebar.generated.mts`** is generated and must not be edited by hand.
+**`docs/scripts/generate-docs.mjs`** builds VitePress content under **`docs/src/`** and writes **`docs/.vitepress/sidebar.generated.mts`**. Hand-maintain **`themeConfig.nav`** in **`docs/.vitepress/config.mts`** (paths must match generated routes; order does not need to match the sidebar). Do not edit **`sidebar.generated.mts`** by hand.
 
-## When to use this skill
+Optional **Cursor rules** (`.cursor/rules/*.mdc`) may point agents here; this skill is the **canonical** workflow. Keep **repo-only** facts in rules (generator path, default branch, install command).
 
-- Adding or removing a generated docs section
-- Changing nav structure or sidebar generation behavior
-- Debugging the generator script or the VitePress build
-- Replicating this "docs from Cursor sources" pattern in another repository
+## Scope
 
-## What not to edit
+### When not to use this skill
 
-- Do not edit generated files under `docs/src/cursor-rules/`, `docs/src/cursor-commands/`, or `docs/src/agent-skills/`.
-- Do not edit `docs/.vitepress/sidebar.generated.mts` by hand.
-- Generated section index pages such as `docs/src/cursor-rules/index.md` are outputs, not source files.
-- The site homepage, such as `docs/src/index.md`, may still be hand-maintained unless the repo defines otherwise.
+- **No Cursor-to-docs pipeline**: plain VitePress with hand-written `docs/src/` and no `docs/scripts/generate-docs.mjs` (or equivalent) that reads `.cursor/rules`, `.cursor/commands`, or `.cursor/skills`.
+- **VitePress-only work**: theming, unrelated authoring, or config changes that do not involve `sidebar.generated.mts`, `PATHS` / `FLAT_SECTIONS`, or syncing from `.cursor/`.
+- **Other doc stacks** (e.g. MkDocs, Docusaurus) or anything that is not “VitePress + this generator.”
 
-## Architecture
+### If the fit is unclear
 
-- **Generator**: `docs/scripts/generate-docs.mjs` (Node, ESM).
-- **Flat sections**: one output dir per source dir, one doc per file. These are configured with `PATHS` and `FLAT_SECTIONS` in `generate-docs.mjs` (for example, rules use `.mdc` and commands use `.md`).
-- **Agent skills section**: a tree under `.cursor/skills/`; each skill directory has `SKILL.md` (written to `index.md`) and can also include `references/*.md`. The sidebar for this section is hierarchical.
-- **Outputs**: Markdown under `docs/src/` plus `docs/.vitepress/sidebar.generated.mts`. VitePress reads both the generated content and the generated sidebar.
-- **Run context**: Script can run from repo root or from `docs/`; it detects via `path.basename(cwd) === "docs"` and sets `repoRoot` / `docsRoot` accordingly.
+Open **`docs/scripts/generate-docs.mjs`** (or **`template/generate-docs.mjs`** while bootstrapping). If that script is central to the task, use this skill; otherwise use another skill.
 
-## Content pipeline
+## Architecture and pipeline
 
-For each source file the generator:
+- **`generate-docs.mjs`** (Node, ESM): **flat** sections use **`PATHS`** and **`FLAT_SECTIONS`** and only list **top-level files** in each source directory; **`.cursor/skills/`** is walked **recursively**. Use **`template/generate-docs.mjs`** as the structural reference.
+- **`docs/.vitepress/config.mts`** imports **`sidebar.generated.mts`** and sets **`themeConfig.nav`** (**`template/config.mts`** is the matching starter).
+- **`docs:prepare`** may be run from the repository root or from **`docs/`**.
 
-- **Strips YAML frontmatter** so the doc is plain Markdown.
-- **Inserts an “Auto-generated from” block** after the first heading, linking to the source file on GitHub (`GITHUB_BASE` in the script).
-- **Rewrites links**: `.cursor/skills/...` (and `./.cursor/skills/...`) in content become `/agent-skills/...` (extensionless) for the built site.
-- **Writes** the result under the appropriate `docs/src/` subdir.
+**Pipeline** (details live in the script): strip YAML frontmatter; insert an “Auto-generated from” line with **`GITHUB_BASE`**; rewrite **`.cursor/skills/...`** links to site routes; write Markdown under **`docs/src/`**; emit index tables for flat sections.
 
-Generated section index pages such as `cursor-rules/index.md` and `cursor-commands/index.md` list items with "Title | Source" tables that link to generated pages and GitHub source paths. These pages use a Markdown `#` heading only and do not include a `title` frontmatter block.
+## Sources, output, and `docs:prepare`
 
-## Adding a new flat section
+Edit **sources** under **`.cursor/rules`**, **`.cursor/commands`**, and **`.cursor/skills`**. Do **not** edit generated trees such as **`docs/src/cursor-rules/`**, **`docs/src/cursor-commands/`**, **`docs/src/agent-skills/`**, **`docs/.vitepress/sidebar.generated.mts`**, or flat-section index pages (e.g. **`docs/src/cursor-rules/index.md`**). The **homepage** (e.g. **`docs/src/index.md`**) may stay hand-written unless the repository says otherwise.
 
-Use this checklist to add another "one source dir -> one docs section" setup, similar to rules or commands:
+After source edits, run **`npm run docs:prepare`** from the repository root or **`docs/`** (it usually runs before **`docs:dev`** and **`docs:build`**). Generated flat-section index pages use a single Markdown **`#`** heading only—no YAML **`title`**; the generator owns that shape.
 
-- **Add a `PATHS` entry** in `generate-docs.mjs`. Set `in` to the repo-relative source directory and `out` to the target path under `contentRoot`, such as `docs/src/my-section`.
-- **Add a `FLAT_SECTIONS` entry** with the matching `pathKey`, source file extension, section title, and sidebar base such as `"/my-section/"`.
-- **Regenerate the docs** with `npm run docs:prepare` from the repo root or from `docs/`.
-- **Add a nav entry** in `docs/.vitepress/config.mts` so the new section is visible in the site navigation.
-- **Update CI if needed**. If the source directory is outside `.cursor/commands`, `.cursor/rules`, or `.cursor/skills`, add its paths to the workflow filter in `.github/workflows/docs.yml`.
-- **Do not hand-edit generated output** under `docs/src/` after regeneration.
+## Navigation and sidebar
 
-## Agent-skills section (tree)
+- **Nav**: **`themeConfig.nav`** in **`docs/.vitepress/config.mts`** — paths must match routes the generator emits.
+- **Sidebar**: change **`docs/scripts/generate-docs.mjs`** (for example **`FLAT_SECTIONS`** and agent-skills sidebar logic), not **`sidebar.generated.mts`**, then run **`npm run docs:prepare`**.
 
-- **Source**: `.cursor/skills/**`; each directory with a `SKILL.md` is one skill; `references/*.md` become sub-pages under that skill.
-- **Output**: `docs/src/agent-skills/<skill-name>/index.md` (from SKILL.md) and `docs/src/agent-skills/<skill-name>/references/<name>.md` for each reference file.
-- **Sidebar**: Built in `buildAgentSkillsSidebar()` — top-level “Agent skills” link plus one entry per skill; if a skill has `references/*.md`, that entry gets `collapsed: true` and `items` for each reference.
-- **Links in content**: The generator rewrites `.cursor/skills/...` links to `/agent-skills/...` so cross-references between skills work on the site.
+## Git ignores and fresh clones
 
-To add a new skill, add a directory under `.cursor/skills/` with `SKILL.md` (and optionally `references/*.md`); no change to the script is needed. Run `npm run docs:prepare` to regenerate.
+**`docs/.gitignore`** (paths relative to **`docs/`**; a leading **`/`** anchors to the docs root):
 
-## Local and CI commands
+```gitignore
+/node_modules/
+/src/agent-skills/
+/src/cursor-commands/
+/src/cursor-rules/
+```
 
-- **Prepare only**: `npm run docs:prepare` (from repo root or `docs/`) — runs `node scripts/generate-docs.mjs`, writes `docs/src/*` and `sidebar.generated.mts`.
-- **Dev**: `npm run docs:dev` — runs prepare then `vitepress dev`.
-- **Build**: `npm run docs:build` — runs prepare then `vitepress build`; CI uses this and uploads `docs/.vitepress/dist` as the GitHub Pages artifact.
+**`docs/.vitepress/.gitignore`** (relative to **`docs/.vitepress/`**):
 
-## Replicating in another repo
+```gitignore
+/cache/
+/dist/
+/sidebar.generated.mts
+```
 
-- **Copy the docs scaffolding** such as `docs/package.json`, `docs/.vitepress/config.mts`, and `docs/scripts/generate-docs.mjs`; then set `PATHS` and `GITHUB_BASE` for the new repo.
-- **Adjust** `FLAT_SECTIONS` and `PATHS` to match the new repo’s source layout.
-- **Add** a GitHub Actions workflow that runs `npm run docs:build` in `docs/` and deploys `docs/.vitepress/dist` (e.g. `deploy-pages`).
-- **Keep** the convention: treat generated files under `docs/src/` as build output, not source material; edit source dirs and regenerate.
+If **`sidebar.generated.mts`** or generated trees under **`docs/src/`** are ignored, they are missing after **`git clone`** until **`docs:prepare`** runs (or **`docs:dev`**, **`docs:build`**, or CI does the same). **`config.mts`** imports the sidebar—run prepare before **`vitepress`** if the module is absent. To track **`sidebar.generated.mts`**, remove it from **`docs/.vitepress/.gitignore`**.
+
+## Extending the generator
+
+### New flat section
+
+- Add matching **`PATHS`** and **`FLAT_SECTIONS`** in **`generate-docs.mjs`**, then **`npm run docs:prepare`**.
+- Add a **nav** entry in **`config.mts`**.
+- **CI**: extend workflow **`paths`** when the new source directory is not covered. Use recursive globs for nested files (e.g. **`.cursor/commands/**/*.md`**). The stock flat-section loop only reads files **directly** in each **`PATHS`** directory; nested sources need changes to **`generateFlatSection`** (or a new generator). Patterns like **`.cursor/commands/*.md`** match one directory level only.
+- Do not hand-edit regenerated files under **`docs/src/`**.
+
+### Agent skills (tree)
+
+- **Layout**: **`.cursor/skills/`** → **`docs/src/agent-skills/`**; each **`SKILL.md`** → **`index.md`**; other relative paths stay intact (e.g. **`references/*.md`**).
+- **Index**: each **`SKILL.md`** adds one row (label from the parent folder). Several nested **`SKILL.md`** files yield several rows—prefer **one skill per top-level folder** under **`.cursor/skills/`**.
+- **Processing**: one header and link pipeline for every file (write Markdown; edge cases in **`generate-docs.mjs`**). Hierarchical sidebar and **`.cursor/skills/...`** → site rewrites live in **`generate-docs.mjs`**. For a different sidebar shape or more linked pages, extend the script using existing patterns.
+
+To add a skill, add a directory with **`SKILL.md`** under **`.cursor/skills/`**, then **`npm run docs:prepare`**.
+
+## Bootstrap (`template/`)
+
+Use this when creating or copying the pipeline into a new project. Starter files:
+
+| Template | Copy to |
+| -------- | ------- |
+| **`template/generate-docs.mjs`** | **`docs/scripts/generate-docs.mjs`** |
+| **`template/config.mts`** | **`docs/.vitepress/config.mts`** |
+
+1. Copy both files (create **`docs/scripts/`** and **`docs/.vitepress/`** if needed).
+2. In **`config.mts`**, set **`title`**, **`description`**, and **`themeConfig.socialLinks`**. **`themeConfig.nav`** must match routes the generator emits (the stock **`template/generate-docs.mjs`** matches the default nav).
+3. In **`generate-docs.mjs`**, set **`GITHUB_BASE`** (required), e.g. `https://github.com/<owner>/<repo>/blob/HEAD/` (or a fixed branch or tag). Powers “Auto-generated from” links and index tables.
+4. Add **`docs/package.json`** with **`vitepress`** and scripts (e.g. **`docs:prepare`** → `node scripts/generate-docs.mjs`), run **`npm install`** in **`docs/`**, and keep **`config.mts`** importing **`sidebar.generated.mts`**.
+
+Optionally add **`docs/src/index.md`**, theme assets, and the **Git ignores** above if generated output should not be committed. Copying an existing **`docs/`** tree from another repository is fine when faster.
+
+In the target repository, checked-in **`generate-docs.mjs`** and **`config.mts`** are the source of truth; **`template/`** and this **`SKILL.md`** are bootstrap and reference—not parallel copies to maintain.
+
+## Commands and CI
+
+Define scripts in **`docs/package.json`**; run **`npm run <script>`** from the repository root or **`docs/`**. Pin **VitePress** and Node with **`package-lock.json`** (or your lockfile) when reproducing builds.
+
+- **`docs:prepare`**: `node scripts/generate-docs.mjs` — writes **`docs/src/*`** and **`docs/.vitepress/sidebar.generated.mts`**
+- **`docs:dev`**: prepare, then **`vitepress dev`**
+- **`docs:build`**: prepare, then **`vitepress build`** — ship **`docs/.vitepress/dist`** (e.g. GitHub Pages or another static host)
+- **`docs:preview`**: **`docs:build`**, then **`vitepress preview`**
+
+Typical GitHub Actions: on push to the default branch when docs-related **`paths`** change—checkout, **`npm ci`** or **`npm install`** in **`docs/`**, **`npm run docs:build`**, deploy artifacts.
+
+**Example `on.push.paths`:** **`.cursor/commands/**/*.md`**, **`.cursor/rules/**/*.mdc`**, **`.cursor/skills/**/*.md`**, **`docs/**`**, and the workflow file (e.g. **`.github/workflows/docs.yml`**). Add paths when you add a new ingested source tree that existing globs would not cover. Recursive globs matter when sources nest (see **New flat section**).
