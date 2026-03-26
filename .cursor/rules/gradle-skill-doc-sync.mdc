@@ -1,0 +1,30 @@
+---
+description: Maintain the Gradle skill's bundled docs mirror and sync workflow
+globs: skills/gradle/**
+alwaysApply: false
+---
+
+# Gradle skill docs sync
+
+When working in `skills/gradle/**`:
+
+- Treat `skills/gradle/references/userguide/` as the in-repo Gradle docs source of truth.
+- Prefer bundled mirror paths in `references/` over machine-specific absolute paths.
+- Before refreshing the mirror, resolve the latest stable release tag from `gradle/gradle`, then check out that tag in the local Gradle source clone you will sync from.
+- Example maintenance flow:
+
+```bash
+LATEST_TAG="$(gh api repos/gradle/gradle/releases/latest --jq .tag_name)"
+git -C /path/to/gradle/gradle fetch --tags
+git -C /path/to/gradle/gradle checkout "$LATEST_TAG"
+node scripts/sync-gradle-userguide.mjs \
+  /path/to/gradle/gradle/platforms/documentation/docs/src/docs/userguide
+```
+
+- Pass the upstream `docs/userguide` root as an absolute path.
+- Mirror only `.adoc` files and preserve their relative paths under `references/userguide/`.
+- Refresh `skills/gradle/references/remote-local-map.md` together with the mirror.
+- After syncing, update `skills/gradle/SKILL.md` so the skill records the mirrored Gradle version.
+- Keep `skills/gradle/references/doc-map.md` as a curated human-friendly index and playbook; do not replace it with generated full-file listings.
+- Do not commit machine-specific absolute paths into `SKILL.md`, `references/doc-map.md`, `references/remote-local-map.md`, or other checked-in files.
+- Use the official [Gradle User Manual](https://docs.gradle.org/current/userguide/userguide.html) for shareable published links or remote comparison.
