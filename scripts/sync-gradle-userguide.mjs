@@ -104,7 +104,9 @@ function buildRemoteUrl(relativePath) {
 }
 
 function buildRemoteLocalMap(relativePaths) {
-  const repoRelativeMirrorRoot = toPosixPath(path.relative(repoRoot, mirrorRoot));
+  const repoRelativeMirrorRoot = toPosixPath(
+    path.relative(repoRoot, mirrorRoot),
+  );
   const groupedPaths = groupByTopLevel(relativePaths);
   const collisions = collectStemCollisions(relativePaths);
   const lines = [
@@ -160,7 +162,7 @@ function buildRemoteLocalMap(relativePaths) {
     lines.push("");
   }
 
-  return `${lines.join("\n")}\n`;
+  return `${lines.join("\n")}`;
 }
 
 async function copyMirror(relativePaths, sourceRoot) {
@@ -203,7 +205,9 @@ async function main() {
   await writeRemoteLocalMap(relativePaths);
 
   console.log(`Mirrored ${relativePaths.length} .adoc files.`);
-  console.log(`Local mirror: ${toPosixPath(path.relative(repoRoot, mirrorRoot))}`);
+  console.log(
+    `Local mirror: ${toPosixPath(path.relative(repoRoot, mirrorRoot))}`,
+  );
   console.log(
     `Remote/local map: ${toPosixPath(path.relative(repoRoot, remoteLocalMapPath))}`,
   );
