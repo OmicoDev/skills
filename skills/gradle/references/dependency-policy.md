@@ -24,9 +24,7 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Resolvable configurations produce files or metadata, such as compile/runtime classpaths.
 - Consumable configurations expose outgoing variants and artifacts to other projects or external consumers.
 - Do not declare dependencies on resolvable/consumable-only configurations. Do not resolve declaration buckets directly.
-- Avoid custom configurations that are declarable, resolvable, and consumable at the same time.
-- For custom configurations, use one intended role only: dependency scope, resolvable classpath/data, or consumable outgoing variant.
-- Prefer role-specific factory APIs when available; otherwise set role flags directly.
+- For custom configurations, use one intended role only: dependency scope, resolvable classpath/data, or consumable outgoing variant. Prefer role-specific factory APIs when available; otherwise set role flags directly.
 - `extendsFrom` inherits dependencies, constraints, excludes, artifacts, and capabilities, but not attributes or role flags.
 - Resolving another project's configuration directly is unsafe. Use project dependencies, variants, or publications to cross project boundaries.
 
@@ -52,15 +50,14 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Use component metadata rules when published metadata is wrong.
 - Use substitution or composite builds for local replacement.
 - Use `force` only as a last-resort resolution rule with a clear removal path.
-- Consistent resolution can align selected versions across related resolvable configurations; use it for real compile/runtime or test/runtime drift, not as a global replacement for platforms, constraints, or locks.
+- Consistent resolution aligns selected versions across related resolvable configurations; use it for real compile/runtime or test/runtime drift, not as a global replacement for platforms, constraints, or locks.
 - For published libraries, prefer ranges plus a preferred version over pinning a single strict version unless consumers must fail on other versions.
 - When locks, dynamic versions, or rich versions affect a published library, route publication metadata through [publications-and-signing.md](publications-and-signing.md) so consumers receive the intended resolved or Gradle-specific semantics.
 
 ## Rich Version Semantics
 
 - `strictly` is strongest. It can downgrade, reject incompatible candidates, and fail consumers when another strict or required version disagrees.
-- `require` is the normal direct dependency floor and can still be upgraded by conflict resolution.
-- `prefer` is soft and applies only when no stronger opinion exists.
+- `require` is the normal direct dependency floor and can still be upgraded by conflict resolution; `prefer` is soft and applies only when no stronger opinion exists.
 - `reject` blocks known-bad candidates and can fail a graph if Gradle would otherwise select one.
 - Locks behave like strict constraints during resolution. Update lock state when selected versions intentionally change.
 
@@ -69,8 +66,7 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Catalogs centralize coordinates and requested versions; they do not enforce the version Gradle finally selects.
 - Use constraints, platforms, locks, or strict versions when selection must be constrained.
 - Catalog TOML entries do not directly express classifiers, artifact types, excludes, or capabilities. Put those at the declaration, variant, or metadata-rule owner.
-- Keep aliases stable and avoid subgroup accessor traps. Prefer camelCase when a nested accessor would add noise.
-- Avoid reserved alias roots such as `bundles`, `versions`, and `plugins`.
+- Keep aliases stable, prefer camelCase when nested accessors add noise, and avoid reserved roots such as `bundles`, `versions`, and `plugins`.
 - `buildSrc` and included build logic do not automatically inherit the main catalog; import catalogs explicitly when build logic needs them.
 - Plugin aliases belong in `plugins {}`; library aliases belong in `dependencies {}`.
 - Use multiple catalogs only for real boundaries such as shipped artifacts vs test tooling, independent build-logic dependencies, or organization-wide published catalogs.

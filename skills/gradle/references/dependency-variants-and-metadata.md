@@ -9,8 +9,7 @@ Read this when: variant-aware resolution, attributes, capabilities, artifact tra
 - Variant names are mainly diagnostics surface; ordinary variant matching uses attributes, not names.
 - `No matching variant` means the consumer and producer attributes/capabilities do not describe a compatible variant.
 - Variants/configurations without attributes cannot participate in variant-aware resolution; reports may hide them unless `--all` is used.
-- Secondary variants are artifact sets on an existing variant, not separate components.
-- Verification-only variants carry test or coverage results and should not be added to publishable components.
+- Secondary variants are artifact sets on an existing variant, not separate components; verification-only variants carry test or coverage results and should not be added to publishable components.
 - Component-level metadata can influence version selection before Gradle selects variants. Variant-level metadata influences artifact and dependency selection after a component version is chosen.
 - Maven POM and Ivy metadata are mapped into Gradle's variant model; Gradle Module Metadata already carries explicit variants.
 
@@ -25,12 +24,10 @@ Read this when: variant-aware resolution, attributes, capabilities, artifact tra
 ## Matching Repair Order
 
 1. Inspect requested attributes and candidate variants.
-2. Check whether the producer exposes the right attributed variant.
-3. Check whether the consumer asks for the right usage, category, JVM version, platform, or custom attribute.
-4. Prefer fixing producer metadata over weakening consumer attributes.
-5. Add compatibility or disambiguation rules only when the attribute model is custom and reusable.
-6. Use component metadata rules for external modules whose published metadata is incomplete or wrong.
-7. If Maven/Ivy mapping is the owner, repair derived variants with metadata rules instead of selecting variants by configuration name or resolving classifier paths manually.
+2. Check whether the producer exposes the right attributed variant and whether the consumer asks for the right usage, category, JVM version, platform, or custom attribute.
+3. Prefer fixing producer metadata over weakening consumer attributes.
+4. Add compatibility or disambiguation rules only when the attribute model is custom and reusable.
+5. Repair external Maven/Ivy or incomplete metadata with component metadata rules instead of selecting variants by configuration name or resolving classifier paths manually.
 
 ## Diagnostics
 
@@ -56,22 +53,18 @@ Use reports to compare requested attributes with producer attributes before edit
 
 - Expose generated outputs with consumable configurations and attributes.
 - Consume custom outputs with resolvable configurations, not task paths.
-- Use `outgoingVariants` and `resolvableConfigurations` to inspect both sides.
-- Keep producer artifacts under `build/` and backed by task providers.
+- Use `outgoingVariants` and `resolvableConfigurations` to inspect both sides; keep producer artifacts under `build/` and backed by task providers.
 - Do not create a project dependency only to reach into another project's files.
 
 ## Component Metadata Rules
 
-Use component metadata rules to repair external module metadata:
-
-- add/remove dependencies, variants encoded as classifiers or versions, capabilities, status schemes, or Ivy/Maven variant mappings
-
+- Use component metadata rules to repair external dependencies, classifier/version-encoded variants, capabilities, status schemes, or Ivy/Maven mappings.
 - Component metadata rules run after metadata is downloaded and before Gradle uses it for resolution.
 - Prefer `withModule` over broad `all` rules unless the rule is truly generic and correct for every affected module.
 - Prefer isolated rule classes over inline actions. Mark rules cacheable because uncached rules can affect every resolution.
 - Keep rule parameters serializable or Gradle-managed. Inject only supported services such as `ObjectFactory`.
-- Rules declared in settings can govern the whole build. Use settings-level rule mode to prefer, warn on, or fail project-specific overrides.
-- Keep rules scoped and cacheable. Prefer rules in settings or convention build logic over scattered project scripts.
+- Rules declared in settings can govern the whole build; use settings-level rule mode to prefer, warn on, or fail project-specific overrides.
+- Keep rules scoped and cacheable. Prefer settings or convention build logic over scattered project scripts.
 - Use metadata rules for external metadata defects; publish proper Gradle Module Metadata when the producer is your build.
 - Before writing a rule, identify whether the module was published with Gradle Module Metadata, Maven POM, or Ivy metadata. Traditional metadata is more likely to need variant enrichment.
 - A good metadata rule should still be correct outside the current build. If the rule only hides a local conflict, prefer constraints, platforms, capabilities conflict selection, or a direct declaration.
@@ -97,11 +90,9 @@ Use component metadata rules to repair external module metadata:
 ## Custom Artifacts And Transforms
 
 - For project output sharing, publish an outgoing variant with attributes and artifacts instead of depending on another task's file path.
-- Use artifact views for selecting artifacts from an existing resolved graph, and `withVariantReselection` only when a different component variant should be selected by attributes.
-- In `withVariantReselection`, the artifact view's attributes drive variant reselection; do not assume the original configuration's graph attributes still constrain the reselected variant.
+- Use artifact views for selecting artifacts from an existing resolved graph, and `withVariantReselection` only when a different component variant should be selected by attributes. In reselection, the artifact view's attributes drive matching.
 - Use artifact transforms when a reusable, cacheable conversion is needed between artifact types.
-- Artifact transforms run only when no existing variant satisfies the requested artifact attributes. They transform artifacts, not dependency metadata or transitive dependencies.
-- Model transform parameters as inputs and keep transforms deterministic.
+- Artifact transforms run only when no existing variant satisfies the requested artifact attributes. They transform artifacts, not dependency metadata or transitive dependencies; model parameters as inputs and keep transforms deterministic.
 
 ## Source Calibration
 

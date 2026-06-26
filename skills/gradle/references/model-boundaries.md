@@ -26,6 +26,14 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Flow actions and build services model lifecycle-adjacent work. Ordinary tasks still own source, output, process, and filesystem work.
 - Isolated Projects forbids cross-project mutable model access during configuration. Read immutable project identity sparingly; move shared policy to convention plugins, variants, or state-isolating lifecycle callbacks.
 
+## State Scope
+
+- Process state is daemon-wide and normally tied to one Gradle user home. Do not treat it as checked-in project state.
+- Session state belongs to one invocation, including continuous build sessions that may run the build more than once.
+- Build tree state belongs to one execution of one build definition, including included builds.
+- Build state belongs to one root or included build inside the build tree.
+- Project state belongs to one project inside one build execution. Cross-project reads must be immutable identity reads or modeled through dependencies, variants, publications, or convention plugins.
+
 ## Ownership Questions
 
 - Does the value decide which projects exist? Settings owns it.
@@ -34,13 +42,15 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Does the value decide which dependency files are selected? Dependency resolution owns it.
 - Does the value decide which JVM runs Gradle? Wrapper/runtime owns it.
 - Does the value decide which JVM compiles or tests code? Toolchains own it.
-- Does the value cross project boundaries? Prefer variants, publications, or convention plugins over direct project model reads.
+- Does the value cross project boundaries? Prefer variants, publications, convention plugins, or `project.isolated` identity access over direct project model reads.
+- Does the value cross included-build boundaries? Treat each included build as its own build owner; share through plugin management, external coordinates, substitutions, environment, or explicitly duplicated settings.
 
 ## Smell Routing
 
 - Work happens during configuration: route to [performance-strategy.md](performance-strategy.md), [configuration-cache.md](configuration-cache.md), or [task-types-and-validation.md](task-types-and-validation.md).
 - Root script mutates all projects: route to [runtime-and-structure.md](runtime-and-structure.md) and build logic organization.
 - CI or a developer machine behaves differently with the same repository files: route to [runtime-and-structure.md](runtime-and-structure.md) and inspect init scripts, Gradle user home, and CI-injected options.
+- Isolated Projects violation: identify whether it is project-to-project, project-to-build, cross-build, or build-to-project callback access before replacing APIs.
 - Dependency version changed in the wrong place: route to [dependency-policy.md](dependency-policy.md).
 - Task ordering was added to paper over missing outputs: route to [task-types-and-validation.md](task-types-and-validation.md).
 - Runtime JDK and compile target are confused: route to [jvm-and-tests.md](jvm-and-tests.md).
@@ -56,4 +66,4 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 
 ## Source Calibration
 
-Primary upstream pages: Build Lifecycle, Initialization Scripts and Init Plugins, Dataflow Actions, Build Environment Configuration, Dependency Configurations, Variant Selection and Attribute Matching, Toolchains for JVM projects. Local architecture docs: Build State Model, Build Execution Model, Gradle Runtimes.
+Primary upstream pages: Build Lifecycle, Initialization Scripts and Init Plugins, Dataflow Actions, Build Environment Configuration, Dependency Configurations, Variant Selection and Attribute Matching, Toolchains for JVM projects, Isolated Projects. Local architecture docs: Build State Model, Build Execution Model, Gradle Runtimes.
