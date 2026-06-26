@@ -16,6 +16,7 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Initialization reads settings and discovers builds, projects, plugin management, dependency repository policy, version catalogs, and included builds.
 - Configuration creates and configures project models and task graphs for the requested entrypoints.
 - Execution runs selected tasks and should do the actual filesystem, network, process, and compiler work.
+- Gradle state is scoped as process, session, build tree, build, then project. A value tied to one scope should not be cached or mutated as if it lived in another.
 - Settings scripts own topology. Project scripts own project plugins, dependencies, tasks, extensions, and outgoing publications.
 - Providers are lazy value recipes. Keep values as providers until a Gradle-owned consumer or task action needs them.
 - Configurations are dependency buckets with declarable, resolvable, or consumable roles. Do not use one role to fake another.
@@ -49,9 +50,10 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Every cross-project convention should have an obvious plugin owner.
 - Every generated file should have a producing task and consuming provider.
 - Every external process should be inside a task, worker, or value source.
+- Every daemon, worker, client, or Tooling API concern should name which runtime owns the failure.
 - Every dependency policy should state its owner layer.
 - Every performance change should name configuration, execution, dependency resolution, or output reuse as the target.
 
 ## Source Calibration
 
-Primary upstream pages: Build Lifecycle, Initialization Scripts and Init Plugins, Dataflow Actions, Build Environment Configuration, Dependency Configurations, Variant Selection and Attribute Matching, Toolchains for JVM projects.
+Primary upstream pages: Build Lifecycle, Initialization Scripts and Init Plugins, Dataflow Actions, Build Environment Configuration, Dependency Configurations, Variant Selection and Attribute Matching, Toolchains for JVM projects. Local architecture docs: Build State Model, Build Execution Model, Gradle Runtimes.

@@ -18,6 +18,7 @@ Use the wrapper and the smallest useful command:
 ./gradlew tasks --all
 ./gradlew help --task <task>
 ./gradlew <task> --dry-run
+./gradlew <task> --task-graph
 ./gradlew dependencies --configuration <configuration>
 ./gradlew dependencyInsight --dependency <module> --configuration <configuration>
 ./gradlew outgoingVariants
@@ -39,6 +40,8 @@ Use `--scan` only when project policy permits uploading build data.
 - Add `--refresh-dependencies` only to test cache/repository hypotheses; do not leave it as a fix.
 - Add `--offline` only to prove whether the cache already contains required modules.
 - Use `--warning-mode=all` before Gradle upgrades or deprecation cleanup.
+- Use `--non-interactive` for CI, scripts, and agent runs where Gradle must not prompt.
+- Use `--task-graph` on Gradle 9.1+ when `--dry-run` is too weak and task dependency shape matters.
 
 ## Evidence Patterns
 
@@ -47,7 +50,8 @@ Use `--scan` only when project policy permits uploading build data.
 - For variant failures, capture the requested attributes and every candidate variant Gradle prints before changing attributes.
 - For plugin resolution, capture plugin ID, version, plugin repositories, and whether the ID is applied in settings, build scripts, or convention plugins.
 - For configuration-cache failures, keep the report path and the first local build logic class or script named by the report.
-- For Problems API output, keep the console problem text and `build/reports/problems/problems-report.html` path when generated.
+- For Problems API output, keep the console problem text and `build/reports/problems-report.html` path when generated.
+- For warning cleanup, capture `--warning-mode=all` output; use `--warning-mode=fail` only as a gate after the owning warnings are understood.
 - For performance work, record at least two comparable runs before and after a change. Avoid comparing a warm daemon run with a cold daemon run.
 - For CI-only failures, record Gradle user home cache settings, CI JDK, wrapper version, working directory, and any init scripts injected by CI.
 
@@ -67,6 +71,7 @@ Use `--scan` only when project policy permits uploading build data.
 - Prefer `help`, reports, and single task paths for diagnosis.
 - Avoid `clean build` as a first command; it hides reuse behavior and costs time.
 - Use `--dry-run` to inspect task graph shape, not task action correctness.
+- Use `--task-graph` only as evidence; it disables task actions like a dry run.
 - Use `--continue` only to collect multiple independent failures.
 - Treat `--exclude-task` as a local diagnostic or workflow choice, not a model fix for bad dependencies.
 - Use configuration abbreviations only in local diagnosis; keep committed scripts and docs explicit.

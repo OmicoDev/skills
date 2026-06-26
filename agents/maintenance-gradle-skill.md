@@ -2,7 +2,7 @@
 
 Read this when working in `skills/gradle/**`.
 
-This file is maintenance guidance for the Gradle skill. It is not Gradle runtime knowledge and should not be loaded to solve ordinary Gradle build problems.
+This file guides maintenance of the Gradle skill. It is not Gradle runtime knowledge and should not be loaded to solve ordinary Gradle build problems.
 
 ## Mission
 
@@ -18,25 +18,41 @@ Its durable value is middle-layer operating knowledge:
 
 Do not turn the skill into a Gradle tutorial, User Manual mirror, release-note archive, generated source index, or broad upstream page catalog.
 
-## Content Gate
+## Content Standard
 
-- Treat `skills/gradle/SKILL.md` as the first-hop classifier and `skills/gradle/references/*.md` as practical operating knowledge.
 - Add durable knowledge only when it helps a future agent make a better Gradle decision without reading a whole upstream page.
 - Prefer model boundaries, symptom maps, command recipes, owner-selection rules, and safe Gradle patterns over prose summaries.
 - Use official Gradle docs links only for citations or version-specific calibration; do not copy upstream prose or examples wholesale.
-- Remove any reintroduced vendored Gradle User Manual directory under `skills/gradle/references/`.
 - Keep one-off preferences in the current turn or owning issue; only promote rules that protect a realistic recurring failure mode.
+- Remove any reintroduced vendored Gradle User Manual directory under `skills/gradle/references/`.
 
-## Information Architecture
+## Architecture and Disclosure
 
-- Keep `SKILL.md` coarse, stable, and limited to first-hop owner routes.
-- Keep references one level deep under `skills/gradle/references/`; do not create nested route trees.
+- Treat `skills/gradle/SKILL.md` as the first-hop classifier. Keep it coarse, stable, under 500 lines, and under the agentskills recommended instruction budget when practical.
+- Treat each `skills/gradle/references/*.md` file as an on-demand resource that is loaded in full when selected. Long references are progressive-disclosure failures, not just style issues.
+- Keep references one level deep under `skills/gradle/references/`; do not create nested route trees, second-level routers, or thin shards that force agents to open several files for one decision.
 - Organize references by decision owner: model boundaries, command evidence, runtime/structure, script authoring, dependencies, plugins/tasks/services, performance/cache, publishing/CI/security, ecosystem interop, and upgrades/migrations.
-- Use stable owner-oriented filenames so routing remains visible from paths.
+- Keep the route visible from each reference filename, H1, and `Read this when: ...` sentence.
 - If a topic can only be found by adding it to `SKILL.md`, repair the owning reference instead.
 - Put narrow checklists, diagnostics, and subtopic rules in the owning reference, not in `SKILL.md`.
-- Split only when a future task can choose one file without needing the other.
+
+## Reference Budget
+
+- Treat 120 lines as a hard maximum for each reference, not a target.
+- Treat 100 lines as a warning line. Before adding to a reference at or above 100 lines, first shrink, redistribute, or justify why the owner must stay intact.
+- Compress before splitting: delete duplicate rules, replace explanations with decision bullets, move volatile version facts into the owning snapshot file, then split only when a future task can choose the new file directly.
 - Merge sibling leaves when they describe the same decision, diagnostic path, workflow, policy surface, or model boundary.
+- Delete or merge low-value duplicates first: empty glossaries, pure routers, single-entry diagnostics, thin option catalogs, and one-inbound leaves whose content belongs naturally in the parent owner.
+- After merging leaves, remove duplicated wording created by the merge.
+
+## Reference Shape
+
+- Each reference starts with exactly one H1 and a short `Read this when: ...` scope sentence.
+- A reference has one clear owner and does not overlap siblings except through explicit routing links.
+- Short references stay scannable without a `## Contents` section; the filename, H1, and scope sentence carry the structure.
+- Do not hard-wrap Markdown prose or list items by column width.
+- Use bullets, small examples, and owner boundaries over broad essays.
+- Keep examples focused on safe Gradle patterns; avoid generated source indexes, full-file listings, copied `.adoc` content, machine-specific paths, or historical breadcrumbs.
 
 ## Maintenance Loop
 
@@ -48,24 +64,6 @@ Do not turn the skill into a Gradle tutorial, User Manual mirror, release-note a
 6. Run the validation gate and report the upstream topics read, files reshaped, durable rules added, and remaining risks.
 
 Complete at least one read -> refactor -> validate -> report loop before stopping unless blocked by missing context, missing source docs, or a required user decision.
-
-## Reference Shape
-
-- Each reference starts with exactly one H1 and a short `Read this when: ...` scope sentence.
-- A reference should have one clear owner and should not overlap siblings except through explicit routing links.
-- Keep references short enough to scan; split, compress, or redistribute any reference over 120 lines.
-- Keep short references scannable without a `## Contents` section; the filename, H1, and scope sentence should carry the structure.
-- Do not hard-wrap Markdown prose or list items by column width.
-- Use bullets, small examples, and owner boundaries over broad essays.
-- Keep examples focused on safe Gradle patterns; avoid generated source indexes, full-file listings, copied `.adoc` content, machine-specific paths, or historical breadcrumbs.
-
-## Shrink Decisions
-
-- Preserve progressive disclosure while shrinking: route files classify owner surfaces; leaf files carry distinct reusable decisions.
-- Delete or merge low-value duplicate files first: empty glossaries, pure second-level routers, single-entry diagnostics, thin option catalogs, and one-inbound leaves whose content belongs naturally in the parent.
-- Keep an independent owner file when the next task can reasonably choose that file without the parent topic, especially for version-sensitive behavior, dedicated diagnostics, or separate implementation APIs.
-- Prefer sharpening, merging, or deleting weak wording before adding new rules.
-- After merging leaves, remove duplicated wording created by the merge.
 
 ## Compatibility Calibration
 
@@ -85,6 +83,7 @@ Complete at least one read -> refactor -> validate -> report loop before stoppin
 After each delete, merge, rename, or content batch, check:
 
 - reference count, total words, total lines, and maximum reference length
+- the longest references and every reference at or above 100 lines
 - broken Markdown links
 - orphaned references
 - missing H1s

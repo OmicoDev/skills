@@ -48,6 +48,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 - Use provider wiring and task outputs to imply dependencies when one task consumes another task's output.
 - Use `dependsOn` for required work, `finalizedBy` for cleanup/finalization, and `mustRunAfter`/`shouldRunAfter` for ordering only.
+- Prefer `dependsOn` for lifecycle orchestration; tasks with actions should usually wire the exact producer output they consume so Gradle knows why the producer is needed.
 - Do not use ordering rules to compensate for missing declared inputs and outputs.
 - Avoid broad task graph callbacks for ordinary wiring.
 - If Gradle reports implicit dependencies, replace raw `File` or path wiring with task providers, output properties, or the producing task as an input.
@@ -81,11 +82,13 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Hidden eager task realization through Groovy DSL task blocks.
 - Calling `Provider.get()` during configuration to pass values to provider-aware APIs.
 - Resolving configurations during configuration.
+- Calling JDK/Groovy/Kotlin collection APIs such as `isEmpty`, `size`, `toList`, `getFiles`, `asPath`, or `+` on `Configuration`/`FileCollection` during configuration because they can resolve dependencies and drop implicit task dependencies.
 - Writing into shared directories.
 - Producing generated files without modeled outputs.
 - Using global singletons for shared state instead of build services.
 - Relying on reference identity for mutable collections after configuration cache reload.
+- Marking individual task instances cacheable with `outputs.cacheIf` when the task type's cacheability is stable; prefer `@CacheableTask` or `@DisableCachingByDefault`.
 
 ## Source Calibration
 
-Primary upstream pages: Implementing Custom Tasks, Dealing with Validation Problems, Worker API, Custom Tasks, Incremental Build, Controlling Task Execution, Task Configuration Avoidance, Configuration Cache Requirements.
+Primary upstream pages: Implementing Custom Tasks, Dealing with Validation Problems, Worker API, Custom Tasks, Incremental Build, Controlling Task Execution, Task Configuration Avoidance, Best Practices for Tasks, Configuration Cache Requirements.

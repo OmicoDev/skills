@@ -52,8 +52,9 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Use component metadata rules when published metadata is wrong.
 - Use substitution or composite builds for local replacement.
 - Use `force` only as a last-resort resolution rule with a clear removal path.
-- Consistent resolution can align selected versions across related classpaths; use it for real compile/runtime or test/runtime drift.
+- Consistent resolution can align selected versions across related resolvable configurations; use it for real compile/runtime or test/runtime drift, not as a global replacement for platforms, constraints, or locks.
 - For published libraries, prefer ranges plus a preferred version over pinning a single strict version unless consumers must fail on other versions.
+- When locks, dynamic versions, or rich versions affect a published library, route publication metadata through [publications-and-signing.md](publications-and-signing.md) so consumers receive the intended resolved or Gradle-specific semantics.
 
 ## Rich Version Semantics
 
@@ -93,7 +94,8 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Capability conflict: multiple providers claim the same feature; choose or add metadata.
 - Catalog accessor error: inspect alias naming, reserved words, and plugin-vs-library context.
 - Declaration version changed but selected version did not: inspect conflict resolution, platform, constraint, or lock owners.
+- Compile/runtime or test/runtime classpaths disagree unexpectedly: inspect consistent resolution before adding broad forces.
 
 ## Source Calibration
 
-Primary upstream pages: Declaring Dependencies, Dependency Configurations, Version Catalogs, Declaring Versions and Ranges, Platforms, Viewing and Debugging Dependencies, Dependency Resolution Consistency.
+Primary upstream pages: Declaring Dependencies, Dependency Configurations, Version Catalogs, Declaring Versions and Ranges, Platforms, Viewing and Debugging Dependencies, Dependency Resolution Consistency, Best Practices for Dependencies.

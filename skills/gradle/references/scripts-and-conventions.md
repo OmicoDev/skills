@@ -35,6 +35,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Prefer `configureEach` for lazy bulk configuration by type.
 - Use `named(...)` when configuring a known task or container element.
 - Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead.
+- If `afterEvaluate` appears necessary, limit it to final validation or diagnostics and document why providers, conventions, or `plugins.withId(...)` cannot express the timing.
 
 ## DSL Notes
 
@@ -49,6 +50,9 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Put project-specific domain settings in typed extensions, not global project properties.
 - Keep secrets out of committed properties; read them through providers and CI secret storage.
 - Avoid subproject `gradle.properties` for shared policy because it is easy to miss during reviews and migrations.
+- Treat `org.gradle.internal.*` as unsupported troubleshooting or Gradle-development state, not project policy.
+- Treat `org.gradle.experimental.*` and `org.gradle.unsafe.*` as unstable feature flags that need explicit owner/risk notes before committing.
+- For custom build-logic properties, use a project/plugin namespace rather than `org.gradle.*`, and prefer typed extensions when the value configures reusable behavior.
 
 ## Escalation
 
@@ -68,4 +72,4 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 
 ## Source Calibration
 
-Primary upstream pages: Writing Build Scripts, Gradle Managed Types, Kotlin DSL, Groovy Build Script Primer, Writing Tasks, Properties and Providers.
+Primary upstream pages: Writing Build Scripts, Gradle Managed Types, Kotlin DSL, Groovy Build Script Primer, Writing Tasks, Properties and Providers. Local architecture docs: ADR-0010 Gradle properties naming.

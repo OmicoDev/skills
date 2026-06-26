@@ -12,8 +12,7 @@ Read this when: wrapper files, Gradle runtime, init scripts, settings scripts, p
 
 - `settings.gradle(.kts)` owns root name, included projects, included builds, plugin repositories, dependency repository policy, and catalogs.
 - Project build scripts own plugins, dependencies, source sets, tasks, publications, and extension configuration for that project.
-- Root project scripts should stay lightweight unless the root project intentionally produces an artifact.
-- Reusable conventions belong in precompiled or binary convention plugins, usually in included build logic.
+- Root project scripts should stay lightweight unless the root intentionally produces an artifact; reusable conventions belong in precompiled or binary convention plugins, usually in included build logic.
 - Generated files, `.gradle/`, and `build/` are not source structure unless modeled as task inputs/outputs.
 - Name the root project in settings so reports, IDE imports, and CI logs stay stable.
 - Keep build flags in root/user `gradle.properties`; avoid subproject `gradle.properties` for shared behavior.
@@ -25,21 +24,36 @@ Read this when: wrapper files, Gradle runtime, init scripts, settings scripts, p
 - Running the wrapper task once updates wrapper properties; run it again when wrapper scripts/JAR should be fully refreshed.
 - Since Gradle 9, wrapper versions in `gradle-wrapper.properties` require `X.Y.Z` format.
 - Commit wrapper scripts, wrapper JAR, and wrapper properties together when they change.
-- Use `distributionSha256Sum` for Gradle distribution verification when policy requires it.
-- Validate the wrapper JAR in CI when the ecosystem supports it.
+- Use `distributionSha256Sum` and wrapper JAR validation when policy requires wrapper supply-chain checks.
 - For private wrapper distributions, use host-scoped wrapper credentials or tokens in user/CI properties. Do not commit shared credentials in `distributionUrl`.
-- A checksum mismatch may mean the wrapper JAR was not regenerated with the target Gradle version; compare the actual checksum before replacing files.
 - `./gradlew wrapper --gradle-version <version>` is a mutating upgrade command, not a diagnostic command. Run it only when the owner is wrapper/runtime upgrade, then review wrapper properties, scripts, JAR, checksum policy, and CI entrypoints together.
 
 ## Runtime Boundaries
 
-- `org.gradle.java.home` selects the JVM used to run Gradle.
-- Java toolchains select JVMs used by project tasks.
+- The CLI client, wrapper script, and Tooling API clients locate or start a compatible daemon, send one build request, then stream logs, events, models, and results back to the caller.
+- The daemon runs build logic, resolves dependencies, creates task graphs, and coordinates execution. If it is busy, shutting down, or incompatible, the client must find or start another daemon.
+- Worker processes run daemon-owned work such as compilation, tests, and Worker API actions. They do not own settings, project topology, or dependency policy.
+- Debug daemon trouble by naming the failing runtime first: client launch, wrapper distribution download, Tooling API connection, daemon execution, or worker process work.
+- The Gradle client JVM comes from the launcher environment such as `JAVA_HOME`, `java` on `PATH`, or the IDE.
+- The daemon JVM comes from Daemon JVM criteria, Tooling API requests, `org.gradle.java.home`, or the launcher environment fallback.
+- Gradle distributions do not embed a Java runtime; Daemon JVM toolchains do not remove the wrapper/client Java prerequisite.
+- `gradle/gradle-daemon-jvm.properties` records checked-in Daemon JVM criteria and takes precedence over `JAVA_HOME` and `org.gradle.java.home`.
+- Treat `./gradlew updateDaemonJvm --jvm-version <version>` as a mutating runtime-policy command like `wrapper`, not as a diagnostic command.
+- Daemon JVM criteria can include version, vendor, native-image capability, and platform download URLs. Generating URLs requires configured toolchain download repositories unless platforms are cleared or explicit URLs are supplied.
+- Daemon JVM auto-detection and auto-provisioning share Java toolchain discovery flags, but they select the JVM that runs Gradle. Java toolchains select JVMs used by project tasks.
 - `JAVA_HOME` is an environment default, not a reproducible project contract.
 - Gradle user home owns wrapper distributions, dependency caches, daemon state, init scripts, downloaded toolchains, and local properties.
 - Project `.gradle/` is local Gradle state. Do not commit it.
 - Project `build/` directories are generated outputs. Do not treat them as source structure unless a task models the files as outputs.
 - Init scripts can mutate any build; check them when behavior differs by user, CI image, or machine.
+
+## State Scope
+
+- Process state is daemon-wide and normally tied to one Gradle user home. Do not treat it as project state.
+- Session state belongs to one invocation, including continuous build sessions that may run the build more than once.
+- Build tree state belongs to one execution of one build definition, including included builds.
+- Build state belongs to one root or included build inside the build tree.
+- Project state belongs to one project inside one build execution. Isolated Projects work usually fails when project state is read or mutated from the wrong owner.
 
 ## Init Scripts And Lifecycle Hooks
 
@@ -54,8 +68,7 @@ Read this when: wrapper files, Gradle runtime, init scripts, settings scripts, p
 
 - Use `include(...)` for subprojects in one build; use `includeBuild(...)` for separate builds composed together.
 - Check `./gradlew -q projects` before renaming projects or changing paths.
-- Prefer project dependencies for subprojects.
-- Prefer composite builds for local module replacement across build boundaries.
+- Prefer project dependencies for subprojects and composite builds for local module replacement across build boundaries.
 - Included builds can supply plugins through `pluginManagement { includeBuild(...) }`.
 - Composite build substitution can affect task graph construction; use it for real local replacement, not ordinary subproject wiring.
 - Do not rely on task paths in CI until project renames are reflected in CI commands.
@@ -93,10 +106,9 @@ Read this when: wrapper files, Gradle runtime, init scripts, settings scripts, p
 - Check whether CI calls root tasks, project tasks, or included-build tasks.
 - Check whether IDE import expects stable project names.
 - Check whether convention plugins are applied explicitly by each project.
-- Check whether repository and catalog policy lives in settings.
-- Check whether generated source directories are owned by tasks.
+- Check whether repository/catalog policy lives in settings and generated source directories are owned by tasks.
 - Check whether Gradle user home, init scripts, or CI-injected properties can explain behavior that is not reproducible from the repository alone.
 
 ## Source Calibration
 
-Primary upstream pages: Gradle Wrapper, Directory Layout, Build Lifecycle, Initialization Scripts and Init Plugins, Structuring and Organizing Gradle Projects, Multi-Project Builds, Composite Builds, Sharing Build Logic, Build Init Plugin.
+Primary upstream pages: Gradle Wrapper, Gradle Daemon, Directory Layout, Build Lifecycle, Initialization Scripts and Init Plugins, Structuring and Organizing Gradle Projects, Multi-Project Builds, Composite Builds, Sharing Build Logic, Build Init Plugin. Local architecture docs: Gradle Runtimes, Build Execution Model, Build State Model, ADR-0007 Java prerequisite.

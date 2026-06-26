@@ -17,6 +17,9 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - Verify source and javadoc artifacts when the target repository requires them.
 - Verify Gradle Module Metadata when consumers rely on variants or capabilities.
 - Treat Gradle Module Metadata publication warnings as consumer-compatibility evidence; suppress them only after deciding Maven/Ivy degraded metadata is acceptable.
+- Gradle Module Metadata validates unique variant names, at least one attribute per variant, no duplicate attribute/capability sets, and dependency version information across dependency-bearing variants.
+- Publishing a unique build identifier in module metadata makes the metadata differ every invocation; use it only when downstream out-of-date behavior is intended.
+- If Gradle-only semantics such as rich versions, constraints, capabilities, or feature variants matter to consumers, prefer publishing Gradle Module Metadata instead of hiding warnings in Maven/Ivy metadata.
 - Keep relocation POMs narrow and temporary; avoid publishing duplicate coordinates that both look canonical.
 - Avoid deferred or late mutation of publications; configure publications during normal configuration.
 
@@ -29,7 +32,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - Use `publishToMavenLocal` only for local interop; do not treat Maven Local as a release repository.
 - `publishToMavenLocal` does not require `mavenLocal()` in `publishing.repositories`.
 - Use dry-run or local repository publishing before remote release.
-- Use `versionMapping` when a release should publish resolved versions, especially with dynamic versions, rich versions, or dependency locking.
+- Use `versionMapping` when a release should publish resolved versions, especially with dynamic versions, rich versions, or dependency locking. When locking affects published dependencies, prefer publishing the locked/resolved versions deliberately.
 - Do not assume `maven-publish` can deploy directly to Maven Central's current process; check the required Central publishing plugin/workflow.
 
 ## Release Safety

@@ -44,15 +44,24 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 - Too much configuration work: eager task creation, broad plugin application, cross-project mutation, configuration-time dependency resolution.
 - Slow execution: expensive tasks, insufficient task inputs/outputs, external tools, test forks, compiler daemons, annotation processors.
 - Poor reuse: undeclared inputs, non-relocatable paths, non-deterministic outputs, environment leakage, remote cache policy.
-- Runtime factors: Gradle/JDK/plugin versions, daemon reuse, heap settings, parallelism, file-system watching, and CI cache strategy.
+- Runtime factors: Gradle/JDK/plugin versions, daemon reuse, heap settings, parallelism, file-system watching, Gradle user home state, and CI cache strategy.
 - Isolated Projects factors: cross-project model reads, root script mutation, and logic that assumes every project is configured together.
 - Tooling API/IDE parallelism can be controlled separately from task parallelism in modern Gradle; separate IDE sync instability from task execution instability.
+
+## File System Watching
+
+- Treat file-system watching as daemon-local VFS reuse, not as task input declaration. If Gradle misses a change, first suspect undeclared inputs/outputs or unsupported file-system behavior.
+- Diagnose with `--watch-fs`/`--no-watch-fs` and `-Dorg.gradle.vfs.verbose=true`; keep verbose VFS logging out of default CI unless it is actively proving a watcher issue.
+- On Linux, large builds can hit inotify watch limits; raising limits costs memory, so memory-constrained CI may be better served by disabling watching.
+- Symlink-heavy or unsupported file systems can reduce watcher value and cross-platform cache reuse. Route persistent cache misses to [build-cache-and-incremental.md](build-cache-and-incremental.md).
 
 ## Isolated Projects
 
 - Treat Isolated Projects as a configuration-phase and model-building feature, not an execution-phase speedup.
-- It can run project configuration in parallel and can cache tooling models for IDE sync locally, but it currently still configures all projects.
+- It can run project configuration in parallel and can cache tooling models for IDE sync locally, but it currently still configures all projects and does not make work graph discovery parallel.
 - Use it after configuration-cache discipline is mostly in place; both features share infrastructure, but isolation violations are owner-boundary problems.
+- Its maximum speedup is bounded by the share of time spent in configuration/model building; execution-heavy builds may see little change.
+- IDE model fetching can have separate parallelism controls from CLI task execution, and IDE sync support can differ from delegated task execution.
 - Diagnose first with `help` plus diagnostics mode:
 
 ```bash

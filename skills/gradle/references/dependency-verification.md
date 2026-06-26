@@ -9,7 +9,7 @@ Read this when: `verification-metadata.xml`, checksums, signatures, trusted keys
 - Signature verification without checksums can miss weak-hash integrity problems.
 - Verification metadata is security policy, not a cache artifact.
 - Dependency verification is enabled when `gradle/verification-metadata.xml` exists.
-- The verification file is global for the build and also affects `buildSrc`; included builds use the current build's verification metadata.
+- The verification file is global for the current build and affects all subprojects and `buildSrc`; included builds use the current build's verification metadata, ignoring their own for this invocation.
 - Verification does not replace repository content filters, dependency locking, wrapper validation, or Gradle distribution checksums.
 
 ## Commands
@@ -45,7 +45,7 @@ Bootstrap or update only after reviewing the dependency change:
 - It does not verify the Gradle wrapper JAR or distribution; handle those through wrapper validation and `distributionSha256Sum`.
 - Generated verification entries should be reviewed like dependency upgrades.
 - Keyring files can be committed to avoid repeated keyserver lookups; commit one format and treat it as public-key material.
-- Disabling metadata verification shrinks metadata but can miss malicious POM, Ivy, or Gradle Module Metadata changes that alter transitive dependencies.
+- Disabling metadata verification shrinks metadata but can miss malicious POM, Ivy, or Gradle Module Metadata changes that alter transitive dependencies or selected variants.
 - Configuration-level opt-outs are for plugins that resolve unknown future versions or similar cases where verification cannot be meaningful.
 
 ## Failure Triage

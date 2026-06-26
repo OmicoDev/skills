@@ -10,6 +10,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - The feature is not enabled by default; treat adoption as a compatibility rollout, not a formatting change.
 - IDE task execution support and IDE sync/import behavior are separate boundaries.
 - Isolated Projects builds on configuration-cache infrastructure, but project isolation violations and cache reuse failures are different symptoms.
+- The cache entry is local project state under `.gradle/configuration-cache`; do not treat deleting it as a durable repair.
 
 ## Enablement
 
@@ -23,12 +24,13 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 
 - Gradle tracks many configuration inputs automatically, but build logic still needs supported APIs.
 - Files read during configuration can invalidate cache entries.
+- Prefer wiring file contents to task properties with `providers.fileContents(...)` instead of reading files directly during configuration.
 - Environment variables and system properties should be read through providers when they affect configuration.
+- Query concrete environment/system property names or provider-backed prefixes. Enumerating all variables/properties makes the whole set a configuration input.
 - External process output needed during configuration should use provider-backed process APIs or `ValueSource`.
 - `ValueSource` is the escape hatch when built-in providers are too small. Gradle tracks the returned value, not every environment variable, file, process, or network read inside `obtain()`.
 - `ValueSource` should return an effectively immutable value. If queried during configuration, `obtain()` runs on every build to decide whether the cache entry is still reusable.
 - `ValueSource.obtain()` can run on every build to decide cache reuse, so keep it fast and deterministic.
-- Avoid enumerating all environment variables or system properties during configuration. Query concrete names or provider-backed prefixes.
 - Secrets need care because configuration cache can persist model state.
 
 ## Report-Driven Repair
@@ -68,8 +70,10 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 
 - Add TestKit coverage for plugin behavior that should support configuration cache.
 - Run a representative task twice and confirm the second run reuses configuration.
+- In TestKit, pass `--configuration-cache` and execute the same scenario twice so the test proves both store and reuse behavior.
 - Use incompatible-task opt-out only while isolating a task that cannot yet be repaired.
 - Use warning mode and max-problems limits only to explore blockers; remove them from release workflows.
+- Use `-Dorg.gradle.configuration-cache.integrity-check=true` only for targeted serialization/cache-entry debugging; it can slow cache operations and cannot diagnose entries written before it was enabled.
 - Do not treat deleting `.gradle/configuration-cache` as a fix.
 
 ## Rollout Checks

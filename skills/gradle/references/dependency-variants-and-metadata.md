@@ -6,7 +6,9 @@ Read this when: variant-aware resolution, attributes, capabilities, artifact tra
 
 - A component exposes variants. A variant has attributes, capabilities, artifacts, dependencies, and metadata.
 - Consumers request attributes; Gradle filters compatible candidates, then disambiguates when more than one compatible candidate remains.
+- Variant names are mainly diagnostics surface; ordinary variant matching uses attributes, not names.
 - `No matching variant` means the consumer and producer attributes/capabilities do not describe a compatible variant.
+- Variants/configurations without attributes cannot participate in variant-aware resolution; reports may hide them unless `--all` is used.
 - Secondary variants are artifact sets on an existing variant, not separate components.
 - Verification-only variants carry test or coverage results and should not be added to publishable components.
 - Component-level metadata can influence version selection before Gradle selects variants. Variant-level metadata influences artifact and dependency selection after a component version is chosen.
@@ -22,13 +24,13 @@ Read this when: variant-aware resolution, attributes, capabilities, artifact tra
 
 ## Matching Repair Order
 
-1. Inspect the requested attributes and candidate variants.
-2. Check whether the producer exposes the right variant.
-3. Check whether the consumer is asking for the right usage, category, JVM version, platform, or custom attribute.
+1. Inspect requested attributes and candidate variants.
+2. Check whether the producer exposes the right attributed variant.
+3. Check whether the consumer asks for the right usage, category, JVM version, platform, or custom attribute.
 4. Prefer fixing producer metadata over weakening consumer attributes.
 5. Add compatibility or disambiguation rules only when the attribute model is custom and reusable.
 6. Use component metadata rules for external modules whose published metadata is incomplete or wrong.
-7. If Maven/Ivy mapping is the owner, repair derived variants with metadata rules instead of resolving classifier paths manually.
+7. If Maven/Ivy mapping is the owner, repair derived variants with metadata rules instead of selecting variants by configuration name or resolving classifier paths manually.
 
 ## Diagnostics
 
@@ -62,11 +64,7 @@ Use reports to compare requested attributes with producer attributes before edit
 
 Use component metadata rules to repair external module metadata:
 
-- add or remove dependencies
-- add variants that were encoded as classifiers or versions
-- add capabilities
-- define status schemes
-- adapt Ivy/Maven metadata to Gradle variants
+- add/remove dependencies, variants encoded as classifiers or versions, capabilities, status schemes, or Ivy/Maven variant mappings
 
 - Component metadata rules run after metadata is downloaded and before Gradle uses it for resolution.
 - Prefer `withModule` over broad `all` rules unless the rule is truly generic and correct for every affected module.
@@ -99,8 +97,10 @@ Use component metadata rules to repair external module metadata:
 ## Custom Artifacts And Transforms
 
 - For project output sharing, publish an outgoing variant with attributes and artifacts instead of depending on another task's file path.
-- Use artifact views for selecting artifacts from an existing resolved graph.
+- Use artifact views for selecting artifacts from an existing resolved graph, and `withVariantReselection` only when a different component variant should be selected by attributes.
+- In `withVariantReselection`, the artifact view's attributes drive variant reselection; do not assume the original configuration's graph attributes still constrain the reselected variant.
 - Use artifact transforms when a reusable, cacheable conversion is needed between artifact types.
+- Artifact transforms run only when no existing variant satisfies the requested artifact attributes. They transform artifacts, not dependency metadata or transitive dependencies.
 - Model transform parameters as inputs and keep transforms deterministic.
 
 ## Source Calibration

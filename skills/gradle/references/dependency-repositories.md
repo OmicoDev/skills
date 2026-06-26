@@ -46,10 +46,10 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - Gradle caches module metadata, artifacts, dynamic version results, and changing-module results.
 - Repository caches are independent by repository URL, type, and layout. Gradle also caches the absence of a module or artifact in a repository.
 - Resolved modules and artifacts are sticky to the repository that supplied them. If the same coordinates later exist elsewhere, Gradle avoids silently switching sources.
-- Repository stickiness can explain CI/local differences when repository lists, mirrors, credentials, or init scripts differ.
+- Repository stickiness can explain CI/local differences when repository lists, mirrors, credentials, content filters, or init scripts differ.
 - Artifacts are stored by checksum, so the cache can hold different bytes for the same coordinates from different repositories without overwriting.
 - Dynamic version and changing-module TTLs affect repository traffic and reproducibility; change them only as policy.
-- Use `--refresh-dependencies` only to test or refresh stale dependency cache state. It refreshes metadata/dynamic/changing decisions and may use HEAD/checksum checks; it is not a guaranteed redownload.
+- Use `--refresh-dependencies` only to test or refresh stale dependency cache state. It refreshes metadata/dynamic/changing decisions and may use HEAD/checksum checks; it is not a guaranteed redownload and mainly matters for dynamic or changing dependencies.
 - Use `--offline` only to verify whether the local cache already contains required artifacts.
 - Gradle dependency-cache locking assumes cooperating Gradle processes. Containerized builds usually should not share one mutable Gradle user home concurrently.
 - For ephemeral CI, prefer deliberate dependency-cache seeding or a read-only dependency cache over sharing mutable Gradle user homes across unrelated builds.
@@ -62,6 +62,7 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - If an internal repository shadows public coordinates, repair content filters before trusting the downloaded artifact.
 - If plugin resolution fails, fix plugin repositories rather than dependency repositories.
 - If resolution is slow, inspect repository count/order, dynamic selectors, changing modules, metadata rules, and network/cache behavior.
+- If `--refresh-dependencies` appears to do nothing, check whether the dependency is static and unchanged, whether remote checksums match, and whether a changing dependency was declared correctly.
 
 ## Source Calibration
 
