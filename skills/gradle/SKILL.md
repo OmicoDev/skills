@@ -1,39 +1,54 @@
 ---
 name: gradle
-description: Guides Gradle work across wrapper, build scripts, settings scripts, dependencies, plugins, toolchains, performance, troubleshooting, and upgrade migrations using the Gradle documentation source tree. Use when the user asks about Gradle, gradlew, build.gradle(.kts), settings.gradle(.kts), gradle.properties, version catalogs, dependency resolution, plugin development, configuration cache, build cache, toolchains, or Gradle upgrades.
+description: Gradle development knowledge for agents maintaining builds, build logic, plugins, tasks, dependencies, JVM toolchains, caches, publishing, CI, security, and upgrades. Use when working with Gradle, gradlew, build.gradle(.kts), settings.gradle(.kts), gradle.properties, init.gradle(.kts), libs.versions.toml, dependencies/dependencyInsight reports, dependency locking or verification, Gradle plugins/tasks, TestKit, Java toolchains, Maven/Ant migration, or wrapper upgrades.
 ---
 
 # Gradle
 
-Use this skill for build authoring, debugging, dependency management, plugin development, performance tuning, and migrations in Gradle builds.
+Use this skill when Gradle owns the work: build authoring, debugging, dependency resolution, plugin/task development, performance, CI/security, ecosystem integration, or migrations.
 
-Bundled docs version: Gradle `9.4.1`.
+Calibrated from the local Gradle User Manual source tree. Do not vendor upstream pages into this skill; improve the references when repeated Gradle development work needs durable knowledge.
 
-## When not to use this skill
+## When Not To Use This Skill
 
 - Pure Maven-only work with no Gradle involvement.
 - Application code issues that are clearly unrelated to build logic or build tooling.
-- IDE-only problems unless the IDE behavior is tied to Gradle execution, Gradle JVM, or toolchains.
+- IDE-only problems unless the IDE behavior is tied to Gradle execution, Gradle JVM, toolchains, or Gradle import.
 
 ## Defaults
 
-- Prefer the Gradle Wrapper (`./gradlew`, `gradlew.bat`) over a globally installed `gradle`.
-- Match the project's existing DSL. If the project is new or mixed, prefer Kotlin DSL for new examples.
-- Match the project's current layout before suggesting structural changes.
-- Prefer lazy APIs and configuration avoidance (`tasks.register`, `configureEach`, `Property`, `Provider`) over eager configuration.
-- Prefer Java toolchains over relying on `JAVA_HOME`, `sourceCompatibility`, or `targetCompatibility` alone.
-- Surface deprecations early when debugging or upgrading.
+- Use the Gradle Wrapper (`./gradlew`, `gradlew.bat`) unless creating a wrapper for a new project.
+- Read `gradle/wrapper/gradle-wrapper.properties` before relying on version-sensitive behavior.
+- Match the repository's DSL, project layout, plugin style, and CI entrypoints before changing examples.
+- Prefer lazy APIs and configuration avoidance: `tasks.register`, `tasks.named`, `configureEach`, `Property`, `Provider`, `DirectoryProperty`, and `RegularFileProperty`.
+- Prefer Java toolchains over ambient `JAVA_HOME`, `sourceCompatibility`, or `targetCompatibility` alone.
+- Treat build logic as production code: keep changes small, model inputs/outputs, and verify with wrapper commands.
 
-## Quick workflow
+## Workflow
 
-1. Identify the workstream: wrapper, execution, scripts, dependencies, plugins, tasks, toolchains, performance, security, or migration.
-2. Inspect the existing build files first: `settings.gradle(.kts)`, `build.gradle(.kts)`, `gradle.properties`, `libs.versions.toml`, and `gradle/wrapper/gradle-wrapper.properties`.
-3. Start with the smallest wrapper-centric command that answers the question.
-4. Prefer the bundled mirror in `references/userguide/` for in-repo source references.
-5. Use the reference files below to find the right doc, command, or published page.
+1. Classify the task by nearest owner surface.
+2. Inspect relevant files: wrapper properties, settings, build scripts, `gradle.properties`, catalogs, build logic, included builds, lock/verification metadata, and CI files.
+3. Read one first-hop owner reference below. Read a second only when repository evidence crosses owner boundaries.
+4. Run or suggest the narrowest wrapper command that proves the owner.
+5. Explain the Gradle model behind the change so the build remains maintainable.
 
-## References
+## First-Hop Owner References
 
-- [references/doc-map.md](references/doc-map.md) - curated topic index plus triage, command playbook, topic-specific guidance, and usage examples.
-- [references/remote-local-map.md](references/remote-local-map.md) - bundled `.adoc` paths mapped to official published HTML pages.
-- [Gradle User Manual](https://docs.gradle.org/current/userguide/userguide.html) - official published docs for shareable remote links and live comparison.
+Keep this list coarse. Add narrow references from their owning file, not from `SKILL.md`.
+
+- Read [references/model-boundaries.md](references/model-boundaries.md) when the owner is unclear or the task turns on Gradle model boundaries.
+- Read [references/commands-and-evidence.md](references/commands-and-evidence.md) when choosing commands, flags, logs, reports, or failure evidence.
+- Read [references/runtime-and-structure.md](references/runtime-and-structure.md) when wrapper files, Gradle runtime, init scripts, settings, topology, build logic placement, or layout is the owner.
+- Read [references/scripts-and-conventions.md](references/scripts-and-conventions.md) when editing build scripts or reusable build logic.
+- Read [references/dependency-policy.md](references/dependency-policy.md) when dependency declarations, configuration roles, catalogs, platforms, version policy, or selected versions are the main surface.
+- Read [references/plugins-services-and-diagnostics.md](references/plugins-services-and-diagnostics.md) when plugin shape, shared services, lifecycle-result work, Problems API diagnostics, TestKit, or task public surface is the owner.
+- Read [references/performance-strategy.md](references/performance-strategy.md) when improving build speed, task avoidance, configuration cache, build cache, incremental behavior, or isolated projects.
+- Read [references/ci-and-security.md](references/ci-and-security.md) when publishing, CI execution, credentials, dependency verification, or wrapper security is the owner.
+- Read [references/ecosystem-integrations.md](references/ecosystem-integrations.md) when Gradle coordinates Android, native, frontend, IDE, Tooling API, Maven/Ant, or external tools.
+- Read [references/upgrade-strategy.md](references/upgrade-strategy.md) when changing Gradle versions, handling deprecations, or migrating build systems.
+
+## Source Use
+
+- Use the local Gradle source tree for calibration when available.
+- Use [Gradle User Manual](https://docs.gradle.org/current/userguide/userguide.html) links for shareable citations.
+- Prefer concise model rules, symptom maps, command recipes, and safe code patterns over upstream excerpts.

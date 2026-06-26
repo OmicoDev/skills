@@ -1,0 +1,57 @@
+# Gradle Model Boundaries
+
+Read this when: the owner surface, lifecycle phase, or Gradle model boundary is unclear.
+
+## Route
+
+- Read [commands-and-evidence.md](commands-and-evidence.md) when the first job is choosing commands, flags, logs, or evidence.
+- Read [runtime-and-structure.md](runtime-and-structure.md) when settings, wrapper files, Gradle runtime, init scripts, included builds, build logic placement, or directory layout owns the change.
+- Read [scripts-and-conventions.md](scripts-and-conventions.md) when changing build scripts or reusable conventions.
+- Read [dependency-policy.md](dependency-policy.md) when configurations, repositories, variants, locks, verification, or selected versions are involved.
+- Read [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md) when plugin shape, shared services, lifecycle-result work, structured diagnostics, or TestKit coverage owns the change.
+- Read [performance-strategy.md](performance-strategy.md) when configuration time, task avoidance, cache reuse, or incremental behavior is involved.
+
+## Model Boundaries
+
+- Initialization reads settings and discovers builds, projects, plugin management, dependency repository policy, version catalogs, and included builds.
+- Configuration creates and configures project models and task graphs for the requested entrypoints.
+- Execution runs selected tasks and should do the actual filesystem, network, process, and compiler work.
+- Settings scripts own topology. Project scripts own project plugins, dependencies, tasks, extensions, and outgoing publications.
+- Providers are lazy value recipes. Keep values as providers until a Gradle-owned consumer or task action needs them.
+- Configurations are dependency buckets with declarable, resolvable, or consumable roles. Do not use one role to fake another.
+- Components expose variants. Variants carry attributes, capabilities, artifacts, dependencies, and metadata.
+- The wrapper selects Gradle. The Gradle runtime JVM runs Gradle. Java toolchains select JVMs for compile, test, javadoc, and custom Java tool tasks.
+- Init scripts and init plugins run before repository build logic and can affect every build attached to that Gradle user home or CI image.
+- Flow actions and build services model lifecycle-adjacent work. Ordinary tasks still own source, output, process, and filesystem work.
+- Isolated Projects forbids cross-project mutable model access during configuration. Read immutable project identity sparingly; move shared policy to convention plugins, variants, or state-isolating lifecycle callbacks.
+
+## Ownership Questions
+
+- Does the value decide which projects exist? Settings owns it.
+- Does the value decide how one project builds? That project or convention plugin owns it.
+- Does the value decide what files a task reads or writes? The task owns it.
+- Does the value decide which dependency files are selected? Dependency resolution owns it.
+- Does the value decide which JVM runs Gradle? Wrapper/runtime owns it.
+- Does the value decide which JVM compiles or tests code? Toolchains own it.
+- Does the value cross project boundaries? Prefer variants, publications, or convention plugins over direct project model reads.
+
+## Smell Routing
+
+- Work happens during configuration: route to [performance-strategy.md](performance-strategy.md), [configuration-cache.md](configuration-cache.md), or [task-types-and-validation.md](task-types-and-validation.md).
+- Root script mutates all projects: route to [runtime-and-structure.md](runtime-and-structure.md) and build logic organization.
+- CI or a developer machine behaves differently with the same repository files: route to [runtime-and-structure.md](runtime-and-structure.md) and inspect init scripts, Gradle user home, and CI-injected options.
+- Dependency version changed in the wrong place: route to [dependency-policy.md](dependency-policy.md).
+- Task ordering was added to paper over missing outputs: route to [task-types-and-validation.md](task-types-and-validation.md).
+- Runtime JDK and compile target are confused: route to [jvm-and-tests.md](jvm-and-tests.md).
+
+## Review Heuristics
+
+- Every cross-project convention should have an obvious plugin owner.
+- Every generated file should have a producing task and consuming provider.
+- Every external process should be inside a task, worker, or value source.
+- Every dependency policy should state its owner layer.
+- Every performance change should name configuration, execution, dependency resolution, or output reuse as the target.
+
+## Source Calibration
+
+Primary upstream pages: Build Lifecycle, Initialization Scripts and Init Plugins, Dataflow Actions, Build Environment Configuration, Dependency Configurations, Variant Selection and Attribute Matching, Toolchains for JVM projects.

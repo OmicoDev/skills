@@ -1,0 +1,102 @@
+# Gradle Runtime And Structure
+
+Read this when: wrapper files, Gradle runtime, init scripts, settings scripts, project inclusion, multi-project builds, composite builds, build logic placement, repository policy, or directory layout owns the work.
+
+## Scope Boundary
+
+- This file owns the build's runtime, topology, checked-in structure, and where build logic should live.
+- Build authoring files own script-level changes after the owner surface is clear.
+- JVM files own toolchains used by compile/test tasks; this file owns only the JVM that runs Gradle.
+
+## Ownership
+
+- `settings.gradle(.kts)` owns root name, included projects, included builds, plugin repositories, dependency repository policy, and catalogs.
+- Project build scripts own plugins, dependencies, source sets, tasks, publications, and extension configuration for that project.
+- Root project scripts should stay lightweight unless the root project intentionally produces an artifact.
+- Reusable conventions belong in precompiled or binary convention plugins, usually in included build logic.
+- Generated files, `.gradle/`, and `build/` are not source structure unless modeled as task inputs/outputs.
+- Name the root project in settings so reports, IDE imports, and CI logs stay stable.
+- Keep build flags in root/user `gradle.properties`; avoid subproject `gradle.properties` for shared behavior.
+
+## Wrapper And Runtime
+
+- The wrapper is the Gradle version of record. Prefer wrapper commands over globally installed `gradle`.
+- Upgrade with the `wrapper` task, not only by editing `distributionUrl`.
+- Running the wrapper task once updates wrapper properties; run it again when wrapper scripts/JAR should be fully refreshed.
+- Since Gradle 9, wrapper versions in `gradle-wrapper.properties` require `X.Y.Z` format.
+- Commit wrapper scripts, wrapper JAR, and wrapper properties together when they change.
+- Use `distributionSha256Sum` for Gradle distribution verification when policy requires it.
+- Validate the wrapper JAR in CI when the ecosystem supports it.
+- For private wrapper distributions, use host-scoped wrapper credentials or tokens in user/CI properties. Do not commit shared credentials in `distributionUrl`.
+- A checksum mismatch may mean the wrapper JAR was not regenerated with the target Gradle version; compare the actual checksum before replacing files.
+- `./gradlew wrapper --gradle-version <version>` is a mutating upgrade command, not a diagnostic command. Run it only when the owner is wrapper/runtime upgrade, then review wrapper properties, scripts, JAR, checksum policy, and CI entrypoints together.
+
+## Runtime Boundaries
+
+- `org.gradle.java.home` selects the JVM used to run Gradle.
+- Java toolchains select JVMs used by project tasks.
+- `JAVA_HOME` is an environment default, not a reproducible project contract.
+- Gradle user home owns wrapper distributions, dependency caches, daemon state, init scripts, downloaded toolchains, and local properties.
+- Project `.gradle/` is local Gradle state. Do not commit it.
+- Project `build/` directories are generated outputs. Do not treat them as source structure unless a task models the files as outputs.
+- Init scripts can mutate any build; check them when behavior differs by user, CI image, or machine.
+
+## Init Scripts And Lifecycle Hooks
+
+- Init scripts run during initialization before settings and project scripts.
+- Use them for environment policy: enterprise repositories, plugin resolution rules, global listeners, init plugins, or CI-wide defaults.
+- Do not hide repository-specific build behavior in init scripts when a checked-in convention plugin can own it.
+- Discovery can come from command-line `--init-script`, Gradle user home `init.d`, or Gradle installation `init.d`.
+- Init scripts cannot rely on classes from the target build's `buildSrc`.
+- Lifecycle hooks such as `settingsEvaluated`, `projectsLoaded`, `beforeProject`, `afterProject`, and `projectsEvaluated` are global mutation points. Review them for configuration-cache and isolated-project impact.
+
+## Project Topology
+
+- Use `include(...)` for subprojects in one build; use `includeBuild(...)` for separate builds composed together.
+- Check `./gradlew -q projects` before renaming projects or changing paths.
+- Prefer project dependencies for subprojects.
+- Prefer composite builds for local module replacement across build boundaries.
+- Included builds can supply plugins through `pluginManagement { includeBuild(...) }`.
+- Composite build substitution can affect task graph construction; use it for real local replacement, not ordinary subproject wiring.
+- Do not rely on task paths in CI until project renames are reflected in CI commands.
+
+## Build Logic Placement
+
+- Keep one-off project behavior in the project build script.
+- Move repeated convention blocks to precompiled script plugins or binary plugins.
+- Prefer an included `build-logic` build over `buildSrc` for larger or more isolated shared logic.
+- Use `buildSrc` only when automatic inclusion is acceptable for the repo.
+- Avoid `allprojects` and `subprojects` mutation for cross-project conventions; use plugins applied by each participating project.
+- For aggregation, consume variants or reports rather than reading mutable subproject state.
+- Avoid init scripts for project behavior; they are user or environment policy.
+
+## Layout And File Rules
+
+- Keep source files out of the root project unless the root intentionally builds software.
+- Prefer standard plugin conventions such as `src/main/java` and `src/test/java`.
+- Separate language source directories when multiple JVM languages are compiled.
+- Separate unit, integration, functional, and smoke test sources when they have different dependencies or execution policy.
+- Avoid empty included projects caused by mismatched `include(...)` paths.
+- Use `layout.projectDirectory`, `layout.buildDirectory`, and task/file providers instead of hard-coded paths.
+- Keep generated sources under `build/` and wire them through source sets or task outputs.
+- For copied or archived outputs, prefer Gradle task types and `CopySpec` over manual filesystem loops.
+
+## Build Init
+
+- Use `./gradlew init` or `gradle init` only for new scaffolds or deliberate conversion work.
+- Treat `init` as a mutating scaffold/conversion command. Do not run it merely to inspect an existing build.
+- Review generated settings, wrapper, build scripts, source layout, and catalogs before keeping them.
+- For Maven conversion, treat generated output as a starting point; verify lifecycle, profiles, resources, dependencies, and publishing separately.
+
+## Structural Review
+
+- Check whether CI calls root tasks, project tasks, or included-build tasks.
+- Check whether IDE import expects stable project names.
+- Check whether convention plugins are applied explicitly by each project.
+- Check whether repository and catalog policy lives in settings.
+- Check whether generated source directories are owned by tasks.
+- Check whether Gradle user home, init scripts, or CI-injected properties can explain behavior that is not reproducible from the repository alone.
+
+## Source Calibration
+
+Primary upstream pages: Gradle Wrapper, Directory Layout, Build Lifecycle, Initialization Scripts and Init Plugins, Structuring and Organizing Gradle Projects, Multi-Project Builds, Composite Builds, Sharing Build Logic, Build Init Plugin.
