@@ -1,6 +1,6 @@
-# Gradle Dependency Artifacts And Transforms
+# Gradle Dependency Artifact Selection
 
-Read this when: artifact views, artifact-only notation, classifier artifacts, or variant-aware project artifact sharing owns the issue.
+Read this when: artifact views, artifact-only notation, classifier artifacts, variant-aware project artifact sharing, or concrete artifact files from a resolved graph owns the issue.
 
 ## Scope Boundary
 

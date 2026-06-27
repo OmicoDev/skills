@@ -10,7 +10,7 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Read [dependency-variants-and-metadata.md](dependency-variants-and-metadata.md) for variants, capabilities, attributes, and matching diagnostics.
 - Read [dependency-metadata-rules.md](dependency-metadata-rules.md) for component metadata rules, Maven/Ivy metadata repair, missing capabilities, virtual-platform alignment, and status schemes.
 - Read [dependency-resolution-rules.md](dependency-resolution-rules.md) for `resolutionStrategy`, substitution, local forks, module replacement, `force`, component selection, excludes, and disabled transitivity.
-- Read [dependency-artifacts-and-transforms.md](dependency-artifacts-and-transforms.md) for artifact views, artifact-only notation, classifier artifacts, and project artifact sharing.
+- Read [dependency-artifact-selection.md](dependency-artifact-selection.md) for artifact views, artifact-only notation, classifier artifacts, and project artifact sharing.
 - Read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) for reusable artifact transform implementation, registration, caching, and diagnostics.
 - Read [dependency-verification.md](dependency-verification.md) for `verification-metadata.xml`, checksums, signatures, bootstrapping, and verification failures.
 - Read [publications-and-signing.md](publications-and-signing.md) when dependency metadata is produced by Maven/Ivy publishing or plugin publication.

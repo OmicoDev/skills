@@ -7,7 +7,7 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 - This file owns checked-in project topology, project paths, included builds, build logic location, and source/layout conventions.
 - Use [runtime-and-structure.md](runtime-and-structure.md) when the issue is wrapper files, the Gradle runtime JVM, daemon selection, Gradle user home, or init scripts.
 - Use [scripts-and-conventions.md](scripts-and-conventions.md) once the topology is clear and the work is ordinary build script or convention plugin editing.
-- Use [dependency-artifacts-and-transforms.md](dependency-artifacts-and-transforms.md) when a project-to-project problem is specifically about sharing custom artifacts.
+- Use [dependency-artifact-selection.md](dependency-artifact-selection.md) when a project-to-project problem is specifically about sharing custom artifacts.
 
 ## Owner Selection
 

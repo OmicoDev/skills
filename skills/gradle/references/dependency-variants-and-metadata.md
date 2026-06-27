@@ -6,7 +6,7 @@ Read this when: variant-aware resolution, attributes, capabilities, or published
 
 - This file owns component variants, attributes, capabilities, and matching diagnostics before artifact selection.
 - Read [dependency-metadata-rules.md](dependency-metadata-rules.md) when the fix is a component metadata rule, Maven/Ivy metadata repair, virtual platform alignment, or status scheme change.
-- Read [dependency-artifacts-and-transforms.md](dependency-artifacts-and-transforms.md) for artifact views, artifact-only notation, classifier artifact selection, and variant-aware project artifact sharing.
+- Read [dependency-artifact-selection.md](dependency-artifact-selection.md) for artifact views, artifact-only notation, classifier artifact selection, and variant-aware project artifact sharing.
 - Read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) when a transform should derive requested artifact attributes from an existing variant.
 
 ## Variant Model

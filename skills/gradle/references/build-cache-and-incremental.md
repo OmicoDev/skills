@@ -1,13 +1,13 @@
 # Gradle Build Cache And Incremental Work
 
-Read this when: task output caching, up-to-date checks, incremental inputs, artifact transform caching, remote cache policy, or cache misses owns the work.
+Read this when: task output caching, up-to-date checks, build-cache reuse, artifact transform caching, remote cache policy, or cache misses owns the work.
 
 ## Model
 
 - Up-to-date checks reuse local outputs when inputs and outputs are unchanged.
 - Build cache reuses task or artifact-transform outputs from local or remote cache storage.
 - Dependency caches store module metadata, artifacts, dynamic-version results, and changing-module decisions; read [dependency-repositories.md](dependency-repositories.md) for `--refresh-dependencies`, `--offline`, repository stickiness, and Gradle user home cache behavior.
-- Incremental tasks receive changed input information and can process only affected files.
+- Incremental task implementation belongs in [task-types-and-validation.md](task-types-and-validation.md); use this file only for reuse evidence such as up-to-date status, cache hits/misses, and non-incremental execution symptoms.
 - Up-to-date and cache reuse require declared outputs; a pure side-effect task should be explicitly untracked instead of faking outputs only to satisfy the model.
 - Cacheability requires declared inputs/outputs plus deterministic and relocatable outputs for the intended cache.
 - Build cache keys include task type/classpath, task action implementations, output property names, input names/values, relevant build script content, Gradle distribution classpath, `buildSrc`, and plugin classpaths.
@@ -40,9 +40,8 @@ Read this when: task output caching, up-to-date checks, incremental inputs, arti
 - Declare all inputs, outputs, local state, destroyables, and service references.
 - Normalize file paths and classpaths appropriately.
 - Avoid absolute paths, timestamps, random data, host-specific outputs, and untracked environment reads in outputs.
-- Use `InputChanges` only on a single task action with at least one `@Incremental` or `@SkipWhenEmpty` file input; query changes from stable property instances such as `RegularFileProperty`, `DirectoryProperty`, or `ConfigurableFileCollection`.
-- Treat `InputChanges.isIncremental() == false` as a full rebuild: Gradle reports every input file as `ADDED` and removes previous outputs before the action; when incremental, handle `REMOVED` changes by deleting corresponding outputs.
-- `@SkipWhenEmpty` implies incremental input tracking and skips with `NO-SOURCE` only when all skip-when-empty inputs are empty; use empty-directory, path, and line-ending normalization deliberately when those details should not affect the key.
+- For custom incremental task implementation, read [task-types-and-validation.md](task-types-and-validation.md); here, only check whether changed inputs, removed outputs, or non-incremental execution explain reuse behavior.
+- If a task handles removed inputs incorrectly or always falls back to non-incremental execution, treat that as task implementation evidence before changing cache policy.
 - Mark non-cacheable tasks explicitly when work is not safely reusable.
 - Use `Task.doNotTrackState("...")` or `@UntrackedTask` only when a task must always run or its state cannot be represented as files/properties, such as updating an external service.
 - Untracked tasks are always out of date, cannot use incremental `InputChanges`, and are not stored in or loaded from the build cache.
@@ -89,4 +88,4 @@ Read this when: task output caching, up-to-date checks, incremental inputs, arti
 
 ## Source Calibration
 
-Primary upstream pages: Build Cache, Build Cache Concepts, Build Cache Debugging, Build Cache Performance, Build Cache Use Cases, Common Caching Problems, Incremental Build, InputChanges API, SkipWhenEmpty API, TaskOutputs API, LocalState API.
+Primary upstream pages: Build Cache, Build Cache Concepts, Build Cache Debugging, Build Cache Performance, Build Cache Use Cases, Common Caching Problems, Incremental Build, TaskOutputs API, LocalState API.

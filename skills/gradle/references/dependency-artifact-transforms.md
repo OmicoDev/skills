@@ -5,7 +5,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 ## Scope Boundary
 
 - This file owns reusable artifact conversions selected during dependency resolution.
-- Use [dependency-artifacts-and-transforms.md](dependency-artifacts-and-transforms.md) when the issue is artifact views, artifact-only notation, classifier artifacts, or project artifact sharing.
+- Use [dependency-artifact-selection.md](dependency-artifact-selection.md) when the issue is artifact views, artifact-only notation, classifier artifacts, or project artifact sharing.
 - Use [dependency-variants-and-metadata.md](dependency-variants-and-metadata.md) when the issue is variant matching, component attributes, or capabilities before artifact selection.
 - Use [build-cache-and-incremental.md](build-cache-and-incremental.md) when a transform cache hit/miss needs broader cache-key triage after transform inputs are known.
 

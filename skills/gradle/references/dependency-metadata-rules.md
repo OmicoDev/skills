@@ -7,7 +7,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - This file owns metadata rules that run after module metadata is downloaded and before Gradle uses it for dependency resolution.
 - Use [dependency-variants-and-metadata.md](dependency-variants-and-metadata.md) first when the task is comparing requested and candidate attributes, capabilities, or `No matching variant` diagnostics.
 - Use [dependency-version-governance.md](dependency-version-governance.md) when the selected version should be governed by catalogs, constraints, platforms, BOMs, rich versions, or consistent resolution.
-- Use [dependency-artifacts-and-transforms.md](dependency-artifacts-and-transforms.md) when the graph is correct and only artifact selection needs to change; use [dependency-artifact-transforms.md](dependency-artifact-transforms.md) when reusable conversion owns the change.
+- Use [dependency-artifact-selection.md](dependency-artifact-selection.md) when the graph is correct and only artifact selection needs to change; use [dependency-artifact-transforms.md](dependency-artifact-transforms.md) when reusable conversion owns the change.
 
 ## Use Metadata Rules For
 
@@ -23,7 +23,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - The desired version policy is yours, not a metadata defect: use constraints, platforms, BOMs, rich versions, or locks.
 - A capability conflict is already visible: use capability conflict resolution before adding metadata.
 - The dependency is a one-off local replacement: use substitution, composite builds, or direct declarations.
-- The issue is only a task needing a different file from an already-correct graph: use artifact views or [dependency-artifact-transforms.md](dependency-artifact-transforms.md).
+- The issue is only a task needing a different file from an already-correct graph: use [dependency-artifact-selection.md](dependency-artifact-selection.md) for artifact views or artifact selection; use [dependency-artifact-transforms.md](dependency-artifact-transforms.md) only when reusable conversion owns the change.
 - Repository metadata requests or dynamic-version listing are the bottleneck: use repository `ComponentMetadataSupplier` or component version lister only when supplying initial remote metadata is the owner; metadata rules enrich metadata after Gradle has module metadata to work with.
 
 ## Rule Shape
