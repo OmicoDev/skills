@@ -14,6 +14,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Use Worker API when one task action has independent units of work that can run concurrently or need isolation from the Gradle runtime.
 - Keep ordinary typed tasks when the work is single-unit, already modeled by a built-in task type, or better represented as separate task outputs.
 - Do not use Worker API to hide undeclared inputs, missing outputs, or task ordering problems. The owning task still declares the full input and output contract.
+- Treat Worker API as task execution parallelism, not configuration-time work; submit work after the owning task properties have been configured and finalized for execution.
 - Use classloader or process isolation when a library fails because Gradle's configuration-cache Java agent modifies buildscript bytecode; if the library has a stable `main` entry point and no per-item parallelism need, a `JavaExec` task can be the simpler isolation boundary.
 - Keep external process execution task-owned: inject `ExecOperations`, `JavaLauncher`, or tool providers into tasks or work actions instead of reaching through `Project`.
 - Do not use `Project.exec`, `Project.javaexec`, or script-level `exec/javaexec`; in Gradle 9 they are removed. Use `ExecOperations` for task/action execution and provider-backed process APIs when a configuration value must come from a process.
@@ -27,7 +28,8 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Keep a `WorkQueue` local to the task action; the queue has one set of worker requirements and is not a thread-safe coordination object.
 - Treat each work item as concurrently executable. Avoid shared mutable state unless it is protected by a build service or another explicit concurrency boundary.
 - Do not rely on work item completion order. Give each item unique outputs or add an explicit deterministic aggregation step.
-- Use `WorkQueue.await()` only for an intentional fan-in point; it blocks the task action and failures otherwise surface from the surrounding task action before completion.
+- Use `WorkQueue.await()` only when the same task action must read worker results before returning; it blocks same-project task parallelism while waiting, and failures otherwise surface from the surrounding task action before completion.
+- Prefer queue-level `await()` for one queue; `WorkerExecutor.await()` waits all work associated with the current build operation and can over-block unrelated queues.
 - Wire all files used by workers through the owning task inputs and outputs, even when the work action receives only a subset.
 - Capture standard output, error output, exit handling, and environment deliberately for process work.
 
@@ -45,7 +47,9 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 ## Worker Daemons
 
 - Process-isolated work uses worker daemons that can be reused for compatible work in the current build session; do not treat them as durable across normal builds, except for continuous/session-specific reuse.
+- Worker processes are daemon-started runtimes with their own Java executable and service set; diagnose them separately from the Gradle client and main daemon.
 - Worker daemon reuse depends on compatibility: Java executable, classpath, heap settings, JVM args, system properties, environment variables, bootstrap classpath, debug flag, assertions, and default encoding.
+- Keep process-isolated worker requirements stable across submitted items when reuse matters; changing classpaths or fork options can intentionally split worker daemon pools.
 - Worker daemon default max heap is limited, and reuse matching is stricter for executable, exact classpath, debug, assertions, and encoding than for superset-like JVM args, system properties, environment, bootstrap classpath, or higher heap.
 - Process isolation has startup cost. Prefer classloader isolation when classpath isolation is enough.
 - Gradle may stop worker daemons when system memory is low; do not use them as durable state stores.
@@ -61,6 +65,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 ## Failure Map
 
 - Worker work is serial or slow: check `org.gradle.workers.max`, task input partitioning, shared locks, process startup cost, and whether the work is actually independent.
+- Treat `--max-workers` and `org.gradle.workers.max` as global Gradle worker-pool limits, not a per-task tuning knob; lowering them can hide races, and raising them can overload CPU, memory, native toolchains, test forks, or external services.
 - Class not found or library conflict: choose classloader/process isolation and model the worker classpath as a task input.
 - Process-isolated work starts too many JVMs: align fork options and classpaths so worker daemon reuse is possible.
 - Build service unavailable in worker: verify the isolation mode; services are not supported in classloader- or process-isolated work.
@@ -70,4 +75,4 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 
 ## Source Calibration
 
-Primary upstream pages: Worker API, Service Injection, Implementing Custom Tasks, Dealing with Validation Problems, Configuration Cache Requirements, Gradle 9 Upgrade Guide.
+Primary upstream pages: Worker API, Service Injection, Implementing Custom Tasks, Command Line Interface, Build Environment, Dealing with Validation Problems, Configuration Cache Requirements, Gradle 9 Upgrade Guide.

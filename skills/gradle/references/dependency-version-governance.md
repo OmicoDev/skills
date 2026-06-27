@@ -21,7 +21,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - You cannot declare dependency constraints in catalogs. Put constraints in the consuming configuration or a platform.
 - Catalog entries are ordinary requested dependency notation once used. Conflict resolution, platforms, constraints, substitutions, and locks may still select another version.
 - Put classifiers, artifact types, excludes, and capabilities at the dependency declaration, variant, or metadata-rule owner; catalog TOML cannot encode them. Use `variantOf()` when a catalog alias needs a classifier, and a dependency `artifact {}` block when the use site needs a specific artifact type.
-- A catalog plugin alias cannot be used in a settings file or settings plugin.
+- In project `plugins {}` blocks, catalog access is limited to `alias(libs.plugins...)`; share plugin versions by using `version.ref` inside `[plugins]` entries, not by reading catalog libraries, bundles, or versions from the block. Settings files/settings plugins still cannot use catalog plugin aliases.
 - `buildSrc` and included build logic do not inherit the main catalog automatically. Import catalogs explicitly in their settings and use `VersionCatalogsExtension` inside precompiled script plugin code when needed.
 - Prefer one `libs.versions.toml` with naming conventions. Split catalogs only for real boundaries such as shipped artifacts, independent build-logic dependencies, or organization-wide published catalogs.
 - Keep aliases descriptive and stable: use a unique group/artifact segment, omit generic words, avoid repeating group and artifact names, and suffix plugin libraries with `-plugin` when the plugin is used as a library dependency.
@@ -82,7 +82,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 
 - Catalog version changed but selected version did not: inspect conflict resolution, platform/BOM constraints, dependency constraints, substitutions, and locks.
 - Catalog accessor or parse failure: inspect alias/accessor collisions, reserved names, undefined `version.ref` or bundle members, invalid module/plugin notation, and repeated or multi-file `from(...)` imports before changing dependency policy.
-- Catalog plugin alias unavailable: check whether the use site is `settings.gradle(.kts)`, a settings plugin, or precompiled script plugin `plugins {}`.
+- Catalog plugin alias or accessor unavailable: check whether the use site is `settings.gradle(.kts)`, a settings plugin, a precompiled script plugin `plugins {}` block, or a project `plugins {}` block trying to read `libraries`, `bundles`, or `versions` instead of applying a `[plugins]` alias.
 - Constraint appears in `dependencies` output with `(c)`: it is a version opinion, not a dependency edge; find the dependency path that actually brings in the module.
 - `enforcedPlatform` leaks to consumers: replace with a normal platform or strict/rich versions unless consumer override must be blocked.
 - Newer transitive version wins over a declared version: use `failOnVersionConflict()` to expose the conflict, then choose constraint/platform/rich-version/lock ownership instead of forcing globally.
@@ -90,4 +90,4 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 
 ## Source Calibration
 
-Primary upstream pages: Using Catalogs with Platforms, Version Catalogs, Troubleshoot Version Catalog Problems, Platforms, Declaring Dependency Constraints, Declaring Versions and Ranges, Dependency Resolution Consistency, Align Dependency Versions, Upgrade Transitive Dependencies, Downgrade Transitive Dependencies, Prevent Accidental Dependency Upgrades.
+Primary upstream pages: Using Catalogs with Platforms, Version Catalogs, Troubleshoot Version Catalog Problems, Platforms, Declaring Dependency Constraints, Declaring Versions and Ranges, Dependency Resolution Consistency, Align Dependency Versions, Upgrade Transitive Dependencies, Downgrade Transitive Dependencies, Prevent Accidental Dependency Upgrades, Gradle 8/9 Upgrade Guides.

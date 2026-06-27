@@ -13,6 +13,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - Separate unit, integration, and functional test source sets or JVM test suites when their dependencies, runtime environment, or execution policy differs.
 - Wire non-default integration or functional suites into `check` when they are part of the release signal; a source set alone only compiles code and does not create an execution gate.
 - `gradleTestKit()` supplies TestKit and the Tooling API client, not JUnit, TestNG, Spock, or another test framework; declare the test framework separately.
+- On Gradle 9+, direct `ValidatePlugins` usage needs the Java Toolchains service, supplied by `jvm-toolchains` or JVM plugins such as `java-library`; its `launcher` must also run on a Java version supported by the Gradle daemon.
 - Manual composite-build testing is useful for exploration, but it is not a substitute for automated plugin tests.
 
 ## TestKit Model
@@ -27,16 +28,24 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - TestKit uses isolated working directories and dedicated Gradle daemons. It does not use the default Gradle User Home configuration such as `~/.gradle/gradle.properties`.
 - TestKit working directories are not deleted by default.
 - Set `org.gradle.testkit.dir` or `GradleRunner.withTestKitDir(...)` when TestKit state should live under a build-managed directory or be cleaned predictably.
+- If the fixture passes `-g` or `--gradle-user-home`, that directory overrides the TestKit directory as the test build's Gradle User Home; isolate and clean it with the same care as `withTestKitDir(...)`.
+- On Windows, TestKit disables file-system watching for `GradleRunner` builds to avoid fixture root locks; pass `--watch-fs` only when watcher behavior is the behavior under test.
 
 ## Runner Decisions
 
+- Always call `withProjectDir(...)` with an isolated fixture root before `build()` or `buildAndFail()`; TestKit requires it and suppresses parent `settings.gradle` discovery for that fixture build.
 - Use `build()` when success is expected and `buildAndFail()` when failure is part of the contract.
+- Use `run()` when the test intentionally inspects the returned result without treating success or failure as the API-level expectation.
 - Assert task outcomes, output, logs, generated files, reports, and diagnostics according to the behavior under test.
+- Assert explicit task paths such as `result.task(":verifyUrl")`; a `null` task result means the task was not part of the executed build, not that it had the wrong outcome.
+- Do not share one `GradleRunner` instance across concurrent tests; create separate runner instances for parallel fixture lanes.
 - Use `withGradleVersion`, `withGradleInstallation`, or `withGradleDistribution` for cross-version plugin tests; otherwise the runner normally uses the Gradle version building or importing the plugin project, so the test proves only that default execution lane.
+- `withGradleVersion(...)` and remote `withGradleDistribution(...)` can download Gradle distributions into the Gradle User Home seen by the test JVM; for offline or hermetic CI, preseed that cache, set `gradle.user.home`/`GRADLE_USER_HOME` deliberately, or use `withGradleInstallation(...)` or a local distribution URI.
 - For supported-version claims, choose an explicit Gradle version matrix instead of relying on the build Gradle version as the only lane.
 - For multi-variant plugins, test each Gradle API-version boundary with explicit `withGradleVersion(...)` lanes and fixtures that consume the plugin the same way users do; otherwise the default or current-build variant can hide broken variant wiring.
 - Gradle version selection does not give full control over the JDK or environment used by the executed build. When JDK behavior matters, launch the test JVM deliberately or model toolchains inside the fixture.
 - To debug build logic exercised by TestKit, enable `org.gradle.testkit.debug=true` for the test JVM or call `GradleRunner.withDebug(true)`. Debugging the test JVM alone does not debug the build process.
+- Do not combine `withEnvironment(...)` with TestKit debug; debug mode runs the build in-process, while custom environment variables require a forked build process.
 - For configuration-cache functional tests, run the same fixture at least twice with `--configuration-cache`; one successful invocation proves storage, not reuse.
 - When TestKit fixtures also apply Java agents such as JaCoCo, verify the configuration-cache lane separately because agent instrumentation can interfere with TestKit-run builds.
 - For build-cache functional tests, pass `--build-cache`, assert `FROM_CACHE` where relevant, and isolate or clean the local build cache because TestKit can reuse TestKit-controlled Gradle User Home state between tests.
@@ -56,6 +65,8 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 ## Symptom Map
 
 - Plugin not found in TestKit build: inspect plugin-under-test classpath injection, plugin DSL application, plugin id, and custom source-set metadata.
+- `InvalidPluginMetadataException` before the TestKit build runs: check that `plugin-under-test-metadata.properties` is on the test runtime classpath, has a non-empty `implementation-classpath`, and was generated for the source set or suite under test; remember `withPluginClasspath(explicitFiles)` replaces conventional metadata-backed classpath injection.
+- `ValidatePlugins` fails before validation output: check for a missing Java Toolchains plugin or a `launcher` set to a Java version below Gradle's daemon minimum before changing plugin descriptors.
 - Test passes in Gradle but fails in IDE: regenerate plugin classpath metadata and check which Gradle distribution the IDE import supplied.
 - Breakpoints do not hit plugin code: enable TestKit debug for the runner's build process.
 - Cache test is flaky: isolate TestKit dir and local build cache, then verify clean/warm runs separately.
@@ -64,4 +75,4 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 
 ## Source Calibration
 
-Primary upstream pages: Testing Plugins, Testing Build Logic with TestKit, Java Gradle Plugin Development Plugin, JVM Test Suite Plugin, Build Cache.
+Primary upstream pages: Testing Plugins, Testing Build Logic with TestKit, Best Practices for Testing Gradle Plugins, Java Gradle Plugin Development Plugin, JVM Test Suite Plugin, Build Cache, GradleRunner API, BuildResult API, Gradle 6 Upgrade Guide, Gradle 9 Upgrade Guide.

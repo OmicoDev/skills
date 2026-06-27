@@ -8,8 +8,8 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - Dependency repositories usually belong in `dependencyResolutionManagement { repositories { ... } }` when central governance is desired.
 - Project-level repositories should be intentional exceptions, not hidden fallbacks.
 - `PREFER_PROJECT` is the default repository mode: project repositories override settings repositories.
-- Use `PREFER_SETTINGS` when settings repositories should win but project repositories should only warn.
-- Use `FAIL_ON_PROJECT_REPOS` when settings must be the only dependency repository policy.
+- Use `PREFER_SETTINGS` when settings dependency repositories should win; project repositories declared directly or by a plugin are ignored after a warning, so do not treat them as fallbacks.
+- Use `FAIL_ON_PROJECT_REPOS` when settings must be the only dependency repository policy; any project repository declared directly or by a plugin becomes a build error.
 - Use content filters or `exclusiveContent` when an internal repository owns a coordinate namespace.
 - Avoid `mavenLocal()` in normal resolution unless local publication is part of the workflow.
 - Avoid `flatDir` for real dependencies because it has no transitive metadata.
@@ -83,9 +83,10 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - If CI resolves a different artifact, compare repository order, mirrors, credentials, Gradle user home cache, and init scripts.
 - If an internal repository shadows public coordinates, repair content filters before trusting the downloaded artifact.
 - If plugin resolution fails, fix plugin repositories rather than dependency repositories.
+- If a project repository is ignored or forbidden, inspect `repositoriesMode` and project repositories added by plugins before changing repository URLs or content filters.
 - If resolution is slow, inspect repository count/order, dynamic selectors, changing modules, [dependency-metadata-rules.md](dependency-metadata-rules.md), and network/cache behavior.
 - If `--refresh-dependencies` appears to do nothing, check whether the dependency is static and unchanged, whether remote checksums match, and whether a changing dependency was declared correctly.
 
 ## Source Calibration
 
-Primary upstream pages: Declaring Repositories, Centralizing Repositories, Filtering Repository Content, Supported Metadata Formats, Supported Repository Types, Dependency Caching, Best Practices for Dependencies.
+Primary upstream pages: Declaring Repositories, Centralizing Repositories, Filtering Repository Content, Supported Metadata Formats, Supported Repository Types, Dependency Caching, Best Practices for Dependencies. Primary API: RepositoriesMode.

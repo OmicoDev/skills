@@ -15,6 +15,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - For Gradle mutable types such as `Property<T>` and `ConfigurableFileCollection`, expose abstract/final getters and remove setters so Gradle can track value origin.
 - Do not do expensive work in constructors.
 - Expose inputs and outputs as Gradle properties, file properties, or file collections.
+- Task outputs must be files or directories; scalar task results belong in generated files, reports, or console output.
 - Put work in `@TaskAction` methods.
 - Do not use `Project`, `SourceSet`, `Configuration`, extension objects, or mutable Gradle model objects in task actions.
 - Model external tools, environment, command-line options, local state, and destroyed paths as tracked inputs or services.
@@ -37,6 +38,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use `@Input` for scalar values affecting work.
 - Use `@InputFile`, `@InputDirectory`, or `@InputFiles` for file inputs.
 - Use `@OutputFile` or `@OutputDirectory` for produced files.
+- Use `@OutputFiles` or `@OutputDirectories` only when the task really owns a collection of outputs; prefer one file/directory property for a single product.
 - Use `@Classpath` for JVM classpaths where order and ABI matter.
 - Use `@CompileClasspath` for Java compilation classpaths when appropriate.
 - Use `@LocalState` for task-owned state that should not be cached.
@@ -45,6 +47,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use `@SkipWhenEmpty` or `@Incremental` on file inputs whose changes will be queried through `InputChanges`.
 - Use `@IgnoreEmptyDirectories` when directory entries themselves do not affect the output.
 - Use `@NormalizeLineEndings` for text inputs where CRLF/LF differences should not invalidate up-to-date or cache keys.
+- Use `@Console` only for values that affect console output but not outputs, and `@ReplacedBy` only for migration bridges that should not affect up-to-date checks.
 - Use `@ServiceReference` when a shared build service is part of task behavior.
 - Do not mark a build service as an input. Use `@ServiceReference`, or `@Internal` plus explicit `usesService` when automatic reference matching does not fit.
 
@@ -55,6 +58,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Query changes from stable file property instances such as `RegularFileProperty`, `DirectoryProperty`, or `ConfigurableFileCollection`.
 - Keep incremental logic correct for added, modified, and removed files.
 - Fall back to full processing when `InputChanges.isIncremental()` is false; Gradle reports all input files as added in that mode.
+- Expect non-incremental execution when history is missing, Gradle version changes, `upToDateWhen` returns false, non-incremental inputs change, or outputs are edited externally.
 - Do not confuse incremental execution with build-cache correctness.
 - Test clean, up-to-date, cache-hit, and changed-input paths separately.
 

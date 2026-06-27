@@ -14,7 +14,7 @@ Read this when: choosing Gradle commands, flags, log levels, reports, or evidenc
 Use the wrapper and the smallest useful command.
 
 - Runtime and topology: `./gradlew --version`, `./gradlew -q projects`; buildscript classpath: `./gradlew buildEnvironment`.
-- Task surface: `./gradlew tasks --all`, `./gradlew tasks --provenance`, `./gradlew help --task <task>`, `./gradlew <task> --dry-run`, `./gradlew <task> --task-graph`.
+- Task surface: `./gradlew tasks --all`, `./gradlew tasks --provenance`, `./gradlew help --task <task>`, `./gradlew <task> --dry-run`, Gradle 9.1+: `./gradlew <task> --task-graph`.
 - Dependency evidence: `./gradlew dependencies --configuration <configuration>`, `./gradlew dependencyInsight --dependency <module> --configuration <configuration>`, `./gradlew outgoingVariants`, `./gradlew resolvableConfigurations`.
 - File-backed project reports: `dependencyReport`, `htmlDependencyReport`, `propertyReport`, `taskReport`, and `projectReport` require the `project-report` plugin and mirror command-line report content into files.
 - Migration and performance: `./gradlew help --warning-mode=all`, `./gradlew <task> --configuration-cache --configuration-cache-problems=warn`, `./gradlew <task> --scan`, `./gradlew <task> --profile`. Use `--scan` only when project policy permits uploading build metadata; otherwise use local reports.
@@ -42,6 +42,7 @@ Use the wrapper and the smallest useful command.
 
 - For task failures, keep task outcome, task provenance, full task path, and task type from `help --task` or the failure message.
 - For task selection surprises, keep the start directory, exact task token, whether it was a full path or selector, and any name-abbreviation expansion shown with `--info`.
+- For task graph surprises, prefer Gradle 9.1+ `--task-graph` when included-build edges, repeated subtrees, task types, or exact dependency parents matter more than the flat `--dry-run` execution list.
 - For dependency selection, keep the configuration name. `runtimeClasspath` and `compileClasspath` can explain different selected versions.
 - Use `dependencies` for software configurations in the selected project and `buildEnvironment` for buildscript/plugin classpath dependencies.
 - In dependency reports, `(*)` marks a repeated transitive subtree, `(c)` marks a dependency constraint, and `(n)` marks a non-resolvable dependency or configuration.
@@ -50,6 +51,7 @@ Use the wrapper and the smallest useful command.
 - For plugin resolution, capture plugin ID, version, plugin repositories, and whether the ID is applied in settings, build scripts, or convention plugins.
 - For configuration-cache failures, keep the report path, grouped-message/task owner, detected configuration inputs, and the first local build logic class or script named by the object graph.
 - For Problems API output, keep the console problem text, problem ID/group when visible, and the problems report path printed by Gradle.
+- When build logic or external tools seem noisy or silent, identify the logging channel before changing task behavior: `println`/stdout enters Gradle at `QUIET`, stderr at `ERROR`, Gradle `Logger` honors its level, and `LoggingManager` can remap task stdout/stderr.
 - For warning cleanup, capture `--warning-mode=all` output; use `--warning-mode=fail` only as a gate after the owning warnings are understood.
 - For performance work, record at least two comparable runs before and after a change. Avoid comparing a warm daemon run with a cold daemon run.
 - Build Scan performance data is richer; `--profile` is local but less detailed. Use the local profile report when upload policy blocks scans.
@@ -75,7 +77,7 @@ Use the wrapper and the smallest useful command.
 - Prefer `help`, reports, and single task paths for diagnosis.
 - Prefer explicit task paths such as `:subproject:test` for reproducible diagnosis. Bare task names are selectors and may run matching tasks in multiple projects depending on the start directory; reporting selectors such as `help` or `dependencies` stay scoped to the selected project.
 - Avoid `clean build` as a first command; it hides reuse behavior and costs time.
-- Use `--dry-run` or `--task-graph` to inspect task graph shape, not task action correctness; both disable task actions.
+- Use `--dry-run` or Gradle 9.1+ `--task-graph` to inspect task graph shape, not task action correctness; both disable task actions.
 - Use `--continue` only to collect multiple independent failures.
 - Treat `--exclude-task` as a local diagnostic or workflow choice, not a model fix for bad dependencies.
 - Treat `--no-rebuild` as a narrow `buildSrc`/included-build diagnostic; it can produce wrong results when project dependencies need rebuilding.

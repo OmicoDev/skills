@@ -7,20 +7,21 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Treat `Provider<T>` as a read-only lazy recipe and `Property<T>` as configurable lazy state.
 - Use `DirectoryProperty` and `RegularFileProperty` for filesystem values.
 - Derive child paths with `DirectoryProperty.dir(...)` and `DirectoryProperty.file(...)` so later changes to the base directory still flow through.
-- Use `ListProperty<T>`, `SetProperty<T>`, and `MapProperty<K, V>` for collections.
-- Use `map`, `flatMap`, `zip`, and `orElse` to transform or fall back without realizing values.
+- Use `ListProperty<T>`, `SetProperty<T>`, and `MapProperty<K, V>` for scalar collections; use `ConfigurableFileCollection` or `ConfigurableFileTree` when users need to add file inputs lazily.
+- Use `map`, `flatMap`, `zip`, `filter`, and `orElse` to transform, combine, filter, or fall back without realizing values; absent inputs skip transforms, `null` transform results become absent, and `zip` is absent when either side is absent.
 - Use `convention(...)` for defaults and `set(...)` for explicit values.
 - Wiring a task output provider into another task input preserves the producing task relationship and can create the implicit task dependency; converting to raw `File`, `String`, or collection values too early loses that wiring.
+- Use `getLocationOnly()` only when a downstream input needs the file-system location but not the produced content; it deliberately drops producer dependency information.
 - Do not implement `Provider`, `Property`, or their subtypes yourself; obtain instances from Gradle factories, layouts, tasks, or other model objects.
 - Expose `Property` and `Provider` objects directly through getters; wrapper getters/setters that call `.get()` or `.set(...)` hide lazy wiring.
-- Avoid `.get()` during configuration unless the value is needed to create Gradle model objects and no provider-aware API exists. `map`/`flatMap` preserve late value resolution and implicit task dependency wiring.
-- Use provider-backed process/environment/system/Gradle-property reads when configuration cache should track the value.
+- Avoid `.get()`, `getOrNull`, `getOrElse`, and `isPresent` branching during configuration unless the value is needed to create Gradle model objects and no provider-aware API exists; provider chains preserve late value resolution and implicit task dependency wiring.
+- Use provider-backed process, environment, system-property, Gradle-property, file-content, and credential reads when configuration cache should track the value.
 - `providers.gradleProperty(...)` reads build-level sources such as `-P`, `org.gradle.project.*`, `ORG_GRADLE_PROJECT_*`, and user/root/installation `gradle.properties`; it does not read subproject `gradle.properties` files or dynamic extra properties.
-- Prefer built-in provider factories over `ProviderFactory.provider(Callable)`; use a callable provider only when no typed factory models the value source.
+- Use `ProviderFactory.provider(Callable)` to bridge configuration-time-only data into lazy APIs; for environment, system properties, files, processes, credentials, and other external state, prefer typed `ProviderFactory` APIs or `ValueSource` so configuration-cache inputs are intentional.
 
 ## External Value Providers
 
-- Use `providers.systemProperty(...)`, `providers.environmentVariable(...)`, `providers.fileContents(...)`, `providers.exec(...)`, and `providers.javaexec(...)` when configuration needs those values tracked.
+- Use `providers.systemProperty(...)`, `providers.environmentVariable(...)`, `providers.fileContents(...)`, `providers.exec(...)`, `providers.javaexec(...)`, and `providers.credentials(...)` when configuration or task inputs need those values tracked; attach credentials providers to task inputs so required secrets are validated only when that task runs.
 - Use prefix provider APIs when a real policy depends on a whole property or environment namespace; adding a matching key will invalidate configuration cache entries.
 - Use `ValueSource` when built-in providers are too small for complex environment, file, process, or network-derived values. Gradle tracks the returned value, not every read inside `obtain()`.
 - Keep `ValueSource.obtain()` fast and return effectively immutable values because queried value sources run on every build to decide configuration-cache reuse.
@@ -28,6 +29,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 ## Finalization And Defaults
 
 - Use `convention` for plugin defaults users can override, and `set`/`setFrom` for project-specific values that should win.
+- `Property.set(null)` discards an explicit value and can reveal the convention again; `set(provider)` with an absent provider makes the property absent regardless of any convention.
 - Prefer conventions set by the plugin that owns the model. Constructor conventions are a compatibility bridge for public existing types that may be used without the owning plugin.
 - `finalizeValue()` queries any backing provider immediately and freezes the current value; use it only when eager finalization is intentional.
 - Use `finalizeValueOnRead` when the first consumer should freeze the value.
@@ -41,7 +43,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 ## Managed Model
 
 - For new task, extension, or domain object APIs, expose managed lazy properties when users configure the value or tasks consume it.
-- Prefer fully managed interfaces or abstract classes with abstract public or protected getters, no property setters, and no fields; let Gradle generate property implementations for clean-sheet types.
+- Prefer fully managed interfaces or abstract classes with abstract public or protected getters, no property setters, and no fields; for public task/plugin APIs, expose rich properties through abstract getters returning `Provider`, `Property`, collection properties, or `ConfigurableFileCollection`.
 - Use `ObjectFactory` to create managed objects, file properties, collection properties, and named containers so Gradle decorations and Groovy DSL behavior are applied.
 - Use `@Nested` managed objects for structured DSL values that share the owner lifecycle.
 - Use `Property<NestedType>` instead of an `@Nested` getter when the nested value has a different lifecycle or should be replaceable as a value.
@@ -61,7 +63,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 ## Service Injection
 
 - Inject only supported public Gradle services; internal services are unstable even when injection appears to work.
-- Service availability is scope-specific. Use `ProjectLayout` for project-owned paths and `BuildLayout` for settings-owned root/settings directories.
+- Service availability is scope-specific. Use `ProjectLayout` for project-owned paths, `BuildLayout` for settings-owned directories, and only documented public services for the current task/plugin/settings/worker scope.
 - Use `ProviderFactory` for Gradle properties, system properties, environment, and provider-backed external values.
 - `systemProp.*` entries are read from the root project's `gradle.properties`; do not hide system properties in subproject `gradle.properties`.
 - Use `FileSystemOperations`, `ArchiveOperations`, and `ExecOperations` inside tasks or workers instead of reaching through `Project`.
@@ -79,7 +81,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 ## Container Design
 
 - Use named containers when users need multiple configured elements, and polymorphic containers when element types carry different behavior.
-- Prefer stable element names because they become DSL and diagnostics surface.
+- Prefer stable element names because they become DSL and diagnostics surface; treat element names as immutable identity, not provider-derived state.
 - Configure container elements lazily with `configureEach`.
 - Avoid reading all container elements just to create one aggregate task; wire providers or outgoing variants instead.
 
@@ -87,9 +89,8 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 
 - Modeling extension values as plain `var` fields or passing mutable extension objects into task actions.
 - Eagerly iterating containers with `all` or `getByName`.
-- Creating ad hoc `MutableList` or `Map` fields where a Gradle container would preserve lazy DSL ownership.
-- Converting file providers to raw `File` too early.
+- Creating ad hoc mutable collections where a Gradle container would preserve lazy DSL ownership, or converting file providers to raw `File` too early.
 
 ## Source Calibration
 
-Primary upstream pages: Properties and Providers, Gradle Managed Types, Services and Service Injection, Lazy Configuration, Configuration Cache Requirements, Binary Plugins. Local architecture docs: ADR-0006 Use of Provider APIs in Gradle.
+Primary upstream pages: Properties and Providers, Gradle Managed Types, Services and Service Injection, Lazy Configuration, Configuration Cache Requirements, Binary Plugins. Primary APIs: Provider, Property, HasConfigurableValue, ProviderFactory, ValueSource, FileSystemLocationProperty. Local architecture docs: ADR-0006 and provider/property architecture tests.

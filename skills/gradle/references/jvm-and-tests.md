@@ -7,6 +7,7 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - `java` owns source sets, compile/test/jar lifecycle, and standard JVM configurations.
 - `java-library` adds API/implementation separation and API variants.
 - `java-platform` publishes dependency constraints, not ordinary compiled classes.
+- `application` applies Java plus Distribution, treats `main` as the runnable JVM application, and owns `run`, `startScripts`, `installDist`, `distZip`, and `distTar`.
 - Kotlin, Groovy, Scala, Android, and external JVM plugins add their own task and source-set layers; identify which plugin owns the model before patching.
 - The Kotlin Gradle Plugin adds the Kotlin standard library to each source set by default; do not declare `kotlin-stdlib` explicitly unless the build disables that default or owns a deliberate stdlib version policy.
 
@@ -15,6 +16,7 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - Read [compatibility-java.md](compatibility-java.md) when deciding whether a Java version can run Gradle or is only safe as a toolchain target for the selected Gradle version.
 - The Gradle runtime JVM runs Gradle and plugins.
 - Java toolchains select JVMs for compile, test, javadoc, and custom Java tool tasks.
+- Toolchain coverage differs by JVM plugin: Java covers compile, test, and Javadoc; Groovy compilation is covered but Groovydoc is not; Scala covers compilation and Scaladoc.
 - Prefer toolchains over `JAVA_HOME` or `sourceCompatibility`/`targetCompatibility` alone.
 - Toolchains choose the JDK; they do not prevent accidental use of newer Java APIs. Use `--release` for Java API targeting when compiling Java sources for older platforms.
 - A non-empty `JavaToolchainSpec` must set `languageVersion`; vendor, implementation, and native-image capability are refinements, not substitutes.
@@ -39,6 +41,7 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - Wire generated directories with providers from the producing task.
 - Do not commit generated outputs unless project policy requires it.
 - Keep resources and dependencies scoped to the owning source set.
+- A custom JVM source set creates compile, resources, classes tasks, and source-set configurations; it does not by itself create a runnable verification task or attach work to `check`.
 
 ## Testing
 
@@ -64,12 +67,10 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 
 ## Test Suite Decisions
 
-- Use an extra `Test` task for a narrow local workflow; use JVM Test Suite when the suite has its own sources, dependencies, targets, or reusable convention.
-- Use separate source sets for integration, functional, smoke, or contract tests. Wire custom suites into `check` only when they should run in ordinary verification; keep flaky, expensive, or environment-dependent suites behind explicit tasks or CI stages.
-- Treat the JVM Test Suite API as incubating and keep shared convention plugins as the compatibility buffer.
-- The built-in `test` suite keeps legacy source set and configuration names, but it still needs an explicit framework. Additional suites do not automatically depend on production outputs.
-- Additional suites conventionally use JUnit Jupiter unless changed, but only the built-in `test` suite is automatically wired to production implementation dependencies.
-- Configure suite dependencies inside the suite when they are suite-scoped. Configure target `Test` tasks for task behavior such as ordering, forks, logging, debug, filters, and framework options.
+- Use an extra `Test` task for a narrow local workflow; use JVM Test Suite when a suite has its own sources, dependencies, targets, or reusable convention.
+- For integration, functional, smoke, or contract tests, wire execution and `check` participation deliberately; keep flaky, expensive, or environment-dependent suites behind explicit tasks or CI stages.
+- Treat JVM Test Suite as an incubating API behind shared convention plugins. The built-in `test` suite keeps legacy names and still needs an explicit framework; additional suites conventionally use JUnit Jupiter, but they do not automatically depend on production outputs or attach to `check`.
+- Configure suite dependencies inside the suite; add a `project()` dependency when the suite needs the project outputs and API/compile-only API dependencies. Configure target `Test` tasks for ordering, forks, logging, debug, filters, and framework options.
 - Suite-level `useJUnitJupiter()` adds framework libraries and configures target `Test` tasks; task-level `useJUnitPlatform()` only changes the execution framework.
 - Treat suite names as published verification coordinates. Renaming a suite or aggregating a non-`test` suite requires matching report objects and matching producer variants.
 
@@ -85,7 +86,8 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 ## Failure Triage
 
 - Missing test dependencies: inspect test runtime classpath, framework engine dependencies, and launcher libraries; Gradle 9 no longer masks missing runtime dependencies by leaking internal framework implementation libraries.
-- No tests found: inspect `--tests` plus build-script filters, includes/excludes, engine setup, compiled test classes, and suite/task selection. Custom `Test` tasks must wire `testClassesDirs` and `classpath`; under JUnit Platform, `scanForTestClasses` has no effect.
+- No tests discovered: inspect engine setup, compiled test classes, suite/task selection, and custom `Test` task wiring for `testClassesDirs` and `classpath`; under JUnit Platform, `scanForTestClasses` has no effect. On Gradle 9+, a task with sources and no filters fails when it discovers no tests unless `failOnNoDiscoveredTests` is disabled.
+- No tests match filters: inspect `--tests`, build-script filters, includes, and excludes; filter mismatch is controlled by `failOnNoMatchingTests`, not `failOnNoDiscoveredTests`.
 - Unsupported class file version: separate Gradle runtime JVM, plugin bytecode, compile target, and test runtime.
 - Slow tests: inspect forks, parallelism, reports, test isolation, and cacheability policy.
 - Missing aggregate reports: inspect `testReportAggregation` or `jacocoAggregation` project dependencies, producer verification attributes, suite names, Android plugin boundaries, and whether the build stopped before report tasks.
@@ -93,4 +95,4 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 
 ## Source Calibration
 
-Primary upstream pages: Java Plugin, Java Library Plugin, Toolchains for JVM projects, Testing in Java and JVM projects, JVM Test Suite Plugin, Test Fixtures, Test Report Aggregation Plugin, JaCoCo Plugin, JaCoCo Report Aggregation Plugin, Checkstyle Plugin, PMD Plugin, CodeNarc Plugin, Best Practices for Dependencies.
+Primary upstream pages: Java Plugin, Java Library Plugin, Application Plugin, Toolchains for JVM projects, Testing in Java and JVM projects, JVM Test Suite Plugin, Test Fixtures, Test Report Aggregation Plugin, JaCoCo Plugin, JaCoCo Report Aggregation Plugin, Checkstyle Plugin, PMD Plugin, CodeNarc Plugin, Best Practices for Dependencies.

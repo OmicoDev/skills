@@ -25,11 +25,13 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 
 ## Diagnosis Matrix
 
+- Treat Build Scan and `--profile` categories as owner evidence before changing build logic: startup points to wrapper/daemon/init scripts, settings and `buildSrc` points to settings or build-logic bootstrap, loading projects points to project count, configuration points to plugin/task graph work, dependency resolution points to repository/metadata/version policy, and execution points to tasks.
 - Slow before tasks start: inspect configuration time, task realization, plugin application, dependency resolution during configuration, and project coupling.
 - Slow dependency resolution: inspect repository count/order, dynamic versions, changing modules, [dependency-metadata-rules.md](dependency-metadata-rules.md), and network/cache behavior.
 - Slow tests: inspect forks, parallelism, reports, logging, framework startup, and cacheability.
 - Slow compilation: inspect toolchains, compiler daemon reuse, annotation processors, ABI changes, and source layout.
 - Poor cache reuse: inspect declared inputs, output determinism, path normalization, environment reads, and remote cache trust policy.
+- Poor parallel speedup: inspect the Build Scan timeline for critical-path tasks, late long-running tasks, and unnecessary task dependencies before raising worker counts or adding parallel flags.
 
 ## Distinctions
 
@@ -40,6 +42,7 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 - Incremental tasks process changed inputs during execution.
 - A task can be incremental without being safely cacheable.
 - Isolated Projects builds on configuration-cache discipline and cross-project ownership boundaries; route details to [isolated-projects.md](isolated-projects.md).
+- Treat parallelism as separate owner surfaces: `--parallel` targets task execution across projects, Configuration Cache can enable task execution parallelism within a project, Isolated Projects targets configuration/model parallelism, `org.gradle.tooling.parallel` targets Tooling API model builders, and `org.gradle.workers.max` caps parallel work across phases.
 
 ## Common Performance Owners
 
@@ -76,4 +79,4 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 
 ## Source Calibration
 
-Primary upstream pages: Performance, Best Practices for Performance, Configuration Cache, Build Cache, File System Watching, Gradle Daemon, Isolated Projects.
+Primary upstream pages: Performance, Inspecting Builds, Best Practices for Performance, Configuration Cache, Build Cache, File System Watching, Gradle Daemon, Isolated Projects.

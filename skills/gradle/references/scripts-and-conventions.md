@@ -24,7 +24,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 
 - Match the existing DSL and style.
 - For brand-new builds or subprojects without an established repository DSL, prefer Kotlin DSL; otherwise preserve the repository's chosen DSL.
-- Prefer `plugins {}` for static plugin application; keep it idempotent and side-effect-free, and avoid buildscript classpath plugin wiring unless legacy constraints require it.
+- Prefer `plugins {}` for static plugin application; keep it constrained, idempotent, side-effect-free, and before ordinary script body logic. Put plugin repositories, default plugin versions, and version-loading logic in settings `pluginManagement`, use catalog plugin aliases only where supported, and avoid buildscript classpath plugin wiring unless legacy constraints require it.
 - In precompiled script plugins, put external plugin versions on the plugin project's implementation classpath; `version "..."` and `apply false` are not supported inside the precompiled script.
 - Use `buildscript {}` only for script classpath resolution. Do not create or resolve arbitrary buildscript configurations in project, settings, init, or standalone scripts.
 - Do not rely on plugin application order. If custom plugin logic requires another plugin, apply it explicitly; if integration is optional, react with `pluginManager.withPlugin(...)`, `plugins.withId(...)`, or type-based `plugins.configureEach(...)`.
@@ -90,4 +90,4 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 
 ## Source Calibration
 
-Primary upstream pages: Writing Build Scripts, Gradle Managed Types, Kotlin DSL, Groovy Build Script Primer, Public Gradle APIs, Pre-compiled Script Plugins, Writing Tasks, Properties and Providers, General Gradle Best Practices, Best Practices for Structuring Builds. Local architecture docs: ADR-0010 Gradle properties naming.
+Primary upstream pages: Writing Build Scripts, Working with Plugins, Version Catalogs, Gradle Managed Types, Kotlin DSL, Groovy Build Script Primer, Public Gradle APIs, Pre-compiled Script Plugins, Writing Tasks, Properties and Providers, General Gradle Best Practices, Best Practices for Structuring Builds. Local architecture docs: ADR-0010 Gradle properties naming.

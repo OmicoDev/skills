@@ -24,21 +24,23 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - A capability conflict is already visible: use capability conflict resolution before adding metadata.
 - The dependency is a one-off local replacement: use substitution, composite builds, or direct declarations.
 - The issue is only a task needing a different file from an already-correct graph: use artifact views or [dependency-artifact-transforms.md](dependency-artifact-transforms.md).
+- Repository metadata requests or dynamic-version listing are the bottleneck: use repository `ComponentMetadataSupplier` or component version lister only when supplying initial remote metadata is the owner; metadata rules enrich metadata after Gradle has module metadata to work with.
 
 ## Rule Shape
 
 - Declare rules in `dependencies { components { ... } }` or centrally in settings when the rule should govern the whole build.
 - Prefer `withModule(group:name, Rule::class)` over broad `all(...)` rules unless the rule is correct for every affected module.
-- Prefer isolated `ComponentMetadataRule` classes over inline actions; mark deterministic rules with `@CacheableRule`.
-- Keep rule parameters serializable or Gradle-managed, and inject only supported services such as `ObjectFactory`.
+- Prefer isolated `ComponentMetadataRule` classes over inline actions; make reusable rules deterministic and `@CacheableRule` so dependency resolution does not rerun them unnecessarily.
+- Treat a class rule as isolated metadata code: use `ComponentMetadataContext.details`, optional Maven/Ivy descriptors, serializable or Gradle-recognized parameters, and supported injected services such as `ObjectFactory`; do not make rule behavior depend on ambient project state.
 - Put reusable rules in settings or convention build logic instead of scattering them across project build scripts.
-- Settings-level rules can prefer settings, warn on project overrides, or fail project overrides; choose this deliberately because it changes build-wide policy.
+- Settings-level rules are incubating and use `RulesMode`: `PREFER_PROJECT` is the default and ignores settings rules when a project declares rules, `PREFER_SETTINGS` ignores project rules, and `FAIL_ON_PROJECT_RULES` turns project rules into a build error.
 
 ## Metadata Surface
 
 - Use `allVariants` for every variant, `withVariant(name)` for a named variant or Ivy configuration, and `addVariant(name)` or `addVariant(name, base)` to introduce a new variant.
 - A rule may change variant attributes, capabilities, dependencies, dependency constraints, and files.
-- `addVariant(name, base)` copies base dependencies and files; remove or replace copied files when modeling classifier artifacts.
+- Use `maybeAddVariant(name, base)` instead of `addVariant(name, base)` in broad `all(...)` rules when the base may not exist; use strict `addVariant` for targeted modules where a missing base should expose a bad metadata assumption.
+- `addVariant(name, base)` carries over base metadata, but file intent still needs to be explicit: remove or replace copied files when modeling classifier artifacts, and add files directly when creating an empty variant.
 - Maven POM metadata is derived into library variants, sources/javadoc variants, and platform/enforced-platform variants from dependency management.
 - Ordinary Maven dependencies request library variants. `platform(...)` and `enforcedPlatform(...)` request the platform-derived variants and import constraints instead of ordinary dependencies.
 - POM dependency management is not converted into constraints for ordinary library variants.
@@ -73,4 +75,4 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 
 ## Source Calibration
 
-Primary upstream pages: Modifying Dependency Metadata, Variant Attributes, Capabilities, Resolving Specific Artifacts.
+Primary upstream pages: Modifying Dependency Metadata, Variant Attributes, Capabilities, Resolving Specific Artifacts, ComponentMetadataRule API, ComponentMetadataDetails API, RulesMode API, ComponentMetadataSupplier API.

@@ -15,6 +15,7 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 ## Performance Boundaries
 
 - For task runs, project configuration can run in parallel, but current work graph discovery is still sequential and all projects are still configured.
+- Initialization remains sequential: init scripts and settings evaluation are not made parallel by Isolated Projects, so startup/settings slowness needs runtime or topology fixes instead of project-isolation fixes.
 - Large unqualified aggregate invocations such as root `check` can still bottleneck in sequential work graph discovery; narrow requested tasks or aggregation design may matter more than isolation after configuration is fixed.
 - For IDE sync or Tooling API model building, expect parallel project configuration benefits first; check current Gradle status before assuming full-model cache hits.
 - The IDE or Tooling API client controls whether model builders run in parallel. Isolated Projects makes Gradle-side parallel model building safe, but the consuming tool may still need its own setting or support.
@@ -32,6 +33,8 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 - Project-to-build access: project logic touching build-scoped mutable state is risky and not fully enforced yet.
 - Cross-build access: build logic should avoid `gradle.parent` and mutable state from other included builds.
 - Build-to-project callback access: settings/init callbacks that later configure projects must avoid shared mutable captured state.
+- Treat ordinary `Gradle` callback registration from project configuration as project-to-build access: after settings evaluation some registrations are no-ops or errors, and successful callbacks can run in different orders under parallel project configuration.
+- Treat "not fully enforced yet" constraints as design constraints anyway; absence of an Isolated Projects violation is not proof that shared mutable build or included-build state is safe.
 - Most `Project` methods and containers are mutable state, including `tasks`, `dependencies`, `configurations`, `repositories`, `extensions`, `plugins`, `layout`, `providers`, and `objects`.
 - Treat `Project.getProperties()` and implicit parent project property/method lookup as incompatible migration signals.
 - Treat `Project.findProperty()` with extra suspicion during migration because lenient parent lookup changes can return a different value without failing.
@@ -66,8 +69,9 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 
 - Replace `allprojects` and `subprojects` cross-project mutation with convention plugins applied by each project that needs the behavior.
 - Share artifacts through project dependencies, consumable variants, reports, or publications rather than another project's task, extension, or configuration state.
-- Use `gradle.lifecycle.beforeProject` or `afterProject` state-isolating callbacks only when build-scope lifecycle wiring is the real owner.
-- Use `project.isolated` or `rootProject.isolated` when another project's safe identity data is genuinely needed.
+- Use `gradle.lifecycle.beforeProject` or `afterProject` state-isolating callbacks only when settings/init/settings-plugin lifecycle wiring is the real owner; `beforeProject` can add extensions before build scripts evaluate, while `afterProject` is for post-evaluation checks.
+- Gradle recreates each `IsolatedAction` through Configuration Cache serialization per target project; captured values must be isolatable, and build services or shared mutable state are not supported inside the action.
+- Use `project.isolated` or `rootProject.isolated` when another project's safe identity data is genuinely needed; the view is limited to identity/root/directory data, not a back door to `group`, `version`, `layout`, tasks, extensions, or configurations.
 - Register shared build services with `registerIfAbsent` and mutate parameters only inside the registration action. Do not inspect `gradle.sharedServices.registrations`.
 - Keep included builds as separate build owners; communicate through plugin management, coordinates, substitutions, or duplicated settings policy.
 
@@ -81,4 +85,4 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 
 ## Source Calibration
 
-Primary upstream pages: Isolated Projects, Configuration Cache, Performance, Sharing Build Logic, Build Services.
+Primary upstream pages: Isolated Projects, Configuration Cache, Performance, Sharing Build Logic, Build Services, Gradle 9 upgrade notes. Primary APIs: IsolatedProject, GradleLifecycle, IsolatedAction.

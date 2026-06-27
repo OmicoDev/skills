@@ -14,10 +14,12 @@ Read this when: variant-aware resolution, attributes, capabilities, or published
 - A component exposes variants. A variant has attributes, capabilities, artifacts, dependencies, and metadata.
 - Consumers request attributes; Gradle filters compatible candidates, then disambiguates when more than one compatible candidate remains.
 - Matching is not strict equality: compatibility rules can keep non-equal candidates, disambiguation rules choose among compatible candidates, and candidates with unnecessary extra attributes may lose.
+- A strict superset of matching requested attributes can win before custom disambiguation rules run; unrequested extra attributes can later make a candidate less preferred when competing candidates do not carry them.
 - A candidate missing a requested attribute can remain in the compatible set and lose later during disambiguation; do not treat every missing-attribute diagnostic as proof that the producer has no usable variant.
 - Variant names are mainly diagnostics surface; ordinary variant matching uses attributes, not names.
 - `No matching variant` means the consumer and producer attributes/capabilities do not describe a compatible variant.
 - Variants/configurations without attributes cannot participate in variant-aware resolution; reports may hide them unless `--all` is used.
+- Consumable configurations in one project that share the same capabilities must have unique attribute sets; duplicate outgoing variant identity is a producer modeling error, usually fixed by adding a real discriminating attribute/capability or removing the duplicate variant.
 - A producer with no variants falls back to a default artifact, and explicitly selecting a configuration by name bypasses normal variant matching; treat both as interop or migration paths, not the preferred model.
 - Secondary variants are artifact sets on an existing variant, not separate components; verification-only variants carry test or coverage results and should not be added to publishable components.
 - Component-level metadata can influence version selection before Gradle selects variants. Variant-level metadata influences artifact and dependency selection after a component version is chosen; repair external metadata through [dependency-metadata-rules.md](dependency-metadata-rules.md).
@@ -46,11 +48,11 @@ Read this when: variant-aware resolution, attributes, capabilities, or published
 
 ```bash
 ./gradlew outgoingVariants [--variant <variantName>|--all]
-./gradlew resolvableConfigurations [--configuration <configuration>|--all]
+./gradlew resolvableConfigurations [--configuration <configuration>|--all|--recursive]
 ./gradlew dependencyInsight --dependency <module> --configuration <configuration>
 ```
 
-Use reports to compare requested attributes with producer attributes before editing rules. `outgoingVariants` can show invalid duplicate attributes/capabilities leniently; `resolvableConfigurations` shows extended configurations and rule-affected attributes. Add `--all` when legacy or attributeless entries may be hidden or marked non-selectable.
+Use reports to compare requested attributes with producer attributes before editing rules. `outgoingVariants` shows the producer's consumable variants, capabilities, artifacts, and secondary variants; `resolvableConfigurations` shows the consumer's attributes, extended configurations, compatibility rules, disambiguation rules, and attribute precedence. Add `--all` when legacy or attributeless entries may be hidden or marked non-selectable. Use `--recursive` when an extended resolvable configuration inherited attributes from a parent configuration. `dependencyInsight` can show when dynamic-version candidates were rejected because their variants did not match requested attributes.
 
 ## Capabilities
 
@@ -81,4 +83,4 @@ Use reports to compare requested attributes with producer attributes before edit
 
 ## Source Calibration
 
-Primary upstream pages: Variant Selection and Attribute Matching, Variant Attributes, Capabilities, Feature Variants, Create Feature Variants for a Library.
+Primary upstream pages: Variant Selection and Attribute Matching, Variant Attributes, Capabilities, Feature Variants, Create Feature Variants for a Library, Gradle Module Metadata, ResolvableConfigurationsReportTask, OutgoingVariantsReportTask.

@@ -44,6 +44,8 @@ Read this when: embedded Kotlin, Kotlin DSL compilation, Kotlin language level, 
 
 - Embedded Kotlin affects Kotlin DSL script compilation, Kotlin DSL APIs, and Gradle plugins compiled against Gradle's Kotlin DSL. It is not the Kotlin Gradle Plugin version used for project source.
 - Kotlin DSL failures after a Gradle upgrade can come from embedded Kotlin, script accessors, third-party plugins, or build logic classpaths.
+- Build logic projects that apply `kotlin-dsl` or `embedded-kotlin` should let Gradle control the `kotlin-dsl` plugin and embedded Kotlin/KGP alignment; applying another KGP version or adding different Kotlin stdlib/reflect versions in the same project can cause Kotlin DSL and precompiled script plugin incompatibilities.
+- Precompiled Kotlin script plugin accessor generation depends on Gradle's Kotlin compiler arguments; append to `freeCompilerArgs` instead of reassigning it, because dropping Gradle's script-template arguments breaks plugin-block and accessor compilation.
 - Gradle 7.x and 8.0 pages list Gradle version first for embedded Kotlin; 9.x/current pages list embedded Kotlin first. Normalize both to the table above.
 - Do not infer KGP, Compose compiler, KSP, KAPT, AGP, or Android Studio support from the embedded Kotlin table.
 - Beta and RC Kotlin versions in Gradle's tested range are not release promises.

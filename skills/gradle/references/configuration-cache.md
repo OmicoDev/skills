@@ -25,7 +25,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Use read-only configuration cache only for ephemeral CI or probe jobs where misses cannot be reused; disable read-only mode when the build must write entries.
 - Treat parallel configuration-cache load/store as incubating; `ConcurrentModificationException` during configuration is a compatibility signal, not a reason to ignore cache problems.
 - Treat `STABLE_CONFIGURATION_CACHE` as a version-sensitive early opt-in. Verify current Gradle behavior before using it as a rollout gate, and do not rely on it to surface undeclared build-service usage because that check moved behind internal test-only coverage.
-- Inject `BuildFeatures` when plugin code must react to configuration cache status; use `requested` for reporting and `active` for behavior changes, not ad hoc command-line parsing.
+- Inject `BuildFeatures` when plugin code must react to configuration cache status; use `requested` for reporting and `active` for behavior changes, not ad hoc command-line parsing, and do not treat either value as evidence of a cache hit or miss.
 - Track third-party plugin blockers separately from local build-logic repairs.
 
 ## Input Boundaries
@@ -44,7 +44,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 
 - Open the generated configuration-cache HTML report and fix the first local build-logic owner named by the object graph; each problem links back to the relevant requirement or not-yet-implemented feature.
 - Use both report views: grouped by message to find repeated API misuse and grouped by task to find the owning task or plugin.
-- Review detected configuration inputs in the report before deciding whether a cache miss is expected; system properties, environment variables, files, and value suppliers can all explain a new configuration phase.
+- Classify detected configuration inputs before accepting a miss: system properties, environment variables, files, file-system checks, and value suppliers can all force a new configuration phase even when they do not affect the requested tasks; fix local eager reads or update/report plugins before using unsafe ignore properties as temporary relief.
 - Gradle property sources can invalidate configuration cache entries even when the specific source is not listed in the report.
 - Fix store-time problems first, then load-time problems.
 - Treat "entry discarded" as evidence that reuse was prevented for this run. Fix the owner or declare a temporary incompatible task; deleting `.gradle/configuration-cache` only removes evidence.

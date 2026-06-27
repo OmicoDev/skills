@@ -20,6 +20,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Prefer `dependsOn` for lifecycle tasks without actions. Tasks with actions should usually wire the exact producer output they consume so Gradle knows why the producer is needed.
 - Prefer a purpose-built lifecycle task over telling users to run `build -x test`; exclusions can remove actionable work that downstream tasks expected.
 - Do not use ordering rules to compensate for missing declared inputs and outputs.
+- Command-line task order can protect explicitly requested workflows such as `clean build`, but task dependencies still determine the precise graph; model recurring ordering or cleanup requirements in task relationships instead of relying on how humans type tasks.
 - Avoid broad task graph callbacks for ordinary wiring; prefer lazy task registration, providers, and output properties.
 - If Gradle reports implicit dependencies, replace raw `File` or path wiring with task providers, output properties, or the producing task as an input.
 
@@ -30,6 +31,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Use `onlyIf("reason") { ... }` for ordinary conditional execution. The predicate runs just before task execution and `--info` can show the skip reason.
 - Use `StopExecutionException` only when a predicate cannot express the condition, often when adding conditional behavior around built-in task actions.
 - `StopExecutionException` skips the current task action and any following actions on that task; it does not abort the whole build.
+- Use `StopActionException` only when a helper needs to skip the current task action but still let later actions on the same task run; a plain `return` is clearer inside the action body itself.
 - Use `enabled = false` sparingly for hard disabling; it skips actions and reports the task as skipped.
 - Task `timeout` interrupts the task execution thread, marks the task failed, still runs finalizers, and cannot stop work that ignores interruption.
 - With `--continue`, tasks independent of a timed-out task may still run after the timeout failure.
@@ -63,6 +65,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 ./gradlew tasks --all
 ./gradlew help --task <task>
 ./gradlew <task> --dry-run
+./gradlew <task> --task-graph # Gradle 9.1+
 ./gradlew <task> --info
 ./gradlew <task> -x <task-to-exclude>
 ./gradlew tasks --provenance
@@ -71,6 +74,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Use `help --task` to confirm task-specific options, groups, descriptions, and available values.
 - Use `tasks --provenance` when an unexpected task exists or a task failure names a registration source; it distinguishes plugin-registered, script-registered, and other task owners.
 - Use `--dry-run` to inspect graph shape and ordering without running actions.
+- Use `--task-graph` on Gradle 9.1+ when the dependency graph is better evidence than the flat dry-run execution list.
 - Use `--info` when a task is skipped by `onlyIf` or when execution ordering needs more evidence.
 - Interpret task outcome labels before changing wiring: no label/`EXECUTED` means actions ran, `UP-TO-DATE` reused local outputs, `FROM-CACHE` restored outputs, `SKIPPED` skipped actions, and `NO-SOURCE` skipped because expected sources were absent.
 - `SKIPPED` needs a different owner depending on cause: command-line exclusion, `onlyIf`, `enabled = false`, or `StopExecutionException`; `NO-SOURCE` usually points to source/input configuration instead.
@@ -78,4 +82,4 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 
 ## Source Calibration
 
-Primary upstream pages: Controlling Task Execution, Organizing Tasks, Advanced Tasks, Best Practices for Tasks.
+Primary upstream pages: Controlling Task Execution, Command Line Interface, Organizing Tasks, Advanced Tasks, Best Practices for Tasks. Primary APIs: Task, StopExecutionException, StopActionException.

@@ -32,14 +32,14 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - External plugins used inside precompiled script plugins must be on the plugin project's implementation classpath; `version "..."` and `apply false` are not valid inside the precompiled script plugin's own `plugins {}` block.
 - Convention plugins encode build policy applied by participating projects.
 - Binary plugins fit reusable behavior, extensions, custom tasks, services, diagnostics, custom dependency blocks, variants, and publishing.
-- Keep capabilities separate from conventions: a plugin can expose behavior without forcing every convention.
+- Keep capabilities separate from conventions: a base plugin can expose extensions, tasks, and services without forcing defaults, while a convention plugin can apply the base plugin and set organization defaults.
 
 ## Plugin Design Checks
 
 - Expose user intent through extensions and containers.
 - Register tasks lazily and wire extension properties to task properties.
-- React to other plugins with `plugins.withId(...)`.
-- Use the Build Features API when plugin behavior should adapt to requested or active Gradle features such as configuration cache.
+- React to other plugins with `plugins.withId(...)` or `pluginManager.withPlugin(...)` when the consuming project may or may not apply the expected plugin; apply another plugin only when that dependency is part of this plugin's contract.
+- Use the injectable `BuildFeatures` service when plugin behavior should adapt to Gradle feature state such as configuration cache or Isolated Projects; `requested` is a possibly-absent `Provider<Boolean>` for user intent/reporting, while `active` is the effective status to gate incompatible behavior.
 - Keep plugin IDs stable and namespace them by ownership.
 - Avoid internal Gradle APIs; prefer public services and model APIs.
 - Keep external dependencies in plugins minimal to reduce classpath conflicts.
@@ -74,4 +74,4 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 
 ## Source Calibration
 
-Primary upstream pages: Introduction to Plugins, Binary Plugins, Precompiled Script Plugins, Convention Plugins, Java Gradle Plugin Development Plugin.
+Primary upstream pages: Introduction to Plugins, Binary Plugins, Precompiled Script Plugins, Convention Plugins, Java Gradle Plugin Development Plugin, Build Features API.

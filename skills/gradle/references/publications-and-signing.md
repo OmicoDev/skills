@@ -84,6 +84,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 
 - Missing artifact: inspect publication component and generated tasks.
 - Wrong POM metadata: inspect identity, dependency versions, and POM customization.
+- Published POM or Ivy descriptor still shows declared/dynamic versions after locks or resolution rules: configure `versionMapping` with `fromResolutionResult()` or `fromResolutionOf(...)`, then inspect the generated descriptor before publishing.
 - Publication warning about lost Gradle semantics: inspect constraints, rich versions, capabilities, feature variants, and custom components.
 - Credential failure: inspect provider names, CI secrets, and repository URL selection.
 - Duplicate or stale publication: inspect repository coordinates and relocation metadata.

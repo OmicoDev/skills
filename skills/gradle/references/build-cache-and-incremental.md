@@ -40,9 +40,14 @@ Read this when: task output caching, up-to-date checks, incremental inputs, arti
 - Declare all inputs, outputs, local state, destroyables, and service references.
 - Normalize file paths and classpaths appropriately.
 - Avoid absolute paths, timestamps, random data, host-specific outputs, and untracked environment reads in outputs.
+- Use `InputChanges` only on a single task action with at least one `@Incremental` or `@SkipWhenEmpty` file input; query changes from stable property instances such as `RegularFileProperty`, `DirectoryProperty`, or `ConfigurableFileCollection`.
+- Treat `InputChanges.isIncremental() == false` as a full rebuild: Gradle reports every input file as `ADDED` and removes previous outputs before the action; when incremental, handle `REMOVED` changes by deleting corresponding outputs.
+- `@SkipWhenEmpty` implies incremental input tracking and skips with `NO-SOURCE` only when all skip-when-empty inputs are empty; use empty-directory, path, and line-ending normalization deliberately when those details should not affect the key.
 - Mark non-cacheable tasks explicitly when work is not safely reusable.
 - Use `Task.doNotTrackState("...")` or `@UntrackedTask` only when a task must always run or its state cannot be represented as files/properties, such as updating an external service.
 - Untracked tasks are always out of date, cannot use incremental `InputChanges`, and are not stored in or loaded from the build cache.
+- Use `@LocalState` for non-relocatable analysis or task-local caches only; Gradle removes local state when loading task outputs from the build cache, so required outputs must be declared as outputs.
+- Use `outputs.cacheIf("...", spec)` for instance-level cache enablement only when the task type is otherwise safe; use `outputs.doNotCacheIf("...", spec)` for exceptional disables because it never enables caching.
 - Prefer no cache for cheap copy/archive tasks unless their work is expensive enough and their inputs/outputs are modeled carefully.
 - Prefer artifact transforms for cacheable dependency artifact conversions; read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) before modeling one as a task.
 
@@ -55,7 +60,6 @@ Read this when: task output caching, up-to-date checks, incremental inputs, arti
 - Measure CI cache impact over time with cache-enabled and cache-disabled lanes; separate Gradle execution savings from queue time, checkout time, and other pipeline costs.
 - Use Build Scan cache performance data to separate local hits, remote hits, misses, remote transfer time, and network bottlenecks.
 - Validate in order: repeated build without cache should become up-to-date; clean repeated build with local cache should load cacheable work; equivalent checkouts in different directories should prove relocatability before remote rollout.
-- Start cache-miss diagnosis at the first executed cacheable task in the chain; later misses may only reflect changed upstream outputs.
 - Compare local and CI input properties when cross-machine misses occur.
 - Separate "task ran because input changed" from "task is not cacheable" from "cache key differs".
 - Test relocatability by comparing equivalent checkouts in different directories before trusting cross-machine reuse.
@@ -85,4 +89,4 @@ Read this when: task output caching, up-to-date checks, incremental inputs, arti
 
 ## Source Calibration
 
-Primary upstream pages: Build Cache, Build Cache Concepts, Build Cache Debugging, Build Cache Performance, Build Cache Use Cases, Common Caching Problems, Incremental Build.
+Primary upstream pages: Build Cache, Build Cache Concepts, Build Cache Debugging, Build Cache Performance, Build Cache Use Cases, Common Caching Problems, Incremental Build, InputChanges API, SkipWhenEmpty API, TaskOutputs API, LocalState API.

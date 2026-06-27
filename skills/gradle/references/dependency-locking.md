@@ -20,6 +20,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - `lockAllConfigurations()` covers project configurations, not buildscript classpaths.
 - If a convention or plugin enables locking broadly, disable locking on intentionally volatile configurations instead of papering over them with ignored modules.
 - Buildscript classpath locking is separate from project dependency locking.
+- Use `resolutionStrategy.deactivateDependencyLocking()` or `dependencyLocking.unlockAllConfigurations()` when a resolvable configuration should stay unlocked after broad activation; deleting lock entries alone does not change the locking policy.
 - In multi-project builds, each project can have its own `gradle.lockfile`.
 - The build must resolve a configuration before Gradle can create, update, or clean up its lock state.
 
@@ -29,6 +30,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - Buildscript classpath locks use `buildscript-gradle.lockfile`.
 - Lock entries are sorted and record which configurations contain each module; an `empty=` entry preserves locked configurations with no dependencies.
 - Custom lockfile names or locations are for real execution-context boundaries, such as platform-specific native graphs, not for hiding unrelated lock churn.
+- If you customize `dependencyLocking.lockFile`, keep the file unique per project and separate from buildscript lock state; shared lock paths mix cleanup, update, and review ownership.
 - Legacy per-configuration lockfiles can migrate incrementally: writing the new per-project lockfile transfers resolved configurations and deletes only the old state that was transferred.
 
 ## Commands
@@ -47,6 +49,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - `dependencies --write-locks` resolves only configurations reached by that invocation.
 - Prefer targeted `--update-locks` for routine upgrades.
 - `--update-locks` accepts comma-separated module notations; wildcards may stand alone or appear at the end of the group or module name.
+- `--update-locks` still loads existing lock state, but filters out the targeted modules for that resolution; non-targeted locked modules continue to constrain selection.
 - Targeted lock updates still run normal resolution, so aligned platforms, constraints, conflicts, or transitive edges can update related modules too.
 - If a root `dependencies` run misses subprojects or variants, use a purpose-built lock task that filters resolvable configurations instead of resolving every possible platform-specific graph blindly.
 
@@ -58,7 +61,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - Default mode requires every existing lock entry to match the resolved graph and rejects extra resolved dependencies.
 - New or removed dependencies can fail default lock validation because the resolved graph no longer matches lock state.
 - Strict mode also fails when a locked configuration has no associated lock state.
-- Lenient mode pins dynamic versions but allows graph additions/removals; use it for controlled exploration, not release defaults.
+- Lenient mode pins dynamic versions but can allow version shifts and graph additions/removals; use it for controlled exploration, not release defaults.
 - Locking does not apply to source dependencies.
 
 ## Review Rules
@@ -78,8 +81,8 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - `*:*` is not accepted as an ignore pattern because it effectively disables locking.
 - Lock ignore rules are project scoped and do not remove transitive dependencies from lock state.
 - Ignored modules are filtered out when reading, validating, and writing lock state, and Gradle does not verify that they appear in any resolved configuration.
-- To remove stale lock state, stop locking that configuration and run a command that resolves it while writing locks.
+- To remove stale lock state, stop locking that configuration and run a command that resolves it while writing locks; Gradle cannot clean a configuration's lock state if that configuration is not visited.
 
 ## Source Calibration
 
-Primary upstream pages: Locking Dependency Versions, Prevent Accidental Dependency Upgrades.
+Primary upstream pages: Locking Dependency Versions, Prevent Accidental Dependency Upgrades, DependencyLockingHandler API, LockMode API, ResolutionStrategy API.

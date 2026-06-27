@@ -17,9 +17,11 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Initialization reads settings and discovers builds, projects, plugin management, dependency repository policy, version catalogs, and included builds.
 - Configuration creates and configures project models and task graphs for the requested entrypoints.
 - Execution runs selected tasks and should do the actual filesystem, network, process, and compiler work.
+- Do not use task execution, task graph callbacks, or resolved dependency/artifact files to decide project topology, plugin application, or shared conventions; those decisions belong before the graph is calculated, usually in settings, plugins, or lazy task/configuration wiring.
 - Gradle state is scoped as process, session, build tree, build, then project. A value tied to one scope should not be cached or mutated as if it lived in another.
 - Settings scripts own topology. Project scripts own project plugins, dependencies, tasks, extensions, and outgoing publications.
 - Providers are lazy value recipes. Keep values as providers until a Gradle-owned consumer or task action needs them.
+- Provider laziness is still a model boundary: calling `get()`, querying presence to branch, resolving a configuration, or using eager task collection APIs during configuration realizes values early and can change graph shape, cache inputs, or dependency resolution timing.
 - Configurations are dependency buckets with declarable, resolvable, or consumable roles. Do not use one role to fake another.
 - Components expose variants. Variants carry attributes, capabilities, artifacts, dependencies, and metadata.
 - The wrapper selects Gradle. The Gradle runtime JVM runs Gradle. Java toolchains select JVMs for compile, test, javadoc, and custom Java tool tasks.
@@ -67,4 +69,4 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 
 ## Source Calibration
 
-Primary upstream pages: Build Lifecycle, Initialization Scripts and Init Plugins, Dataflow Actions, Build Environment Configuration, Dependency Configurations, Variant Selection and Attribute Matching, Toolchains for JVM projects, Isolated Projects. Local architecture docs: Build State Model, Build Execution Model, Gradle Runtimes.
+Primary upstream pages: Build Lifecycle, Lazy vs Eager Evaluation, Task Configuration Avoidance, Initialization Scripts and Init Plugins, Dataflow Actions, Build Environment Configuration, Dependency Configurations, Variant Selection and Attribute Matching, Toolchains for JVM projects, Isolated Projects. Local architecture docs: Build State Model, Build Execution Model, Gradle Runtimes.

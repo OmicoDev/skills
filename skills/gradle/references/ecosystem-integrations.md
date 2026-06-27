@@ -14,12 +14,17 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 
 ## Native
 
+- Prefer the modern `cpp-application`, `cpp-library`, `cpp-unit-test`, `swift-application`, `swift-library`, and `xctest` plugins for new native work. Treat older software-model plugins, `model { components { ... } }`, `NativeLibrarySpec`, CUnit, and legacy GoogleTest plugin surfaces as legacy migration owners.
 - Native plugins own components, binaries, target machines, build types, toolchains, native test tasks, and Xcode/Visual Studio metadata.
 - Identify whether Gradle owns native compilation or delegates to an external native build; check components, binaries, target machines, and toolchains before task wiring.
-- Treat native variants as build type, target machine, and for libraries linkage; inspect variant-derived tasks/configurations instead of assuming one binary.
-- Keep public/exported headers and API dependencies as the consumer contract; private headers and implementation dependencies stay internal to the component.
-- Model cross-compilation, compiler/linker flags, generated headers/resources, and native outputs through the native model and task outputs instead of shell environment or hard-coded compiler paths.
-- For Xcode or Visual Studio issues, inspect the Gradle `xcode`/`visualStudio` generation tasks and native component/linkage modeling before patching generated `.xcodeproj`, `.sln`, or `.vcxproj` output. Generated IDE files delegate build ownership back to Gradle.
+- Treat native variants as build type plus target machine, and for libraries also linkage. Inspect variant-derived tasks/configurations such as `compileDebugCpp`, `linkDebug`, `createRelease`, `installDebug`, `runTest`, or `xcTest` instead of assuming one binary.
+- `assemble` normally builds the development binary, usually the host debug variant. Use variant lifecycle tasks when CI or release needs a non-default target, release build, static library, or installed executable.
+- Keep C++ public headers in the exported contract and private headers internal. A native library dependency belongs in `api` when it is needed by public headers or unresolved static-library symbols; otherwise keep it in `implementation` to avoid leaking include roots and link libraries to consumers.
+- Declare native dependencies on public declaration configurations such as `api`, `implementation`, and `main<Variant>Implementation`. Use internal resolvable configurations such as `cppCompile<Variant>`, `swiftCompile<Variant>`, `nativeLink<Variant>`, or `nativeRuntime<Variant>` to diagnose the actual compile, link, or runtime inputs.
+- Model cross-compilation through `targetMachines` and toolchain configuration. Gradle selects an available toolchain that can build the target machine; C++ generally discovers Visual Studio, Xcode/Clang, GCC, or Clang from the host environment, while Swift uses the official Swift toolchain on macOS/Linux.
+- Keep compiler arguments, linker arguments, macros, generated headers/resources, and native outputs on the owning component or variant tasks; avoid shell environment hacks and hard-coded compiler paths unless modeling a toolchain gap.
+- Native test plugins create executable or bundle test variants and wire the host-matching test lifecycle into `check`. C++ unit tests and XCTest inherit the tested component where present; diagnose missing libraries through compile/link/runtime configurations before adding ad hoc task dependencies.
+- Xcode generation has effectively no generated-file customization; Visual Studio can customize generated solution/project locations. For both, inspect native component/linkage modeling and the `xcode` or `visualStudio` tasks before patching generated `.xcodeproj`, `.xcworkspace`, `.sln`, or `.vcxproj` output.
 
 ## Frontend And External Processes
 
@@ -37,12 +42,18 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - The Tooling API always uses a Gradle daemon. IDE or embedded-client failures should inspect daemon selection and daemon logs even when ordinary CLI reproduction uses different daemon flags.
 - Separate Tooling API compatibility into four axes: Tooling API library/client JVM, target Gradle distribution, daemon JVM, and serialized `BuildAction` or custom-model bytecode.
 - Let Tooling API connections use the target build distribution by default; overriding the Gradle version or distribution makes the client own that compatibility risk.
+- If the target build has no wrapper or configured distribution, the Tooling API falls back to the client library's Gradle version; embedded tools should make that choice visible instead of treating it as project-owned.
+- Treat Tooling API library upgrades as integration compatibility work: the client has a moving target-Gradle support window and individual launcher/model/test methods can require newer target Gradle versions.
 - Use Tooling API launchers, stdout/stderr capture, progress listeners, cancellation tokens, and public models before scraping command-line output from an embedded Gradle invocation.
+- `withArguments(...)` supports build-execution options modeled by `StartParameter`; do not pass CLI-only commands such as `-?`, `-v`, or daemon toggles through Tooling API launchers.
 - Close `ProjectConnection` instances when finished. `ProjectConnection` is thread-safe and long-lived, while `GradleConnector` instances are not thread-safe.
+- Treat `BuildLauncher`, `ModelBuilder`, and `TestLauncher` as per-operation builders; they are not thread-safe even when the `ProjectConnection` is.
 - Recreate a Tooling API connection after connector inputs such as `gradle.properties`, daemon JVM policy, distribution choice, or Gradle user home change.
 - Treat Tooling API `BuildAction` classes as serialized code sent into the build; compile them to the lowest Java level supported by the target Gradle range.
+- In composite builds, Tooling API task paths and prior test descriptors can target included builds, but class/method selectors without task targets apply only to the root build; use task-scoped test selectors for included-build tests.
 - Use `org.gradle.tooling.parallel` when IDE/model-building parallelism needs a different risk profile from task execution parallelism.
 - Notify Gradle daemons about files changed by the external tool itself; do not replay changes discovered by another watcher because Gradle already watches the file system.
+- Pass absolute canonical paths to `notifyDaemonsAboutChangedPaths(...)`; for renames send both old and new paths so retained VFS state cannot miss either side.
 - Do not depend on IDE-only files for Gradle build correctness.
 - Use public models or custom tooling models when external consumers need structured information.
 - Custom tooling models belong in plugins and should be versioned like public integration contracts.
@@ -57,7 +68,12 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 ## Maven And Ant
 
 - For Maven migration, map lifecycle, modules, dependency management, profiles, resources, plugins, and publishing separately.
-- For Ant migration, isolate imported targets, file operations, Ivy dependencies, properties, and custom Ant tasks.
+- Read [migration-execution.md](migration-execution.md) for stepwise Maven/Ant replacement; this file owns the interop boundary while legacy build pieces still participate in a Gradle build.
+- `ant.importBuild(...)` turns Ant targets into Gradle tasks and can rename targets to avoid collisions, but importing an Ant build disables configuration cache; use it only as a phased migration bridge.
+- Ant tasks invoked through `AntBuilder` should run inside Gradle task actions with declared Gradle inputs and outputs. Do not execute Ant work during configuration, and replace permanent Ant work with typed Gradle tasks when cacheability or incrementality matters.
+- Keep Ant properties/references separate from Gradle project properties and typed task properties. Copy values into `ant.properties` explicitly only at the boundary; prefer Gradle properties/providers for new build logic.
+- When an Ant task requires paths or filesets, bridge Gradle `FileCollection` or `FileTree` values through `addToAntBuilder(...)`, preferably as resource collections when the Ant task supports them.
+- Put custom Ant task classpaths in a resolvable Gradle configuration and declare the `taskdef` at the Ant boundary; migrate custom Ant task code to Gradle task types once behavior is no longer temporary.
 - Do not keep Maven/Ant compatibility layers longer than the migration phase requires.
 
 ## Test Reporting Integrations
@@ -72,4 +88,4 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 
 ## Source Calibration
 
-Primary upstream pages: Gradle and Third-party Tools, Tooling API, IDEA Plugin, Eclipse Plugins, Visual Studio Plugin, Xcode Plugin, Test Event Reporting API, Native Software, Migrating from Maven, Migrating from Ant.
+Primary upstream pages: Gradle and Third-party Tools, Tooling API, IDEA Plugin, Eclipse Plugins, Visual Studio Plugin, Xcode Plugin, Test Event Reporting API, Building C++ Projects, Building Swift Projects, C++ Application/Library/Unit Test plugins, Swift Application/Library and XCTest plugins, Native Software, Using Ant from Gradle, Migrating from Maven, Migrating from Ant. Primary APIs: GradleConnector, ProjectConnection, BuildLauncher, ModelBuilder, TestLauncher, LongRunningOperation, AntBuilder, FileCollection.

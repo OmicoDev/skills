@@ -16,6 +16,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, or
 - Prefer published variants or variant-aware project sharing when the producer can model the artifact contract.
 - Artifact selection happens node by node after graph selection; each selected variant contributes at most one matching artifact set unless an artifact view reselects a parallel variant.
 - Use an artifact view when the resolved graph is correct but the consumer needs a different artifact set, lenient artifact resolution, or per-component filtering.
+- Use `incoming.resolutionResult` when diagnostics need graph structure without artifact downloads; use `incoming.files`, `incoming.artifacts.artifactFiles`, or `artifactView.files` when the task only needs files.
 - Wire a resolvable `Configuration` or `artifactView.files` directly into task file inputs when a task only needs files; avoid materializing `getFiles()` during configuration, and use an artifact view instead of mutating shared configuration attributes for one consumer's artifact shape.
 - Use [dependency-artifact-transforms.md](dependency-artifact-transforms.md) when a reusable conversion can derive the requested artifact attributes from existing artifacts.
 - Use artifact-only notation such as `group:name:version@zip` only for module dependencies that truly bypass metadata. It skips variant-aware resolution, capabilities, and transitive dependencies, and does not apply to project or file dependencies.
@@ -27,6 +28,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, or
 
 - An artifact view operates on top of a resolved dependency graph. It changes artifact selection, not the original graph selection.
 - Use `FileCollection` when task inputs need only files; use `ArtifactCollection` when diagnostics or task inputs need artifact metadata as well as files.
+- `ArtifactCollection.getResolvedArtifacts()` returns a live provider that keeps producer task dependencies; use it to map `ResolvedArtifactResult` into stable task properties when metadata is needed, rather than iterating `getArtifacts()` during configuration.
 - For configuration-cache-compatible tasks, split `ResolvedArtifactResult` data into stable file and metadata task properties instead of storing resolution result objects as task inputs.
 - Avoid new use of legacy `ResolvedConfiguration`, `LenientConfiguration`, `ResolvedArtifact`, and `ResolvedDependency` APIs; they use default artifact attributes and are maintenance-mode surfaces.
 - Without variant reselection, artifact selection must still come from the graph-selected component variant.
@@ -34,7 +36,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, or
 - Without variant reselection, artifact view attributes are combined with the graph resolution attributes for artifact selection and may trigger transforms when no selected artifact set matches.
 - Use lenient artifact views to collect available artifacts while keeping failures inspectable. Do not use lenient resolution to hide required dependencies in verification or release paths.
 - Lenient artifact views can omit failed modules, unresolved conflicts, or failed artifact downloads; use the `ArtifactCollection` failure details before treating partial files as complete.
-- Use `componentFilter` for per-component artifact filtering. It filters selected artifacts by component owner, not by arbitrary file path.
+- Use `componentFilter` for per-component artifact filtering. It filters selected artifacts by component owner, not by arbitrary file path, and each artifact view has only one component filter.
 - When an artifact view requests attributes that the selected artifact set does not expose, Gradle may trigger registered artifact transforms; read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) before implementing or debugging one.
 
 ## Variant-Aware Project Artifact Sharing
@@ -73,4 +75,4 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, or
 
 ## Source Calibration
 
-Primary upstream pages: Artifact Views, Resolving Specific Artifacts, How to Share Artifacts Between Projects.
+Primary upstream pages: Artifact Resolution, Artifact Views, Resolving Specific Artifacts, How to Share Artifacts Between Projects. Primary APIs: ArtifactView, ArtifactCollection, ResolvableDependencies, ResolvedArtifactResult.

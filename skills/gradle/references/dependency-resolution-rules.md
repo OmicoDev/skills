@@ -21,6 +21,7 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 
 - Use `force` only as a temporary or emergency override with a removal path. Prefer constraints, platforms, rich versions, metadata repair, or locks for durable version policy.
 - `failOnVersionConflict()`, `failOnDynamicVersions()`, `failOnChangingVersions()`, and `failOnNonReproducibleResolution()` are detection or policy gates; they do not choose the correct version.
+- Use `preferProjectModules()` only when a resolved conflict should prefer a project component over a binary component; it does not include missing projects, rewrite coordinates, or replace an external module by itself.
 - Use component selection rules when a configuration must reject candidate versions during selection, especially dynamic selectors or metadata-based rejects.
 - Component selection starts from the highest matching candidate; a candidate is accepted unless a rule rejects it. Target rules to `group:module` when possible and handle optional metadata defensively.
 - Use rich-version `reject` when the build should express unacceptable versions as version intent; use dependency resolve rules only when a rejected request should be rewritten to a known replacement.
@@ -52,6 +53,7 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 - Use default dependencies for plugin-owned configurations when the plugin needs a tool or library only if the user has not declared one.
 - Expose an override path for every default dependency, normally through the configuration itself or a typed version property.
 - Use lazy dependency additions such as provider-backed additions when the decision depends on values that should not be read during configuration.
+- Prefer a constraint with `prefer(...)` when plugin build logic wants to supply a default version for a user-declared dependency without adding a dependency itself; use `dependencies.addLater(...)` when the plugin may conditionally add the dependency.
 
 ## Diagnostics
 
@@ -72,4 +74,4 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 
 ## Source Calibration
 
-Primary upstream pages: Using Resolution Rules, Composite Builds, How to Use a Local Fork of a Module Dependency with Gradle, How to Exclude Transitive Dependencies in Gradle.
+Primary upstream pages: Using Resolution Rules, Composite Builds, How to Use a Local Fork of a Module Dependency with Gradle, How to Exclude Transitive Dependencies in Gradle, ResolutionStrategy API.

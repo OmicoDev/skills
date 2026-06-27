@@ -12,6 +12,7 @@ Read this when: `verification-metadata.xml`, checksums, signatures, trusted keys
 - For artifacts signed by multiple keys, every signature must validate; one bad signature can fail the artifact even when another trusted signature passes.
 - Verification metadata is security policy, not a cache artifact.
 - Dependency verification is enabled when `gradle/verification-metadata.xml` exists; this XML file is currently Gradle's only dependency verification metadata source.
+- Do not commit only a minimal `<configuration>` skeleton as a staged rollout; once the file exists, external dependencies and plugins without recorded metadata will fail in strict mode.
 - The verification file is global for the current build and affects all subprojects and `buildSrc`; included builds use the current build's verification metadata, ignoring their own for this invocation.
 - Verification does not replace repository content filters, dependency locking, wrapper validation, or Gradle distribution checksums.
 - Verification protects against tampered or substituted dependency bytes and metadata; it does not identify known vulnerabilities in otherwise genuine dependencies.

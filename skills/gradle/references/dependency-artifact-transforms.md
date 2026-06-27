@@ -23,16 +23,18 @@ Read this when: artifact transform implementation, registration, chaining, sched
 ## Implementation
 
 - Implement transforms as `TransformAction<P>` classes with exactly one `@InputArtifact` `Provider<FileSystemLocation>` and optional `TransformParameters`.
+- Do not implement `getParameters()` or custom constructors on a `TransformAction`; Gradle supplies parameters and transform actions may only have a default constructor.
 - Use `TransformParameters.None` when no parameters are needed.
 - Define transform parameters as a managed interface or abstract class implementing `TransformParameters`; use managed properties with input annotations for every behavior-affecting parameter.
 - Register outputs with `TransformOutputs.file(...)` or `TransformOutputs.dir(...)`. Relative paths allocate transform workspace locations; absolute paths can point at the input artifact or locations inside an input directory.
+- Every registered output file or directory must exist when `transform(...)` returns; `outputs.file(...)` creates parent directories for relative file outputs, but the transform still has to create the file contents.
 - When a transform decides no conversion is needed for one artifact, register the unchanged input artifact as the output instead of copying it into a new workspace file.
 - Do not write transform outputs to arbitrary external paths. Use relative `TransformOutputs` locations for new outputs, or absolute paths only when returning the input artifact or files already inside an input directory.
 - Do not declare transform outputs with task-style `@OutputFile` or `@OutputDirectory` properties; artifact transforms own outputs only through the `TransformOutputs` parameter.
 - A transform may produce zero, one, or many output artifacts; registered outputs replace the input artifacts in registration order.
 - Add `@CacheableTransform` only when outputs are deterministic and relocatable. Cacheable transforms need normalization such as `@PathSensitive` on `@InputArtifact` and `@InputArtifactDependencies`, but absolute path sensitivity is invalid for artifact transforms.
 - Use `@DisableCachingByDefault(because = "...")` when a transform is intentionally not cacheable; missing cacheability intent is a validation signal for transform actions just like task types.
-- Inject `@InputArtifactDependencies` only when transitive dependency files genuinely affect the conversion because it expands the resolution and cache surface.
+- Inject `@InputArtifactDependencies` only when transitive dependency files genuinely affect the conversion; Gradle injects those files as an input collection and cacheable transforms must normalize them.
 - Incremental transforms can inject `InputChanges`, but only the input artifact is incremental.
 - Keep transforms parallel-safe; the same transform may run concurrently for different artifacts.
 
@@ -62,9 +64,10 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Chain stops after an earlier transform: confirm the previous transform produced at least one registered output artifact; empty output skips downstream transforms.
 - Ambiguous transform chain: reduce overlapping transform registrations or make requested attributes more specific.
 - Transform runs for external modules but not project dependencies: compare project outgoing artifact attributes with module metadata and check whether an existing project variant already satisfies the request.
+- Transform resolves or downloads more artifacts than expected: check `@InputArtifactDependencies` and broad artifact view attributes before changing the dependency graph.
 - Cache misses: inspect input artifact normalization, parameters, input artifact dependencies, tool versions, and non-deterministic outputs.
 - Reserved-location write failure: check for tasks or ad hoc code writing into transform workspaces; only the transform action should create files in locations returned by `TransformOutputs`.
 
 ## Source Calibration
 
-Primary upstream pages: Artifact Transforms, Artifact Views, Validation Problems.
+Primary upstream pages: Artifact Transforms, Artifact Views, Validation Problems, TransformAction API, TransformOutputs API.

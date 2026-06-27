@@ -63,6 +63,9 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - Use the Distribution plugin for application-style ZIP/TAR/install layouts instead of hand-rolled archive tasks. `distribution-base` owns the `distributions` container; `distribution` adds the conventional `main` distribution and its archive/install tasks.
 - Distribution contents are `CopySpec`s rooted by convention at `src/<distributionName>/dist`. Use `distributionBaseName`, `distributionClassifier`, and child specs to change archive identity or layout deliberately.
 - Treat `installDist` and named install tasks as `Sync` tasks under `build/install`; do not point them at unmanaged directories unless destructive replacement is intended.
+- For JVM applications, use the Application plugin before hand-wiring `JavaExec`, scripts, and archives: `application.mainClass` owns the entry point, `applicationDefaultJvmArgs` feeds both `run` and generated start scripts, and `applicationDistribution` is the CopySpec for extra distribution content.
+- Application distributions conventionally place runtime jars under `lib` and generated start scripts under `application.executableDir`; change those through the extension or distribution contents instead of editing generated scripts or archive paths after the fact.
+- Use `java-library-distribution` only for legacy/simple library ZIPs that package the library jar plus runtime dependencies; prefer published variants or normal Maven/Ivy publications when consumers need dependency metadata.
 - Use the War plugin when the artifact is a web application archive. It disables Java's default JAR, maps `src/main/webapp` to the archive root, and publishes the WAR through `components.web`.
 - War `providedCompile` and `providedRuntime` are transitive and remove provided libraries from the WAR even when another dependency path declares them; use artifact-only notation only when the provided dependency must be non-transitive.
 - Use the Ear plugin when the artifact is an enterprise application archive. `deploy` dependencies go to the EAR root and are not transitive; `earlib` dependencies go under `lib` and are transitive.
@@ -89,4 +92,4 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 
 ## Source Calibration
 
-Primary upstream pages: Working With Files, Base Plugin, Distribution Plugin, War Plugin, Ear Plugin, Implementing Custom Tasks, Configuration Cache Requirements, Build Cache Concepts.
+Primary upstream pages: Working With Files, Base Plugin, Distribution Plugin, Application Plugin, Java Library Distribution Plugin, War Plugin, Ear Plugin, Implementing Custom Tasks, Configuration Cache Requirements, Build Cache Concepts.

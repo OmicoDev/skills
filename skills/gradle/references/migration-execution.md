@@ -39,6 +39,7 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 
 - Keep the old Maven and new Gradle builds side by side until critical artifacts, reports, published metadata, and deployment inputs compare cleanly.
 - Treat `gradle init` Maven conversion as a bootstrap for common JVM, WAR, and Maven Publish shapes; audit custom lifecycle phases and plugins afterward.
+- For Maven conversion, choose `--insecure-protocol=fail` or `upgrade` deliberately in automated runs; the default `warn` path leaves insecure repositories commented for manual opt-in, while `allow` commits an explicit insecure repository policy.
 - Do not assume Maven assemblies convert automatically. Rebuild them with Distribution/Application, archive tasks, or a purpose-built plugin after comparing produced layout and metadata.
 - Map Maven modules to Gradle projects before migrating plugin behavior.
 - Translate dependency management to platforms, constraints, catalogs, or BOM import as appropriate.
@@ -57,6 +58,7 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 - Use `publishToMavenLocal` only for Maven interop; prefer project dependencies or composite builds inside Gradle.
 - Convert parameter-only Maven mojos into typed Gradle tasks; rewrite mojos that depend on the Maven project object around Gradle's model instead of transcribing the code.
 - Validate generated `pom` conversion before deleting the Maven build.
+- Treat `--incubating` Build Init output as an explicit modernization choice, not a neutral conversion default; keep generated incubating APIs only when the migration plan owns their future churn.
 
 ## Ant Migration
 
@@ -88,4 +90,4 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 
 ## Source Calibration
 
-Primary upstream pages: Upgrading Gradle, Feature Lifecycle, Kotlin DSL Migration, Migrating from Maven, Migrating from Ant, Using Ant from Gradle, Task Configuration Avoidance.
+Primary upstream pages: Upgrading Gradle, Feature Lifecycle, Kotlin DSL Migration, Build Init Plugin, Migrating from Maven, Migrating from Ant, Using Ant from Gradle, Task Configuration Avoidance.

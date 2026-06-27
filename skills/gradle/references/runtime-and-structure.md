@@ -1,10 +1,10 @@
 # Gradle Runtime And Structure
 
-Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user home, init scripts, or structure routing owns the work.
+Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user home, VFS/file watching, init scripts, or structure routing owns the work.
 
 ## Scope Boundary
 
-- This file owns the build's runtime environment: wrapper files, daemon/client boundaries, Daemon JVM policy, Gradle user home, and init scripts.
+- This file owns the build's runtime environment: wrapper files, daemon/client boundaries, Daemon JVM policy, Gradle user home, VFS/file watching, and init scripts.
 - Read [project-topology-and-build-logic.md](project-topology-and-build-logic.md) for settings scripts, project inclusion, multi-project builds, composite builds, build logic placement, root layout, or `init` scaffolding.
 - Build authoring files own script-level changes after the owner surface is clear; JVM files own toolchains used by compile/test tasks, while this file owns only the JVM that starts and runs Gradle.
 
@@ -33,10 +33,10 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 
 - The CLI client, wrapper script, and Tooling API clients locate or start a compatible daemon, send one build request, and stream logs, events, models, and results.
 - The daemon runs build logic, resolves dependencies, creates task graphs, coordinates execution, and starts worker processes for daemon-owned work such as compilation, tests, and Worker API actions.
-- Gradle reuses an existing daemon only when the Gradle version, Java home/version, and JVM arguments are compatible. Changing `org.gradle.jvmargs` or daemon JVM policy can intentionally create another daemon.
+- Gradle reuses an existing daemon only when Gradle version, Java home/version, JVM arguments, JVM attributes, and immutable JVM properties match exactly. Changing `org.gradle.jvmargs`, `org.gradle.java.home`, Daemon JVM criteria, locale, file encoding, temporary directory, or SSL store system properties can intentionally create another daemon.
 - Worker processes do not own settings, project topology, dependency policy, or task graph construction.
 - Debug daemon trouble by naming the failing runtime first: client launch, wrapper distribution download, Tooling API connection, daemon execution, or worker process work.
-- `gradle --status` only reports daemons for the same Gradle version as the command. Use JDK tools such as `jps` when investigating daemons across Gradle versions.
+- `gradle --status` only reports daemons for the same Gradle version as the command, and `gradle --stop` only stops daemons started with that Gradle version. Use JDK tools such as `jps` when investigating daemons across Gradle versions.
 - The Gradle client JVM comes from the launcher environment such as `JAVA_HOME`, `java` on `PATH`, or the IDE.
 - The daemon JVM comes from Daemon JVM criteria, Tooling API requests, `org.gradle.java.home`, or the launcher environment fallback.
 - Gradle distributions do not embed a Java runtime; Daemon JVM toolchains do not remove the wrapper/client Java prerequisite.
@@ -46,9 +46,23 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 - Daemon JVM auto-detection and auto-provisioning share Java toolchain discovery flags, but they select the JVM that runs Gradle. Java toolchains select JVMs used by project tasks.
 - `JAVA_HOME` is an environment default, not a reproducible project contract.
 - Gradle behavior configuration precedence is command line, system properties, Gradle properties, then environment variables; within Gradle properties, `GRADLE_USER_HOME` can override checked-in project properties.
+- Treat `org.gradle.*` properties as Gradle runtime configuration, not build-logic feature flags; use project properties, provider-backed extension values, or typed conventions for build behavior users should control.
 - `org.gradle.jvmargs` configures the daemon JVM, not the lightweight client JVM; use `GRADLE_OPTS` only for client options or to pass `-Dorg.gradle.jvmargs=...`.
 - `--no-daemon` can still create a single-use daemon when the client JVM does not match the build's required daemon JVM or JVM args. To fully avoid a daemon, the client process must match those requirements.
+- User-home cache and daemon-log cleanup normally runs in the background when daemons stop or shut down; with `--no-daemon`, cleanup can run in the foreground after the build and explain extra post-build work.
 - Init scripts can mutate any build; check them when behavior differs by user, CI image, or machine.
+
+## VFS And File Watching
+
+- This file owns whether the daemon can retain Virtual File System state; read [performance-strategy.md](performance-strategy.md) for speed evidence and [commands-and-evidence.md](commands-and-evidence.md) for continuous-build flag selection.
+- File system watching is daemon-owned state retained between builds; it improves repeat build file snapshots but does not replace declared task inputs and outputs.
+- Toggle with `--watch-fs`/`org.gradle.vfs.watch=true` or `--no-watch-fs`/`org.gradle.vfs.watch=false`; use `org.gradle.vfs.verbose=true` to see VFS events and retained snapshot counts at build start and finish.
+- Unsupported or unstable file systems are runtime evidence, not build logic evidence. Be suspicious of network mounts, unsupported file systems, symlinked inputs, and CI/project directories outside the watched hierarchy.
+- There is no public custom watch-exclude API; reduce noisy watching or re-execution by narrowing the task's declared inputs, such as `fileTree.exclude(...)`.
+- `Dropped VFS state due to lost state` means the daemon lost reliable watch state after unknown or excessive file events; the build can continue, but repeat-build performance evidence is no longer comparable.
+- On Linux, large builds can hit inotify watch limits or memory pressure because each watched directory consumes a watch; raise limits deliberately or disable watching in constrained agents.
+- Continuous build depends on active file watching and daemon execution. It does not work with `--no-daemon`, does not recompute the build model after build logic changes, and may miss newly created previously absent input directories or filtered file trees.
+- `--project-cache-dir` disables default file watching and is incompatible with explicitly enabled `--watch-fs`/`org.gradle.vfs.watch=true`.
 
 ## Init Scripts And Lifecycle Hooks
 
@@ -58,22 +72,22 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 - All discovered init scripts run; do not assume a later script replaces an earlier one.
 - Do not hide repository-specific build behavior in init scripts when a checked-in convention plugin can own it.
 - Configure Gradle user home cache cleanup and `CACHEDIR.TAG` cache marking only from `GRADLE_USER_HOME/init.d`; this intentionally couples the policy to that user home.
-- Init scripts cannot rely on classes from the target build's `buildSrc`.
-- Init script `initscript {}` dependencies build the init script classpath; they cannot use project dependencies from the target build.
+- Treat init scripts as separate script classpaths: implementation classes must come from Gradle APIs or `initscript {}` repositories and `classpath` dependencies; target build `buildSrc`, plugin/dependency repositories, and project dependencies do not supply init script classes.
 - Init plugins target `Plugin<Gradle>`, not `Plugin<Project>` or `Plugin<Settings>`, and should interact with settings/projects through lifecycle callbacks.
 - `gradle.properties` values are available to settings/projects, not as direct properties on the `Gradle` receiver of an init script.
 - TestKit builds use isolated Gradle user homes, so machine/user init scripts may not explain TestKit behavior unless the test explicitly wires them.
-- Lifecycle hooks such as `settingsEvaluated`, `projectsLoaded`, `beforeProject`, `afterProject`, and `projectsEvaluated` are global mutation points. Review them for configuration-cache and isolated-project impact.
+- Choose lifecycle hooks by phase: `beforeSettings` is init-script-only pre-settings wiring and has already fired inside `settings.gradle(.kts)`; `settingsEvaluated` and `projectsLoaded` own settings/topology follow-up; `gradle.lifecycle.beforeProject` and `afterProject` own isolated project defaults/checks; `projectsEvaluated` runs before task graph finalization. Review all global callbacks for configuration-cache and isolated-project impact.
 
 ## Runtime Review
 
 - Check whether the command uses the checked-in wrapper or a globally installed Gradle.
 - Check whether CI and developers use the same wrapper version, daemon JVM criteria, and Gradle user home policy.
 - Check whether private wrapper credentials are host-scoped and kept in user/CI properties.
+- When Gradle warns that multiple daemons may spawn because the Gradle JDK and `JAVA_HOME` differ, compare `JAVA_HOME`, IDE Gradle JDK, Daemon JVM criteria, `org.gradle.java.home`, and Java toolchain requests before changing memory or daemon flags.
 - Check whether Gradle user home, init scripts, CI-injected properties, or cache cleanup policy can explain behavior that is not reproducible from repository files alone.
 - Check daemon logs under `GRADLE_USER_HOME/daemon/<gradle-version>/` when client output hides startup, crash, or connection details.
 - Check whether the failure happens before settings are loaded, during daemon startup, during dependency resolution, or inside worker JVM work.
 
 ## Source Calibration
 
-Primary upstream pages: Gradle Wrapper, Gradle Daemon, Directory Layout, Build Environment, Build Lifecycle, Initialization Scripts and Init Plugins, Best Practices for Security. Local architecture docs: Gradle Runtimes, Build Execution Model, Build State Model, ADR-0007 Java prerequisite.
+Primary upstream pages: Gradle Wrapper, Gradle Daemon, File System Watching, Continuous Builds, Directory Layout, Build Environment, Build Lifecycle, Initialization Scripts and Init Plugins, Best Practices for Security. Local architecture docs: Gradle Runtimes, Build Execution Model, Build State Model, ADR-0007 Java prerequisite.
