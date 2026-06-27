@@ -5,6 +5,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 ## First Choice
 
 - Read [providers-and-properties.md](providers-and-properties.md) for Provider API, managed properties, `ObjectFactory`, domain object containers, and lazy value wiring.
+- Read [file-operations-and-archives.md](file-operations-and-archives.md) for file paths, copy/sync/delete tasks, `CopySpec`, archives, permissions, and reproducible archive output.
 - Read [jvm-and-tests.md](jvm-and-tests.md) for Java/Kotlin/Groovy/Scala plugins, Java toolchains, JVM tests, fixtures, report aggregation, and source sets.
 - Read [dependency-policy.md](dependency-policy.md) for dependency declarations, versions, catalogs, platforms, repositories, locks, or verification.
 - Read [task-types-and-validation.md](task-types-and-validation.md) when task logic is more than a tiny script-local action.
@@ -16,33 +17,52 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Root build scripts configure only root-owned behavior and lightweight aggregation.
 - Subproject scripts configure project-specific plugins, dependencies, tasks, publications, source sets, and tool configuration.
 - Convention plugins encode repeated project policy. Binary plugins encode reusable behavior and richer APIs.
+- Precompiled script plugins are internal convention plugins in `buildSrc` or an included `build-logic` build. Their plugin ID is derived from the filename and optional Kotlin package; Groovy precompiled scripts cannot use packages; convert to a binary plugin before publishing.
+- Precompiled script plugin suffixes choose the target: `.settings.gradle(.kts)` becomes `Plugin<Settings>`, `.init.gradle(.kts)` becomes `Plugin<Gradle>`, and plain `.gradle(.kts)` becomes `Plugin<Project>`.
 
 ## Safe Authoring Defaults
 
 - Match the existing DSL and style.
-- Prefer `plugins {}` for static plugin application and `plugins.withId(...)` to react to plugin-owned models.
+- For brand-new builds or subprojects without an established repository DSL, prefer Kotlin DSL; otherwise preserve the repository's chosen DSL.
+- Prefer `plugins {}` for static plugin application; keep it idempotent and side-effect-free, and avoid buildscript classpath plugin wiring unless legacy constraints require it.
+- In precompiled script plugins, put external plugin versions on the plugin project's implementation classpath; `version "..."` and `apply false` are not supported inside the precompiled script.
+- Use `buildscript {}` only for script classpath resolution. Do not create or resolve arbitrary buildscript configurations in project, settings, init, or standalone scripts.
+- Do not rely on plugin application order. If custom plugin logic requires another plugin, apply it explicitly; if integration is optional, react with `pluginManager.withPlugin(...)`, `plugins.withId(...)`, or type-based `plugins.configureEach(...)`.
 - Keep top-level build script work small; top-level statements run during configuration.
 - Prefer `tasks.register`, `tasks.named`, and `configureEach` over `create`, `getByName`, and broad eager iteration.
 - Wire task outputs into inputs/source sets with providers instead of manual `dependsOn`.
+- Inside a task registration or configuration action, mutate only that task; configure other tasks through their own providers or actions.
 - Use extensions or typed properties for configuration. Use `extra` only for legacy interop or tiny script-local values.
 - Read properties through providers when values affect configuration-cache inputs.
+- Do not use Gradle or plugin internal APIs; avoid package segments named `internal` and types ending in `Internal` or `Impl` unless you are maintaining that implementation itself.
+- Treat only documented public Gradle APIs as stable. Top-level `org.gradle.*` classes being public does not make every `org.gradle.*` subpackage safe.
 
 ## Provider-Safe Patterns
 
 - Pass `TaskProvider` objects to `dependsOn`, `builtBy`, and task inputs instead of unwrapping tasks.
 - Use `layout.buildDirectory.dir(...)` and `layout.projectDirectory.file(...)` instead of `file("$buildDir/...")`.
+- Use task outputs, `CopySpec`, and provider-backed file properties instead of manual filesystem work during configuration.
 - Use `providers.gradleProperty`, `providers.systemProperty`, and `providers.environmentVariable` when values affect build configuration.
-- Prefer `configureEach` for lazy bulk configuration by type.
+- Prefer `withType(...).configureEach` for lazy bulk configuration by type; `withType(...) {}`, `tasks.all`, `whenTaskAdded`, and task collection iteration realize tasks.
 - Use `named(...)` when configuring a known task or container element.
 - Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead.
+- `afterEvaluate` callbacks run by registration order, can see stale state, and defeat task configuration avoidance when they register or configure tasks.
 - If `afterEvaluate` appears necessary, limit it to final validation or diagnostics and document why providers, conventions, or `plugins.withId(...)` cannot express the timing.
 
 ## DSL Notes
 
-- Kotlin DSL gives static accessors after plugins and extensions are known; script plugins and dynamic additions can limit accessors.
-- Groovy DSL dynamic lookup can hide misspellings and eager task realization.
+- Kotlin DSL type-safe accessors are computed after the `plugins {}` block and before the script body. Model elements created later in the script need ordinary Gradle APIs.
+- Kotlin DSL accessors are unavailable for `apply(plugin = "...")`, `apply(from = "...")` script plugins, binary plugins implemented in Kotlin, initialization scripts, and cross-project plugin application.
+- When no Kotlin accessor exists, use standard APIs such as `tasks.named<T>()`, `configurations.named(...)`, `extensions.configure<T>()`, `the<T>()`, and container `named(...)`.
+- Use `./gradlew kotlinDslAccessorsReport` to discover generated accessor names and backing types when plugin documentation is unclear.
+- Kotlin DSL task and container accessors are lazy providers; keep them as providers unless a provider-aware API is unavailable.
+- Lazy property assignment with `=` works for final lazy properties such as `Property<T>` or `ConfigurableFileCollection`; custom setters can block it.
+- Groovy DSL dynamic lookup can hide misspellings and eager task realization. In Groovy blocks, unqualified members resolve against the block delegate; inspect the `Action<T>` or `Closure` delegate type in API docs.
+- Avoid Groovy metaclass tricks in build scripts; use Gradle extensions, containers, or extra properties for modeled dynamic state.
 - Do not translate snippets between DSLs mechanically when provider types, delegated properties, or named containers are involved.
 - Keep plugin aliases in `plugins {}` and library aliases in `dependencies {}`.
+- When a plugin relies on Groovy metaprogramming, prefer a small applied Groovy script as a compatibility boundary from Kotlin DSL instead of spreading `withGroovyBuilder` calls through the main script.
+- Account for Kotlin DSL cold compilation cost on clean checkouts or ephemeral CI; changes in `buildSrc` invalidate build-script caching.
 
 ## Property Placement
 
@@ -62,14 +82,12 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 
 ## Review Checklist
 
-- Does this script execute IO, network, or process work during configuration?
-- Does this script realize tasks unrelated to the requested task?
-- Does this script read another project's mutable model?
+- Does this script execute IO, network, or process work during configuration, or realize tasks unrelated to the requested task?
+- Does this script read another project's mutable model or configure plugin-owned model before the plugin is applied?
 - Does this script call `.get()` where a provider-aware API exists?
-- Does this script configure plugin-owned model before the plugin is applied?
 - Does this script duplicate convention logic already present in build logic?
 - Does this script hide behavior in `afterEvaluate` or root `subprojects`?
 
 ## Source Calibration
 
-Primary upstream pages: Writing Build Scripts, Gradle Managed Types, Kotlin DSL, Groovy Build Script Primer, Writing Tasks, Properties and Providers. Local architecture docs: ADR-0010 Gradle properties naming.
+Primary upstream pages: Writing Build Scripts, Gradle Managed Types, Kotlin DSL, Groovy Build Script Primer, Public Gradle APIs, Pre-compiled Script Plugins, Writing Tasks, Properties and Providers, General Gradle Best Practices, Best Practices for Structuring Builds. Local architecture docs: ADR-0010 Gradle properties naming.

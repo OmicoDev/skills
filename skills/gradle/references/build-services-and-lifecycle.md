@@ -1,0 +1,84 @@
+# Gradle Build Services And Lifecycle Work
+
+Read this when: shared build services, `BuildService`, `BuildServiceParameters`, `BuildEventsListenerRegistry`, Flow actions, or lifecycle-result work owns the change.
+
+## Scope Boundary
+
+- This file owns build-scoped shared state, service concurrency, task execution event listeners, and lifecycle-result work.
+- Use [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md) for plugin form, public task surface, and overall plugin design.
+- Use [task-types-and-validation.md](task-types-and-validation.md) for task property annotations and task input/output contracts.
+- Use [worker-api-and-processes.md](worker-api-and-processes.md) when the service is passed into Worker API work or process isolation owns the problem.
+
+## Build Service Model
+
+- A build service is build-scoped, registered lazily, created on demand, and shared by tasks across projects in the build.
+- Implement services as abstract `BuildService<P>` types. Use `BuildServiceParameters.None` when no parameters are needed.
+- Service and parameter types are Gradle custom types; model parameters with managed properties.
+- Build service implementations must be thread-safe because multiple tasks may use the same service concurrently.
+- Implement `AutoCloseable` only when there is real cleanup; Gradle calls `close()` after the last user completes and before the build ends.
+- `close()` only runs for a service instance that was actually created. Do not use build-service cleanup as a general `buildFinished` replacement when no task, action, transform, listener, or configuration-time owner may use the service.
+- Do not implement `getParameters()`; Gradle supplies it.
+
+## Registration And Consumption
+
+- Register services with `gradle.sharedServices.registerIfAbsent(...)`.
+- Registration is lazy: the service instance is not created when no task/action actually uses it in that build.
+- Build services are scoped to one build, not one project. Use a stable registration name when one shared resource should coordinate tasks across projects in the same build.
+- Mutate parameters only inside the registration action so configuration cache and Isolated Projects see one stable service definition.
+- Prefer `@ServiceReference` for task properties that consume a service. Matching is by service type and optional service name.
+- When multiple services of the same type are registered and no `@ServiceReference` name disambiguates them, assign the provider manually.
+- If the task property is `@Internal`, assign the service provider to the property and call `usesService(...)`; otherwise concurrency limits and service usage tracking can be missed.
+- Do not model a build service as a task input. Services may be referenced only through `@ServiceReference`, `@Internal` plus `usesService`, or supported action parameters.
+- Avoid calling `Provider.get()` for a service during configuration unless the service truly models configuration-time state.
+- Do not derive configuration-cache fingerprints or `ValueSource` parameters from build service providers; a build service is safe as a task reference, but it cannot invalidate the configuration cache.
+
+## Service Injection
+
+- Inject only documented public Gradle services; internal injectable types are unsupported and can break across Gradle versions.
+- Constructor injection declares service requirements up front; property getter injection defers service creation until the getter is called.
+- If an ad hoc script task needs `FileSystemOperations`, `ArchiveOperations`, or `ExecOperations` through an injected interface, treat that as a signal to extract a typed task when behavior grows.
+
+## Concurrency And Indirect Use
+
+- Use `maxParallelUsages` when the service guards a scarce external resource, global process, lock, or rate-limited endpoint.
+- Leaving `maxParallelUsages` unset means Gradle does not constrain concurrent use of that service.
+- Gradle cannot infer indirect service usage through another service. Declare indirect usage explicitly through `@ServiceReference` or `usesService(...)`.
+- A service passed into [artifact transforms](dependency-artifact-transforms.md), another service, or no-isolation Worker API actions must still be registered and tracked from the consuming owner.
+- Build services are not supported with classloader- or process-isolated worker actions.
+
+## Task Execution Events
+
+- Use a build service implementing `OperationCompletionListener` when plugin logic needs task execution events.
+- Register event listeners through the injected `BuildEventsListenerRegistry`, not broad task execution callbacks.
+- Task finish events are delivered concurrently with task execution and other work, soon after a task completes; listener work must not be used as a synchronization point, task dependency, or producer for downstream task inputs.
+- Pass the provider returned by `registerIfAbsent(...)` or `BuildServiceRegistration.getService()` directly to build-event registration; Gradle 9 reports configuration-cache problems for mapped, flat-mapped, or ad hoc listener providers, including identity maps.
+- Filter operation completion events by type, such as `TaskFinishEvent`, before reading task-specific data.
+- Keep event listeners small and thread-safe; they observe execution, they should not mutate project configuration.
+- For configuration-cache migration, replace `BuildListener`, `TaskExecutionListener`, and `buildFinished` patterns with build services or Flow actions when possible.
+- Use build services for task-operation observation and resource cleanup; use Flow actions when the work is really about build-result data such as success or failure after task execution.
+
+## Flow Actions
+
+- Use ordinary tasks for source, filesystem, process, compiler, and output work.
+- Use dataflow/Flow actions only for work that depends on lifecycle event providers, such as build completion results.
+- Flow actions are parameterized isolated work; use `FlowParameters.None` when no parameters are needed, annotate service parameters with `@ServiceReference`, and annotate other parameters with `@Input`.
+- Wire extension values, lifecycle providers, and services into Flow parameters; do not make the action read `Project`, task, or extension objects directly from `execute(...)`.
+- Inject `FlowScope` and `FlowProviders` into project or settings plugins; do not instantiate `FlowAction` manually.
+- Use `FlowScope.always(...)` when the action should run on every build invocation after its inputs are available; register it early enough for the failures it is meant to observe.
+- Lifecycle event providers such as `buildWorkResult` can be transformed with `map` or `flatMap` while preserving the ordering guarantee for the Flow action.
+- Without a lifecycle event provider input, Flow action timing is not stable.
+- Treat Flow actions as incubating. If configuration fails before registration, the action cannot run.
+
+## Failure Map
+
+- Service concurrency limit ignored: check `@ServiceReference` matching or explicit `usesService(...)`, especially for `@Internal` service properties.
+- Service unexpectedly created during configuration: look for `provider.get()` or eager work in plugin application.
+- Service state races: make the implementation thread-safe or move shared state behind a concurrency-limited service.
+- Listener breaks configuration cache: replace broad listeners with `BuildEventsListenerRegistry` and a registered build service.
+- Listener stops receiving events after configuration-cache adoption: check that `onTaskCompletion(...)` received the raw build-service provider, not a mapped or wrapped provider.
+- Listener side effects race with consumers: move the work into declared task inputs/outputs or a lifecycle Flow action; build-event listeners observe completion but do not order downstream work.
+- Flow action does not run or runs at a surprising time: check that the plugin registered it before failure, used the intended `FlowScope`, and supplied a lifecycle event provider input.
+
+## Source Calibration
+
+Primary upstream pages: Using Shared Build Services, Dataflow Actions, Service Injection, Configuration Cache Requirements, Isolated Projects.

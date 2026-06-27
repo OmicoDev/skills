@@ -1,6 +1,12 @@
 # Gradle Task Types And Validation
 
-Read this when: custom task implementation, inputs/outputs, cacheability, validation annotations, Worker API, task options, or task relationships owns the change.
+Read this when: custom task implementation, inputs/outputs, cacheability, validation annotations, or incremental input processing owns the change.
+
+## Scope Boundary
+
+- This file owns typed task contracts: task properties, annotations, validation problems, cacheability, and incremental inputs.
+- Read [task-execution-and-options.md](task-execution-and-options.md) when task dependencies, ordering, finalizers, skipping, timeouts, or command-line task options own the change.
+- Read [worker-api-and-processes.md](worker-api-and-processes.md) when task work needs Worker API isolation, worker daemon behavior, process-level isolation, or cancellation design.
 
 ## Task Type Defaults
 
@@ -18,10 +24,12 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 - Declare every behavior-affecting input and output.
 - Use path sensitivity and normalization for file inputs.
+- If file location is not part of task behavior, use `@PathSensitive(NONE)` for individual file inputs and `@PathSensitive(RELATIVE)` for directory/tree inputs; missing path sensitivity defaults toward absolute paths and hurts relocatability.
 - Use `@Classpath` or runtime classpath normalization for classpaths where appropriate.
 - Use `@Internal` only when the value truly does not affect outputs.
 - Mark tasks cacheable only after outputs are deterministic and relocatable enough for the intended cache.
-- Prefer built-in task types (`Copy`, `Sync`, `Zip`, `JavaExec`, `Test`, `JacocoReport`) when they already model the work.
+- Prefer built-in task types (`Copy`, `Sync`, `Zip`, `JavaExec`, `Test`, `JacocoReport`) when they already model the work; read [file-operations-and-archives.md](file-operations-and-archives.md) for copy/archive/delete specifics.
+- Wire provider-backed values with `map` or `flatMap` instead of `get()` during configuration so Gradle keeps value provenance and implicit task dependencies.
 - Use unique output directories or files per task; shared outputs break up-to-date and cache reasoning.
 
 ## Annotation Choices
@@ -33,36 +41,22 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use `@CompileClasspath` for Java compilation classpaths when appropriate.
 - Use `@LocalState` for task-owned state that should not be cached.
 - Use `@Destroys` for destructive tasks.
+- Use `@Nested` for nested beans that expose their own annotated properties.
+- Use `@SkipWhenEmpty` or `@Incremental` on file inputs whose changes will be queried through `InputChanges`.
+- Use `@IgnoreEmptyDirectories` when directory entries themselves do not affect the output.
+- Use `@NormalizeLineEndings` for text inputs where CRLF/LF differences should not invalidate up-to-date or cache keys.
 - Use `@ServiceReference` when a shared build service is part of task behavior.
 - Do not mark a build service as an input. Use `@ServiceReference`, or `@Internal` plus explicit `usesService` when automatic reference matching does not fit.
 
 ## Incremental Work
 
 - Use incremental inputs when processing changed files is materially cheaper.
+- A task may have only one incremental `@TaskAction`, and that action takes a single `InputChanges` parameter.
+- Query changes from stable file property instances such as `RegularFileProperty`, `DirectoryProperty`, or `ConfigurableFileCollection`.
 - Keep incremental logic correct for added, modified, and removed files.
-- Fall back to full processing when Gradle cannot provide incremental changes.
+- Fall back to full processing when `InputChanges.isIncremental()` is false; Gradle reports all input files as added in that mode.
 - Do not confuse incremental execution with build-cache correctness.
 - Test clean, up-to-date, cache-hit, and changed-input paths separately.
-
-## Task Relationships
-
-- Use provider wiring and task outputs to imply dependencies when one task consumes another task's output.
-- Use `dependsOn` for required work, `finalizedBy` for cleanup/finalization, and `mustRunAfter`/`shouldRunAfter` for ordering only.
-- Prefer `dependsOn` for lifecycle orchestration; tasks with actions should usually wire the exact producer output they consume so Gradle knows why the producer is needed.
-- Do not use ordering rules to compensate for missing declared inputs and outputs.
-- Avoid broad task graph callbacks for ordinary wiring.
-- If Gradle reports implicit dependencies, replace raw `File` or path wiring with task providers, output properties, or the producing task as an input.
-
-## Worker API And Processes
-
-- Use Worker API for isolated, parallelizable units of task work.
-- Choose `noIsolation()` for fastest work with shared classloader risk.
-- Choose `classLoaderIsolation()` when work needs an isolated classpath.
-- Choose `processIsolation()` when work needs a separate JVM or process-level state; expect higher startup cost and worker-daemon reuse within the build.
-- Pass serializable parameters to work actions, not `Project` or task instances.
-- Use injected `ExecOperations` or `JavaLauncher`/tool providers for process execution.
-- Capture outputs and exit behavior deliberately; avoid shell-specific assumptions unless the task is explicitly shell-owned.
-- Check build-service compatibility before passing services into isolated worker modes.
 
 ## Validation Problem Map
 
@@ -71,9 +65,14 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - File type mismatch: use `@InputFile` for regular files and `@InputDirectory` for directories; do not hide a directory behind scalar `@Input`.
 - Missing input file: wire the producer task output or use a non-failing file collection only when the file is genuinely optional.
 - Properties without annotations: annotate every behavior-affecting property or mark it `@Internal` with intent.
-- `@Optional` is only a modifier on an input/output property. Use `@Internal` when a property should not participate in validation or up-to-date checks.
+- Annotations on fields, private getters, or non-property methods are usually ignored; annotate public property getters instead.
+- In Kotlin task classes, use getter use-site targets such as `@get:InputFile`; otherwise the annotation may land somewhere Gradle does not inspect.
+- Boolean properties must not expose both `getX()` and `isX()` as annotated getters; remove one or mark one `@Internal`.
+- Mutable Gradle property types must not have setters that replace the property object; mutate the existing property value with `set`, `convention`, or collection mutation APIs.
+- `@Optional` is only a modifier on an input/output property. Use `@Internal` when a property should not participate in validation or up-to-date checks; do not combine `@Internal` with `@Optional`, and do not put `@Optional` on primitive properties.
+- Implicit dependency validation usually means a consumer used a raw file path such as `archivePath` instead of a provider-backed producer output such as `archiveFile`, a task provider, or the producing task itself.
 - Missing reason for not caching: use `@CacheableTask` only when safe, otherwise add `@DisableCachingByDefault(because = "...")`.
-- Unsupported value type: map Gradle resolution results, URLs, nested maps, and nested objects to stable supported input types before exposing them to tasks.
+- Unsupported value type: map Gradle resolution results, `java.net.URL`, nested maps, lambdas, classloader-owned implementation objects, and nested objects to stable supported input types before exposing them to tasks. Prefer `URI` over `URL`; keep nested map keys to `String`, `Integer`, or enum values.
 - Disallowed Gradle model object in task action: extract the needed scalar, file collection, provider, or service during configuration and expose it as a task property.
 - Direct access to another task instance: replace it with declared inputs, outputs, `TaskProvider`, or provider values.
 
@@ -83,6 +82,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Calling `Provider.get()` during configuration to pass values to provider-aware APIs.
 - Resolving configurations during configuration.
 - Calling JDK/Groovy/Kotlin collection APIs such as `isEmpty`, `size`, `toList`, `getFiles`, `asPath`, or `+` on `Configuration`/`FileCollection` during configuration because they can resolve dependencies and drop implicit task dependencies.
+- Passing already-resolved collections into `Copy`, `Zip`, or other `AbstractCopyTask` inputs hides the same eager-resolution problem; pass provider-backed task outputs or file collections directly.
 - Writing into shared directories.
 - Producing generated files without modeled outputs.
 - Using global singletons for shared state instead of build services.
@@ -91,4 +91,4 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 ## Source Calibration
 
-Primary upstream pages: Implementing Custom Tasks, Dealing with Validation Problems, Worker API, Custom Tasks, Incremental Build, Controlling Task Execution, Task Configuration Avoidance, Best Practices for Tasks, Configuration Cache Requirements.
+Primary upstream pages: Implementing Custom Tasks, Dealing with Validation Problems, Advanced Tasks, Incremental Build, Task Configuration Avoidance, Best Practices for Tasks, Configuration Cache Requirements.

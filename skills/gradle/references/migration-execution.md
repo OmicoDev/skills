@@ -37,6 +37,9 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 
 ## Maven Migration
 
+- Keep the old Maven and new Gradle builds side by side until critical artifacts, reports, published metadata, and deployment inputs compare cleanly.
+- Treat `gradle init` Maven conversion as a bootstrap for common JVM, WAR, and Maven Publish shapes; audit custom lifecycle phases and plugins afterward.
+- Do not assume Maven assemblies convert automatically. Rebuild them with Distribution/Application, archive tasks, or a purpose-built plugin after comparing produced layout and metadata.
 - Map Maven modules to Gradle projects before migrating plugin behavior.
 - Translate dependency management to platforms, constraints, catalogs, or BOM import as appropriate.
 - Translate profiles into Gradle properties, variants, source sets, or separate tasks only when the behavior is still needed.
@@ -45,13 +48,19 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 ## Maven Detail Checks
 
 - Map Maven scopes to Gradle buckets deliberately; do not put everything on `implementation`.
+- Use `api` only for dependencies exposed to consumers at compile time; otherwise prefer `implementation`.
 - Translate Maven parent dependency management separately from module layout.
+- Replace Maven parent build logic with convention plugins or shared platforms, not broad `allprojects` mutation.
+- Account for conflict-resolution semantics: Maven's nearest-wins graph can differ from Gradle's newest-wins default, so compare selected dependency versions before treating runtime changes as source problems.
 - Recreate resource filtering only where the application requires it.
 - Replace Maven lifecycle assumptions with explicit Gradle lifecycle tasks.
+- Use `publishToMavenLocal` only for Maven interop; prefer project dependencies or composite builds inside Gradle.
+- Convert parameter-only Maven mojos into typed Gradle tasks; rewrite mojos that depend on the Maven project object around Gradle's model instead of transcribing the code.
 - Validate generated `pom` conversion before deleting the Maven build.
 
 ## Ant Migration
 
+- Treat `ant.importBuild()` and AntBuilder calls as migration bridges; imported Ant builds are not configuration-cache compatible.
 - Use imported Ant targets as a bridge, not the final architecture.
 - Move file work to Gradle task types and providers.
 - Translate Ivy/file dependencies into repositories and dependency declarations.
@@ -60,9 +69,13 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 ## Ant Detail Checks
 
 - Keep Ant properties and Gradle properties separate until ownership is clear.
+- Bridge Gradle project properties into Ant properties explicitly when imported targets need them; they are not the same property map.
 - Replace path-sensitive Ant file operations with Gradle file properties.
+- Translate Ant paths and filesets to `FileCollection` and `FileTree` before adding more Ant-only glue.
 - Move Ivy repositories and configurations into Gradle dependency management.
+- Do not mimic Ivy retrieve by copying every resolved dependency from Gradle's cache unless a package or external tool truly needs materialized libraries; otherwise consume resolved files directly through configurations.
 - Preserve target order only when Gradle task inputs/outputs cannot express the relationship yet.
+- Rename imported targets on collision and replace dependencies in stages so standard Gradle lifecycle tasks can take over.
 
 ## Legacy Gradle Modernization
 
@@ -75,4 +88,4 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 
 ## Source Calibration
 
-Primary upstream pages: Upgrading Gradle, Feature Lifecycle, Kotlin DSL Migration, Migrating from Maven, Migrating from Ant, Task Configuration Avoidance.
+Primary upstream pages: Upgrading Gradle, Feature Lifecycle, Kotlin DSL Migration, Migrating from Maven, Migrating from Ant, Using Ant from Gradle, Task Configuration Avoidance.

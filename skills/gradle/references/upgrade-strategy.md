@@ -20,6 +20,13 @@ Read this when: changing Gradle versions, handling deprecations, checking compat
 
 Then run representative tasks. `help` alone proves startup, not build correctness.
 
+## Upgrade Evidence Gate
+
+- For cross-major upgrades, clear the previous major's within-line upgrade guide and deprecations before reading the target-major guide; removals often correspond to warnings from the older line.
+- Capture deprecation evidence before changing the wrapper. Prefer Build Scan deprecation views when upload policy permits; otherwise capture `--warning-mode=all` output.
+- Update third-party plugins before a major wrapper jump when compatibility says they support both the current and target Gradle versions. If a plugin requires the target Gradle first, isolate that plugin change as its own phase.
+- After wrapper upgrade, repeat deprecation capture and representative tasks before treating the target version as promoted.
+
 ## Compatibility Surface
 
 - Gradle runtime JVM.

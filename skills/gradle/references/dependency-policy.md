@@ -5,8 +5,13 @@ Read this when: dependency declarations, configuration roles, version ownership,
 ## First Choice
 
 - Read [dependency-repositories.md](dependency-repositories.md) for repositories, metadata sources, content filters, dynamic/changing modules, and cache behavior.
+- Read [dependency-version-governance.md](dependency-version-governance.md) for catalogs, platforms/BOMs, constraints, rich versions, and consistent resolution.
 - Read [dependency-locking.md](dependency-locking.md) for dependency lockfiles, `--write-locks`, `--update-locks`, lock modes, and reproducible selected versions.
-- Read [dependency-variants-and-metadata.md](dependency-variants-and-metadata.md) for variants, capabilities, attributes, artifact transforms, component metadata rules, and project output sharing.
+- Read [dependency-variants-and-metadata.md](dependency-variants-and-metadata.md) for variants, capabilities, attributes, and matching diagnostics.
+- Read [dependency-metadata-rules.md](dependency-metadata-rules.md) for component metadata rules, Maven/Ivy metadata repair, missing capabilities, virtual-platform alignment, and status schemes.
+- Read [dependency-resolution-rules.md](dependency-resolution-rules.md) for `resolutionStrategy`, substitution, local forks, module replacement, `force`, component selection, excludes, and disabled transitivity.
+- Read [dependency-artifacts-and-transforms.md](dependency-artifacts-and-transforms.md) for artifact views, artifact-only notation, classifier artifacts, and project artifact sharing.
+- Read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) for reusable artifact transform implementation, registration, caching, and diagnostics.
 - Read [dependency-verification.md](dependency-verification.md) for `verification-metadata.xml`, checksums, signatures, bootstrapping, and verification failures.
 - Read [publications-and-signing.md](publications-and-signing.md) when dependency metadata is produced by Maven/Ivy publishing or plugin publication.
 
@@ -14,8 +19,10 @@ Read this when: dependency declarations, configuration roles, version ownership,
 
 - This file owns what the build asks for and why a selected version is acceptable.
 - Repositories own where Gradle may search and how cached metadata behaves.
+- Version governance owns catalogs, platforms, constraints, rich versions, and consistent resolution.
 - Locking owns freezing selected versions after resolution.
-- Variants own which artifact or outgoing variant matches a consumer.
+- Variants own which component metadata matches a consumer; metadata rules own external metadata repair; artifact selection owns the concrete files produced from that match.
+- Resolution rules own last-mile engine interventions such as substitution, force, component selection, module replacement, excludes, and disabled transitivity.
 - Verification owns whether downloaded bytes and signatures are accepted.
 
 ## Configuration Roles
@@ -25,53 +32,39 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Consumable configurations expose outgoing variants and artifacts to other projects or external consumers.
 - Do not declare dependencies on resolvable/consumable-only configurations. Do not resolve declaration buckets directly.
 - For custom configurations, use one intended role only: dependency scope, resolvable classpath/data, or consumable outgoing variant. Prefer role-specific factory APIs when available; otherwise set role flags directly.
+- When using legacy configuration creation APIs, set `canBeDeclared`, `canBeResolved`, and `canBeConsumed` intentionally; historical defaults can otherwise create legacy all-role configurations.
 - `extendsFrom` inherits dependencies, constraints, excludes, artifacts, and capabilities, but not attributes or role flags.
-- Resolving another project's configuration directly is unsafe. Use project dependencies, variants, or publications to cross project boundaries.
+- Resolving another project's configuration directly from a script, task action, task input, or settings file is unsafe. Use project dependencies, variants, or publications to cross project boundaries.
 
 ## Declaration Rules
 
 - Add a dependency to the project that directly uses it.
 - Use `api` only when dependency types are part of the public ABI; otherwise prefer `implementation`.
+- Declare the same external module once in the narrowest correct configuration; duplicate declarations across `compileOnly`, `implementation`, runtime, and test buckets can create confusing classpaths.
+- When not using a catalog alias, prefer single-string GAV notation such as `group:name:version`; map-style dependency notation is deprecated for normal module declarations.
 - Do not add a direct dependency only to override a transitive version.
 - Prefer version catalogs for shared coordinates and aliases; catalogs centralize coordinates but do not enforce selected versions.
-- Use platforms/BOMs for coordinated version recommendations; use `enforcedPlatform` only when downstream override is intentionally blocked.
+- Use [dependency-version-governance.md](dependency-version-governance.md) before changing platforms/BOMs, constraints, rich versions, catalog layering, or consistent resolution.
+- Use [dependency-resolution-rules.md](dependency-resolution-rules.md) before adding `force`, dependency substitution, component selection rules, broad excludes, or disabled transitivity.
 - Prefer constraints, rich versions, platforms, locks, or metadata rules over broad `force`.
-- Apply exclusions narrowly and verify that the excluded module is not required by another dependency path.
+- Apply exclusions on the dependency that introduces the unwanted transitive edge; prefer excluding one module over a whole group, and avoid global configuration exclusions.
+- Verify that an excluded module is not required by another dependency path before treating the graph as fixed.
 - Avoid resolving configurations during configuration; wire files or providers into tasks so resolution happens at the owning consumer.
+- Configure configuration containers lazily with `named` and `configureEach`; `getByName` and `all` realize configurations eagerly and can erase lazy-resolution wins.
 
 ## Version Owner Selection
 
 - Use a version catalog to name coordinates and share aliases.
 - Use a platform or BOM to align families of modules.
 - Use constraints to express a version reason for a module already in the graph.
-- Use rich versions when the acceptable version range matters.
-- Use strict versions only when violating the version is unsafe.
+- Use rich versions when the acceptable version range matters, and strict versions only when violating the version is unsafe.
 - Use dependency locking to freeze selected versions for reproducibility.
-- Use component metadata rules when published metadata is wrong.
-- Use substitution or composite builds for local replacement.
+- Use [dependency-metadata-rules.md](dependency-metadata-rules.md) when published metadata is wrong.
+- Use [dependency-resolution-rules.md](dependency-resolution-rules.md) for substitution, composite-build local replacement, module replacement, component selection, `force`, and excludes.
 - Use `force` only as a last-resort resolution rule with a clear removal path.
 - Consistent resolution aligns selected versions across related resolvable configurations; use it for real compile/runtime or test/runtime drift, not as a global replacement for platforms, constraints, or locks.
 - For published libraries, prefer ranges plus a preferred version over pinning a single strict version unless consumers must fail on other versions.
 - When locks, dynamic versions, or rich versions affect a published library, route publication metadata through [publications-and-signing.md](publications-and-signing.md) so consumers receive the intended resolved or Gradle-specific semantics.
-
-## Rich Version Semantics
-
-- `strictly` is strongest. It can downgrade, reject incompatible candidates, and fail consumers when another strict or required version disagrees.
-- `require` is the normal direct dependency floor and can still be upgraded by conflict resolution; `prefer` is soft and applies only when no stronger opinion exists.
-- `reject` blocks known-bad candidates and can fail a graph if Gradle would otherwise select one.
-- Locks behave like strict constraints during resolution. Update lock state when selected versions intentionally change.
-
-## Catalog Rules
-
-- Catalogs centralize coordinates and requested versions; they do not enforce the version Gradle finally selects.
-- Use constraints, platforms, locks, or strict versions when selection must be constrained.
-- Catalog TOML entries do not directly express classifiers, artifact types, excludes, or capabilities. Put those at the declaration, variant, or metadata-rule owner.
-- Keep aliases stable, prefer camelCase when nested accessors add noise, and avoid reserved roots such as `bundles`, `versions`, and `plugins`.
-- `buildSrc` and included build logic do not automatically inherit the main catalog; import catalogs explicitly when build logic needs them.
-- Plugin aliases belong in `plugins {}`; library aliases belong in `dependencies {}`.
-- Use multiple catalogs only for real boundaries such as shipped artifacts vs test tooling, independent build-logic dependencies, or organization-wide published catalogs.
-- `from(...)` may be called once per catalog. Add or override entries programmatically after `from(...)` when layering is intentional.
-- When passing catalog entries to Gradle APIs, prefer the provider accessor when the API accepts it; avoid `.get()` unless required.
 
 ## Diagnostics
 
@@ -87,11 +80,11 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - `Could not find`: start with repositories, content filters, coordinates, or plugin repositories.
 - `Could not resolve`: preserve the cause chain; it can be repository, metadata, conflict, verification, or variant selection.
 - `No matching variant`: compare requested and candidate attributes in [dependency-variants-and-metadata.md](dependency-variants-and-metadata.md).
-- Capability conflict: multiple providers claim the same feature; choose or add metadata.
+- Capability conflict: multiple providers claim the same feature; choose a provider or add missing metadata through [dependency-metadata-rules.md](dependency-metadata-rules.md).
 - Catalog accessor error: inspect alias naming, reserved words, and plugin-vs-library context.
 - Declaration version changed but selected version did not: inspect conflict resolution, platform, constraint, or lock owners.
 - Compile/runtime or test/runtime classpaths disagree unexpectedly: inspect consistent resolution before adding broad forces.
 
 ## Source Calibration
 
-Primary upstream pages: Declaring Dependencies, Dependency Configurations, Version Catalogs, Declaring Versions and Ranges, Platforms, Viewing and Debugging Dependencies, Dependency Resolution Consistency, Best Practices for Dependencies.
+Primary upstream pages: Declaring Dependencies, Dependency Configurations, Version Catalogs, Declaring Versions and Ranges, Platforms, Using Resolution Rules, Viewing and Debugging Dependencies, Dependency Resolution Consistency, Best Practices for Dependencies.
