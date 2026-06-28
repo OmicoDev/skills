@@ -43,11 +43,13 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - Separate Tooling API compatibility into four axes: Tooling API library/client JVM, target Gradle distribution, daemon JVM, and serialized `BuildAction` or custom-model bytecode.
 - Let Tooling API connections use the target build distribution by default; overriding the Gradle version or distribution makes the client own that compatibility risk.
 - If the target build has no wrapper or configured distribution, the Tooling API falls back to the client library's Gradle version; embedded tools should make that choice visible instead of treating it as project-owned.
-- Treat Tooling API library upgrades as integration compatibility work: the client has a moving target-Gradle support window and individual launcher/model/test methods can require newer target Gradle versions.
+- Treat Tooling API library upgrades as integration compatibility work: the client supports running target builds from the last five Gradle major releases plus current/next-major forward compatibility, and individual launcher/model/test methods can still require newer target Gradle versions.
 - Use Tooling API launchers, stdout/stderr capture, progress listeners, cancellation tokens, and public models before scraping command-line output from an embedded Gradle invocation.
 - `withArguments(...)` supports build-execution options modeled by `StartParameter`; do not pass CLI-only commands such as `-?`, `-v`, or daemon toggles through Tooling API launchers.
+- `setEnvironmentVariables(...)` replaces the operation environment; copy the current environment first when adding overrides, especially on Windows.
 - Close `ProjectConnection` instances when finished. `ProjectConnection` is thread-safe and long-lived, while `GradleConnector` instances are not thread-safe.
 - Treat `BuildLauncher`, `ModelBuilder`, and `TestLauncher` as per-operation builders; they are not thread-safe even when the `ProjectConnection` is.
+- Progress notifications from one `ProjectConnection` are serialized, but the delivery thread may change; keep listeners thread-safe and marshal UI updates explicitly.
 - Recreate a Tooling API connection after connector inputs such as `gradle.properties`, daemon JVM policy, distribution choice, or Gradle user home change.
 - Treat Tooling API `BuildAction` classes as serialized code sent into the build; compile them to the lowest Java level supported by the target Gradle range.
 - In composite builds, Tooling API task paths and prior test descriptors can target included builds, but class/method selectors without task targets apply only to the root build; use task-scoped test selectors for included-build tests.
@@ -56,6 +58,7 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - Pass absolute canonical paths to `notifyDaemonsAboutChangedPaths(...)`; for renames send both old and new paths so retained VFS state cannot miss either side.
 - Do not depend on IDE-only files for Gradle build correctness.
 - Use public models or custom tooling models when external consumers need structured information.
+- Register custom tooling model builders through the injectable `ToolingModelBuilderRegistry` in a plugin; do not scrape task output or CLI text to fabricate IDE models.
 - Custom tooling models belong in plugins and should be versioned like public integration contracts.
 - IDE metadata plugins are integration aids, not the source of build truth.
 - Modern IDEA and Eclipse should usually import the Gradle build directly; apply `idea` or `eclipse` only when the build intentionally contributes IDE model customization or generated project files.
@@ -82,10 +85,12 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - Use the Test Event Reporting API when a plugin or platform provider needs non-JVM or custom test execution to produce Gradle-compatible test events and HTML reports; treat the API and `TestEventReporterFactory` as incubating and keep wrappers small.
 - Inject `TestEventReporterFactory` into the custom task or plugin-owned type that records events; do not synthesize Gradle test result files by hand.
 - Put binary test results and HTML report directories under the task's `build/` ownership and model them as outputs when the custom test task should be cacheable or incremental.
-- Model the reporting hierarchy deliberately: create root/group reporters, record per-test metadata and failures, and close groups/root with success or failure that matches the executed test system.
-- Use try-with-resources or equivalent cleanup for root, group, and per-test reporters so lifecycle events are completed and resources close even when the underlying test engine fails.
+- Model the reporting hierarchy deliberately: root and group reporters can create child groups or leaf test reporters, while leaf test reporters cannot have children.
+- Emit events in lifecycle order: call `started(...)` once, record output or metadata only after start, finish with exactly one `succeeded(...)`, `skipped(...)`, or `failed(...)`, and close every reporter even when the underlying test engine fails.
+- The default root reporter close behavior fails the task when the root test tree failed; use the explicit `closeThrowsOnTestFailures` overload only when task outcome is intentionally managed elsewhere and the supported Gradle version has that overload.
 - Keep test execution ownership in the custom task; the reporting API records results, it does not replace declaring task inputs, outputs, classpaths, or environment.
+- Empty or partial custom test report: check reporter hierarchy, `started(...)`, `succeeded(...)`/`failed(...)`, and resource closure before changing report directories.
 
 ## Source Calibration
 
-Primary upstream pages: Gradle and Third-party Tools, Tooling API, IDEA Plugin, Eclipse Plugins, Visual Studio Plugin, Xcode Plugin, Test Event Reporting API, Building C++ Projects, Building Swift Projects, C++ Application/Library/Unit Test plugins, Swift Application/Library and XCTest plugins, Native Software, Using Ant from Gradle, Migrating from Maven, Migrating from Ant. Primary APIs: GradleConnector, ProjectConnection, BuildLauncher, ModelBuilder, TestLauncher, LongRunningOperation, AntBuilder, FileCollection.
+Primary upstream pages: Gradle and Third-party Tools, Tooling API, Services and Service Injection, IDEA Plugin, Eclipse Plugins, Visual Studio Plugin, Xcode Plugin, Test Event Reporting API, Building C++ Projects, Building Swift Projects, C++ Application/Library/Unit Test plugins, Swift Application/Library and XCTest plugins, Native Software, Using Ant from Gradle, Migrating from Maven, Migrating from Ant. Primary APIs: GradleConnector, ProjectConnection, BuildLauncher, ModelBuilder, TestLauncher, LongRunningOperation, ToolingModelBuilderRegistry, TestEventReporterFactory, AntBuilder, FileCollection.

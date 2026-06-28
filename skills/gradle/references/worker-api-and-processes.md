@@ -23,7 +23,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 
 - Inject `WorkerExecutor` into the task type and submit `WorkAction<P>` items from the task action.
 - Model work item parameters with `WorkParameters` and managed properties; pass serializable values, file properties, classpaths, and tool locations, not `Project`, task instances, or mutable Gradle model objects.
-- Do not implement `WorkAction.getParameters()` or concrete `WorkParameters`; Gradle generates and injects them.
+- Make work actions abstract, annotate constructors with `@Inject`, and use `WorkParameters.None` when no parameters are needed; do not implement `WorkAction.getParameters()` or concrete `WorkParameters` because Gradle generates and injects them.
 - Obtain a `WorkQueue` from `noIsolation()`, `classLoaderIsolation(...)`, or `processIsolation(...)`; do not use old `WorkerExecutor.submit(...)` patterns.
 - Keep a `WorkQueue` local to the task action; the queue has one set of worker requirements and is not a thread-safe coordination object.
 - Treat each work item as concurrently executable. Avoid shared mutable state unless it is protected by a build service or another explicit concurrency boundary.
@@ -38,6 +38,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - `noIsolation()` is fastest and runs work in the build process with a shared classloader. Use it only when static state and classpath sharing are acceptable.
 - `noIsolation()` still does not make project state mutable from a work action. If a work item needs project data, pass stable values through `WorkParameters` before execution.
 - `classLoaderIsolation()` isolates the implementation classpath while staying in-process. Use it when work needs a dedicated library classpath but not a separate JVM.
+- For classloader or process isolation, make the worker implementation's runtime dependencies explicit; Gradle internal libraries do not leak into worker classpaths, and configured worker classpath entries are added to the work-action implementation classpath.
 - If a worker library version is user-configurable, keep it off the buildscript runtime classpath and wire a provider-backed task input classpath into the isolated work queue so dependency resolution stays execution-time/lazy.
 - `processIsolation()` runs work in worker daemon JVMs. Use it for incompatible libraries, system-property conflicts, process-level state, or a different Java executable.
 - Do not set a process-isolated worker working directory through fork options; Gradle chooses a shared worker directory for reuse, so pass files and directories through `WorkParameters`.
@@ -46,7 +47,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 
 ## Worker Daemons
 
-- Process-isolated work uses worker daemons that can be reused for compatible work in the current build session; do not treat them as durable across normal builds, except for continuous/session-specific reuse.
+- Process-isolated work uses worker daemons that can be reused for compatible work items and later builds from the same Gradle daemon until the daemon stops or memory pressure ends them; do not treat them as durable state.
 - Worker processes are daemon-started runtimes with their own Java executable and service set; diagnose them separately from the Gradle client and main daemon.
 - Worker daemon reuse depends on compatibility: Java executable, classpath, heap settings, JVM args, system properties, environment variables, bootstrap classpath, debug flag, assertions, and default encoding.
 - Keep process-isolated worker requirements stable across submitted items when reuse matters; changing classpaths or fork options can intentionally split worker daemon pools.
@@ -75,4 +76,4 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 
 ## Source Calibration
 
-Primary upstream pages: Worker API, Service Injection, Implementing Custom Tasks, Command Line Interface, Build Environment, Dealing with Validation Problems, Configuration Cache Requirements, Gradle 9 Upgrade Guide.
+Primary upstream pages: Worker API, Service Injection, Implementing Custom Tasks, Command Line Interface, Build Environment, Dealing with Validation Problems, Configuration Cache Requirements, Gradle 9 Upgrade Guide. Primary APIs: WorkerExecutor, WorkQueue, WorkAction, WorkParameters, ClassLoaderWorkerSpec, ProcessWorkerSpec.

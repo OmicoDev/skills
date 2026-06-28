@@ -38,7 +38,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Use `forUseAtConfigurationTime` only for older Gradle compatibility work; in modern builds prefer proper configuration inputs and providers.
 - Do not finalize extension values before all intended conventions have had a chance to apply.
 - Do not simulate conventions with `isPresent`, `getOrElse`, or ad hoc fallback reads when another owner could still attach a real convention.
-- Replace `afterEvaluate`-style delayed reads with conventions and provider wiring; do not call `getOrElse` just because users may configure a value later. Use fail-fast validation or final-state logging callbacks only when no lazy model API can own the behavior.
+- Replace `afterEvaluate`-style delayed reads with conventions and provider wiring; do not call `getOrElse` just because users may configure a value later. Keep `afterEvaluate` for final validation or logging only when no lazy model API can own the behavior, and treat true wiring gaps as Gradle API gaps rather than plugin design primitives.
 
 ## Managed Model
 
@@ -49,7 +49,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Use `@Nested` managed objects for structured DSL values that share the owner lifecycle.
 - Use `Property<NestedType>` instead of an `@Nested` getter when the nested value has a different lifecycle or should be replaceable as a value.
 - For named DSL elements, implement `Named` or expose an abstract read-only `name`; named managed types fit `NamedDomainObjectContainer` element models.
-- Use domain object containers when users need named DSL elements; use `named`, `register`, and `configureEach` with domain collections.
+- Use `NamedDomainObjectContainer` when the DSL should create and manage named elements; use `NamedDomainObjectSet` or `NamedDomainObjectList` when elements are created elsewhere and only collected.
 - Manual `Property` fields are a compatibility fallback for existing public implementation classes, not a clean-sheet default.
 
 ## When Not To Use Lazy Types
@@ -64,7 +64,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 ## Service Injection
 
 - Inject only supported public Gradle services; internal services are unstable even when injection appears to work.
-- Service availability is scope-specific. Use `ProjectLayout` for project-owned paths, `BuildLayout` for settings-owned directories, and only documented public services for the current task/plugin/settings/worker scope.
+- Service availability is scope-specific. Use `ProjectLayout` for project-owned paths, `BuildLayout` for settings-owned directories, `DependencyFactory` for plugin-created dependencies, and only documented public services for the current task/plugin/settings/worker scope.
 - Use `ProviderFactory` for Gradle properties, system properties, environment, and provider-backed external values.
 - `systemProp.*` entries are read from the root project's `gradle.properties`; do not hide system properties in subproject `gradle.properties`.
 - Use `FileSystemOperations`, `ArchiveOperations`, and `ExecOperations` inside tasks or workers instead of reaching through `Project`.
@@ -83,15 +83,15 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 
 - Use named containers when users need multiple configured elements, and polymorphic containers when element types carry different behavior.
 - Prefer stable element names because they become DSL and diagnostics surface; treat element names as immutable identity, not provider-derived state.
-- Configure container elements lazily with `configureEach`.
+- Configure container elements lazily with `named`, `register`, and `configureEach`.
 - Avoid reading all container elements just to create one aggregate task; wire providers or outgoing variants instead.
 
 ## Common Mistakes
 
 - Modeling extension values as plain `var` fields or passing mutable extension objects into task actions.
-- Eagerly iterating containers with `all` or `getByName`.
+- Eagerly iterating containers with `all`, `getByName`, `findByName`, or action-style `withType(...)`.
 - Creating ad hoc mutable collections where a Gradle container would preserve lazy DSL ownership, or converting file providers to raw `File` too early.
 
 ## Source Calibration
 
-Primary upstream pages: Properties and Providers, Gradle Managed Types, Services and Service Injection, Lazy Configuration, Configuration Cache Requirements, Binary Plugins. Primary APIs: Provider, Property, HasConfigurableValue, ProviderFactory, ValueSource, FileSystemLocationProperty. Local architecture docs: ADR-0006 and provider/property architecture tests.
+Primary upstream pages: Properties and Providers, Gradle Managed Types, Collections, Services and Service Injection, Lazy Configuration, Configuration Cache Requirements, Binary Plugins, General Gradle Best Practices. Primary APIs: Provider, Property, HasConfigurableValue, ProviderFactory, ValueSource, FileSystemLocationProperty, ProjectLayout, BuildLayout, DependencyFactory. Local architecture docs: ADR-0006 and provider/property architecture tests.

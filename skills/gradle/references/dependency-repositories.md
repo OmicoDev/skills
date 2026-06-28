@@ -46,6 +46,8 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - If all modules in a repository are published with Gradle Module Metadata, a metadata-source policy can reduce network probes.
 - Maven POM or Ivy descriptors can contain a marker that redirects Gradle to matching Gradle Module Metadata; use `ignoreGradleMetadataRedirection()` only for a known broken repository or producer because it can force legacy metadata and lose variant semantics.
 - Enable Ivy dynamic resolve mode only for Ivy repositories where `revConstraint` should override `rev`; it is not a Maven or custom resolver feature.
+- Repository-level `ComponentMetadataSupplier` can provide initial metadata instead of parsing a remote descriptor; Gradle still applies component metadata rules to the supplied result, so use suppliers for repository/probe optimization and initial status or attribute data, not for variant/dependency repairs.
+- Repository-level `ComponentMetadataVersionLister` is only for dynamic selectors that need a module's available versions; fixed versions do not call it, and version-policy fixes still belong in constraints, platforms, locks, or status rules.
 
 ## Local Repositories
 
@@ -93,4 +95,4 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 
 ## Source Calibration
 
-Primary upstream pages: Declaring Repositories, Centralizing Repositories, Filtering Repository Content, Supported Metadata Formats, Supported Repository Types, Dependency Caching, Best Practices for Dependencies. Primary API: RepositoriesMode.
+Primary upstream pages: Declaring Repositories, Centralizing Repositories, Filtering Repository Content, Supported Metadata Formats, Supported Repository Types, Dependency Caching, Best Practices for Dependencies. Primary API: RepositoriesMode, MetadataSupplierAware, ComponentMetadataSupplier, ComponentMetadataVersionLister.

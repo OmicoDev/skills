@@ -13,7 +13,7 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 
 - `settings.gradle(.kts)` owns `rootProject.name`, included projects, included builds, `pluginManagement`, dependency repository policy, and catalogs.
 - Project build scripts own plugins, dependencies, source sets, tasks, publications, and extension configuration for that project.
-- Root project scripts should stay lightweight unless the root intentionally builds software.
+- Root project scripts should stay lightweight unless the root intentionally builds software or aggregates; declare shared plugin versions there, but apply source-affecting plugins only to projects that contain source.
 - Reusable conventions belong in precompiled or binary convention plugins, preferably from an included `build-logic` build; use `buildSrc` only when its automatic buildscript classpath is an intentional tradeoff.
 - Generated files, `.gradle/`, and `build/` are not source structure unless modeled as task inputs or outputs.
 
@@ -36,7 +36,7 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 - Included builds are not subprojects. Do not use `project(":included-build:module")`; depend on their external coordinates and let composite substitution replace them.
 - Included-build tasks can be invoked by fully qualified path or wired with `gradle.includedBuild("name").task(":path")`; use this for orchestration, not as a substitute for project dependencies.
 - Included builds do not share repositories, plugin management, version catalogs, `buildSrc`, or user-defined root `gradle.properties`; runtime Gradle properties from the root invocation still apply.
-- Include plugin-providing builds in settings for project build scripts; for settings plugins, prefer a separate minimal included build inside `pluginManagement { includeBuild(...) }` instead of pulling broad build logic into settings resolution.
+- Include plugin-providing builds in settings so `plugins {}` resolution can see them; do not rely on `--include-build` for modern plugin blocks. For settings plugins, prefer a separate minimal included build inside `pluginManagement { includeBuild(...) }` instead of pulling general `build-logic` into early settings resolution.
 - Default composite substitution uses project `group` and `name`. Declare substitutions explicitly when publication coordinates, artifact names, variants, or default configurations differ.
 - For local forks, keep the consumer dependency declared with the original external coordinates and include the fork with `includeBuild(...)`; if Gradle still resolves externally, check the fork's `group`, project name, version, and settings inclusion before editing repositories.
 - The main build is not auto-substituted by coordinates; use `includeBuild(".")` only when the main build's projects should also be addressable as composite substitutes.
@@ -75,7 +75,7 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 - Review generated settings, wrapper, build scripts, source layout, catalogs, lifecycle mapping, profiles, resources, dependencies, publishing, and insecure repository handling before keeping conversion output.
 - Maven conversion maps Maven `compile` scope to Gradle `api` to preserve exposed dependencies; after conversion, move implementation-only dependencies to `implementation` deliberately.
 - All build-init types set up the wrapper; review wrapper files with [runtime-and-structure.md](runtime-and-structure.md) before accepting scaffold output.
-- When converting one project into many, keep one root `settings.gradle(.kts)`, make the root build file optional/lightweight, and move shared logic into convention plugins instead of root `subprojects` mutation.
+- When converting one project into many, create a non-source root if needed, move the original source-owning build script and source directories into an app/domain subproject, keep one root `settings.gradle(.kts)`, and keep shared logic in convention plugins instead of root `subprojects` mutation.
 
 ## Structural Review
 

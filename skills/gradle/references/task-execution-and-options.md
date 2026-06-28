@@ -17,7 +17,9 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - `mustRunAfter` does not cause the predecessor to run, and `--continue` can still allow the later task to execute after the earlier task fails.
 - `shouldRunAfter` is advisory: Gradle can ignore it for ordering cycles or parallel execution when all hard dependencies are otherwise satisfied.
 - With `--continue`, a task that directly `dependsOn` a failed task still depends on that task's outcome; a consumer wired through declared producer outputs may continue after a controlled `VerificationException` when the outputs remain valid.
-- Prefer `dependsOn` for lifecycle tasks without actions. Tasks with actions should usually wire the exact producer output they consume so Gradle knows why the producer is needed.
+- `VerificationException` is for controlled validation failures after useful outputs are produced; it still stops the current task's remaining actions, so only already-written valid outputs should be consumed downstream.
+- Prefer `dependsOn` for lifecycle tasks without actions. Tasks with actions should usually wire the exact producer output they consume; `dependsOn` only says the producer must run and can over-constrain scheduling.
+- Before adding `dependsOn` to an actionable task, ask whether the relationship is really artifact flow; if so, expose the producer output as a provider-backed input instead.
 - Prefer a purpose-built lifecycle task over telling users to run `build -x test`; exclusions can remove actionable work that downstream tasks expected.
 - Do not use ordering rules to compensate for missing declared inputs and outputs.
 - Command-line task order can protect explicitly requested workflows such as `clean build`, but task dependencies still determine the precise graph; model recurring ordering or cleanup requirements in task relationships instead of relying on how humans type tasks.
@@ -40,7 +42,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 ## Lifecycle Tasks
 
 - Lifecycle tasks should normally have no actions; they collect actionable task targets through dependencies.
-- Put lifecycle tasks in groups and give them descriptions so `tasks` and `help --task` expose the intended workflows.
+- Put lifecycle and user-facing ad hoc tasks in short, existing groups and give them descriptions; ungrouped tasks are hidden from `tasks` unless `--all` is used, but they are still invokable and should not be treated as private.
 - Root lifecycle tasks are useful for CI-wide orchestration; keep project-specific work in subproject tasks or convention plugins.
 - Treat Java plugin `buildNeeded` and `buildDependents` as deprecated legacy graph shortcuts; request concrete project tasks, use test/report aggregation, or consume project artifacts through dependency resolution instead.
 - Do not list every transitive task in a lifecycle task. Depend on the meaningful target tasks and let Gradle infer their required work.

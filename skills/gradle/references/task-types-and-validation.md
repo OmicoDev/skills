@@ -14,7 +14,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use abstract task classes when exposing managed properties.
 - For Gradle mutable types such as `Property<T>` and `ConfigurableFileCollection`, expose abstract/final getters and remove setters so Gradle can track value origin.
 - Do not do expensive work in constructors.
-- Expose inputs and outputs as Gradle properties, file properties, or file collections.
+- Expose inputs and outputs as annotated Gradle properties, file properties, or file collections; reserve the runtime `inputs`/`outputs` API for ad-hoc tasks or task types you cannot change because it lacks nested, classpath, local-state, internal, and replaced-by equivalents.
 - Task outputs must be files or directories; scalar task results belong in generated files, reports, or console output.
 - Put work in `@TaskAction` methods.
 - Do not use `Project`, `SourceSet`, `Configuration`, extension objects, or mutable Gradle model objects in task actions.
@@ -38,7 +38,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use `@Input` for scalar values affecting work.
 - Use `@InputFile`, `@InputDirectory`, or `@InputFiles` for file inputs.
 - Use `@OutputFile` or `@OutputDirectory` for produced files.
-- Use `@OutputFiles` or `@OutputDirectories` only when the task really owns a collection of outputs; prefer one file/directory property for a single product.
+- Use `@OutputFiles` or `@OutputDirectories` only when the task really owns a collection of outputs; avoid `FileTree` outputs because they disable caching, and prefer one file/directory property for a single product.
 - Use `@Classpath` for JVM classpaths where order and ABI matter.
 - Use `@CompileClasspath` for Java compilation classpaths when appropriate.
 - Use `@LocalState` for task-owned state that should not be cached.

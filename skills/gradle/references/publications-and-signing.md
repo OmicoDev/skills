@@ -6,13 +6,13 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 
 - Publications define what artifacts and metadata are published.
 - Repositories define where publications are published.
-- Tasks are generated from publication and repository combinations.
+- Publishing tasks are generated from publication and repository combinations; task names include the publication name and repository name, with unnamed repositories becoming `Maven` or `Ivy`.
 - `publish` publishes defined publications to defined publishing repositories; Maven Local is reached through the separate `publishToMavenLocal` tasks.
-- Maven publication identity defaults to project `group`, project name, and project `version`; override `groupId`, `artifactId`, or `version` deliberately when published coordinates differ from project identity.
-- Maven `groupId` and `artifactId` have a restricted character set; do not let project paths or directory-derived names leak into external coordinates.
+- Maven identity defaults to project `group`, project name, and project `version`; Ivy identity defaults to `organisation`, `module`, `revision`, and `status`. Override deliberately when published coordinates differ from project identity.
+- Maven `groupId` and `artifactId` have a restricted character set; Ivy identity is looser but still rejects `/`, `\`, and control characters. Do not let project paths or directory-derived names leak into external coordinates.
 - Gradle Module Metadata carries Gradle variants and should usually be published with Gradle-built libraries.
 - Gradle Module Metadata is published alongside Maven POM or Ivy descriptors. The descriptor marker lets Gradle consumers prefer the `.module` file, while Maven and Ivy consumers still use their normal descriptors in degraded mode.
-- Maven POM customization should be narrow and intentional.
+- Maven POM and Ivy descriptor customization should be narrow and intentional; descriptor XML hooks can create invalid external metadata.
 
 ## Metadata Checks
 
@@ -43,7 +43,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - Use `generatePomFileFor<PubName>Publication` and `generateMetadataFileFor<PubName>Publication` to inspect descriptors without publishing.
 - Use dry-run or file-backed local repository publishing before remote release; then consume the module from a fixture when metadata, variants, relocation, or plugin markers changed.
 - Use `versionMapping` when a release should publish resolved versions, especially with dynamic versions, rich versions, or dependency locking. When locking affects published dependencies, prefer publishing the locked/resolved versions deliberately.
-- Do not assume `maven-publish` can deploy directly to Maven Central's current process; check the required Central publishing plugin/workflow.
+- Do not assume `maven-publish` can deploy directly to Maven Central: since June 30, 2025, Central requires a dedicated publishing plugin/workflow instead of the legacy Maven Deploy protocol.
 
 ## Release Safety
 
@@ -63,7 +63,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - On Gradle 9+, generated OpenPGP signature version follows the signing key version; if a repository or downstream verifier rejects signatures, inspect key version support before assuming Gradle emits v4 signatures.
 - Sign release publications when the target repository requires it; avoid signing ordinary PR builds unless CI intentionally exercises release publishing.
 - Source signing keys and passwords from CI secrets or user-local properties.
-- Prefer in-memory ASCII-armored keys or subkeys in CI so private key material does not need a committed or cached keyring file.
+- Prefer in-memory ASCII-armored keys in CI; in-memory subkeys also need `signingKeyId`, while `GnupgSignatory` delegates local signing to installed GnuPG or gpg-agent.
 - Sign publications when release consumers need all artifacts and generated metadata signed; publication signing wires publish tasks to `Sign` and distributes signatures automatically. Sign task outputs or configurations only for non-publication workflows.
 - Signing a publication automatically attaches the signature artifacts to that publication; signing configurations or tasks writes signature artifacts to the `signatures` configuration.
 - Only archive-producing tasks are directly signable as task outputs.
@@ -76,15 +76,15 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - A publishable plugin needs plugin ID, implementation class, `group`, and `version`; the `gradlePlugin.plugins` block name is local build identity, while `id` and generated marker coordinates are consumer-facing.
 - The plugin marker module is what lets consumers resolve `plugins { id("...") }`; if a plugin was published without marker artifacts, consumers need `pluginManagement.resolutionStrategy` or a corrected publication.
 - Plugin Publish Plugin 1.0+ auto-applies `java-gradle-plugin` and `maven-publish`, publishes sources/Javadoc jars, and signs plugin artifacts when the Signing plugin is applied.
-- Treat `validatePlugins`, file-backed repository fixture consumption, and `publishPlugins --validate-only` as separate gates: plugin implementation quality, marker/resolution behavior, and Portal metadata.
+- Treat `validatePlugins`, file-backed repository fixture consumption, and `publishPlugins --validate-only` as separate gates: plugin implementation quality, marker/resolution behavior, and Portal metadata; Portal validation does not bypass approval.
 - Before remote publishing, consume the locally published plugin through `pluginManagement.repositories` from a fixture build so marker metadata, implementation class, variants, sources/Javadoc, and checksums are tested together.
-- Keep Plugin Portal credentials in user-local Gradle properties or CI environment variables such as `GRADLE_PUBLISH_KEY` and `GRADLE_PUBLISH_SECRET`, not in project files.
+- Keep Plugin Portal credentials in user-local Gradle properties (`gradle.publish.key`, `gradle.publish.secret`) or CI environment variables (`GRADLE_PUBLISH_KEY`, `GRADLE_PUBLISH_SECRET`), not in project files.
 - Published plugin builds should treat stricter `validatePlugins` findings as release blockers.
 - Keep plugin publication separate from ordinary library publication unless the project intentionally publishes both.
 
 ## Failure Triage
 
-- Missing artifact: inspect publication component and generated tasks.
+- Missing artifact or publish task: inspect the component, publication name, repository name or implicit `Maven`/`Ivy` name, and generated tasks.
 - Wrong POM metadata: inspect identity, dependency versions, and POM customization.
 - Published POM or Ivy descriptor still shows declared/dynamic versions after locks or resolution rules: configure `versionMapping` with `fromResolutionResult()` or `fromResolutionOf(...)`, then inspect the generated descriptor before publishing.
 - Publication warning about lost Gradle semantics: inspect constraints, rich versions, capabilities, feature variants, and custom components.

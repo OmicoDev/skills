@@ -12,7 +12,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Isolated Projects builds on configuration-cache infrastructure, but project isolation violations and cache reuse failures are different symptoms; read [isolated-projects.md](isolated-projects.md) when cross-project mutable access or IDE model caching owns the issue.
 - The cache entry is local project state under `.gradle/configuration-cache`; do not treat deleting it as a durable repair.
 - Configuration cache can be reused by local hot and cold daemons, but it is not a shared cache between developers or CI machines.
-- Report silence is not proof that reuse should happen; check the status page for not-yet-implemented features such as source dependencies that can disable configuration cache without reporting problems.
+- Report silence is not proof that reuse should happen; check the status page for not-yet-implemented features such as source dependencies or TestKit builds with Java agents.
 
 ## Enablement
 
@@ -36,10 +36,10 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Treat unsafe input-ignore properties as temporary third-party-plugin workarounds, not repairs.
 - Read environment variables and system properties through providers when they affect configuration; query concrete names or provider-backed prefixes because enumerating all values, including `.values()`, makes the whole set a configuration-cache input.
 - Use provider-backed process APIs for simple configuration-time process output and `ValueSource` when input selection or parsing is more complex.
-- `ValueSource` tracks the returned value, not every environment variable, file, process, or network read inside `obtain()`.
+- `ValueSource` tracks the returned value, not every environment variable, file, process, or network read inside `obtain()`; do not use `BuildService` providers, or providers derived with `map`/`flatMap`, as configuration-time parameters to invalidate the cache.
 - Do not implement `ValueSource.getParameters()` yourself; use `ValueSourceParameters.None` when no parameters are needed, and inject only supported services such as `ExecOperations`.
 - `ValueSource` should return an effectively immutable value, and `obtain()` must stay fast because configuration-time queries run on every build to decide cache reuse.
-- Secrets need care because configuration cache can persist model state.
+- Secrets used as configuration inputs can be serialized under `.gradle/configuration-cache`; prefer `GRADLE_USER_HOME/gradle.properties` with restricted access because Gradle fingerprints that file instead of storing its contents.
 
 ## Report-Driven Repair
 
@@ -49,8 +49,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Gradle property sources can invalidate configuration cache entries even when the specific source is not listed in the report.
 - Fix store-time problems first, then load-time problems.
 - Treat "entry discarded" as evidence that reuse was prevented for this run. Fix the owner or declare a temporary incompatible task; deleting `.gradle/configuration-cache` only removes evidence.
-- Keep secrets out of serialized model state; follow Gradle's encryption-key guidance when credentials must participate.
-- If shared environments provide configuration-cache encryption keys, keep `GRADLE_ENCRYPTION_KEY` stable across intended reuse boundaries.
+- Keep secrets out of shared configuration-cache entries unless the environment supplies equivalent protection; when `GRADLE_USER_HOME` is shared across machines, provide a valid and stable `GRADLE_ENCRYPTION_KEY` across intended reuse boundaries.
 
 ## Task State Rules
 
@@ -72,7 +71,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Replace `System.getenv(...)` or `System.getProperty(...)` reads during configuration with provider-backed reads.
 - Replace simple external process reads during configuration with `providers.exec` or `providers.javaexec`; use `ValueSource` when the input selection is more complex.
 - Treat configuration-time `providers.exec`, `providers.javaexec`, and `ValueSource` queries as cache-reuse checks, not memoized process results; keep them fast because they run on every build that evaluates cache validity.
-- Replace `BuildListener`, `TaskExecutionListener`, `buildFinished`, and broad lifecycle callbacks with build services registered through `BuildEventsListenerRegistry` or Flow actions; only pass supported `BuildService` providers to task-completion listeners. Route details to [build-services-and-lifecycle.md](build-services-and-lifecycle.md).
+- Replace `BuildListener`, `TaskExecutionListener`, `buildFinished`, and broad lifecycle callbacks with build services registered through `BuildEventsListenerRegistry` or Flow actions; task-completion listeners must use providers returned directly by `registerIfAbsent` or `getService`. Route details to [build-services-and-lifecycle.md](build-services-and-lifecycle.md).
 - Replace task-to-task instance references with declared inputs, outputs, or provider values.
 - Move complex ad hoc `doLast` closures into typed task classes when they need injection or validation.
 - Isolate third-party plugin blockers from local build logic blockers so rollout can proceed per workflow.
@@ -91,4 +90,4 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 
 ## Source Calibration
 
-Primary upstream pages: Configuration Cache, Configuration Cache Requirements, Debugging and Troubleshooting the Configuration Cache, Isolated Projects.
+Primary upstream pages: Configuration Cache, Configuration Cache Requirements, Debugging and Troubleshooting the Configuration Cache, Configuration Cache Status, Isolated Projects.

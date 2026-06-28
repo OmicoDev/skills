@@ -16,7 +16,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - On Gradle 9+, direct `ValidatePlugins` usage needs the Java Toolchains service, supplied by `jvm-toolchains` or JVM plugins such as `java-library`; its `launcher` must also run on a Java version supported by the Gradle daemon.
 - For plugin projects on Gradle 9.4+, `java-gradle-plugin` exposes `gradleApi()` as `compileOnlyApi`; register extra test source sets with `gradlePlugin.testSourceSets(...)` or add explicit `gradleApi()` when custom lanes no longer see Gradle API types.
 - Published plugin builds should treat stricter `validatePlugins` checks as release gates; enable them for local build-logic projects when preparing code for publication.
-- Manual composite-build testing is useful for exploration, but it is not a substitute for automated plugin tests.
+- Script-local custom tasks or plugins are prototypes; once extracted into `buildSrc`, included `build-logic`, or a plugin project, use composite builds for manual tryouts but add automated TestKit functional tests instead of treating manual runs as release evidence.
 
 ## TestKit Model
 
@@ -40,6 +40,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - Use `run()` when the test intentionally inspects the returned result without treating success or failure as the API-level expectation.
 - Assert task outcomes, output, logs, generated files, reports, and diagnostics according to the behavior under test.
 - Assert explicit task paths such as `result.task(":verifyUrl")`; a `null` task result means the task was not part of the executed build, not that it had the wrong outcome.
+- Prefer `BuildResult.getOutput()` for assertions. Use `forwardOutput()` only for live diagnostics because it merges stdout and stderr and replaces previous stream-specific forwarding; use `forwardStdOutput(...)` and `forwardStdError(...)` when the test needs separated streams.
 - Do not share one `GradleRunner` instance across concurrent tests; create separate runner instances for parallel fixture lanes.
 - Use `withGradleVersion`, `withGradleInstallation`, or `withGradleDistribution` for cross-version plugin tests; otherwise the runner normally uses the Gradle version building or importing the plugin project, so the test proves only that default execution lane.
 - `withGradleVersion(...)` and remote `withGradleDistribution(...)` can download Gradle distributions into the Gradle User Home seen by the test JVM; for offline or hermetic CI, preseed that cache, set `gradle.user.home`/`GRADLE_USER_HOME` deliberately, or use `withGradleInstallation(...)` or a local distribution URI.
@@ -62,6 +63,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - Include configuration-cache and build-cache fixture coverage when the plugin advertises support for those modes.
 - Tests inside an included `build-logic` build do not run just because the root build needs build-logic artifacts; invoke `:build-logic:check` or wire CI explicitly.
 - Do not rely on machine-local init scripts, default Gradle properties, ambient repositories, or user home state in fixtures.
+- When behavior under test depends on init scripts or init plugins, pass an explicit `--init-script`/`-I` or create fixture-owned init files in the test Gradle User Home.
 - Prefer local test repositories, included builds, or generated fixtures over live network dependencies.
 
 ## Symptom Map
@@ -77,4 +79,4 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 
 ## Source Calibration
 
-Primary upstream pages: Testing Plugins, Testing Build Logic with TestKit, Best Practices for Testing Gradle Plugins, Java Gradle Plugin Development Plugin, JVM Test Suite Plugin, Build Cache, GradleRunner API, BuildResult API, Gradle 6 Upgrade Guide, Gradle 9 Upgrade Guide.
+Primary upstream pages: Testing Plugins, Testing Build Logic with TestKit, Best Practices for Testing Gradle Plugins, Initialization Scripts and Init Plugins, Java Gradle Plugin Development Plugin, JVM Test Suite Plugin, Build Cache, GradleRunner API, BuildResult API, Gradle 6 Upgrade Guide, Gradle 9 Upgrade Guide.

@@ -12,6 +12,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Read [plugin-problem-reporting.md](plugin-problem-reporting.md) for Problems API diagnostics, problem IDs/groups, rich failures, and problems reports.
 - Read [plugin-testing.md](plugin-testing.md) for plugin unit, integration, functional, TestKit, GradleRunner, and cross-version tests.
 - Read [publications-and-signing.md](publications-and-signing.md) for Plugin Portal publishing or plugin marker artifact expectations.
+- Read [ecosystem-integrations.md](ecosystem-integrations.md) for Tooling API custom models, IDE integration, and Test Event Reporting API.
 - Read [configuration-cache.md](configuration-cache.md) when task/plugin code captures unsupported model state.
 
 ## Scope Boundary
@@ -23,6 +24,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Structured plugin diagnostics belong in [plugin-problem-reporting.md](plugin-problem-reporting.md).
 - Plugin test design and TestKit fixtures belong in [plugin-testing.md](plugin-testing.md).
 - Publication metadata and signing belong in [publications-and-signing.md](publications-and-signing.md).
+- Tooling API custom models, IDE import, and custom test event reporting belong in [ecosystem-integrations.md](ecosystem-integrations.md).
 
 ## Plugin Form
 
@@ -31,6 +33,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Precompiled script plugin IDs come from the script file name plus an optional Kotlin package; `.settings.gradle(.kts)` targets `Settings`, `.init.gradle(.kts)` targets `Gradle`, and plain `.gradle(.kts)` targets `Project`.
 - External plugins used inside precompiled script plugins must be on the plugin project's implementation classpath; `version "..."` and `apply false` are not valid inside the precompiled script plugin's own `plugins {}` block.
 - Convention plugins encode build policy applied by participating projects.
+- Choose binary plugin targets by owner: `Plugin<Gradle>` for init/runtime policy, `Plugin<Settings>` for build topology and plugin/repository resolution, and `Plugin<Project>` for tasks, dependencies, extensions, source sets, and publications.
 - Binary plugins fit reusable behavior, extensions, custom tasks, services, diagnostics, custom dependency blocks, variants, and publishing.
 - Keep capabilities separate from conventions: a base plugin can expose extensions, tasks, and services without forcing defaults, while a convention plugin can apply the base plugin and set organization defaults.
 - On Gradle 9+, the old `Convention` API is removed; replace `Project.getConvention()`, `Task.getConvention()`, and plugin convention objects with extensions or direct task configuration.
@@ -39,10 +42,11 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 
 - Expose user intent through extensions and containers.
 - Register tasks lazily and wire extension properties to task properties.
-- React to other plugins with `plugins.withId(...)` or `pluginManager.withPlugin(...)` when the consuming project may or may not apply the expected plugin; do not check plugin presence in `afterEvaluate`, and apply another plugin only when that dependency is part of this plugin's contract.
+- Do not rely on plugin application order across scripts, projects, convention plugins, or included builds. If another plugin is mandatory, apply it inside `Plugin.apply`; if integration is optional, react with `pluginManager.withPlugin(...)`, `plugins.withId(...)`, or type-based `plugins.configureEach(...)`, which handle already-applied and later-applied plugins without `afterEvaluate` ordering assumptions.
 - Use the injectable `BuildFeatures` service when plugin behavior should adapt to Gradle feature state such as configuration cache or Isolated Projects; `requested` is a possibly-absent `Provider<Boolean>` for user intent/reporting, while `active` is the effective status to gate incompatible behavior.
 - Keep plugin IDs stable and namespace them by ownership.
 - Avoid internal Gradle APIs; prefer public services and model APIs.
+- Do not infer API stability from an importable `org.gradle` type; only documented public packages and services are stable, and `.internal.` packages, `Internal`, or `Impl` types are not plugin contracts.
 - Keep external dependencies in plugins minimal to reduce classpath conflicts.
 - Validate behavior with TestKit before publishing or applying broadly.
 - Use `java-gradle-plugin` for plugin projects instead of hand-maintaining descriptors, `gradleApi()`/`compileOnlyApi` wiring, validation, marker publications, and TestKit classpath metadata.
@@ -71,8 +75,9 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Use plugin variants only when one plugin must support different Gradle API levels or implementation dependencies.
 - Set the Gradle plugin API version attribute on consumable variant configurations so plugin resolution can choose the best compatible variant.
 - The selected plugin variant targets the highest Gradle API version that does not exceed the current build's Gradle version.
+- Version-specific plugin variants are selected for plugin/buildscript/build-logic and plugin-development classpaths; ordinary dependency resolution prefers an unversioned plugin variant when one exists.
 - Keep variant implementation classes, descriptors, capabilities, and `gradleApi()` wiring consistent across variants.
 
 ## Source Calibration
 
-Primary upstream pages: Introduction to Plugins, Binary Plugins, Precompiled Script Plugins, Convention Plugins, Java Gradle Plugin Development Plugin, Build Features API.
+Primary upstream pages: Introduction to Plugins, Binary Plugins, Binary Plugin Development, Precompiled Script Plugins, Convention Plugins, Java Gradle Plugin Development Plugin, Public Gradle APIs, Services and Service Injection, Build Features API.

@@ -34,7 +34,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - A transform may produce zero, one, or many output artifacts; registered outputs replace the input artifacts in registration order.
 - Add `@CacheableTransform` only when outputs are deterministic and relocatable. Cacheable transforms need normalization such as `@PathSensitive` on `@InputArtifact` and `@InputArtifactDependencies`, but absolute path sensitivity is invalid for artifact transforms.
 - Use `@DisableCachingByDefault(because = "...")` when a transform is intentionally not cacheable; missing cacheability intent is a validation signal for transform actions just like task types.
-- Inject `@InputArtifactDependencies` only when transitive dependency files genuinely affect the conversion; Gradle injects those files as an input collection and cacheable transforms must normalize them.
+- Declare `@InputArtifactDependencies` as an abstract `FileCollection` getter only when transitive dependency files genuinely affect the conversion; it can force extra resolution/downloads, and cacheable transforms must normalize those injected dependency files.
 - Incremental transforms can inject `InputChanges`, but only the input artifact is incremental.
 - Keep transforms parallel-safe; the same transform may run concurrently for different artifacts.
 
@@ -59,6 +59,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 
 - Use `artifactTransforms` in the project that registers or resolves transforms; the root report can be empty when subprojects own the registrations.
 - The `artifactTransforms` report shows transform type, cacheable status, and `from`/`to` attributes; confirm those facts before changing cache policy or attribute wiring.
+- Treat `artifactTransforms` as registration evidence, not execution evidence; prove execution by resolving the consuming configuration or artifact view and inspecting resulting files, task inputs, transform cache behavior, or build-operation evidence.
 - Confirm requested artifact attributes from the resolvable configuration or artifact view before changing transform registration.
 - Transform never runs: an existing artifact set already matches, the transform is registered in the wrong project, attributes do not connect, or the input variant has no artifacts.
 - Chain stops after an earlier transform: confirm the previous transform produced at least one registered output artifact; empty output skips downstream transforms.
@@ -70,4 +71,4 @@ Read this when: artifact transform implementation, registration, chaining, sched
 
 ## Source Calibration
 
-Primary upstream pages: Artifact Transforms, Artifact Views, Validation Problems, TransformAction API, TransformOutputs API.
+Primary upstream pages: Artifact Transforms, Artifact Views, Build Cache, Build Cache Debugging, Validation Problems, TransformAction API, TransformOutputs API.

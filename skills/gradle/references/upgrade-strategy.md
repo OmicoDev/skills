@@ -23,6 +23,7 @@ Then run representative tasks. `help` alone proves startup, not build correctnes
 ## Upgrade Evidence Gate
 
 - Prefer the latest minor or patch in the current major before jumping majors; if a direct latest-minor upgrade fails, bisect by minor versions to isolate Gradle or plugin incompatibility.
+- Treat Gradle release support as a moving line: older minors in the latest major become EOL after a newer minor, the previous major receives only critical/security fixes after a new major, and two-majors-back lines should not be upgrade targets.
 - For cross-major upgrades, clear the previous major's within-line upgrade guide and deprecations before reading the target-major guide; removals often correspond to warnings from the older line.
 - Capture deprecation evidence before changing the wrapper. Prefer Build Scan deprecation views when upload policy permits; otherwise capture `--warning-mode=all` output.
 - Use `--warning-mode=fail` as a post-cleanup regression gate, not the first discovery command; keep `--warning-mode=all` or Build Scan evidence for owner attribution.

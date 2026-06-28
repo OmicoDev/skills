@@ -17,7 +17,7 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - The Gradle runtime JVM runs Gradle and plugins.
 - Java toolchains select JVMs for compile, test, javadoc, and custom Java tool tasks.
 - Toolchain coverage differs by JVM plugin: Java covers compile, test, and Javadoc; Groovy compilation is covered but Groovydoc is not; Scala covers compilation and Scaladoc.
-- Prefer toolchains over `JAVA_HOME` or `sourceCompatibility`/`targetCompatibility` alone.
+- Prefer toolchains over `JAVA_HOME`, IDE Gradle JVM settings, or `sourceCompatibility`/`targetCompatibility` alone; IDE settings choose how Gradle is launched inside the IDE, not the project compile/test toolchain.
 - Toolchains choose the JDK; they do not prevent accidental use of newer Java APIs. Use `--release` for Java API targeting when compiling Java sources for older platforms.
 - A non-empty `JavaToolchainSpec` must set `languageVersion`; vendor, implementation, and native-image capability are refinements. An empty spec selects the current Gradle JVM, not a reproducible project toolchain.
 - Diagnose with `./gradlew -q javaToolchains` when available in the build; the report shows detection source, metadata, auto-detection/download state, and invalid installations.
@@ -51,12 +51,12 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - `Test` tasks run in forked JVMs. Increase `maxParallelForks` only when tests isolate filesystem, ports, services, and static state; use `org.gradle.test.worker` for per-fork resources.
 - Use `forkEvery` only to contain leaky tests or frameworks; low nonzero values create many fresh test JVMs and can dominate test time.
 - Use `useJUnitPlatform()`, TestNG, or other framework configuration explicitly when required. JUnit Jupiter needs platform execution plus Jupiter, Platform, and launcher runtime dependencies; JUnit 3/4 on the platform needs Vintage.
-- Use test filtering for narrow execution, but do not commit local filters accidentally. `--test-dry-run` proves selected tests without executing them.
+- Use test filtering for narrow execution, but do not commit local filters accidentally. `--test-dry-run` proves selected tests without executing them and still generates reports for inspection.
 - `--tests` filters are additive with build-script filters and wildcards are text-based, not package-depth aware; use command-line filters for temporary local selection and keep persistent script filters intentional.
 - When `scanForTestClasses = false`, `includes` and `excludes` own class selection; without patterns Gradle falls back to `**/*Tests.class` and `**/*Test.class` while excluding `**/Abstract*.class`. JUnit Platform ignores `scanForTestClasses`.
 - Use `ignoreFailures` only when downstream tasks must continue after a failing `Test` task; it does not skip remaining detected tests or turn failures into passes.
-- `failFast` saves time but can leave partial test reports; use `--continue` when aggregate test or coverage reports must be produced even after failures.
-- JUnit XML `mergeReruns` changes reporting of pass-on-retry failures; it does not add retry behavior. Keep retry policy in the framework or a retry plugin.
+- `failFast` saves time but can leave partial test reports; use `--continue` for aggregate reports after failures, and ensure report tasks do not depend on failed task dependencies.
+- JUnit XML `mergeReruns` changes reporting of pass-on-retry failures and groups executions by reported test name; it does not add retry behavior. Keep retry policy in the framework or a retry plugin.
 - Configure fork options, logging, reports, debug ports, and task-level framework options on `Test` tasks or suite targets; `--debug-jvm` starts the test JVM suspended on port 5005 unless `debugOptions` changes it.
 - Single-project HTML reports include all `Test` tasks that ran in that project; cross-project test or coverage reports should use `test-report-aggregation` or `jacoco-report-aggregation` rather than file-tree collection from subproject `build/` directories.
 - Aggregation plugins resolve verification variants by suite name through `testReportAggregation` or `jacocoAggregation`. They need JVM Test Suite producers for automatic report objects; manually register reports when the aggregation project does not apply `jvm-test-suite`, and keep `com.android.application` outside the current aggregation-plugin boundary.

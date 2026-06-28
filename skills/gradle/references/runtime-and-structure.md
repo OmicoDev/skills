@@ -20,15 +20,16 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 
 - The wrapper is the Gradle version of record. Prefer wrapper commands over globally installed `gradle`.
 - Treat wrapper scripts and `gradle-wrapper.jar` as pre-build executable trust roots; dependency verification, repository policy, and build logic safeguards do not run before them.
+- If wrapper files are missing, generate them with a trusted installed Gradle or trusted Gradle distribution by running the `wrapper` task in the project; do not download or copy unaudited wrapper scripts or JARs into the repository.
 - Upgrade with the `wrapper` task, not only by editing `distributionUrl`; run it once for properties and again when scripts/JAR should be refreshed.
 - Since Gradle 9, `gradle-wrapper.properties` requires `X.Y.Z` versions even when the `wrapper` task can resolve labels or major/minor selectors.
 - Use `-bin` distributions by default; choose `-all` only for offline or air-gapped source/docs needs, or when policy explicitly requires the larger distribution.
-- Use `distributionSha256Sum` for the distribution ZIP; validate `gradle-wrapper.jar` separately because a ZIP checksum does not prove the checked-in JAR.
+- Use `distributionSha256Sum` from the Gradle release checksums for the distribution ZIP; validate `gradle-wrapper.jar` separately because a ZIP checksum does not prove the checked-in JAR.
 - `distributionSha256Sum` is checked when the wrapper downloads the distribution; verify checksum policy with a clean or controlled Gradle user home when an existing cached distribution could mask the check.
 - If `gradle-wrapper.properties` contains `distributionSha256Sum`, keep wrapper task configuration or CLI checksum input in sync when regenerating wrapper properties.
 - For private wrapper distributions, use HTTPS plus host-scoped credentials or tokens in user/CI properties. Do not commit shared credentials in `distributionUrl`.
 - When refreshing Gradle 9.5+ wrapper or application Windows scripts, review custom `.bat` callers/templates for changed environment scoping, `CALL`/exit behavior, and removed exit-environment-variable assumptions.
-- Treat `./gradlew wrapper --gradle-version <version>` as a mutating upgrade command. Review scripts, JAR, properties, URL validation, retry/timeout policy, checksums, and CI entrypoints together.
+- Treat `./gradlew wrapper --gradle-version <version>` as a mutating upgrade command. Review scripts, JAR, properties, URL validation, retry/timeout policy, checksums, and CI entrypoints together; a Wrapper JAR checksum matching a different Gradle version usually means properties changed without regenerating the JAR.
 
 ## Runtime Boundaries
 
@@ -72,6 +73,7 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 
 - Init scripts run during initialization before settings and project scripts.
 - Use them for environment policy: enterprise repositories, plugin resolution rules, global listeners, init plugins, or CI-wide defaults.
+- Treat init scripts and init plugins as production code because they affect every build attached to that user home, Gradle installation, CI image, or explicit `--init-script` invocation.
 - Discovery order is repeated command-line `--init-script`/`-I`, `GRADLE_USER_HOME/init.gradle(.kts)`, alphabetical `GRADLE_USER_HOME/init.d/*.init.gradle(.kts)`, then alphabetical `GRADLE_HOME/init.d/*.init.gradle(.kts)`.
 - All discovered init scripts run; do not assume a later script replaces an earlier one.
 - Do not hide repository-specific build behavior in init scripts when a checked-in convention plugin can own it.
@@ -94,4 +96,4 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 
 ## Source Calibration
 
-Primary upstream pages: Gradle Wrapper, Gradle Daemon, File System Watching, Continuous Builds, Directory Layout, Build Environment, Build Lifecycle, Initialization Scripts and Init Plugins, Best Practices for Security. Local architecture docs: Gradle Runtimes, Build Execution Model, Build State Model, ADR-0007 Java prerequisite.
+Primary upstream pages: Gradle Wrapper, Gradle Daemon, File System Watching, Continuous Builds, Directory Layout, Build Environment, Build Lifecycle, Initialization Scripts and Init Plugins, Best Practices for Performance, Best Practices for Security. Local architecture docs: Gradle Runtimes, Build Execution Model, Build State Model, ADR-0007 Java prerequisite.

@@ -40,7 +40,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Use `allVariants` for every variant, `withVariant(name)` for a named variant or Ivy configuration, and `addVariant(name)` or `addVariant(name, base)` to introduce a new variant.
 - A rule may change variant attributes, capabilities, dependencies, dependency constraints, and files.
 - Use `maybeAddVariant(name, base)` instead of `addVariant(name, base)` in broad `all(...)` rules when the base may not exist; use strict `addVariant` for targeted modules where a missing base should expose a bad metadata assumption.
-- `addVariant(name, base)` carries over base metadata, but file intent still needs to be explicit: remove or replace copied files when modeling classifier artifacts, and add files directly when creating an empty variant.
+- Treat `addVariant` file state as part of the rule contract: empty variants need files added directly, while variants derived from a base may expose inherited artifacts, so enter `withFiles` and either remove/replace copied files for classifier replacements or keep and supplement them for additive runtime artifacts.
 - Maven POM metadata is derived into library variants, sources/javadoc variants, and platform/enforced-platform variants from dependency management.
 - Ordinary Maven dependencies request library variants. `platform(...)` and `enforcedPlatform(...)` request the platform-derived variants and import constraints instead of ordinary dependencies.
 - POM dependency management is not converted into constraints for ordinary library variants.

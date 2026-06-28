@@ -30,7 +30,7 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - When a problem points at user-authored content, set `fileLocation`, `lineInFileLocation`, or `offsetInFileLocation` instead of burying paths in text; line and column locations are one-indexed, while global offsets are zero-indexed.
 - Use `stackLocation()` only when the reporting call stack is the actual problem location; explicit file locations are better for scripts, catalog files, generated inputs, or external configuration.
 - Put required user action in labels, details, `documentedAt(...)` links, locations, and solutions. Use stable documentation URLs for reusable explanations, and additional data for tool clients rather than the only human-readable fix.
-- Keep `AdditionalData` to simple values, collections, and Provider API property types; do not attach live Gradle model objects as machine-only context.
+- Treat `AdditionalData` as serializable client payload: keep it to simple values, collections, composites, and Provider API property types, and do not attach live Gradle model objects. Tooling API custom-data view types should expose plain values; Provider API properties map to their resolved value types.
 
 ## Reporting Boundaries
 
@@ -48,20 +48,22 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - Preserve the console problem text, problem ID/group when visible, and the exact HTML report path Gradle prints when diagnosing.
 - The HTML problems report is generated only when problems are reported; generation is enabled by default and can be disabled with `--no-problems-report` or `org.gradle.problems.report=false`.
 - `AdditionalData` is for client integration and is not rendered in CLI or HTML problem output.
-- For Tooling API checks, use root-operation problem progress events for reported and summarized problems; use `withDetailedFailure()` or `FailureResult`/`GradleConnectionException.getFailures()` when verifying problems attached to fatal failures.
+- For Tooling API checks, listen for `SingleProblemEvent`/`ProblemSummariesEvent`; for fatal failures, call incubating `LongRunningOperation.withFailureDetails()` and inspect `FailureResult.getFailures()` or `GradleConnectionException.getFailures()` recursively, then read each `Failure.getProblems()`.
 - Test fatal and recoverable paths separately because `throwing(...)` changes task/build outcome.
-- For duplicate problems, assert representative `Problem` events plus `ProblemSummariesEvent` behavior; each `ProblemSummary.count` is the follow-up occurrence count beyond Gradle's event threshold, not the total number of matching problems.
+- For duplicate problems, assert representative `SingleProblemEvent`s plus `ProblemSummariesEvent`; Gradle sends the summary event before build finish even when empty, and each `ProblemSummary.count` is the follow-up occurrence count beyond Gradle's event threshold, not the total number of matching problems.
 
 ## Failure Map
 
 - User cannot act on the problem: add a label, details, and solution before adding machine-only extra data.
 - Explicit severity has no effect: choose `report(...)` for recoverable diagnostics and `throwing(...)` for fatal failures.
 - Duplicate warnings spam output: check whether problem IDs/groups are stable enough for summarization.
+- Recoverable problem absent from console output: rerun with `--warning-mode=all` before changing reporting code, then inspect problem events or the HTML report when console policy still hides it.
 - IDE or Tooling API cannot correlate diagnostics: avoid changing IDs and groups for the same logical problem.
 - Problems report missing: confirm a problem was actually reported and that `--no-problems-report` was not used.
+- Problems report path differs from an expected location: trust the path Gradle prints for that invocation and check `--problems-report`, `--no-problems-report`, or `org.gradle.problems.report` before changing plugin code.
 - Recoverable problem absent from `GradleConnectionException.getFailures()`: the operation did not fail; listen for root-operation problem progress events instead.
 - Test asserts console text only: prefer checking task outcome plus stable problem metadata or report evidence when accessible.
 
 ## Source Calibration
 
-Primary upstream pages: Reporting Plugin Problems with the Problems API, Problems HTML Report, Tooling API problem events. Primary APIs: Problems, ProblemReporter, ProblemSpec, ProblemId, ProblemGroup, AdditionalData, LongRunningOperation.
+Primary upstream pages: Reporting Plugin Problems with the Problems API, Problems HTML Report, Command Line Interface, Build Environment, Tooling API problem events. Primary APIs: Problems, ProblemReporter, ProblemSpec, ProblemId, ProblemGroup, AdditionalData, LongRunningOperation, SingleProblemEvent, ProblemSummariesEvent, Failure.

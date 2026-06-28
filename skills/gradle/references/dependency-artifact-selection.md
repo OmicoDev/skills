@@ -46,7 +46,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, va
 - If the graph variant is correct and only the files differ, add or select an artifact set before creating a new component variant.
 - Expose generated project artifacts with consumable configurations, attributes, capabilities, and task-backed artifacts under `build/`.
 - Consume custom project artifacts through resolvable configurations with matching attributes, not by depending on another project's task path or files.
-- Use separate declarable and resolvable configurations when a consumer needs a custom artifact graph.
+- Use separate declarable and resolvable configurations when a consumer needs a custom artifact graph; declare dependencies on the bucket configuration and have the resolvable configuration extend it with the requested attributes.
 - Keep producer and consumer responsibilities separate: the producer publishes the artifact contract, while the consumer declares a project dependency and resolves the requested attributes.
 - Do not publish multiple consumable configurations with identical attributes and capabilities; Gradle cannot choose between equivalent variants.
 - Use compatibility rules for deliberate fallbacks, such as accepting a regular jar when an instrumented jar is unavailable.

@@ -34,6 +34,8 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Let only trusted branches, jobs, or one primary matrix leg write shared Gradle user home caches; feature branches and secondary matrix legs should usually read existing cache entries without updating them.
 - On GitHub Actions, model that policy with `setup-gradle` cache modes: read-only for feature branches or non-primary matrix legs, write-only only for deliberate cache seeding, and disabled when cache contents are not trusted.
 - Prefer dependency-cache seeding or read-only dependency caches for ephemeral containers instead of sharing one mutable Gradle user home concurrently.
+- On archive-upload cache systems, prefer wrapper-only or read-only dependency caches on shared ephemeral runners; reserve full Gradle User Home caches for dedicated/self-hosted runners or persistent volumes where upload/download cost is lower than reuse.
+- When a CI cache can only save workspace paths, relocate `GRADLE_USER_HOME` under the checked-out workspace deliberately and exclude secrets, project `build/` outputs, and mutable publications from that cache.
 - Cache configuration-cache entries across CI jobs only when the build's secret model is understood and the CI cache integration provides an encryption key or equivalent protection.
 - For GitHub Actions configuration-cache reuse, provide `cache-encryption-key`; otherwise keep configuration-cache entries out of shared CI caches.
 - Do not cache secrets, local Maven publications, or temporary signing material.
@@ -41,7 +43,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 
 ## Credentials And Secrets
 
-- Read credentials through providers and CI secret storage.
+- Read credentials through provider APIs and CI secret storage; for project-property secrets in unattended builds, inject `ORG_GRADLE_PROJECT_*` rather than committing `gradle.properties`.
 - Do not commit credentials in wrapper distribution URLs, repository URLs, publishing repositories, or `gradle.properties`.
 - Use host-scoped wrapper authentication properties for private wrapper distributions.
 - Keep signing credentials and publishing credentials separate from dependency verification metadata.
@@ -82,8 +84,9 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Run representative tests on the same Gradle runtime and JDK used for release.
 - Verify publications without credentials when possible, then with release credentials in the gated job.
 - Check wrapper validation, dependency verification, lock diffs, and signing configuration before remote publish.
+- For CI release jobs that compute versions from VCS tags, fetch tags in the checkout and prevent tag-triggered recursion before blaming Gradle publishing or versioning behavior.
 - For private wrapper distributions, prefer host-scoped wrapper credentials or `wrapperToken` in CI/user properties; a token takes precedence over username/password and should not be sent to unintended hosts.
 
 ## Source Calibration
 
-Primary upstream pages: Gradle on CI, Gradle on GitHub Actions, Gradle Docker Images, Securing Gradle Builds, Best Practices for Security, Verifying Dependencies, Supported Repository Protocols, Gradle Wrapper, Maven Publish Plugin, Publishing Plugins to the Gradle Plugin Portal.
+Primary upstream pages: Gradle on CI, Gradle on GitHub Actions, Gradle on GitLab CI, Gradle Docker Images, Securing Gradle Builds, Best Practices for Security, Verifying Dependencies, Supported Repository Protocols, Gradle Wrapper, Maven Publish Plugin, Publishing Plugins to the Gradle Plugin Portal.

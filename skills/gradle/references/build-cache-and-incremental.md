@@ -16,9 +16,9 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 ## Adoption
 
 - Start with built-in cacheable tasks and local cache evidence.
-- Use remote cache in CI with clear push/pull policy. Commonly CI pushes and developer machines pull.
+- Use remote cache in CI with clear `enabled`/`push` policy: Gradle loads from local cache first, then remote cache, and stores remote hits back into the local cache.
 - Avoid pushing untrusted or developer-local outputs to shared remote cache.
-- Prefer starting remote-cache rollout on stable CI agents; developer machines usually consume CI-produced outputs before they are allowed to push.
+- Remember the defaults: local cache push is enabled, remote cache push is disabled. Enable remote push only on trusted producers such as clean CI agents.
 - Combine local and remote caches intentionally: developer local cache helps branch switching and `git bisect`, while CI local cache can mirror remote entries and reduce network transfer.
 - Treat `buildSrc` and included builds as separate builds with their own cache behavior.
 - Keep CI cache of Gradle user home separate from Gradle build cache policy.
@@ -32,7 +32,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Cross-machine misses often come from absolute paths, generated metadata, timestamps, locale/time zone, line endings, or tool installation paths.
 - Overlapping outputs disable reliable cache/up-to-date reasoning. Give each task a distinct output location unless a built-in task type models sharing.
 - Incorrect hits are more serious than misses; disable caching until undeclared inputs or non-deterministic outputs are fixed.
-- Annotation processors and code generators need special care because they often read files or classpaths not obvious from compile task inputs.
+- Annotation processors and code generators need special care because they often read files or classpaths not obvious from compile task inputs; declare processor config/resources as `JavaCompile` inputs when they affect generated sources or compiler behavior.
 - For Java compilation, an annotation processor on the compile classpath makes the processor path default to the full compile classpath and reduces compile-avoidance benefits; declare a narrow annotation processor path or disable processing when unused.
 
 ## Task Requirements
@@ -64,7 +64,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Test relocatability by comparing equivalent checkouts in different directories before trusting cross-machine reuse.
 - For cross-platform cache reuse, check file encoding, line endings, symlinks, Java vendor/implementation inputs, and generated archive reproducibility before blaming remote cache transport.
 - When environment variables affect outputs, declare them as inputs. For path-valued environment variables, prefer tracking the pointed-to file contents, directory contents, or tool version instead of a raw absolute path when relocatability matters.
-- Configure explicit file encodings for Java tools or the Gradle daemon when outputs depend on text encoding; Gradle cannot infer every task's system default encoding effect.
+- Set Gradle daemon encoding explicitly, usually `org.gradle.jvmargs=-Dfile.encoding=UTF-8`, and configure Java tools separately when outputs depend on text encoding.
 
 ## Cacheability Pitfalls
 
@@ -72,6 +72,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Do not mutate task inputs or outputs inside `doFirst`/`doLast`; runtime model changes are invisible to up-to-date and cache-key calculation when the task does not execute.
 - Avoid `outputs.upToDateWhen` as a repair for missing state modeling; declare the real inputs and outputs because cached or up-to-date outputs can change without task actions running.
 - Unknown implementation fingerprints from non-Gradle classloaders, non-serializable Java lambdas, task actions, or nested inputs disable caching; move cacheable behavior into stable task/action classes loaded by Gradle.
+- Third-party plugins can damage built-in task cacheability by adding absolute paths, volatile values, or outcome-dependent runtime inputs; inspect plugin-added inputs before changing Gradle's cache policy or built-in task settings.
 - Do not base build logic on whether a task executed. `FROM-CACHE`, up-to-date, and executed outputs must be modeled through inputs and outputs.
 - Runtime classpath normalization is declared by the consuming project/task and can ignore volatile classpath entries, such as audit `build-info.properties`, without changing the actual runtime classpath.
 - Non-repeatable upstream outputs become unstable inputs for downstream cacheable tasks. Prefer reproducible producer outputs or consumer input normalization before trying to cache a volatile producer just to stabilize downstream keys.
@@ -87,7 +88,8 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Treat developer uploads as high risk because source or output files can change while tasks execute; allow them only after task cacheability and workspace discipline are proven.
 - Disable cache use or require provenance evidence for release or audit builds when reused outputs must be traceable to the producing build.
 - Pair remote cache rollout with task validation warnings and representative clean/warm builds.
+- If HTTP remote cache operations keep failing after connection, Gradle retries then disables the remote cache for the rest of that build; diagnose transport, server, proxy, or TLS trust before changing task inputs.
 
 ## Source Calibration
 
-Primary upstream pages: Build Cache, Build Cache Concepts, Build Cache Debugging, Build Cache Performance, Build Cache Use Cases, Common Caching Problems, Incremental Build, TaskOutputs API, LocalState API.
+Primary upstream pages: Build Cache, Build Cache Concepts, Build Cache Debugging, Build Cache Performance, Build Cache Use Cases, Common Caching Problems, Incremental Build, Best Practices for Performance, TaskOutputs API, LocalState API.

@@ -37,6 +37,8 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 ## Service Injection
 
 - Inject only documented public Gradle services for the current task/plugin/settings/worker scope; internal injectable types and Gradle service-scope annotations are not plugin APIs.
+- Service availability is owner-scoped; check the public service table for the exact receiver before relying on injection.
+- Common examples differ by owner: project plugins and project-created types can use `ProjectLayout`, `WorkerExecutor`, `DependencyFactory`, `ToolingModelBuilderRegistry`, or `TestEventReporterFactory`; settings plugins use `BuildLayout`, `ToolingModelBuilderRegistry`, and `DependencyFactory`; worker actions expose a narrower worker service set.
 - Constructor injection declares service requirements up front; property getter injection defers service creation until the getter is called.
 - If an ad hoc script task needs `FileSystemOperations`, `ArchiveOperations`, or `ExecOperations` through an injected interface, treat that as a signal to extract a typed task when behavior grows.
 

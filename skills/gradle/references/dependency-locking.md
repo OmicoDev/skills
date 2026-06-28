@@ -49,6 +49,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - `--write-locks` overwrites lock state for configurations resolved in that invocation; unchanged or unvisited configurations keep their existing lock state.
 - `dependencies --write-locks` resolves only configurations reached by that invocation.
 - Prefer targeted `--update-locks` for routine upgrades.
+- `--update-locks` implies `--write-locks`; treat it as a lock-state update command, not as read-only dependency selection.
 - `--update-locks` accepts comma-separated module notations; wildcards may stand alone or appear at the end of the group or module name.
 - `--update-locks` still loads existing lock state, but filters out the targeted modules for that resolution; non-targeted locked modules continue to constrain selection.
 - Targeted lock updates still run normal resolution, so aligned platforms, constraints, conflicts, or transitive edges can update related modules too.

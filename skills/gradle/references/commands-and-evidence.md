@@ -40,13 +40,13 @@ Use the wrapper and the smallest useful command.
 
 ## Evidence Patterns
 
-- For task failures, keep task outcome, task provenance, full task path, and task type from `help --task` or the failure message.
+- For task failures, keep task outcome, task provenance, full task path, and task type from `help --task`, `tasks --provenance`, or the failure message; verification failures such as tests can omit provenance from the failure text.
 - For task selection surprises, keep the start directory, exact task token, whether it was a full path or selector, and any name-abbreviation expansion shown with `--info`.
 - For task graph surprises, prefer Gradle 9.1+ `--task-graph` when included-build edges, repeated subtrees, task types, or exact dependency parents matter more than the flat `--dry-run` execution list.
 - For dependency selection, keep the configuration name. `runtimeClasspath` and `compileClasspath` can explain different selected versions.
 - Use `dependencies` for software configurations in the selected project and `buildEnvironment` for buildscript/plugin classpath dependencies.
 - In dependency reports, `(*)` marks a repeated transitive subtree, `(c)` marks a dependency constraint, and `(n)` marks a non-resolvable dependency or configuration.
-- `dependencyInsight` explains one dependency in one configuration. Use `--all-variants` when variant data matters and `--single-path` when path noise hides the selection owner.
+- `dependencyInsight` explains one dependency in one configuration; preserve selection reasons such as `By conflict resolution`, `By constraint`, `By ancestor`, `Selected by rule`, `Forced`, or variant `Rejection` before choosing declaration, platform/constraint, rule, enforced platform, or variant owners. Use `--all-variants` when variant data matters and `--single-path` when path noise hides the selection owner.
 - For variant failures, capture the requested attributes and every candidate variant Gradle prints before changing attributes.
 - For plugin resolution, capture plugin ID, version, plugin repositories, and whether the ID is applied in settings, build scripts, or convention plugins.
 - For configuration-cache failures, keep the report path, grouped-message/task owner, detected configuration inputs, and the first local build logic class or script named by the object graph.
@@ -78,7 +78,7 @@ Use the wrapper and the smallest useful command.
 - Prefer explicit task paths such as `:subproject:test` for reproducible diagnosis. Bare task names are selectors and may run matching tasks in multiple projects depending on the start directory; reporting selectors such as `help` or `dependencies` stay scoped to the selected project.
 - Avoid `clean build` as a first command; it hides reuse behavior and costs time.
 - Use `--dry-run` or Gradle 9.1+ `--task-graph` to inspect task graph shape, not task action correctness; both disable task actions.
-- Use `--continue` only to collect multiple independent failures.
+- Use `--continue` only to collect multiple independent failures; Gradle still skips tasks whose dependencies failed, and test failures can prevent downstream coverage or reporting tasks from running.
 - Treat `--exclude-task` as a local diagnostic or workflow choice, not a model fix for bad dependencies.
 - Treat `--no-rebuild` as a narrow `buildSrc`/included-build diagnostic; it can produce wrong results when project dependencies need rebuilding.
 - Use task and project name abbreviations only in local diagnosis; keep committed scripts, docs, and reproduced commands explicit.

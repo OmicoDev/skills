@@ -18,20 +18,21 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Subproject scripts configure project-specific plugins, dependencies, tasks, publications, source sets, and tool configuration.
 - Convention plugins encode repeated project policy. Binary plugins encode reusable behavior and richer APIs.
 - Precompiled script plugins are internal convention plugins in `buildSrc` or an included `build-logic` build. Their plugin ID is derived from the filename and optional Kotlin package; Groovy precompiled scripts cannot use packages; convert to a binary plugin before publishing.
-- Precompiled script plugin suffixes choose the target: `.settings.gradle(.kts)` becomes `Plugin<Settings>`, `.init.gradle(.kts)` becomes `Plugin<Gradle>`, and plain `.gradle(.kts)` becomes `Plugin<Project>`.
+- Use suffixes to signal script target: `.settings.gradle(.kts)` backs `Settings`, `.init.gradle(.kts)` backs `Gradle` for precompiled script plugins, and plain `.gradle(.kts)` backs `Project`; discovered init scripts are conventionally named `init.gradle(.kts)`.
 
 ## Safe Authoring Defaults
 
 - Match the existing DSL and style.
 - For brand-new builds or subprojects without an established repository DSL, prefer Kotlin DSL; otherwise preserve the repository's chosen DSL.
 - Prefer `plugins {}` for static plugin application; keep it constrained, idempotent, side-effect-free, and before ordinary script body logic. Put plugin repositories, default plugin versions, and version-loading logic in settings `pluginManagement`, use catalog plugin aliases only where supported, and avoid buildscript classpath plugin wiring unless legacy constraints require it.
+- In settings scripts, keep `pluginManagement {}` before plugin requests and ordinary statements; in init scripts, keep `initscript {}` before ordinary script body when it declares the init script classpath.
 - In precompiled script plugins, put external plugin versions on the plugin project's implementation classpath; `version "..."` and `apply false` are not supported inside the precompiled script.
 - Use `buildscript {}` only for script classpath resolution. Do not create or resolve arbitrary buildscript configurations in project, settings, init, or standalone scripts.
 - Do not rely on plugin application order. If custom plugin logic requires another plugin, apply it explicitly; if integration is optional, react with `pluginManager.withPlugin(...)`, `plugins.withId(...)`, or type-based `plugins.configureEach(...)`.
 - Keep top-level build script work small; top-level statements run during configuration.
 - Prefer `tasks.register`, `tasks.named`, and `configureEach` over `create`, `getByName`, and broad eager iteration.
 - Wire task outputs into inputs/source sets with providers instead of manual `dependsOn`.
-- Inside a task registration or configuration action, mutate only that task; configure other tasks through their own providers or actions.
+- Because task configuration actions may run immediately, later, or never, mutate only that task inside its action; configure relationships or other tasks through their own providers/actions.
 - Use extensions or typed properties for configuration. Use `extra` only for legacy interop or tiny script-local values.
 - Read properties through providers when values affect configuration-cache inputs.
 - Do not use Gradle or plugin internal APIs; avoid package segments named `internal` and types ending in `Internal` or `Impl` unless you are maintaining that implementation itself.
@@ -43,12 +44,11 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Use `layout.buildDirectory.dir(...)` and `layout.projectDirectory.file(...)` instead of `file("$buildDir/...")`.
 - Use task outputs, `CopySpec`, and provider-backed file properties instead of manual filesystem work during configuration.
 - Use `providers.gradleProperty`, `providers.systemProperty`, and `providers.environmentVariable` when values affect build configuration.
-- Prefer `withType(...).configureEach` for lazy bulk configuration by type; `withType(...) {}`, `tasks.all`, `whenTaskAdded`, and task collection iteration realize tasks.
-- Prefer lazy `matching { ... }` or `configureEach` over Groovy `DomainObjectCollection.findAll(Closure)`, which eagerly evaluates containers and is deprecated in Gradle 9.4+.
-- Use `named(...)` when configuring a known task or container element.
-- Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead.
+- Prefer `withType(...).configureEach` for lazy bulk configuration by type and `named(...)` for known task or container names.
+- When filtering is unavoidable, restrict by type before `matching { ... }` and finish with `configureEach`; avoid broad `matching`, Groovy `findAll`, `tasks.all`, `whenTaskAdded`, and collection iteration.
+- Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead. If it appears necessary, limit it to final validation or diagnostics and document why providers, conventions, or plugin-application callbacks cannot express the timing.
 - `afterEvaluate` callbacks run by registration order, can see stale or default extension values, defeat task configuration avoidance when they touch tasks, and are configuration-cache hostile when they capture mutable project state.
-- If `afterEvaluate` appears necessary, limit it to final validation or diagnostics and document why providers, conventions, or `plugins.withId(...)` cannot express the timing.
+- Assume only a last or single `afterEvaluate` callback sees final state; treat missing lazy hooks as a Gradle API gap before making `afterEvaluate` design policy.
 
 ## DSL Notes
 
@@ -72,7 +72,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 
 ## Property Placement
 
-- Put Gradle runtime flags such as caching, parallelism, JVM args, and warning mode defaults in root or user `gradle.properties`.
+- Put shared Gradle runtime flags such as caching, parallelism, JVM args, file encoding, and warning mode in root or user `gradle.properties`; trial with CLI flags first and avoid committing explicit Gradle defaults as policy.
 - Put project-specific domain settings in typed extensions, not global project properties.
 - Keep secrets out of committed properties; read them through providers and CI secret storage.
 - Avoid subproject `gradle.properties` for shared policy because it is easy to miss during reviews and migrations.

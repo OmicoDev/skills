@@ -46,6 +46,7 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Do not pass a `Project` object as dependency notation; use `project(":path")` in build scripts or `DependencyFactory.createProjectDependency(...)` in plugin code.
 - Do not depend on the current project through its module coordinates; use a project dependency because Gradle 10 resolves matching GAV coordinates from repositories instead of the current project.
 - Do not add a direct dependency only to override a transitive version.
+- In Kotlin projects, do not declare `kotlin-stdlib` explicitly unless the Kotlin plugin default is disabled or the build owns a deliberate standard-library version policy.
 - Prefer version catalogs for shared coordinates and aliases; catalogs centralize coordinates but do not enforce selected versions.
 - Use [dependency-version-governance.md](dependency-version-governance.md) before changing platforms/BOMs, constraints, rich versions, catalog layering, or consistent resolution.
 - Use [dependency-resolution-rules.md](dependency-resolution-rules.md) before adding `force`, dependency substitution, component selection rules, broad excludes, or disabled transitivity.

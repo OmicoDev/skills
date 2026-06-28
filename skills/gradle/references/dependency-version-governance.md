@@ -23,8 +23,8 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Put classifiers, artifact types, excludes, and capabilities at the dependency declaration, variant, or metadata-rule owner; catalog TOML cannot encode them. Use `variantOf()` when a catalog alias needs a classifier, and a dependency `artifact {}` block when the use site needs a specific artifact type.
 - In project `plugins {}` blocks, catalog access is limited to `alias(libs.plugins...)`; share plugin versions by using `version.ref` inside `[plugins]` entries, not by reading catalog libraries, bundles, or versions from the block. Settings files/settings plugins still cannot use catalog plugin aliases.
 - `buildSrc` and included build logic do not inherit the main catalog automatically. Import catalogs explicitly in their settings, use `VersionCatalogsExtension` inside precompiled script plugin code when needed, and remember precompiled script plugin `plugins {}` blocks cannot read catalog aliases.
-- Prefer one `libs.versions.toml` with naming conventions. Split catalogs only for real boundaries such as shipped artifacts, independent build-logic dependencies, or organization-wide published catalogs.
-- Keep aliases descriptive and stable: use a unique group/artifact segment, omit generic words, avoid repeating group and artifact names, and suffix plugin libraries with `-plugin` when the plugin is used as a library dependency.
+- Prefer one `libs.versions.toml` with naming conventions. Split catalogs only for real boundaries such as shipped artifacts, independent build-logic dependencies, organization-wide published catalogs, or unavoidable JVM accessor-size limits.
+- Keep aliases descriptive and stable: prefer dash-separated segments, derive the first segment from group/artifact identity without the top-level domain, omit generic or repeated words, convert artifact-internal dashes to camel case for accessors, and suffix plugin libraries with `-plugin` when the plugin is used as a library dependency.
 - Catalog TOML files are self-contained; there is no cross-file `include` or `version.ref`, and `from(...)` may be called once per catalog. Layer programmatic `version(...)`, `library(...)`, `bundle(...)`, or `plugin(...)` calls after `from(...)` when intentionally injecting shared versions or overriding imported catalogs; this changes requested notation, not conflict resolution results.
 - Treat published base catalogs as versioned artifacts with their own release lifecycle. They centralize requested coordinates but still do not enforce selected versions like platforms or locks.
 - Catalog library accessors return providers. When a Gradle API accepts dependency notation, prefer passing the provider instead of unwrapping with `.get()`, especially in substitution, constraints, or selector APIs that may require a different selector type.
@@ -33,7 +33,8 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 ## Platforms And BOMs
 
 - Use a platform when a family of modules must align across projects, transitive dependencies, or consumers.
-- Create Java ecosystem platforms with `java-platform` plus dependency constraints.
+- Create Java ecosystem platforms with `java-platform` plus dependency constraints; the platform project has no binaries and cannot also be a `java` or `java-library` project.
+- In Java platforms, `api` and `runtime` scope constraints or explicit platform dependencies to compile/runtime consumers; prefer constraints, and enable `allowDependencies()` only when the platform intentionally contributes dependency edges.
 - Import Maven BOMs with `platform(...)`; Gradle maps BOM dependency management entries to platform constraints.
 - `platform(...)` selects platform variants and endorses strict versions by default, so strict platform opinions can control versions in the consumer's subgraph. Use `doNotEndorseStrictVersions` only when that enforcement is not policy.
 - Use `enforcedPlatform(...)` cautiously for reusable components because forced versions are transitive to consumers. If consumers should be allowed to disagree, prefer normal platforms plus strict/rich versions where appropriate.
@@ -57,7 +58,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Treat dynamic versions and changing modules as freshness policy, not reproducibility policy; pair them with dependency locking and repository cache rules when selected versions must be repeatable.
 - Use `resolutionStrategy.failOnVersionConflict()` as a detection tripwire for accidental upgrades, not as lasting version policy. Once the conflict is understood, encode intent with constraints, platforms, rich versions, metadata repair, or locks.
 - Use constraints to upgrade or downgrade a transitive module without adding a direct dependency just to control its version.
-- Before downgrading a transitive module, inspect existing platforms, catalogs, constraints, and locks that may already own the selected version.
+- Before downgrading a transitive module, first decide whether the source should instead adapt to the newer selected version; if a downgrade is still required, inspect existing platforms, catalogs, constraints, and locks that may already own the selected version.
 - Use dependency locking when the requirement is reproducible selected versions across builds; use constraints or platforms when the requirement is compatibility policy.
 
 ## Consistency Decisions
@@ -80,7 +81,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 ## Symptom Map
 
 - Catalog version changed but selected version did not: inspect conflict resolution, platform/BOM constraints, dependency constraints, substitutions, and locks.
-- Catalog accessor or parse failure: inspect alias/accessor collisions, subgroup accessors, reserved names, undefined `version.ref` or bundle members, invalid module/plugin notation, cross-file TOML references, and repeated `from(...)` imports before changing dependency policy.
+- Catalog accessor or parse failure: inspect alias/accessor collisions, subgroup accessors, catalog size/accessor class limits, reserved names, undefined `version.ref` or bundle members, unfinished programmatic aliases, invalid module/plugin/version notation, unsupported or missing imported catalog files, cross-file TOML references, and repeated `from(...)` imports before changing dependency policy.
 - Catalog plugin alias or accessor unavailable: check whether the use site is `settings.gradle(.kts)`, a settings plugin, a precompiled script plugin `plugins {}` block, or a project `plugins {}` block trying to read `libraries`, `bundles`, or `versions` instead of applying a `[plugins]` alias.
 - Constraint appears in `dependencies` output with `(c)`: it is a version opinion, not a dependency edge; find the dependency path that actually brings in the module.
 - `enforcedPlatform` leaks to consumers: replace with a normal platform or strict/rich versions unless consumer override must be blocked.

@@ -49,7 +49,7 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 ```
 
 - Use `help` with diagnostics mode first because it exercises broad configuration with minimal task execution noise.
-- Diagnostics mode runs project configuration and Configuration Cache store sequentially, disables per-project model reuse, and configures all projects. Use it for migration evidence, not performance measurement.
+- Diagnostics mode runs project configuration and Configuration Cache store sequentially, disables per-project model reuse, and configures all projects. Configuration Cache reuse can still skip configuration after a violation-free run; change a build input when re-exercising diagnostics.
 - Do not commit diagnostics mode as steady-state policy. Disable it after migration because it deliberately turns off Isolated Projects optimizations and can hide the real performance shape.
 - A clean diagnostics `help` run is a baseline, not a proof of full compatibility; lazy task configuration, IDE model builders, and representative workflows can still surface violations.
 - Isolated Projects violations appear in the Configuration Cache HTML report; keep the report path and owning script/plugin/class.
@@ -81,7 +81,7 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 - Violation appears only in IDE sync: model building exercised a path ordinary task runs did not; reproduce with IDE properties and inspect Tooling API/model builders.
 - Diagnostics mode is clean but normal mode fails: investigate lazy task configuration, workflow-specific plugins, and parallel configuration ordering.
 - Performance does not improve: check configuration-time share, `org.gradle.workers.max`, IDE model parallelism, tooling model cache status, work graph discovery, and whether Configuration Cache already hits.
-- Parent property lookup changed: enable and migrate toward `NO_IMPLICIT_LOOKUP_IN_PARENT_PROJECTS`; avoid relying on inherited project properties.
+- Parent property lookup changed: enable and migrate toward `NO_IMPLICIT_LOOKUP_IN_PARENT_PROJECTS`; under Isolated Projects, `properties` reports omit inherited parent properties and `Project.getProperties()` remains a violation.
 
 ## Source Calibration
 
