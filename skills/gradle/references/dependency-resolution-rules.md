@@ -25,6 +25,7 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 - Use component selection rules when a configuration must reject candidate versions during selection, especially dynamic selectors or metadata-based rejects.
 - Component selection starts from the highest matching candidate; a candidate is accepted unless a rule rejects it. Target rules to `group:module` when possible and handle optional metadata defensively.
 - Use rich-version `reject` when the build should express unacceptable versions as version intent; use dependency resolve rules only when a rejected request should be rewritten to a known replacement.
+- For `force(...)`, `useTarget(...)`, or plugin `useModule(...)`, pass supported module notation such as `group:name:version`; do not route dependency constraints or other `ModuleVersionSelector` objects through deprecated conversion.
 
 ## Substitution And Local Forks
 

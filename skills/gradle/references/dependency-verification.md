@@ -89,6 +89,7 @@ Bootstrap or update only after reviewing the dependency change:
 - If key servers are disabled for CI reproducibility, keep committed keyrings fresh enough that missing keys fail early; metadata generation may still contact key servers to fetch potentially missing keys.
 - Gradle caches missing keys for a period; use `--refresh-keys` when retrying a keyserver or keyring repair immediately.
 - When using committed keyrings, choose either ASCII-armored `.keys` for readable diffs or binary `.gpg` for compact storage; do not commit both formats unless the policy explicitly requires it.
+- Gradle 9.5+ may rewrite armored keyring headers that contain non-ASCII metadata correctly; treat that one-time export diff as keyring normalization before suspecting trust-policy drift.
 - If both keyring formats are present and no format is configured, Gradle prefers the binary `.gpg` keyring.
 
 ## Source Calibration

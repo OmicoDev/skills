@@ -22,14 +22,13 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Catalog entries are ordinary requested dependency notation once used. Conflict resolution, platforms, constraints, substitutions, and locks may still select another version.
 - Put classifiers, artifact types, excludes, and capabilities at the dependency declaration, variant, or metadata-rule owner; catalog TOML cannot encode them. Use `variantOf()` when a catalog alias needs a classifier, and a dependency `artifact {}` block when the use site needs a specific artifact type.
 - In project `plugins {}` blocks, catalog access is limited to `alias(libs.plugins...)`; share plugin versions by using `version.ref` inside `[plugins]` entries, not by reading catalog libraries, bundles, or versions from the block. Settings files/settings plugins still cannot use catalog plugin aliases.
-- `buildSrc` and included build logic do not inherit the main catalog automatically. Import catalogs explicitly in their settings and use `VersionCatalogsExtension` inside precompiled script plugin code when needed.
+- `buildSrc` and included build logic do not inherit the main catalog automatically. Import catalogs explicitly in their settings, use `VersionCatalogsExtension` inside precompiled script plugin code when needed, and remember precompiled script plugin `plugins {}` blocks cannot read catalog aliases.
 - Prefer one `libs.versions.toml` with naming conventions. Split catalogs only for real boundaries such as shipped artifacts, independent build-logic dependencies, or organization-wide published catalogs.
 - Keep aliases descriptive and stable: use a unique group/artifact segment, omit generic words, avoid repeating group and artifact names, and suffix plugin libraries with `-plugin` when the plugin is used as a library dependency.
-- Catalog TOML files are self-contained, and `from(...)` may be called once per catalog. Add or override entries programmatically after `from(...)` when layering is intentional.
-- Programmatic `version(...)`, `library(...)`, `bundle(...)`, or `plugin(...)` calls after `from(...)` can layer or override imported catalog entries, including published catalogs; this changes requested notation, not conflict resolution results.
+- Catalog TOML files are self-contained; there is no cross-file `include` or `version.ref`, and `from(...)` may be called once per catalog. Layer programmatic `version(...)`, `library(...)`, `bundle(...)`, or `plugin(...)` calls after `from(...)` when intentionally injecting shared versions or overriding imported catalogs; this changes requested notation, not conflict resolution results.
 - Treat published base catalogs as versioned artifacts with their own release lifecycle. They centralize requested coordinates but still do not enforce selected versions like platforms or locks.
 - Catalog library accessors return providers. When a Gradle API accepts dependency notation, prefer passing the provider instead of unwrapping with `.get()`, especially in substitution, constraints, or selector APIs that may require a different selector type.
-- Catalog aliases generate accessors after normalization; avoid aliases that collide after dash/underscore/dot/camel-case normalization or use reserved names such as `versions`, `bundles`, `plugins`, `extensions`, or `class`.
+- Catalog aliases generate accessors after normalization; avoid aliases that collide after dash/underscore/dot/camel-case normalization, create unwanted subgroup accessors, or use reserved names such as `versions`, `bundles`, `plugins`, `extensions`, or `class`. If a consumed catalog already has parent/subgroup collisions such as version aliases `jackson` and `jackson-databind`, use `asProvider()` to read the parent alias.
 
 ## Platforms And BOMs
 
@@ -49,16 +48,15 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - A constraint is a no-op if the constrained module never appears in the graph.
 - Constraints are transitive and are preserved for Gradle consumers through Gradle Module Metadata; Maven or Ivy consumers may lose them.
 - `require` is the normal floor and may be upgraded; shorthand dependency versions are required versions.
-- `strictly` is the strongest opinion, can downgrade, and can fail resolution when no acceptable version satisfies all requirements.
-- For published libraries, prefer a strict compatible range plus `prefer` over a single strict version when consumers may safely choose another version in the range.
+- `strictly` is the strongest opinion, can downgrade, and can fail resolution when no acceptable version satisfies all requirements; for published libraries, prefer a strict compatible range plus `prefer` over a single strict version when consumers may safely choose another version in the range.
 - `prefer` is soft, applies only when no stronger non-dynamic opinion exists, and does not support dynamic versions.
 - `reject` blocks candidates and can fail resolution if Gradle would otherwise select a rejected version.
+- When a range, dynamic selector, or reject behaves surprisingly, inspect Gradle version ordering before adding policy; separators normalize, numeric parts outrank non-numeric parts, extra numeric parts raise a version, extra non-numeric parts lower it, and special qualifiers such as `dev`, `rc`, `snapshot`, `final`, `ga`, `release`, and `sp` have Gradle-defined order.
 - Gradle Module Metadata preserves rich versions. Maven/Ivy metadata conversion keeps only the strongest `strictly`/`require`/`prefer` opinion and ignores `reject`; publish resolved versions or document degraded semantics when Maven/Ivy consumers matter.
 - Treat dynamic versions and changing modules as freshness policy, not reproducibility policy; pair them with dependency locking and repository cache rules when selected versions must be repeatable.
 - Use `resolutionStrategy.failOnVersionConflict()` as a detection tripwire for accidental upgrades, not as lasting version policy. Once the conflict is understood, encode intent with constraints, platforms, rich versions, metadata repair, or locks.
 - Use constraints to upgrade or downgrade a transitive module without adding a direct dependency just to control its version.
 - Before downgrading a transitive module, inspect existing platforms, catalogs, constraints, and locks that may already own the selected version.
-- Prefer a strict compatible range plus `prefer` when an older version is desired but newer compatible versions should still resolve; use a single strict version only when other versions are unsafe.
 - Use dependency locking when the requirement is reproducible selected versions across builds; use constraints or platforms when the requirement is compatibility policy.
 
 ## Consistency Decisions
@@ -81,7 +79,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 ## Symptom Map
 
 - Catalog version changed but selected version did not: inspect conflict resolution, platform/BOM constraints, dependency constraints, substitutions, and locks.
-- Catalog accessor or parse failure: inspect alias/accessor collisions, reserved names, undefined `version.ref` or bundle members, invalid module/plugin notation, and repeated or multi-file `from(...)` imports before changing dependency policy.
+- Catalog accessor or parse failure: inspect alias/accessor collisions, subgroup accessors, reserved names, undefined `version.ref` or bundle members, invalid module/plugin notation, cross-file TOML references, and repeated `from(...)` imports before changing dependency policy.
 - Catalog plugin alias or accessor unavailable: check whether the use site is `settings.gradle(.kts)`, a settings plugin, a precompiled script plugin `plugins {}` block, or a project `plugins {}` block trying to read `libraries`, `bundles`, or `versions` instead of applying a `[plugins]` alias.
 - Constraint appears in `dependencies` output with `(c)`: it is a version opinion, not a dependency edge; find the dependency path that actually brings in the module.
 - `enforcedPlatform` leaks to consumers: replace with a normal platform or strict/rich versions unless consumer override must be blocked.

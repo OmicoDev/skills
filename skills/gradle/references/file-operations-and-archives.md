@@ -51,8 +51,9 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - Archive task names do not determine archive file names. Use `archiveBaseName`, `archiveAppendix`, `archiveVersion`, `archiveClassifier`, `archiveExtension`, `archiveFileName`, and `destinationDirectory`.
 - Consume archives through the `archiveFile` provider rather than reconstructing `destinationDirectory` plus `archiveFileName`; the provider preserves conventions and task dependencies.
 - The Base Plugin supplies archive naming and destination conventions; configure its `base` extension when the convention should affect all archive tasks.
-- Treat the Base Plugin's `archives` and `default` configurations as compatibility surfaces, not new assembly or dependency APIs.
+- Treat the Base Plugin's `archives`, `default`, and `Configuration.visible` surfaces as legacy compatibility, not new assembly or dependency APIs; wire `assemble` explicitly to artifact-producing task providers instead.
 - On Gradle 9+, custom outgoing artifacts are not implicitly built by `assemble`; wire `assemble` to the artifact's task provider or `configuration.artifacts` when the artifact belongs to the lifecycle task.
+- On Gradle 9+, projects that combine Java, War, and Ear packaging can build and add all related artifacts to `archives`; verify lifecycle output before relying on older package-plugin suppression behavior.
 - Use `zipTree(...)` and `tarTree(...)` to treat archives as `FileTree`s for unpacking or repackaging. JAR, WAR, and EAR files are ZIPs for this purpose.
 - In typed tasks or execution-time code, inject `ArchiveOperations` for `zipTree` and `tarTree`; avoid `Project.zipTree` and `Project.tarTree` from task actions.
 - When remapping paths from an unpacked archive with `eachFile`, disable `includeEmptyDirs` if empty directories remain; `eachFile` cannot change empty directory destinations.
@@ -74,6 +75,7 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 ## Permissions And Reproducibility
 
 - Set `filePermissions {}` and `dirPermissions {}` on the relevant `CopySpec` or child spec when permissions are part of the artifact contract.
+- On Gradle 9+, raw Unix mode APIs such as `fileMode`, `dirMode`, `FileTreeElement.getMode()`, and `FileCopyDetails.setMode(...)` are removed; use `filePermissions {}` and `dirPermissions {}` instead.
 - Empty permission blocks still set explicit defaults: files `0644`, directories `0755`.
 - Per-file permission overrides can disable up-to-date checks for that task; prefer broad spec-level permissions when possible.
 - Gradle 9 archive tasks are reproducible by default: deterministic order, fixed timestamps, and fixed file/directory permissions.

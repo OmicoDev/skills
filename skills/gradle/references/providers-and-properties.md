@@ -17,7 +17,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Avoid `.get()`, `getOrNull`, `getOrElse`, and `isPresent` branching during configuration unless the value is needed to create Gradle model objects and no provider-aware API exists; provider chains preserve late value resolution and implicit task dependency wiring.
 - Use provider-backed process, environment, system-property, Gradle-property, file-content, and credential reads when configuration cache should track the value.
 - `providers.gradleProperty(...)` reads build-level sources such as `-P`, `org.gradle.project.*`, `ORG_GRADLE_PROJECT_*`, and user/root/installation `gradle.properties`; it does not read subproject `gradle.properties` files or dynamic extra properties.
-- Use `ProviderFactory.provider(Callable)` to bridge configuration-time-only data into lazy APIs; for environment, system properties, files, processes, credentials, and other external state, prefer typed `ProviderFactory` APIs or `ValueSource` so configuration-cache inputs are intentional.
+- Use `ProviderFactory.provider(Callable)` only when no typed provider or existing provider can model the value; for environment, system properties, files, processes, credentials, and other external state, prefer typed `ProviderFactory` APIs or `ValueSource` so configuration-cache inputs are intentional.
 
 ## External Value Providers
 
@@ -31,8 +31,8 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Use `convention` for plugin defaults users can override, and `set`/`setFrom` for project-specific values that should win.
 - `Property.set(null)` discards an explicit value and can reveal the convention again; `set(provider)` with an absent provider makes the property absent regardless of any convention.
 - Prefer conventions set by the plugin that owns the model. Constructor conventions are a compatibility bridge for public existing types that may be used without the owning plugin.
-- `finalizeValue()` queries any backing provider immediately and freezes the current value; use it only when eager finalization is intentional.
-- Use `finalizeValueOnRead` when the first consumer should freeze the value.
+- `finalizeValue()` queries any backing provider immediately, replaces the provider link with the current value, and freezes the property; use it only when eager finalization and loss of later provider updates are intentional.
+- Use `finalizeValueOnRead` when the first consumer should lazily freeze the value and every later consumer must see the same result.
 - Use `disallowChanges` after the plugin has intentionally closed mutation.
 - Task properties are finalized automatically when the task starts execution; explicit finalization is for closing plugin or model lifecycle earlier than execution.
 - Use `forUseAtConfigurationTime` only for older Gradle compatibility work; in modern builds prefer proper configuration inputs and providers.
@@ -45,6 +45,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - For new task, extension, or domain object APIs, expose managed lazy properties when users configure the value or tasks consume it.
 - Prefer fully managed interfaces or abstract classes with abstract public or protected getters, no property setters, and no fields; for public task/plugin APIs, expose rich properties through abstract getters returning `Provider`, `Property`, collection properties, or `ConfigurableFileCollection`.
 - Use `ObjectFactory` to create managed objects, file properties, collection properties, and named containers so Gradle decorations and Groovy DSL behavior are applied.
+- Use `ObjectFactory.domainObjectContainer(...)` or managed container properties instead of deprecated `Project.container(...)`; the factory-created container decorates elements and makes them extension-aware.
 - Use `@Nested` managed objects for structured DSL values that share the owner lifecycle.
 - Use `Property<NestedType>` instead of an `@Nested` getter when the nested value has a different lifecycle or should be replaceable as a value.
 - For named DSL elements, implement `Named` or expose an abstract read-only `name`; named managed types fit `NamedDomainObjectContainer` element models.

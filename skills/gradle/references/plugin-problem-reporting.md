@@ -13,6 +13,7 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 
 - Use the Problems API when a plugin owns diagnostics that should be structured for CLI, IDEs, Build Scan, and Tooling API clients.
 - Inject the public `Problems` service into plugin-owned task or plugin types; avoid internal problem-reporting APIs.
+- Treat the public Problems API as incubating and minimum-Gradle-version-sensitive; isolate calls behind small plugin-owned helpers when supporting a Gradle version range.
 - Treat problem rendering as Gradle UI/service infrastructure; plugin code should provide stable public metadata, not console-specific formatting.
 - Create stable `ProblemGroup` and `ProblemId` values so duplicate problems can be summarized and clients can correlate them.
 - In current public API, create IDs with `ProblemGroup.create(...)` and `ProblemId.create(...)`, then pass the `ProblemId` to `ProblemReporter`; do not configure IDs through internal `ProblemSpecInternal` APIs.

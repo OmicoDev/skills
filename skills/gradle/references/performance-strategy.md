@@ -26,6 +26,8 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 ## Diagnosis Matrix
 
 - Treat Build Scan and `--profile` categories as owner evidence before changing build logic: startup points to wrapper/daemon/init scripts, settings and `buildSrc` points to settings or build-logic bootstrap, loading projects points to project count, configuration points to plugin/task graph work, dependency resolution points to repository/metadata/version policy, and execution points to tasks.
+- Separate first-run startup from persistent startup cost: wrapper distribution download and daemon startup can disappear on repeat runs, while warm-daemon startup cost usually points to init scripts or client/daemon launch policy.
+- If `settings` and `buildSrc` remain dominant after `buildSrc` is already up-to-date, inspect settings work and build-logic bootstrap before tuning task execution.
 - Slow before tasks start: inspect configuration time, task realization, plugin application, dependency resolution during configuration, and project coupling.
 - Slow dependency resolution: inspect repository count/order, dynamic versions, changing modules, [dependency-metadata-rules.md](dependency-metadata-rules.md), and network/cache behavior.
 - Slow tests: inspect forks, parallelism, reports, logging, framework startup, and cacheability.
@@ -43,6 +45,7 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 - A task can be incremental without being safely cacheable.
 - Isolated Projects builds on configuration-cache discipline and cross-project ownership boundaries; route details to [isolated-projects.md](isolated-projects.md).
 - Treat parallelism as separate owner surfaces: `--parallel` targets task execution across projects, Configuration Cache can enable task execution parallelism within a project, Isolated Projects targets configuration/model parallelism, `org.gradle.tooling.parallel` targets Tooling API model builders, and `org.gradle.workers.max` caps parallel work across phases.
+- Use Gradle Profiler scenarios or method profilers when category evidence points to plugin/custom task algorithms or constrained resources rather than Gradle model structure.
 
 ## Common Performance Owners
 

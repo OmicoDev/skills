@@ -22,6 +22,7 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 - Use `include(...)` for subprojects in one build rooted by a single settings file. Project paths map to directories relative to the root project unless project descriptors override project name, `projectDir`, or `buildFileName`.
 - Nested project paths create intermediate projects. If directory nesting is only organizational, include a flat logical project name and set `projectDir` with a project descriptor.
 - Name the root project in settings so IDE imports, dependency substitution, and diagnostics do not depend on the checkout directory name; keep logical project names aligned with physical locations enough that `projects` output explains the repository layout.
+- Compare project identity with `path` or `buildTreePath`, not reference identity; Gradle 9.3+ may expose different `Project` instances for the same logical project.
 - Check `./gradlew -q projects` before renaming projects, changing directories, or updating CI task paths.
 - Avoid accidentally empty projects: starting with Gradle 9, included project directories must exist and be writable unless the settings script deliberately creates or remaps them.
 - Split monoliths by natural code boundaries early; Gradle's work avoidance, parallelism, and classpath narrowing only help when source and dependencies are separated into coherent projects.

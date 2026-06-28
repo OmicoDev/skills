@@ -14,6 +14,8 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - Wire non-default integration or functional suites into `check` when they are part of the release signal; a source set alone only compiles code and does not create an execution gate.
 - `gradleTestKit()` supplies TestKit and the Tooling API client, not JUnit, TestNG, Spock, or another test framework; declare the test framework separately.
 - On Gradle 9+, direct `ValidatePlugins` usage needs the Java Toolchains service, supplied by `jvm-toolchains` or JVM plugins such as `java-library`; its `launcher` must also run on a Java version supported by the Gradle daemon.
+- For plugin projects on Gradle 9.4+, `java-gradle-plugin` exposes `gradleApi()` as `compileOnlyApi`; register extra test source sets with `gradlePlugin.testSourceSets(...)` or add explicit `gradleApi()` when custom lanes no longer see Gradle API types.
+- Published plugin builds should treat stricter `validatePlugins` checks as release gates; enable them for local build-logic projects when preparing code for publication.
 - Manual composite-build testing is useful for exploration, but it is not a substitute for automated plugin tests.
 
 ## TestKit Model
@@ -25,7 +27,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - Automatic classpath injection expects the plugin-under-test to be applied in the test build with the `plugins {}` DSL.
 - If functional tests use a custom source set or suite, register it with the plugin development extension, such as `gradlePlugin.testSourceSets(functionalTest)` or `gradlePlugin.testSourceSets.add(functionalTestSourceSet)`, so plugin classpath metadata is generated for that lane.
 - Prefer `withPluginClasspath()` backed by `java-gradle-plugin` metadata over hard-coded `build/classes`, JAR, or runtime classpath assembly.
-- TestKit uses isolated working directories and dedicated Gradle daemons. It does not use the default Gradle User Home configuration such as `~/.gradle/gradle.properties`.
+- TestKit uses isolated fixture directories, a TestKit-controlled Gradle User Home, and dedicated Gradle daemons; it does not inherit default `~/.gradle/gradle.properties`, caches, init scripts, or environment customizations unless the fixture wires them.
 - TestKit working directories are not deleted by default.
 - Set `org.gradle.testkit.dir` or `GradleRunner.withTestKitDir(...)` when TestKit state should live under a build-managed directory or be cleaned predictably.
 - If the fixture passes `-g` or `--gradle-user-home`, that directory overrides the TestKit directory as the test build's Gradle User Home; isolate and clean it with the same care as `withTestKitDir(...)`.

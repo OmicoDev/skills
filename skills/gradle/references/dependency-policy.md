@@ -33,6 +33,7 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Do not declare dependencies on resolvable/consumable-only configurations. Do not resolve declaration buckets directly.
 - For custom configurations, use one intended role only: dependency scope, resolvable classpath/data, or consumable outgoing variant. Prefer role-specific factory APIs when available; otherwise set role flags directly.
 - When using legacy configuration creation APIs, set `canBeDeclared`, `canBeResolved`, and `canBeConsumed` intentionally; historical defaults can otherwise create legacy all-role configurations.
+- Consumable configurations from bundled plugins may be initialized lazily on Gradle 9.2+; do not put required side effects in `configurations.named("apiElements").configure { ... }` unless realization is guaranteed.
 - `extendsFrom` inherits dependencies, constraints, excludes, artifacts, and capabilities, but not attributes or role flags.
 - Resolving another project's configuration directly from a script, task action, task input, or settings file is unsafe. Use project dependencies, variants, or publications to cross project boundaries.
 
@@ -41,7 +42,9 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Add a dependency to the project that directly uses it.
 - Use `api` only when dependency types are part of the public ABI; otherwise prefer `implementation`.
 - Declare the same external module once in the narrowest correct configuration; duplicate declarations across `compileOnly`, `implementation`, runtime, and test buckets can create confusing classpaths.
-- When not using a catalog alias, prefer single-string GAV notation such as `group:name:version`; map-style dependency notation is deprecated for normal module declarations.
+- When not using a catalog alias, prefer single-string GAV notation such as `group:name:version`; map-style and multi-string dependency notation are deprecated for normal module declarations.
+- Do not pass a `Project` object as dependency notation; use `project(":path")` in build scripts or `DependencyFactory.createProjectDependency(...)` in plugin code.
+- Do not depend on the current project through its module coordinates; use a project dependency because Gradle 10 resolves matching GAV coordinates from repositories instead of the current project.
 - Do not add a direct dependency only to override a transitive version.
 - Prefer version catalogs for shared coordinates and aliases; catalogs centralize coordinates but do not enforce selected versions.
 - Use [dependency-version-governance.md](dependency-version-governance.md) before changing platforms/BOMs, constraints, rich versions, catalog layering, or consistent resolution.

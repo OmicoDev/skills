@@ -44,6 +44,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Use task outputs, `CopySpec`, and provider-backed file properties instead of manual filesystem work during configuration.
 - Use `providers.gradleProperty`, `providers.systemProperty`, and `providers.environmentVariable` when values affect build configuration.
 - Prefer `withType(...).configureEach` for lazy bulk configuration by type; `withType(...) {}`, `tasks.all`, `whenTaskAdded`, and task collection iteration realize tasks.
+- Prefer lazy `matching { ... }` or `configureEach` over Groovy `DomainObjectCollection.findAll(Closure)`, which eagerly evaluates containers and is deprecated in Gradle 9.4+.
 - Use `named(...)` when configuring a known task or container element.
 - Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead.
 - `afterEvaluate` callbacks run by registration order, can see stale state, and defeat task configuration avoidance when they register or configure tasks.
@@ -56,8 +57,13 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - When no Kotlin accessor exists, use standard APIs such as `tasks.named<T>()`, `configurations.named(...)`, `extensions.configure<T>()`, `the<T>()`, and container `named(...)`.
 - Use `./gradlew kotlinDslAccessorsReport` to discover generated accessor names and backing types when plugin documentation is unclear.
 - Kotlin DSL task and container accessors are lazy providers; keep them as providers unless a provider-aware API is unavailable.
+- On Gradle 9+, legacy eager Kotlin DSL configuration artifact accessors and `"name"()` task/domain-object syntax are gone; use `named(...)`, generated provider accessors, or container APIs and unwrap only at execution boundaries.
+- On Gradle 9.6+, replace Kotlin DSL delegated properties such as `by registering`, `by existing`, `by project`, `by extra`, and `Property<T>`/`ConfigurableFileCollection` delegates with explicit `register`, `named`, `providers.gradleProperty`, `extra[...]`, `get`, or `set` APIs.
 - Lazy property assignment with `=` works for final lazy properties such as `Property<T>` or `ConfigurableFileCollection`; custom setters can block it.
+- In settings Kotlin DSL, apply Develocity explicitly with `id("com.gradle.develocity") version "..."`; the old `gradle-enterprise` plugin-block shorthand is gone in Gradle 9.
 - Groovy DSL dynamic lookup can hide misspellings and eager task realization. In Groovy blocks, unqualified members resolve against the block delegate; inspect the `Action<T>` or `Closure` delegate type in API docs.
+- After Groovy upgrades, especially Gradle 9's Groovy 4 move, qualify ambiguous closure access with `owner`, `this`, `delegate`, or `super` before changing Gradle model logic; `DELEGATE_FIRST` dynamic lookup may pick a different member than before.
+- Avoid modeling Gradle DSL Boolean properties as `isX: Boolean`; Groovy 4 no longer treats `Boolean` `is` getters as properties, and Gradle is moving toward that behavior.
 - Avoid Groovy metaclass tricks in build scripts; use Gradle extensions, containers, or extra properties for modeled dynamic state.
 - Do not translate snippets between DSLs mechanically when provider types, delegated properties, or named containers are involved.
 - Keep plugin aliases in `plugins {}` and library aliases in `dependencies {}`.

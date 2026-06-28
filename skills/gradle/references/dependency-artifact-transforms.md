@@ -62,7 +62,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Confirm requested artifact attributes from the resolvable configuration or artifact view before changing transform registration.
 - Transform never runs: an existing artifact set already matches, the transform is registered in the wrong project, attributes do not connect, or the input variant has no artifacts.
 - Chain stops after an earlier transform: confirm the previous transform produced at least one registered output artifact; empty output skips downstream transforms.
-- Ambiguous transform chain: reduce overlapping transform registrations or make requested attributes more specific.
+- Ambiguous transform chain: reduce overlapping transform registrations, make requested attributes more specific, or remove unrequested extra output attributes that let equally short chains produce different suitable results.
 - Transform runs for external modules but not project dependencies: compare project outgoing artifact attributes with module metadata and check whether an existing project variant already satisfies the request.
 - Transform resolves or downloads more artifacts than expected: check `@InputArtifactDependencies` and broad artifact view attributes before changing the dependency graph.
 - Cache misses: inspect input artifact normalization, parameters, input artifact dependencies, tool versions, and non-deterministic outputs.

@@ -28,6 +28,7 @@ Read this when: variant-aware resolution, attributes, capabilities, or published
 ## Attribute Rules
 
 - Standard attributes usually explain most mismatches: usage, category, library elements, bundling, documentation type, verification type, target JVM version/environment, test suite name, native OS/architecture, and Gradle plugin API version.
+- Use modern JVM `Usage` plus `LibraryElements` values directly; Gradle 10 stops translating legacy values such as `java-api-jars` or `java-runtime-classes` when build logic writes them to attributes.
 - Custom attributes are a compatibility contract; published consumers need the plugin or schema that registers compatible and preferred values.
 - Attribute precedence and disambiguation belong to the ecosystem/schema owner; local one-off rules can make published variants hard for consumers to interpret.
 - Add compatibility rules when a producer value can satisfy a requested value. Add disambiguation rules when several compatible candidates remain.
@@ -67,7 +68,7 @@ Use reports to compare requested attributes with producer attributes before edit
 - Use `requireCapability` when a dependency or substitution intentionally requests a capability-bearing feature variant, such as test fixtures; do not confuse it with choosing among already-conflicting providers.
 - Add missing capabilities with [dependency-metadata-rules.md](dependency-metadata-rules.md) when external metadata fails to declare a real conflict.
 - Do not use excludes for replacement when capabilities or module replacement express the domain better.
-- Capability conflict resolution can only select a provider that is present among the current conflict candidates; it cannot add a desired module to the graph.
+- Capability conflict resolution can only select a provider present among the current conflict candidates; it cannot add a desired module to the graph, and `select(null)` is an error, not a way to leave the conflict unresolved.
 - If a capability has multiple unresolved conflict sets, every set needs a valid selection policy or the build still fails.
 
 ## Feature Variants

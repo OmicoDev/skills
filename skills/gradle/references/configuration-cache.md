@@ -12,6 +12,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Isolated Projects builds on configuration-cache infrastructure, but project isolation violations and cache reuse failures are different symptoms; read [isolated-projects.md](isolated-projects.md) when cross-project mutable access or IDE model caching owns the issue.
 - The cache entry is local project state under `.gradle/configuration-cache`; do not treat deleting it as a durable repair.
 - Configuration cache can be reused by local hot and cold daemons, but it is not a shared cache between developers or CI machines.
+- Report silence is not proof that reuse should happen; check the status page for not-yet-implemented features such as source dependencies that can disable configuration cache without reporting problems.
 
 ## Enablement
 
@@ -33,7 +34,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Gradle tracks many configuration inputs automatically, but build logic still needs supported APIs.
 - Prefer wiring file contents to task properties with `providers.fileContents(...)`; files read directly and file system checks such as `File.exists()` during configuration can both invalidate cache entries.
 - Treat unsafe input-ignore properties as temporary third-party-plugin workarounds, not repairs.
-- Read environment variables and system properties through providers when they affect configuration; query concrete names or provider-backed prefixes because enumerating all values makes the whole set an input.
+- Read environment variables and system properties through providers when they affect configuration; query concrete names or provider-backed prefixes because enumerating all values, including `.values()`, makes the whole set a configuration-cache input.
 - Use provider-backed process APIs for simple configuration-time process output and `ValueSource` when input selection or parsing is more complex.
 - `ValueSource` tracks the returned value, not every environment variable, file, process, or network read inside `obtain()`.
 - Do not implement `ValueSource.getParameters()` yourself; use `ValueSourceParameters.None` when no parameters are needed, and inject only supported services such as `ExecOperations`.
@@ -54,13 +55,15 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 ## Task State Rules
 
 - Task fields and task actions, including `doFirst` and `doLast`, must not reference live JVM state such as threads, sockets, classloaders, streams, or synchronization primitives.
-- Task actions must not use Gradle model objects such as `Project`, `Settings`, `Gradle`, `SourceSet`, `Configuration`, publications, or dependency results.
+- Task actions must not use Gradle model objects such as `Project`, `Settings`, `Gradle`, `SourceSet`, `Configuration`, publications, or dependency results; Gradle 9.6+ also flags task dependency relationship getters, `Task.getExtensions()`, and injected `Project` or `Gradle` services at execution time.
 - Replace `Configuration` task inputs with `FileCollection` or provider-backed resolution results that defer dependency resolution to the owning consumer.
 - Replace `SourceDirectorySet` task inputs with `FileTree` or file properties when only files are needed.
 - Replace resolved dependency result objects with provider-backed results such as `ResolutionResult.getRootComponent()` or `ArtifactCollection.getResolvedArtifacts()` when the task truly needs resolution metadata.
 - Tasks must not inspect or mutate another task instance during execution; wire task outputs, inputs, or providers instead.
 - Do not rely on reference identity for shared mutable standard collections after cache reload. Use task properties or shared build services.
 - Task extensions, conventions, and extra properties must be read during configuration and copied into task properties, not accessed at execution time.
+- Do not call build-script top-level methods or variables from task actions; move reusable execution logic into typed task classes or static helpers and wire data through task properties.
+- Avoid custom Java serialization protocols in task state; configuration cache understands only some Java serialization hooks, they add cost, and broken protocols can surface later as misleading load failures.
 
 ## Common Repairs
 

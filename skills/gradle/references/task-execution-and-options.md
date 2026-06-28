@@ -42,6 +42,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Lifecycle tasks should normally have no actions; they collect actionable task targets through dependencies.
 - Put lifecycle tasks in groups and give them descriptions so `tasks` and `help --task` expose the intended workflows.
 - Root lifecycle tasks are useful for CI-wide orchestration; keep project-specific work in subproject tasks or convention plugins.
+- Treat Java plugin `buildNeeded` and `buildDependents` as deprecated legacy graph shortcuts; request concrete project tasks, use test/report aggregation, or consume project artifacts through dependency resolution instead.
 - Do not list every transitive task in a lifecycle task. Depend on the meaningful target tasks and let Gradle infer their required work.
 
 ## Command-Line Task Options

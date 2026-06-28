@@ -19,13 +19,13 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - Toolchain coverage differs by JVM plugin: Java covers compile, test, and Javadoc; Groovy compilation is covered but Groovydoc is not; Scala covers compilation and Scaladoc.
 - Prefer toolchains over `JAVA_HOME` or `sourceCompatibility`/`targetCompatibility` alone.
 - Toolchains choose the JDK; they do not prevent accidental use of newer Java APIs. Use `--release` for Java API targeting when compiling Java sources for older platforms.
-- A non-empty `JavaToolchainSpec` must set `languageVersion`; vendor, implementation, and native-image capability are refinements, not substitutes.
+- A non-empty `JavaToolchainSpec` must set `languageVersion`; vendor, implementation, and native-image capability are refinements. An empty spec selects the current Gradle JVM, not a reproducible project toolchain.
 - Diagnose with `./gradlew -q javaToolchains` when available in the build; the report shows detection source, metadata, auto-detection/download state, and invalid installations.
 - Configure toolchain resolver plugins and toolchain repositories in settings when auto-provisioning is allowed. Repository order decides which matching JDK is downloaded first.
 - Auto-provisioning only downloads GA JDKs when no detected toolchain matches; it does not update already-provisioned JDKs. Stop daemons after changing toolchain locations or provisioning policy.
 - For custom Java tasks, expose `JavaCompiler`, `JavaLauncher`, or `JavadocTool` providers, or lazily map their executable/home paths into `RegularFileProperty` or `DirectoryProperty`; avoid eager `.get()` during configuration.
 - Mark custom task toolchain tool properties as `@Nested` inputs so launcher, compiler, or javadoc tool changes participate in validation, up-to-date checks, and cache keys.
-- Custom `fromEnv` and `paths` locations extend the detected candidate set. Precedence still prefers the current Gradle JVM, then JDKs over JREs, vendor order, higher versions, then path ordering.
+- Custom `fromEnv` and `paths` locations extend the detected candidate set; missing locations or entries without `bin/java` are warnings, not hard failures. Precedence still prefers the current Gradle JVM, then JDKs over JREs, vendor order, higher versions, then path ordering.
 
 ## Compatibility Triage
 
@@ -41,6 +41,7 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - Wire generated directories with providers from the producing task.
 - Do not commit generated outputs unless project policy requires it.
 - Keep resources and dependencies scoped to the owning source set.
+- Keep source-set class outputs under `build/`; on Gradle 9+, stale class outputs outside the build directory are no longer deleted, so external class dirs need explicit cleanup or different output ownership.
 - A custom JVM source set creates compile, resources, classes tasks, and source-set configurations; it does not by itself create a runnable verification task or attach work to `check`.
 
 ## Testing
@@ -77,10 +78,10 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 ## JVM Quality Checks
 
 - Checkstyle and PMD own Java source quality checks; CodeNarc owns Groovy source quality checks and only adds source-set tasks when used with the Groovy plugin.
-- Quality plugins create source-set tasks such as `checkstyleMain`, `pmdMain`, and `codenarcMain` and wire them into `check`; triage the narrow source-set task before broad `check`.
+- Quality plugins create source-set tasks such as `checkstyleMain`, `pmdMain`, and `codenarcMain` and wire them into `check`; triage the narrow source-set task before broad `check`. Gradle 9.4+ gives CodeNarc a source-set compilation classpath by default, so clear or override it only when enhanced classpath rules are not wanted.
 - Tool libraries belong in `checkstyle`, `pmd`, `pmdAux`, or `codenarc` configurations, not application classpaths. Use `pmdAux` for PMD type-resolution complaints and `codenarc` for a different Groovy/tool dependency; adding any `checkstyle` dependency replaces the default `com.puppycrawl.tools:checkstyle` unless that module is added explicitly.
 - Checkstyle and PMD run with the Gradle runtime JVM by default; configure Checkstyle task `javaLauncher` when the Checkstyle tool requires a different JDK than the build runtime.
-- PMD `threads` is internal to PMD and multiplies with Gradle parallel task execution across projects; size it for the whole build, not one task in isolation.
+- PMD `threads` is internal to PMD and multiplies with Gradle parallel task execution across projects; size it for the whole build, not one task in isolation. Remove `targetJdk` configuration instead of replacing it; supported PMD versions infer language level from rulesets.
 - Default quality config locations are root `config/checkstyle/checkstyle.xml` and `config/codenarc/codenarc.xml`; inspect tool config and generated reports before changing dependencies.
 
 ## Failure Triage

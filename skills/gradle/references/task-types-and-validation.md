@@ -48,6 +48,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use `@IgnoreEmptyDirectories` when directory entries themselves do not affect the output.
 - Use `@NormalizeLineEndings` for text inputs where CRLF/LF differences should not invalidate up-to-date or cache keys.
 - Use `@Console` only for values that affect console output but not outputs, and `@ReplacedBy` only for migration bridges that should not affect up-to-date checks.
+- For Gradle's `WriteProperties` task on Gradle 9+, use `destinationFile`; the old `outputFile` property is removed.
 - Use `@ServiceReference` when a shared build service is part of task behavior.
 - Do not mark a build service as an input. Use `@ServiceReference`, or `@Internal` plus explicit `usesService` when automatic reference matching does not fit.
 

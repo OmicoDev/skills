@@ -35,6 +35,7 @@ Then run representative tasks. `help` alone proves startup, not build correctnes
 - Gradle runtime JVM.
 - Java toolchains and target bytecode.
 - Embedded Kotlin and Groovy versions used by Gradle.
+- Embedded Kotlin/Groovy upgrades affect Kotlin DSL scripts, Groovy scripts, build logic, and published plugins; decide whether the plugin's minimum consumer Gradle version moves or whether it must target an older Kotlin/Groovy level explicitly.
 - Android Gradle Plugin and Kotlin Gradle Plugin compatibility.
 - Third-party plugin compatibility and plugin bytecode target.
 - `buildSrc`, included build logic, and TestKit coverage.
@@ -44,6 +45,7 @@ Then run representative tasks. `help` alone proves startup, not build correctnes
 
 - Startup failure: wrapper distribution, Gradle runtime JVM, init scripts, or settings plugins.
 - Script compilation failure: DSL syntax, accessors, plugin classpath, or embedded Kotlin/Groovy compatibility.
+- Script behavior changes after a major upgrade: inspect embedded Kotlin/Groovy language changes before rewriting Gradle model logic.
 - Task validation failure: custom task annotations, properties, or Gradle API changes.
 - Dependency failure: repository policy, metadata, locks, verification, or removed configurations.
 - Test failure after upgrade: test JVM, framework engine, classpath, or bytecode target.

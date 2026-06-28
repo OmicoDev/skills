@@ -13,7 +13,9 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - Use content filters or `exclusiveContent` when an internal repository owns a coordinate namespace.
 - Avoid `mavenLocal()` in normal resolution unless local publication is part of the workflow.
 - Avoid `flatDir` for real dependencies because it has no transitive metadata.
+- Configure repositories with typed action blocks; map overloads such as `flatDir(Map)` and `mavenCentral(Map)` are deprecated in Gradle 9.6+.
 - Gradle ignores repositories declared inside consumed Maven POM metadata; repository trust remains owned by the build's declared repositories.
+- On Gradle 9+, `jcenter()` is removed; replace it deliberately with `mavenCentral()` or an internal mirror plus content filters instead of adding broad fallback repositories.
 
 ## Content Filters
 
@@ -24,6 +26,7 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - Use `exclusiveContent` when exactly one repository owns a group, module, or version range.
 - When using exclusive content in `pluginManagement`, declare all plugin and buildscript repositories in that layer; later `buildscript.repositories` additions can become illegal.
 - For Maven repositories that physically or politically split release and snapshot artifacts, use `mavenContent { releasesOnly() }` or `mavenContent { snapshotsOnly() }`.
+- Avoid Maven `artifactUrls`; it splits POM and artifact lookup across URLs, has no Maven equivalent, and is deprecated without a direct replacement.
 - Treat unfiltered fallback repositories as a security decision, not a convenience default; they can silently satisfy coordinates that were intended for filtered repositories.
 - When setting exclusive content, also decide where transitive dependencies of those modules are allowed to resolve.
 - Use context filters by configuration or attributes only when the repository really differs by resolution context; otherwise simple group/module filters are easier to audit.
@@ -52,6 +55,7 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - If `mavenLocal()` is unavoidable, restrict it with content filters and place it only where local artifacts should genuinely override remote artifacts.
 - Document any committed `mavenLocal()` or file repository use with the workflow that requires it.
 - Gradle can reuse matching artifacts from the local Maven cache when a remote checksum verifies them; that reuse does not require declaring `mavenLocal()`.
+- When debugging `mavenLocal()` misses, confirm the actual local Maven path; user `~/.m2/settings.xml` can override the default `~/.m2/repository`.
 
 ## Credentials And Protocols
 

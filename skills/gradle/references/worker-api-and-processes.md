@@ -38,7 +38,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - `noIsolation()` is fastest and runs work in the build process with a shared classloader. Use it only when static state and classpath sharing are acceptable.
 - `noIsolation()` still does not make project state mutable from a work action. If a work item needs project data, pass stable values through `WorkParameters` before execution.
 - `classLoaderIsolation()` isolates the implementation classpath while staying in-process. Use it when work needs a dedicated library classpath but not a separate JVM.
-- If a worker library version is user-configurable, keep it off the buildscript runtime classpath and expose the worker classpath as a task input before wiring it to the isolated work queue.
+- If a worker library version is user-configurable, keep it off the buildscript runtime classpath and wire a provider-backed task input classpath into the isolated work queue so dependency resolution stays execution-time/lazy.
 - `processIsolation()` runs work in worker daemon JVMs. Use it for incompatible libraries, system-property conflicts, process-level state, or a different Java executable.
 - Do not set a process-isolated worker working directory through fork options; Gradle chooses a shared worker directory for reuse, so pass files and directories through `WorkParameters`.
 - Isolation is not a replacement for input declaration. Classpaths, fork options, tool versions, and environment values that affect outputs must be modeled.

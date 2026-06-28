@@ -27,6 +27,7 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 - `distributionSha256Sum` is checked when the wrapper downloads the distribution; verify checksum policy with a clean or controlled Gradle user home when an existing cached distribution could mask the check.
 - If `gradle-wrapper.properties` contains `distributionSha256Sum`, keep wrapper task configuration or CLI checksum input in sync when regenerating wrapper properties.
 - For private wrapper distributions, use HTTPS plus host-scoped credentials or tokens in user/CI properties. Do not commit shared credentials in `distributionUrl`.
+- When refreshing Gradle 9.5+ wrapper or application Windows scripts, review custom `.bat` callers/templates for changed environment scoping, `CALL`/exit behavior, and removed exit-environment-variable assumptions.
 - Treat `./gradlew wrapper --gradle-version <version>` as a mutating upgrade command. Review scripts, JAR, properties, URL validation, retry/timeout policy, checksums, and CI entrypoints together.
 
 ## Runtime Boundaries
@@ -37,15 +38,18 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 - Worker processes do not own settings, project topology, dependency policy, or task graph construction.
 - Debug daemon trouble by naming the failing runtime first: client launch, wrapper distribution download, Tooling API connection, daemon execution, or worker process work.
 - `gradle --status` only reports daemons for the same Gradle version as the command, and `gradle --stop` only stops daemons started with that Gradle version. Use JDK tools such as `jps` when investigating daemons across Gradle versions.
+- Idle timeout and low-memory daemon exits are normal lifecycle events; confirm daemon logs before treating a disappeared daemon as a crash.
 - The Gradle client JVM comes from the launcher environment such as `JAVA_HOME`, `java` on `PATH`, or the IDE.
 - The daemon JVM comes from Daemon JVM criteria, Tooling API requests, `org.gradle.java.home`, or the launcher environment fallback.
 - Gradle distributions do not embed a Java runtime; Daemon JVM toolchains do not remove the wrapper/client Java prerequisite.
 - `gradle/gradle-daemon-jvm.properties` records checked-in Daemon JVM criteria and takes precedence over `JAVA_HOME` and `org.gradle.java.home`.
 - Treat `./gradlew updateDaemonJvm --jvm-version <version>` as a mutating runtime-policy command like `wrapper`.
+- Running `updateDaemonJvm` without arguments can seed criteria from the current daemon JVM when no criteria file exists; pass explicit criteria when committing shared policy.
 - Daemon JVM criteria can include version, vendor, native-image capability, and platform download URLs. Generating URLs requires configured toolchain download repositories unless platforms are cleared or explicit URLs are supplied.
 - Daemon JVM auto-detection and auto-provisioning share Java toolchain discovery flags, but they select the JVM that runs Gradle. Java toolchains select JVMs used by project tasks.
 - `JAVA_HOME` is an environment default, not a reproducible project contract.
-- Gradle behavior configuration precedence is command line, system properties, Gradle properties, then environment variables; within Gradle properties, `GRADLE_USER_HOME` can override checked-in project properties.
+- Gradle behavior configuration precedence is command line, system properties, Gradle properties, then environment variables; Wrapper execution follows this order, and within Gradle properties, `GRADLE_USER_HOME` can override checked-in project properties.
+- When user-home evidence differs, check both `GRADLE_USER_HOME` and `-Dgradle.user.home` because the system property can relocate the user home before its `gradle.properties` is read.
 - Treat `org.gradle.*` properties as Gradle runtime configuration, not build-logic feature flags; use project properties, provider-backed extension values, or typed conventions for build behavior users should control.
 - `org.gradle.jvmargs` configures the daemon JVM, not the lightweight client JVM; use `GRADLE_OPTS` only for client options or to pass `-Dorg.gradle.jvmargs=...`.
 - `--no-daemon` can still create a single-use daemon when the client JVM does not match the build's required daemon JVM or JVM args. To fully avoid a daemon, the client process must match those requirements.

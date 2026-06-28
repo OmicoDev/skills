@@ -17,6 +17,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 ## Metadata Checks
 
 - Verify `group`, artifact ID, version, packaging, dependencies, variants, and capabilities before release.
+- If a published project depends on another project, ensure the target project also has a publication; Gradle 10 no longer silently publishes dependency coordinates inferred from an unpublished project's `group`, name, and `version`.
 - Verify source and javadoc artifacts when the target repository requires them.
 - Verify Gradle Module Metadata when consumers rely on variants or capabilities.
 - Treat Gradle Module Metadata publication warnings as consumer-compatibility evidence; suppress them only after naming the lost semantics and deciding Maven/Ivy degraded metadata is acceptable.
@@ -59,6 +60,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 ## Signing
 
 - Gradle's Signing plugin produces OpenPGP signatures.
+- On Gradle 9+, generated OpenPGP signature version follows the signing key version; if a repository or downstream verifier rejects signatures, inspect key version support before assuming Gradle emits v4 signatures.
 - Sign release publications when the target repository requires it; avoid signing ordinary PR builds unless CI intentionally exercises release publishing.
 - Source signing keys and passwords from CI secrets or user-local properties.
 - Prefer in-memory ASCII-armored keys or subkeys in CI so private key material does not need a committed or cached keyring file.
@@ -71,9 +73,9 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 ## Plugin Portal
 
 - Gradle plugin publishing uses plugin metadata and marker artifacts.
-- A publishable plugin needs plugin ID, implementation class, `group`, and `version`; verify that generated coordinates match the intended owner and plugin namespace.
+- A publishable plugin needs plugin ID, implementation class, `group`, and `version`; the `gradlePlugin.plugins` block name is local build identity, while `id` and generated marker coordinates are consumer-facing.
 - The plugin marker module is what lets consumers resolve `plugins { id("...") }`; if a plugin was published without marker artifacts, consumers need `pluginManagement.resolutionStrategy` or a corrected publication.
-- The Plugin Publish Plugin automatically publishes sources and Javadoc jars; applying the Signing plugin signs plugin artifacts.
+- Plugin Publish Plugin 1.0+ auto-applies `java-gradle-plugin` and `maven-publish`, publishes sources/Javadoc jars, and signs plugin artifacts when the Signing plugin is applied.
 - Before remote publishing, publish to a file-backed Maven repository and consume it through `pluginManagement.repositories` from a fixture build.
 - `publishPlugins --validate-only` validates Plugin Portal metadata without uploading.
 - Keep Plugin Portal credentials in user-local Gradle properties or CI environment variables such as `GRADLE_PUBLISH_KEY` and `GRADLE_PUBLISH_SECRET`, not in project files.

@@ -32,7 +32,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, va
 - For configuration-cache-compatible tasks, split `ResolvedArtifactResult` data into stable file and metadata task properties instead of storing resolution result objects as task inputs.
 - Avoid new use of legacy `ResolvedConfiguration`, `LenientConfiguration`, `ResolvedArtifact`, and `ResolvedDependency` APIs; they use default artifact attributes and are maintenance-mode surfaces.
 - Without variant reselection, artifact selection must still come from the graph-selected component variant.
-- Use `withVariantReselection` only when the consumer intentionally wants a parallel variant of each selected component, such as sources or javadoc. The view attributes then drive variant matching; the configuration's graph attributes are ignored for reselection.
+- Use `withVariantReselection` only when the consumer intentionally wants a parallel variant of each selected component, such as sources or javadoc. Treat it as an incubating API and provide the complete target variant attributes because the configuration's graph attributes are ignored during reselection.
 - Without variant reselection, artifact view attributes are combined with the graph resolution attributes for artifact selection and may trigger transforms when no selected artifact set matches.
 - Use lenient artifact views to collect available artifacts while keeping failures inspectable. Do not use lenient resolution to hide required dependencies in verification or release paths.
 - Lenient artifact views can omit failed modules, unresolved conflicts, or failed artifact downloads; use the `ArtifactCollection` failure details before treating partial files as complete.
@@ -69,7 +69,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, va
 
 - Missing custom project artifact: check producer attributes, artifact task provider, and consumer resolvable configuration attributes before adding task dependencies.
 - Ambiguous custom project artifact: remove equivalent producer variants or differentiate their attributes/capabilities before adding consumer-side selection hacks.
-- Artifact-only dependency lost transitives: replace `@extension` notation with normal metadata-backed coordinates or add [dependency-metadata-rules.md](dependency-metadata-rules.md).
+- Artifact-only dependency lost transitives: replace `@extension` notation with normal metadata-backed coordinates first; metadata rules can repair metadata only after the declaration stops bypassing metadata.
 - Artifact-only dependency ignores metadata repair: remove `@extension` first; component metadata rules cannot help a dependency declaration that deliberately bypasses metadata.
 - Sources or javadoc view returns runtime artifacts: check whether `withVariantReselection` is missing or whether the view attributes still describe the graph-selected variant.
 

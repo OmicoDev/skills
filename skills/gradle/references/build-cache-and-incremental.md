@@ -69,6 +69,8 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 ## Cacheability Pitfalls
 
 - Conditional `doFirst`/`doLast` actions on cacheable tasks change task action implementation fingerprints; prefer separate typed tasks or unconditional wiring.
+- Do not mutate task inputs or outputs inside `doFirst`/`doLast`; runtime model changes are invisible to up-to-date and cache-key calculation when the task does not execute.
+- Avoid `outputs.upToDateWhen` as a repair for missing state modeling; declare the real inputs and outputs because cached or up-to-date outputs can change without task actions running.
 - Unknown implementation fingerprints from non-Gradle classloaders, non-serializable Java lambdas, task actions, or nested inputs disable caching; move cacheable behavior into stable task/action classes loaded by Gradle.
 - Do not base build logic on whether a task executed. `FROM-CACHE`, up-to-date, and executed outputs must be modeled through inputs and outputs.
 - Runtime classpath normalization is declared by the consuming project/task and can ignore volatile classpath entries, such as audit `build-info.properties`, without changing the actual runtime classpath.

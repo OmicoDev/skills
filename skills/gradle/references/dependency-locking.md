@@ -6,8 +6,8 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 
 - Locking records selected versions, not declared preferences.
 - Locks behave like strict constraints during resolution.
-- Locking is most useful with dynamic selectors because it lets declarations stay flexible while builds stay reproducible.
-- Do not use locking as the safety mechanism for changing modules such as `-SNAPSHOT`; their bytes can change under the same coordinates.
+- Locking is most useful with dynamic selectors because it lets declarations stay flexible while selected versions and task inputs stay reproducible.
+- Do not use locking as the safety mechanism for changing modules such as `-SNAPSHOT`; their bytes can change under the same coordinates, and Gradle warning while persisting lock state is a modeling signal rather than something to ignore.
 - Lockfiles are source policy and should be reviewed like dependency changes.
 - Locking improves reproducibility but does not prove artifact trust; pair it with dependency verification for release-critical builds.
 - Initial lock generation freezes the versions Gradle already selected; inspect optimistic conflict upgrades before writing locks or you may preserve the wrong baseline.
@@ -29,6 +29,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - The default lock state is `gradle.lockfile` in each project or subproject directory.
 - Buildscript classpath locks use `buildscript-gradle.lockfile`.
 - Lock entries are sorted and record which configurations contain each module; an `empty=` entry preserves locked configurations with no dependencies.
+- Gradle 9.5+ writes lockfiles with LF line endings on every platform; a one-time CRLF-to-LF diff after lock regeneration is formatting churn, not dependency churn.
 - Custom lockfile names or locations are for real execution-context boundaries, such as platform-specific native graphs, not for hiding unrelated lock churn.
 - If you customize `dependencyLocking.lockFile`, keep the file unique per project and separate from buildscript lock state; shared lock paths mix cleanup, update, and review ownership.
 - Legacy per-configuration lockfiles can migrate incrementally: writing the new per-project lockfile transfers resolved configurations and deletes only the old state that was transferred.
@@ -72,7 +73,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - Pair lock diffs with `dependencies` or `dependencyInsight` output when the selected version changed unexpectedly.
 - Pair lockfile updates with verification metadata updates when trust policy requires both.
 - If locking is introduced to prevent accidental upgrades, first prove whether `failOnVersionConflict()`, a strict constraint, or a platform should own the policy; locking should then preserve the accepted selected graph.
-- When publishing a library whose lock state intentionally fixes dynamic or rich-version selections, review [publications-and-signing.md](publications-and-signing.md) so resolved versions are published deliberately.
+- When publishing a library whose lock state intentionally fixes dynamic or rich-version selections, review [publications-and-signing.md](publications-and-signing.md) and configure `versionMapping` so resolved versions are published deliberately.
 - Do not delete lockfiles to make resolution pass unless the repository intentionally removed locking.
 
 ## Ignore And Cleanup Rules

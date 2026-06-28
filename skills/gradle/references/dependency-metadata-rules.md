@@ -45,8 +45,8 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Ordinary Maven dependencies request library variants. `platform(...)` and `enforcedPlatform(...)` request the platform-derived variants and import constraints instead of ordinary dependencies.
 - POM dependency management is not converted into constraints for ordinary library variants.
 - Ivy has no single built-in variant derivation strategy. Use metadata rules to create compile/runtime variants from Ivy configurations when that mapping is correct for the module family.
-- Component-level `belongsTo` creates virtual-platform alignment and component-level status/status scheme affects version selection before variant selection; do not treat them like ordinary variant attributes.
-- Maven- or Ivy-specific descriptors are available to metadata rules when the repair depends on packaging or Ivy details.
+- Component-level `belongsTo` creates virtual-platform alignment; component-level status/status scheme affects `latest.<status>` version selection before variant selection. POM metadata defaults to `integration` for snapshots and `release` otherwise, so status rules are version-policy repairs, not variant fixes.
+- Maven- or Ivy-specific descriptors are available to metadata rules when the repair depends on packaging, Ivy configurations, or traditional metadata details; guard those assumptions before applying a broad rule to modules that may publish Gradle Module Metadata.
 
 ## Repair Choices
 

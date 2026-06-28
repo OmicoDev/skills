@@ -33,6 +33,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Convention plugins encode build policy applied by participating projects.
 - Binary plugins fit reusable behavior, extensions, custom tasks, services, diagnostics, custom dependency blocks, variants, and publishing.
 - Keep capabilities separate from conventions: a base plugin can expose extensions, tasks, and services without forcing defaults, while a convention plugin can apply the base plugin and set organization defaults.
+- On Gradle 9+, the old `Convention` API is removed; replace `Project.getConvention()`, `Task.getConvention()`, and plugin convention objects with extensions or direct task configuration.
 
 ## Plugin Design Checks
 
@@ -44,7 +45,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Avoid internal Gradle APIs; prefer public services and model APIs.
 - Keep external dependencies in plugins minimal to reduce classpath conflicts.
 - Validate behavior with TestKit before publishing or applying broadly.
-- Use `java-gradle-plugin` for plugin projects instead of hand-maintaining descriptors, `gradleApi()` wiring, marker publications, and TestKit classpath metadata.
+- Use `java-gradle-plugin` for plugin projects instead of hand-maintaining descriptors, `gradleApi()`/`compileOnlyApi` wiring, validation, marker publications, and TestKit classpath metadata.
 - Register every public plugin in `gradlePlugin { plugins { ... } }`; treat plugin ID and `implementationClass` as release-facing API.
 - Treat plugin descriptor, `implementation-class`, and task property validation warnings as blockers for publishable plugin code.
 - Keep plugin classes as model coordinators: create extensions, set conventions, register tasks lazily, and wire extension properties to task properties without reading them during `apply`.
