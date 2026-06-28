@@ -46,7 +46,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Use `Task.doNotTrackState("...")` or `@UntrackedTask` only when a task must always run or its state cannot be represented as files/properties, such as updating an external service.
 - Untracked tasks are always out of date, cannot use incremental `InputChanges`, and are not stored in or loaded from the build cache.
 - Use `@LocalState` for non-relocatable analysis or task-local caches only; Gradle removes local state when loading task outputs from the build cache, so required outputs must be declared as outputs.
-- Use `outputs.cacheIf("...", spec)` for instance-level cache enablement only when the task type is otherwise safe; use `outputs.doNotCacheIf("...", spec)` for exceptional disables because it never enables caching.
+- Prefer `@CacheableTask` or `@DisableCachingByDefault` when cacheability is stable for a task type; use `outputs.cacheIf("...", spec)` or `outputs.doNotCacheIf("...", spec)` only when cacheability genuinely varies by task instance or execution context.
 - Prefer no cache for cheap copy/archive tasks unless their work is expensive enough and their inputs/outputs are modeled carefully.
 - Prefer artifact transforms for cacheable dependency artifact conversions; read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) before modeling one as a task.
 

@@ -71,6 +71,8 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 4. Add CI coverage for selected workflows.
 5. Roll out remote cache, default configuration cache, or Isolated Projects only after representative workflows are stable.
 
+Treat cache, configuration-cache, parallelism, and UTF-8 flags in `gradle.properties` as shared build policy; trial with CLI flags first, then commit only after representative workflows pass.
+
 ## Avoid
 
 - Enabling every optimization globally from one `help` run.

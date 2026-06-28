@@ -39,7 +39,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 
 - Expose user intent through extensions and containers.
 - Register tasks lazily and wire extension properties to task properties.
-- React to other plugins with `plugins.withId(...)` or `pluginManager.withPlugin(...)` when the consuming project may or may not apply the expected plugin; apply another plugin only when that dependency is part of this plugin's contract.
+- React to other plugins with `plugins.withId(...)` or `pluginManager.withPlugin(...)` when the consuming project may or may not apply the expected plugin; do not check plugin presence in `afterEvaluate`, and apply another plugin only when that dependency is part of this plugin's contract.
 - Use the injectable `BuildFeatures` service when plugin behavior should adapt to Gradle feature state such as configuration cache or Isolated Projects; `requested` is a possibly-absent `Provider<Boolean>` for user intent/reporting, while `active` is the effective status to gate incompatible behavior.
 - Keep plugin IDs stable and namespace them by ownership.
 - Avoid internal Gradle APIs; prefer public services and model APIs.

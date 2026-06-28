@@ -38,7 +38,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Use `forUseAtConfigurationTime` only for older Gradle compatibility work; in modern builds prefer proper configuration inputs and providers.
 - Do not finalize extension values before all intended conventions have had a chance to apply.
 - Do not simulate conventions with `isPresent`, `getOrElse`, or ad hoc fallback reads when another owner could still attach a real convention.
-- Replace `afterEvaluate`-style delayed reads with conventions and provider wiring. Use fail-fast validation or final-state logging callbacks only when no lazy model API can own the behavior.
+- Replace `afterEvaluate`-style delayed reads with conventions and provider wiring; do not call `getOrElse` just because users may configure a value later. Use fail-fast validation or final-state logging callbacks only when no lazy model API can own the behavior.
 
 ## Managed Model
 

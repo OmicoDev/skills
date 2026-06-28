@@ -47,7 +47,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Prefer lazy `matching { ... }` or `configureEach` over Groovy `DomainObjectCollection.findAll(Closure)`, which eagerly evaluates containers and is deprecated in Gradle 9.4+.
 - Use `named(...)` when configuring a known task or container element.
 - Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead.
-- `afterEvaluate` callbacks run by registration order, can see stale state, and defeat task configuration avoidance when they register or configure tasks.
+- `afterEvaluate` callbacks run by registration order, can see stale or default extension values, defeat task configuration avoidance when they touch tasks, and are configuration-cache hostile when they capture mutable project state.
 - If `afterEvaluate` appears necessary, limit it to final validation or diagnostics and document why providers, conventions, or `plugins.withId(...)` cannot express the timing.
 
 ## DSL Notes
