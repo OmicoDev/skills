@@ -6,7 +6,7 @@ Read this when: comparing specific Gradle releases against Java runtime, tested 
 
 - Latest final Gradle: query `https://services.gradle.org/versions/current`.
 - Latest stable per major: query `https://services.gradle.org/versions/all` and ignore entries where `snapshot`, `nightly`, `releaseNightly`, `broken`, or `rcFor` are set.
-- Current skill calibration uses local Gradle docs version `9.6.1`. When citing published docs, still verify that the versioned compatibility page exists.
+- Current compatibility snapshot uses Gradle docs version `9.6.1`. When citing published docs, still verify that the versioned compatibility page exists.
 
 ## Gradle 9.6.1
 

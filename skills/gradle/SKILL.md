@@ -7,8 +7,6 @@ description: Gradle development knowledge for agents maintaining builds, build l
 
 Use this skill when Gradle owns the work: build authoring, debugging, dependency resolution, plugin/task development, performance, CI/security, ecosystem integration, or migrations.
 
-Calibrated from the local Gradle User Manual source tree. Do not vendor upstream pages into this skill; improve the references when repeated Gradle development work needs durable knowledge.
-
 ## When Not To Use This Skill
 
 - Pure Maven-only work with no Gradle involvement.
@@ -50,6 +48,6 @@ Keep this list coarse. Add narrow references from their owning file, not from `S
 
 ## Source Use
 
-- Use the local Gradle source tree for calibration when available.
+- Use official Gradle documentation or source materials supplied by the current task for calibration when available.
 - Use [Gradle User Manual](https://docs.gradle.org/current/userguide/userguide.html) links for shareable citations.
 - Prefer concise model rules, symptom maps, command recipes, and safe code patterns over upstream excerpts.

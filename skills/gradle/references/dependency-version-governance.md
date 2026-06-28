@@ -35,7 +35,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Use a platform when a family of modules must align across projects, transitive dependencies, or consumers.
 - Create Java ecosystem platforms with `java-platform` plus dependency constraints.
 - Import Maven BOMs with `platform(...)`; Gradle maps BOM dependency management entries to platform constraints.
-- `platform(...)` selects platform variants and endorses strict versions by default. Use `doNotEndorseStrictVersions` only when those strict platform opinions should not be enforced.
+- `platform(...)` selects platform variants and endorses strict versions by default, so strict platform opinions can control versions in the consumer's subgraph. Use `doNotEndorseStrictVersions` only when that enforcement is not policy.
 - Use `enforcedPlatform(...)` cautiously for reusable components because forced versions are transitive to consumers. If consumers should be allowed to disagree, prefer normal platforms plus strict/rich versions where appropriate.
 - Prefer a published BOM or platform when a module family already publishes alignment metadata. Use a virtual platform through component metadata rules only when the upstream family lacks usable alignment metadata.
 - For modules you publish and version together, model alignment with a `java-platform` project and make each module depend on that platform.
@@ -45,10 +45,11 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 
 - Constraints are scoped to dependency buckets such as `implementation`, `api`, `runtimeOnly`, and test buckets.
 - Constraints are not strict by default; they usually act like version requirements that can still be upgraded by conflict resolution.
-- A constraint is a no-op if the constrained module never appears in the graph.
+- A constraint is a no-op until a hard dependency path brings the constrained module into the graph; it is a version opinion, not a dependency edge.
 - Constraints are transitive and are preserved for Gradle consumers through Gradle Module Metadata; Maven or Ivy consumers may lose them.
 - `require` is the normal floor and may be upgraded; shorthand dependency versions are required versions.
 - `strictly` is the strongest opinion, can downgrade, and can fail resolution when no acceptable version satisfies all requirements; for published libraries, prefer a strict compatible range plus `prefer` over a single strict version when consumers may safely choose another version in the range.
+- Strict version control depends on graph coverage. If another path reaches the module without inheriting the strict opinion, inspect dependency paths before assuming `strictly` was ignored.
 - `prefer` is soft, applies only when no stronger non-dynamic opinion exists, and does not support dynamic versions.
 - `reject` blocks candidates and can fail resolution if Gradle would otherwise select a rejected version.
 - When a range, dynamic selector, or reject behaves surprisingly, inspect Gradle version ordering before adding policy; separators normalize, numeric parts outrank non-numeric parts, extra numeric parts raise a version, extra non-numeric parts lower it, and special qualifiers such as `dev`, `rc`, `snapshot`, `final`, `ga`, `release`, and `sp` have Gradle-defined order.
@@ -83,6 +84,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Catalog plugin alias or accessor unavailable: check whether the use site is `settings.gradle(.kts)`, a settings plugin, a precompiled script plugin `plugins {}` block, or a project `plugins {}` block trying to read `libraries`, `bundles`, or `versions` instead of applying a `[plugins]` alias.
 - Constraint appears in `dependencies` output with `(c)`: it is a version opinion, not a dependency edge; find the dependency path that actually brings in the module.
 - `enforcedPlatform` leaks to consumers: replace with a normal platform or strict/rich versions unless consumer override must be blocked.
+- Strict version does not control the selected module: inspect all dependency paths, platform endorsement, and competing strict versions before adding `force`.
 - Newer transitive version wins over a declared version: use `failOnVersionConflict()` to expose the conflict, then choose constraint/platform/rich-version/lock ownership instead of forcing globally.
 - Compile/runtime classpaths disagree: inspect selected versions first, then consider targeted consistent resolution.
 

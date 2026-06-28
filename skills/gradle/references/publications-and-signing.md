@@ -18,10 +18,10 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 
 - Verify `group`, artifact ID, version, packaging, dependencies, variants, and capabilities before release.
 - If a published project depends on another project, ensure the target project also has a publication; Gradle 10 no longer silently publishes dependency coordinates inferred from an unpublished project's `group`, name, and `version`.
-- Verify source and javadoc artifacts when the target repository requires them.
-- Verify Gradle Module Metadata when consumers rely on variants or capabilities.
+- Verify source/javadoc artifacts and Gradle Module Metadata when the target repository or consumers rely on them.
 - Treat Gradle Module Metadata publication warnings as consumer-compatibility evidence; suppress them only after naming the lost semantics and deciding Maven/Ivy degraded metadata is acceptable.
 - Gradle Module Metadata validates unique variant names, at least one attribute per variant, no duplicate attribute/capability sets, and dependency version information across dependency-bearing variants.
+- Suppress a `GenerateModuleMetadata` validation error only after naming the validation and proving the published consumer behavior still works.
 - Publishing a unique build identifier in module metadata makes the metadata differ every invocation; use it only when downstream out-of-date behavior is intended.
 - If Gradle-only semantics such as rich versions, transitive constraints, capabilities, feature variant dependencies, or custom component contracts matter to consumers, prefer publishing Gradle Module Metadata instead of hiding Maven/Ivy warnings.
 - Publish extra consumable artifacts as component variants or an adhoc component when they have dependencies, attributes, or capabilities; direct `artifact(...)` attachments are out-of-context and usually reachable only by classifier.
@@ -40,8 +40,8 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - Configure snapshot/release repositories with provider-backed credentials.
 - Use `publishToMavenLocal` only for local interop; it does not require `mavenLocal()` in `publishing.repositories` and does not create checksum files. Publish to a file-backed Maven repository when checksum output must be verified before release.
 - Inspect generated POM and module metadata outputs before remote release when identity, dependency versions, relocation, or warnings changed.
-- Use `generatePomFileFor<PubName>Publication` to inspect Maven metadata without publishing; the default output is `build/publications/<pubName>/pom-default.xml`.
-- Use dry-run or local repository publishing before remote release.
+- Use `generatePomFileFor<PubName>Publication` and `generateMetadataFileFor<PubName>Publication` to inspect descriptors without publishing.
+- Use dry-run or file-backed local repository publishing before remote release; then consume the module from a fixture when metadata, variants, relocation, or plugin markers changed.
 - Use `versionMapping` when a release should publish resolved versions, especially with dynamic versions, rich versions, or dependency locking. When locking affects published dependencies, prefer publishing the locked/resolved versions deliberately.
 - Do not assume `maven-publish` can deploy directly to Maven Central's current process; check the required Central publishing plugin/workflow.
 
@@ -76,10 +76,10 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - A publishable plugin needs plugin ID, implementation class, `group`, and `version`; the `gradlePlugin.plugins` block name is local build identity, while `id` and generated marker coordinates are consumer-facing.
 - The plugin marker module is what lets consumers resolve `plugins { id("...") }`; if a plugin was published without marker artifacts, consumers need `pluginManagement.resolutionStrategy` or a corrected publication.
 - Plugin Publish Plugin 1.0+ auto-applies `java-gradle-plugin` and `maven-publish`, publishes sources/Javadoc jars, and signs plugin artifacts when the Signing plugin is applied.
-- Before remote publishing, publish to a file-backed Maven repository and consume it through `pluginManagement.repositories` from a fixture build.
-- `publishPlugins --validate-only` validates Plugin Portal metadata without uploading.
+- Treat `validatePlugins`, file-backed repository fixture consumption, and `publishPlugins --validate-only` as separate gates: plugin implementation quality, marker/resolution behavior, and Portal metadata.
+- Before remote publishing, consume the locally published plugin through `pluginManagement.repositories` from a fixture build so marker metadata, implementation class, variants, sources/Javadoc, and checksums are tested together.
 - Keep Plugin Portal credentials in user-local Gradle properties or CI environment variables such as `GRADLE_PUBLISH_KEY` and `GRADLE_PUBLISH_SECRET`, not in project files.
-- Test plugin IDs, implementation classes, plugin marker artifacts, sources/javadoc, and functional behavior before publishing.
+- Published plugin builds should treat stricter `validatePlugins` findings as release blockers.
 - Keep plugin publication separate from ordinary library publication unless the project intentionally publishes both.
 
 ## Failure Triage
@@ -89,6 +89,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - Published POM or Ivy descriptor still shows declared/dynamic versions after locks or resolution rules: configure `versionMapping` with `fromResolutionResult()` or `fromResolutionOf(...)`, then inspect the generated descriptor before publishing.
 - Publication warning about lost Gradle semantics: inspect constraints, rich versions, capabilities, feature variants, and custom components.
 - Credential failure: inspect provider names, CI secrets, and repository URL selection.
+- Plugin resolves locally but fails when applied: inspect marker module coordinates, implementation-class metadata, plugin classpath dependencies, and variant attributes before changing Portal credentials.
 - Duplicate or stale publication: inspect repository coordinates and relocation metadata.
 - Legacy publishing logic depending on deferred configuration: prefer provider/plugin ordering repairs; use `afterEvaluate` only as a migration bridge.
 
