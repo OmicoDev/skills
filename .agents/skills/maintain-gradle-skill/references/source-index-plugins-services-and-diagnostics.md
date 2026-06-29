@@ -14,4 +14,8 @@
 
 ## Source Code
 
+- `subprojects/core-api/src/main/java/org/gradle/api/DomainObjectCollection.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/Project.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeatures.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/plugins/PluginContainer.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/plugins/PluginManager.java`

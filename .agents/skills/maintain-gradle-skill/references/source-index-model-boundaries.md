@@ -3,6 +3,7 @@
 ## Documentation
 
 - [Avoiding Unnecessary Task Configuration](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
+- [Best Practices Index](https://docs.gradle.org/current/userguide/best_practices_index.html)
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Build Execution Model](https://github.com/gradle/gradle/blob/master/architecture/build-execution-model.md)
 - [Build Lifecycle](https://docs.gradle.org/current/userguide/build_lifecycle.html)

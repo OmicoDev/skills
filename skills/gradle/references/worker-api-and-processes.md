@@ -43,11 +43,11 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - `processIsolation()` runs work in worker daemon JVMs. Use it for incompatible libraries, system-property conflicts, process-level state, or a different Java executable.
 - Do not set a process-isolated worker working directory through fork options; Gradle chooses a shared worker directory for reuse, so pass files and directories through `WorkParameters`.
 - Isolation is not a replacement for input declaration. Classpaths, fork options, tool versions, and environment values that affect outputs must be modeled.
-- Build services can be passed to no-isolation work. They are not supported with classloader- or process-isolated worker actions.
+- Build services can be passed to no-isolation work by wiring the registered service provider into a `Property<ServiceType>` on `WorkParameters`; they are not supported with classloader- or process-isolated worker actions.
 
 ## Worker Daemons
 
-- Process-isolated work uses worker daemons that can be reused for compatible work items and later builds from the same Gradle daemon until the daemon stops or memory pressure ends them; do not treat them as durable state.
+- Process-isolated work uses worker daemons that can be reused only while Gradle considers them compatible and alive; do not rely on reuse across builds, daemon restarts, classpath changes, unexpected worker failure, or memory pressure, and never store correctness state in them.
 - Worker processes are daemon-started runtimes with their own Java executable and service set; diagnose them separately from the Gradle client and main daemon.
 - Worker daemon reuse depends on compatibility: Java executable, classpath, heap settings, JVM args, system properties, environment variables, bootstrap classpath, debug flag, assertions, and default encoding.
 - Keep process-isolated worker requirements stable across submitted items when reuse matters; changing classpaths or fork options can intentionally split worker daemon pools.

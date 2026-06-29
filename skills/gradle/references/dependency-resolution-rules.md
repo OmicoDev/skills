@@ -43,6 +43,7 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 
 - Before excluding, use `dependencies` or `dependencyInsight` to identify the exact path that brings the unwanted module.
 - Prefer dependency-level excludes over configuration-level excludes; configuration excludes apply to every declaration in that configuration.
+- Treat configuration-wide or global exclusions as both performance and future-dependency risk: they apply to existing and later declarations, including plugin-added ones, and can silently remove modules from unrelated runtime paths.
 - Gradle applies an exclusion only when all paths to the module agree. If another dependency still brings the module without the exclusion, the module remains in the graph.
 - Exclude only when the application or library is proven not to need the removed dependency on relevant runtime paths.
 - If the metadata declares an unnecessary dependency, repair it with a component metadata rule instead of hiding it with broad excludes.

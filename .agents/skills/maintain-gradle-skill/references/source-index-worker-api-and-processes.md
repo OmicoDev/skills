@@ -10,11 +10,13 @@
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
+- [Using Shared Build Services](https://docs.gradle.org/current/userguide/build_services.html)
 
 ## Source Code
 
 - `platforms/core-execution/daemon-server-worker/src/main/java/org/gradle/workers/WorkAction.java`
 - `platforms/core-execution/daemon-server-worker/src/main/java/org/gradle/workers/WorkParameters.java`
+- `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerDaemonLifecycleTest.groovy`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/ClassLoaderWorkerSpec.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/ProcessWorkerSpec.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/WorkQueue.java`
