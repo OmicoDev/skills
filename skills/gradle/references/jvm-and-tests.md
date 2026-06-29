@@ -10,6 +10,8 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - `application` applies Java plus Distribution, treats `main` as the runnable JVM application, and owns `run`, `startScripts`, `installDist`, `distZip`, and `distTar`.
 - Kotlin, Groovy, Scala, Android, and external JVM plugins add their own task and source-set layers; identify which plugin owns the model before patching.
 - The Kotlin Gradle Plugin adds the Kotlin standard library to each source set by default; do not declare `kotlin-stdlib` explicitly unless the build disables that default or owns a deliberate stdlib version policy.
+- Groovy projects still need an explicit Groovy dependency on the source set that uses Groovy; avoid `localGroovy()` for application code unless coupling to Gradle's bundled Groovy version is intentional.
+- Prefer `scala { scalaVersion = ... }` for Scala projects so Gradle owns Scala SDK and compiler classpaths; if inferring classpaths from dependencies, Scala 2 needs `scala-library`, Scala 3 needs `scala3-library_3`, and `scalaClasspath`/`zinc` remain compiler-tool inputs, not application dependencies.
 
 ## Toolchains
 
@@ -18,6 +20,7 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - Toolchain coverage differs by JVM plugin: Java covers compile, test, and Javadoc; Groovy compilation is covered but Groovydoc is not; Scala covers compilation and Scaladoc.
 - Prefer toolchains over `JAVA_HOME`, IDE Gradle JVM settings, or `sourceCompatibility`/`targetCompatibility` alone; IDE settings choose how Gradle is launched inside the IDE, not the project compile/test toolchain.
 - Toolchains choose the JDK; they do not prevent accidental use of newer Java APIs. Use `--release` for Java API targeting when compiling Java sources for older platforms.
+- `ScalaCompile` derives target or release flags from the configured toolchain, or defaults to Java 8 bytecode without toolchains; explicit Scala compiler output flags override Gradle's selection, and older Scala versions may require a lower toolchain or explicit target.
 - A non-empty `JavaToolchainSpec` must set `languageVersion`; vendor, implementation, and native-image capability are refinements. An empty spec selects the current Gradle JVM, not a reproducible project toolchain. Leaving native-image unset or false does not reject a native-image-capable JDK.
 - Diagnose with `./gradlew -q javaToolchains` when available in the build; the report shows detection source, metadata, auto-detection/download state, and invalid installations.
 - Configure toolchain resolver plugins and toolchain repositories in settings when auto-provisioning is allowed. Repository order decides which matching JDK is downloaded first; auto-provisioning downloads only GA JDKs when no detected toolchain matches and never updates already-provisioned JDKs.
@@ -38,6 +41,7 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 ## Source Sets And Generated Sources
 
 - Keep generated sources under `build/`, wire generated directories with providers from the producing task, and do not commit generated outputs unless project policy requires it.
+- Groovy and Scala source directories may contain Java for joint compilation; keep Java in Java source directories unless bidirectional language dependencies require joint compilation, because Java under Groovy/Scala directories is owned by `GroovyCompile`/`ScalaCompile` and contributes to source-set `allJava`/`allSource`.
 - Keep resources, generated outputs, and dependencies scoped to the owning source set.
 - Keep source-set class outputs under `build/`; on Gradle 9+, stale class outputs outside the build directory are no longer deleted, so external class dirs need explicit cleanup or different output ownership.
 - A custom JVM source set creates compile, resources, classes tasks, and source-set configurations; it does not by itself create a runnable verification task or attach work to `check`.

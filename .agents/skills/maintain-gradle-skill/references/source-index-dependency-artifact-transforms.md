@@ -12,3 +12,5 @@
 
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformAction.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformOutputs.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformParameters.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformSpec.java`

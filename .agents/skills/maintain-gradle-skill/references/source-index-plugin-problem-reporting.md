@@ -11,6 +11,8 @@
 ## Source Code
 
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/AdditionalData.java`
+- `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemGroup.java`
+- `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemId.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemReporter.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemSpec.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/Problems.java`
