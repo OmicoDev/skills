@@ -25,7 +25,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - Test builds do not share the test process classpath or classloaders. Put the plugin under test on the runner classpath deliberately.
 - The Java Gradle Plugin Development plugin adds `gradleTestKit()` and can inject the plugin-under-test classpath through `withPluginClasspath()`.
 - Automatic classpath injection expects the plugin-under-test to be applied in the test build with the `plugins {}` DSL.
-- If functional tests use a custom source set or suite, register it with the plugin development extension, such as `gradlePlugin.testSourceSets(functionalTest)` or `gradlePlugin.testSourceSets.add(functionalTestSourceSet)`, so plugin classpath metadata is generated for that lane.
+- If functional tests use a custom source set or suite, register it with the plugin development extension so plugin classpath metadata is generated for that lane; use additive `gradlePlugin.testSourceSet(functionalTest)` or include every intended lane in a replacing `gradlePlugin.testSourceSets(...)` call, because `testSourceSets(...)` clears earlier/default test source sets.
 - Prefer `withPluginClasspath()` backed by `java-gradle-plugin` metadata over hard-coded `build/classes`, JAR, or runtime classpath assembly.
 - TestKit uses isolated fixture directories, a TestKit-controlled Gradle User Home, and dedicated Gradle daemons; it does not inherit default `~/.gradle/gradle.properties`, caches, init scripts, or environment customizations unless the fixture wires them.
 - TestKit working directories are not deleted by default.

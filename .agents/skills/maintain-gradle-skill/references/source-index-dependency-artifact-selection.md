@@ -11,6 +11,7 @@
 ## Source Code
 
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/UnsafeConfigurationResolutionDeprecationIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewArtifactSelectionIntegrationTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactCollection.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactView.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/LenientConfiguration.java`

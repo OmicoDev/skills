@@ -31,6 +31,7 @@ Then run representative tasks. `help` alone proves startup, not build correctnes
 - Classify broken usage by feature lifecycle: public API removals should have prior deprecations, incubating APIs may change with release notes, and internal APIs have no compatibility promise.
 - Update third-party plugins before a major wrapper jump when compatibility says they support both the current and target Gradle versions. If a plugin requires the target Gradle first, isolate that plugin change as its own phase.
 - Keep plugins on latest compatible versions, but phase risky plugin updates from wrapper upgrades unless compatibility requires coupling; use shadow or parallel CI lanes when the compatibility signal is incomplete.
+- Isolate expected one-time generated-file churn from behavioral upgrade work, such as wrapper script rewrites, lockfile line-ending normalization, or dependency-verification keyring encoding updates, so review does not mistake upgrade housekeeping for dependency or build logic changes.
 - After wrapper upgrade, repeat deprecation capture and representative tasks before treating the target version as promoted.
 
 ## Compatibility Surface

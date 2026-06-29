@@ -74,3 +74,4 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, va
 - Artifact-only dependency lost transitives: replace `@extension` notation with normal metadata-backed coordinates first; metadata rules can repair metadata only after the declaration stops bypassing metadata.
 - Artifact-only dependency ignores metadata repair: remove `@extension` first; component metadata rules cannot help a dependency declaration that deliberately bypasses metadata.
 - Sources or javadoc view returns runtime artifacts: check whether `withVariantReselection` is missing or whether the view attributes still describe the graph-selected variant.
+- Artifact view attributes do not select another project configuration: check whether the project dependency explicitly names a configuration or whether variant reselection is missing; artifact view attributes alone do not override the graph-selected configuration or variant.

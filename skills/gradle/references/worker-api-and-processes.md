@@ -26,6 +26,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Make work actions abstract, annotate constructors with `@Inject`, and use `WorkParameters.None` when no parameters are needed; do not implement `WorkAction.getParameters()` or concrete `WorkParameters` because Gradle generates and injects them.
 - Obtain a `WorkQueue` from `noIsolation()`, `classLoaderIsolation(...)`, or `processIsolation(...)`; do not use old `WorkerExecutor.submit(...)` patterns.
 - Keep a `WorkQueue` local to the task action; the queue has one set of worker requirements and is not a thread-safe coordination object.
+- A work action can inject `Problems` for structured diagnostics; route problem IDs, labels, locations, additional data, and Tooling API assertions to [plugin-problem-reporting.md](plugin-problem-reporting.md), and verify each isolation mode because process-isolated workers can emit the problem without the same origin stack location as in-process workers.
 - Treat each work item as concurrently executable. Avoid shared mutable state unless it is protected by a build service or another explicit concurrency boundary.
 - Do not rely on work item completion order. Give each item unique outputs or add an explicit deterministic aggregation step.
 - Use `WorkQueue.await()` only when the same task action must read worker results before returning; it blocks same-project task parallelism while waiting, and failures otherwise surface from the surrounding task action before completion.

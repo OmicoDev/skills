@@ -48,7 +48,7 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - Preserve the console problem text, problem ID/group when visible, and the exact HTML report path Gradle prints when diagnosing.
 - The HTML problems report is generated only when problems are reported; generation is enabled by default and can be disabled with `--no-problems-report` or `org.gradle.problems.report=false`.
 - `AdditionalData` is for client integration and is not rendered in CLI or HTML problem output.
-- For Tooling API checks, listen for `SingleProblemEvent`/`ProblemSummariesEvent`; for fatal failures, call incubating `LongRunningOperation.withFailureDetails()` and inspect `FailureResult.getFailures()` or `GradleConnectionException.getFailures()` recursively, then read each `Failure.getProblems()`.
+- For Tooling API checks, register `OperationType.PROBLEMS` when you need `SingleProblemEvent`/`ProblemSummariesEvent`; for fatal failure details, use incubating `LongRunningOperation.withDetailedFailure()` or `OperationType.ROOT`, inspect `FailureResult.getFailures()` or `GradleConnectionException.getFailures()` recursively, then read each `Failure.getProblems()`.
 - Test fatal and recoverable paths separately because `throwing(...)` changes task/build outcome.
 - For duplicate problems, assert representative `SingleProblemEvent`s plus `ProblemSummariesEvent`; Gradle sends the summary event before build finish even when empty, and each `ProblemSummary.count` is the follow-up occurrence count beyond Gradle's event threshold, not the total number of matching problems.
 
@@ -61,5 +61,5 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - IDE or Tooling API cannot correlate diagnostics: avoid changing IDs and groups for the same logical problem.
 - Problems report missing: confirm a problem was actually reported and that `--no-problems-report` was not used.
 - Problems report path differs from an expected location: trust the path Gradle prints for that invocation and check `--problems-report`, `--no-problems-report`, or `org.gradle.problems.report` before changing plugin code.
-- Recoverable problem absent from `GradleConnectionException.getFailures()`: the operation did not fail; listen for root-operation problem progress events instead.
+- Recoverable problem absent from `GradleConnectionException.getFailures()`: the operation did not fail; listen for `OperationType.PROBLEMS` progress events instead.
 - Test asserts console text only: prefer checking task outcome plus stable problem metadata or report evidence when accessible.

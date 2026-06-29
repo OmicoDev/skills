@@ -11,7 +11,9 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformValuesInjectionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/DefaultTransformOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformAction.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformParameters.java`

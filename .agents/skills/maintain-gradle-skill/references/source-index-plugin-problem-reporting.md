@@ -17,8 +17,12 @@
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemSpec.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/Problems.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/Failure.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/GradleConnectionException.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/LongRunningOperation.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/FailureResult.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/OperationType.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/ProblemGroup.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/ProblemId.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/ProblemSummariesEvent.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/ProblemSummary.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/SingleProblemEvent.java`

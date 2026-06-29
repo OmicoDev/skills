@@ -38,6 +38,7 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 - A dependency substitution rule can force configuration resolution during task graph construction so Gradle can discover substituted project dependencies. Do not add it casually to configurations that are mutated late or depend on artifacts produced during task execution.
 - Module replacement declares that one module supersedes another, but it only resolves a conflict when both old and new modules appear. It does not proactively add the replacement if only the old module is present.
 - Prefer capabilities over module replacement when modules are mutually exclusive providers of the same feature and Gradle can model the conflict explicitly.
+- When resolving capability conflicts with `resolutionStrategy.capabilitiesResolution`, choose only among candidates already in that conflict; `withCapability` targets group/name regardless of capability version, `selectHighestVersion()` chooses from candidate capability versions, and `select(null)` is invalid.
 
 ## Exclusions And Transitivity
 

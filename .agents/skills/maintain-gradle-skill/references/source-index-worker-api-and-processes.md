@@ -16,7 +16,9 @@
 
 - `platforms/core-execution/daemon-server-worker/src/main/java/org/gradle/workers/WorkAction.java`
 - `platforms/core-execution/daemon-server-worker/src/main/java/org/gradle/workers/WorkParameters.java`
+- `platforms/core-execution/daemon-server-worker/src/main/java/org/gradle/workers/internal/WorkerProcessIsolationProblemsServiceProvider.java`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerDaemonLifecycleTest.groovy`
+- `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorProblemsApiIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/ClassLoaderWorkerSpec.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/ProcessWorkerSpec.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/WorkQueue.java`

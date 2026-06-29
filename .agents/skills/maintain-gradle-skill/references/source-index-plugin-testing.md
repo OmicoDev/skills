@@ -14,5 +14,8 @@
 
 ## Source Code
 
+- `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/plugins/JavaGradlePluginPluginTestKitSetupIntegrationTest.groovy`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/GradlePluginDevelopmentExtension.java`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/plugins/JavaGradlePluginPlugin.java`
 - `platforms/extensibility/test-kit/src/main/java/org/gradle/testkit/runner/BuildResult.java`
 - `platforms/extensibility/test-kit/src/main/java/org/gradle/testkit/runner/GradleRunner.java`
