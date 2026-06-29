@@ -13,19 +13,18 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 
 ## Toolchains
 
-- Read [compatibility-java.md](compatibility-java.md) when deciding whether a Java version can run Gradle or is only safe as a toolchain target for the selected Gradle version.
-- The Gradle runtime JVM runs Gradle and plugins.
-- Java toolchains select JVMs for compile, test, javadoc, and custom Java tool tasks.
+- Read [compatibility-java.md](compatibility-java.md) when deciding whether a Java version can run Gradle or is only safe as a toolchain target for the selected Gradle version; read [runtime-and-structure.md](runtime-and-structure.md) when Daemon JVM criteria, `org.gradle.java.home`, `JAVA_HOME`, or client startup owns the issue.
+- The Gradle runtime JVM runs Gradle and plugins; Java toolchains select JVMs for compile, test, javadoc, and custom Java tool tasks.
 - Toolchain coverage differs by JVM plugin: Java covers compile, test, and Javadoc; Groovy compilation is covered but Groovydoc is not; Scala covers compilation and Scaladoc.
 - Prefer toolchains over `JAVA_HOME`, IDE Gradle JVM settings, or `sourceCompatibility`/`targetCompatibility` alone; IDE settings choose how Gradle is launched inside the IDE, not the project compile/test toolchain.
 - Toolchains choose the JDK; they do not prevent accidental use of newer Java APIs. Use `--release` for Java API targeting when compiling Java sources for older platforms.
-- A non-empty `JavaToolchainSpec` must set `languageVersion`; vendor, implementation, and native-image capability are refinements. An empty spec selects the current Gradle JVM, not a reproducible project toolchain.
+- A non-empty `JavaToolchainSpec` must set `languageVersion`; vendor, implementation, and native-image capability are refinements. An empty spec selects the current Gradle JVM, not a reproducible project toolchain. Leaving native-image unset or false does not reject a native-image-capable JDK.
 - Diagnose with `./gradlew -q javaToolchains` when available in the build; the report shows detection source, metadata, auto-detection/download state, and invalid installations.
-- Configure toolchain resolver plugins and toolchain repositories in settings when auto-provisioning is allowed. Repository order decides which matching JDK is downloaded first.
-- Auto-provisioning only downloads GA JDKs when no detected toolchain matches; it does not update already-provisioned JDKs. Stop daemons after changing toolchain locations or provisioning policy.
+- Configure toolchain resolver plugins and toolchain repositories in settings when auto-provisioning is allowed. Repository order decides which matching JDK is downloaded first; auto-provisioning downloads only GA JDKs when no detected toolchain matches and never updates already-provisioned JDKs.
+- Custom `fromEnv` and `paths` locations extend the detected candidate set instead of taking priority. Missing locations or entries without `bin/java` warn, and precedence still prefers the current Gradle JVM, JDKs over JREs, known-vendor order, higher versions, then path ordering.
+- Stop daemons after changing toolchain locations, auto-detection, auto-download, resolver plugins, or provisioning policy so cached JVM metadata cannot mask the new configuration.
 - For custom Java tasks, expose `JavaCompiler`, `JavaLauncher`, or `JavadocTool` providers, or lazily map their executable/home paths into `RegularFileProperty` or `DirectoryProperty`; avoid eager `.get()` during configuration.
 - Mark custom task toolchain tool properties as `@Nested` inputs so launcher, compiler, or javadoc tool changes participate in validation, up-to-date checks, and cache keys.
-- Custom `fromEnv` and `paths` locations extend the detected candidate set; missing locations or entries without `bin/java` are warnings, not hard failures. Precedence still prefers the current Gradle JVM, then JDKs over JREs, vendor order, higher versions, then path ordering.
 
 ## Compatibility Triage
 
@@ -33,14 +32,13 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - If a plugin fails to load, inspect plugin version and bytecode target.
 - If compilation emits unsupported release or classfile errors, inspect toolchain language version, `--release`, and source/target compatibility.
 - If tests fail with classfile errors, inspect the test runtime launcher and test dependencies, not only the compiler.
+- If a toolchain cannot be found, decide whether the fix is local installation, `org.gradle.java.installations.*` discovery, settings-level resolver configuration, or a changed language/vendor/native-image constraint before changing source compatibility.
 - If Android is involved, check Gradle, AGP, Kotlin, JDK, and Android Studio as one compatibility stack.
 
 ## Source Sets And Generated Sources
 
-- Keep generated sources under `build/`.
-- Wire generated directories with providers from the producing task.
-- Do not commit generated outputs unless project policy requires it.
-- Keep resources and dependencies scoped to the owning source set.
+- Keep generated sources under `build/`, wire generated directories with providers from the producing task, and do not commit generated outputs unless project policy requires it.
+- Keep resources, generated outputs, and dependencies scoped to the owning source set.
 - Keep source-set class outputs under `build/`; on Gradle 9+, stale class outputs outside the build directory are no longer deleted, so external class dirs need explicit cleanup or different output ownership.
 - A custom JVM source set creates compile, resources, classes tasks, and source-set configurations; it does not by itself create a runnable verification task or attach work to `check`.
 
@@ -96,4 +94,4 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 
 ## Source Calibration
 
-Primary upstream pages: Java Plugin, Java Library Plugin, Application Plugin, Toolchains for JVM projects, Testing in Java and JVM projects, JVM Test Suite Plugin, Test Fixtures, Test Report Aggregation Plugin, JaCoCo Plugin, JaCoCo Report Aggregation Plugin, Checkstyle Plugin, PMD Plugin, CodeNarc Plugin, Best Practices for Dependencies.
+Primary upstream pages: Java Plugin, Java Library Plugin, Application Plugin, Toolchains for JVM projects, Build Environment, Testing in Java and JVM projects, JVM Test Suite Plugin, Test Fixtures, Test Report Aggregation Plugin, JaCoCo Plugin, JaCoCo Report Aggregation Plugin, Checkstyle Plugin, PMD Plugin, CodeNarc Plugin, Best Practices for Dependencies.

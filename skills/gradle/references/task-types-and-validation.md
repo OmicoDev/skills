@@ -10,22 +10,19 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 ## Task Type Defaults
 
-- Extend `DefaultTask` or a suitable Gradle task base type.
-- Use abstract task classes when exposing managed properties.
+- Extend `DefaultTask` or a suitable Gradle task base type; use abstract task classes when exposing managed properties.
 - For Gradle mutable types such as `Property<T>` and `ConfigurableFileCollection`, expose abstract/final getters and remove setters so Gradle can track value origin.
-- Do not do expensive work in constructors.
+- Do not do expensive work in constructors or store live JVM state such as classloaders, threads, sockets, process handles, or synchronization primitives in task fields or action closures.
 - Expose inputs and outputs as annotated Gradle properties, file properties, or file collections; reserve the runtime `inputs`/`outputs` API for ad-hoc tasks or task types you cannot change because it lacks nested, classpath, local-state, internal, and replaced-by equivalents.
 - Task outputs must be files or directories; scalar task results belong in generated files, reports, or console output.
 - Put work in `@TaskAction` methods.
 - Do not use `Project`, `SourceSet`, `Configuration`, extension objects, or mutable Gradle model objects in task actions.
 - Model external tools, environment, command-line options, local state, and destroyed paths as tracked inputs or services.
-- Do not store live JVM state such as classloaders, threads, sockets, process handles, or synchronization primitives in task fields or action closures.
 
 ## Inputs, Outputs, And Cacheability
 
 - Declare every behavior-affecting input and output.
-- Use path sensitivity and normalization for file inputs.
-- If file location is not part of task behavior, use `@PathSensitive(NONE)` for individual file inputs and `@PathSensitive(RELATIVE)` for directory/tree inputs; missing path sensitivity defaults toward absolute paths and hurts relocatability.
+- Use path sensitivity and normalization for file inputs. If file location is not part of task behavior, use `@PathSensitive(NONE)` for individual file inputs and `@PathSensitive(RELATIVE)` for directory/tree inputs; missing path sensitivity defaults toward absolute paths and hurts relocatability.
 - Use `@Classpath` or runtime classpath normalization for classpaths where appropriate.
 - Use `@Internal` only when the value truly does not affect outputs.
 - Mark tasks cacheable only after outputs are deterministic and relocatable enough for the intended cache.
@@ -35,15 +32,11 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 ## Annotation Choices
 
-- Use `@Input` for scalar values affecting work.
-- Use `@InputFile`, `@InputDirectory`, or `@InputFiles` for file inputs.
-- Use `@OutputFile` or `@OutputDirectory` for produced files.
+- Use `@Input` for scalar values affecting work, `@InputFile`/`@InputDirectory`/`@InputFiles` for file inputs, and `@OutputFile`/`@OutputDirectory` for produced files.
 - Use `@OutputFiles` or `@OutputDirectories` only when the task really owns a collection of outputs; avoid `FileTree` outputs because they disable caching, and prefer one file/directory property for a single product.
 - Use `@Classpath` for JVM classpaths where order and ABI matter.
 - Use `@CompileClasspath` for Java compilation classpaths when appropriate.
-- Use `@LocalState` for task-owned state that should not be cached.
-- Use `@Destroys` for destructive tasks.
-- Use `@Nested` for nested beans that expose their own annotated properties.
+- Use `@LocalState` for task-owned state that should not be cached, `@Destroys` for destructive tasks, and `@Nested` for nested beans that expose their own annotated properties.
 - Use `@SkipWhenEmpty` or `@Incremental` on file inputs whose changes will be queried through `InputChanges`.
 - Use `@IgnoreEmptyDirectories` when directory entries themselves do not affect the output.
 - Use `@NormalizeLineEndings` for text inputs where CRLF/LF differences should not invalidate up-to-date or cache keys.
@@ -88,8 +81,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Resolving configurations during configuration.
 - Calling JDK/Groovy/Kotlin collection APIs such as `isEmpty`, `size`, `toList`, `getFiles`, `asPath`, or `+` on `Configuration`/`FileCollection` during configuration because they can resolve dependencies and drop implicit task dependencies.
 - Passing already-resolved collections into `Copy`, `Zip`, or other `AbstractCopyTask` inputs hides the same eager-resolution problem; pass provider-backed task outputs or file collections directly.
-- Writing into shared directories.
-- Producing generated files without modeled outputs.
+- Writing into shared directories or producing generated files without modeled outputs.
 - Using global singletons for shared state instead of build services.
 - Relying on reference identity for mutable collections after configuration cache reload.
 - Marking individual task instances cacheable with `outputs.cacheIf` when the task type's cacheability is stable; prefer `@CacheableTask` or `@DisableCachingByDefault`.

@@ -14,16 +14,14 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 ## Script Ownership
 
 - Settings scripts configure build topology and repository/plugin/catalog policy.
-- Root build scripts configure only root-owned behavior and lightweight aggregation.
-- Subproject scripts configure project-specific plugins, dependencies, tasks, publications, source sets, and tool configuration.
-- Convention plugins encode repeated project policy. Binary plugins encode reusable behavior and richer APIs.
+- Root build scripts configure only root-owned behavior and lightweight aggregation; subproject scripts configure project-specific plugins, dependencies, tasks, publications, source sets, and tool configuration.
+- Convention plugins encode repeated project policy; binary plugins encode reusable behavior and richer APIs.
 - Precompiled script plugins are internal convention plugins in `buildSrc` or an included `build-logic` build. Their plugin ID is derived from the filename and optional Kotlin package; Groovy precompiled scripts cannot use packages; convert to a binary plugin before publishing.
 - Use suffixes to signal script target: `.settings.gradle(.kts)` backs `Settings`, `.init.gradle(.kts)` backs `Gradle` for precompiled script plugins, and plain `.gradle(.kts)` backs `Project`; discovered init scripts are conventionally named `init.gradle(.kts)`.
 
 ## Safe Authoring Defaults
 
-- Match the existing DSL and style.
-- For brand-new builds or subprojects without an established repository DSL, prefer Kotlin DSL; otherwise preserve the repository's chosen DSL.
+- Match the existing DSL and style; for brand-new builds or subprojects without an established repository DSL, prefer Kotlin DSL.
 - Prefer `plugins {}` for static plugin application; keep it constrained, idempotent, side-effect-free, and before ordinary script body logic. Put plugin repositories, default plugin versions, and version-loading logic in settings `pluginManagement`, use catalog plugin aliases only where supported, and avoid buildscript classpath plugin wiring unless legacy constraints require it.
 - In settings scripts, keep `pluginManagement {}` before plugin requests and ordinary statements; in init scripts, keep `initscript {}` before ordinary script body when it declares the init script classpath.
 - In precompiled script plugins, put external plugin versions on the plugin project's implementation classpath; `version "..."` and `apply false` are not supported inside the precompiled script.
@@ -43,8 +41,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Pass `TaskProvider` objects to `dependsOn`, `builtBy`, and task inputs instead of unwrapping tasks.
 - Use `layout.buildDirectory.dir(...)` and `layout.projectDirectory.file(...)` instead of `file("$buildDir/...")`.
 - Use task outputs, `CopySpec`, and provider-backed file properties instead of manual filesystem work during configuration.
-- Use `providers.gradleProperty`, `providers.systemProperty`, and `providers.environmentVariable` when values affect build configuration.
-- Prefer `withType(...).configureEach` for lazy bulk configuration by type and `named(...)` for known task or container names.
+- Use `providers.gradleProperty`, `providers.systemProperty`, and `providers.environmentVariable` when values affect build configuration; prefer `withType(...).configureEach` for lazy bulk configuration by type and `named(...)` for known task or container names.
 - When filtering is unavoidable, restrict by type before `matching { ... }` and finish with `configureEach`; avoid broad `matching`, Groovy `findAll`, `tasks.all`, `whenTaskAdded`, and collection iteration.
 - Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead. If it appears necessary, limit it to final validation or diagnostics and document why providers, conventions, or plugin-application callbacks cannot express the timing.
 - `afterEvaluate` callbacks run by registration order, can see stale or default extension values, defeat task configuration avoidance when they touch tasks, and are configuration-cache hostile when they capture mutable project state.

@@ -33,21 +33,18 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 
 ## Runtime Boundaries
 
-- The CLI client, wrapper script, and Tooling API clients locate or start a compatible daemon, send one build request, and stream logs, events, models, and results.
-- The daemon runs build logic, resolves dependencies, creates task graphs, coordinates execution, and starts worker processes for daemon-owned work such as compilation, tests, and Worker API actions.
+- CLI clients, wrapper scripts, and Tooling API clients locate or start a compatible daemon, send one build request, and stream logs, events, models, and results; the daemon hosts build logic, creates task graphs, and starts worker processes for daemon-owned work.
 - Gradle reuses an existing daemon only when Gradle version, Java home/version, JVM arguments, JVM attributes, and immutable JVM properties match exactly. Changing `org.gradle.jvmargs`, `org.gradle.java.home`, Daemon JVM criteria, locale, file encoding, temporary directory, or SSL store system properties can intentionally create another daemon.
 - Worker processes do not own settings, project topology, dependency policy, or task graph construction.
 - Debug daemon trouble by naming the failing runtime first: client launch, wrapper distribution download, Tooling API connection, daemon execution, or worker process work.
 - `gradle --status` only reports daemons for the same Gradle version as the command, and `gradle --stop` only stops daemons started with that Gradle version. Use JDK tools such as `jps` when investigating daemons across Gradle versions.
 - Idle timeout and low-memory daemon exits are normal lifecycle events; confirm daemon logs before treating a disappeared daemon as a crash.
-- The Gradle client JVM comes from the launcher environment such as `JAVA_HOME`, `java` on `PATH`, or the IDE.
-- The daemon JVM comes from Daemon JVM criteria, Tooling API requests, `org.gradle.java.home`, or the launcher environment fallback.
-- Gradle distributions do not embed a Java runtime; Daemon JVM toolchains do not remove the wrapper/client Java prerequisite.
-- `gradle/gradle-daemon-jvm.properties` records checked-in Daemon JVM criteria and takes precedence over `JAVA_HOME` and `org.gradle.java.home`.
-- Treat `./gradlew updateDaemonJvm --jvm-version <version>` as a mutating runtime-policy command like `wrapper`.
-- Running `updateDaemonJvm` without arguments can seed criteria from the current daemon JVM when no criteria file exists; pass explicit criteria when committing shared policy.
-- Daemon JVM criteria can include version, vendor, native-image capability, and platform download URLs. Generating URLs requires configured toolchain download repositories unless platforms are cleared or explicit URLs are supplied.
-- Daemon JVM auto-detection and auto-provisioning share Java toolchain discovery flags, but they select the JVM that runs Gradle. Java toolchains select JVMs used by project tasks.
+- The client JVM comes from the launcher environment such as `JAVA_HOME`, `java` on `PATH`, or the IDE; Gradle distributions do not embed Java, and Daemon JVM toolchains do not remove the prerequisite needed to start the wrapper or client.
+- The daemon JVM comes from checked-in Daemon JVM criteria, Tooling API requests, `org.gradle.java.home`, or the launcher fallback. `gradle/gradle-daemon-jvm.properties` takes precedence over `JAVA_HOME` and `org.gradle.java.home` for the build it belongs to.
+- Treat `./gradlew updateDaemonJvm --jvm-version <version>` as a mutating runtime-policy command like `wrapper`. Pass explicit version, vendor, native-image, and platform/URL choices when committing shared policy; running without arguments can seed criteria from the current daemon JVM when no criteria file exists.
+- Daemon JVM criteria can include version, recognized or exact-match vendor, native-image capability, and platform download URLs. Use `./gradlew help --task updateDaemonJvm` to inspect accepted vendor aliases before committing a vendor-specific policy.
+- Generating Daemon JVM platform URLs requires configured toolchain download repositories unless `toolchainPlatforms` is cleared or explicit `toolchainDownloadUrls` are configured. Disabling `org.gradle.java.installations.auto-detect` or `auto-download` affects Daemon JVM resolution as well as project Java toolchains.
+- Daemon JVM criteria select the JVM that runs Gradle; Java toolchains select JVMs used by project tasks. Do not fix compile/test toolchain failures by changing only daemon memory, and do not fix daemon startup failures by changing only `java.toolchain`.
 - `JAVA_HOME` is an environment default, not a reproducible project contract.
 - Gradle behavior configuration precedence is command line, system properties, Gradle properties, then environment variables; Wrapper execution follows this order, and within Gradle properties, `GRADLE_USER_HOME` can override checked-in project properties.
 - When user-home evidence differs, check both `GRADLE_USER_HOME` and `-Dgradle.user.home` because the system property can relocate the user home before its `gradle.properties` is read.
