@@ -5,6 +5,7 @@
 - [Binary Plugin Development](https://docs.gradle.org/current/userguide/developing_binary_plugin_advanced.html)
 - [Binary Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_binary.html)
 - [Convention Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_convention.html)
+- [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
 - [Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html)
 - [Introduction to Plugins](https://docs.gradle.org/current/userguide/plugins.html)
 - [Pre-compiled Script Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_precompiled.html)

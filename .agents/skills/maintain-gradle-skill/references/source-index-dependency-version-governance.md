@@ -2,6 +2,7 @@
 
 ## Documentation
 
+- [Best Practices for Dependencies](https://docs.gradle.org/current/userguide/best_practices_dependencies.html)
 - [Declaring Dependency Constraints](https://docs.gradle.org/current/userguide/dependency_constraints.html)
 - [Declaring Versions and Ranges](https://docs.gradle.org/current/userguide/dependency_versions.html)
 - [Dependency Resolution Consistency](https://docs.gradle.org/current/userguide/dependency_resolution_consistency.html)
