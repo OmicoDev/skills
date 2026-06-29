@@ -89,7 +89,3 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Disable cache use or require provenance evidence for release or audit builds when reused outputs must be traceable to the producing build.
 - Pair remote cache rollout with task validation warnings and representative clean/warm builds.
 - If HTTP remote cache operations keep failing after connection, Gradle retries then disables the remote cache for the rest of that build; diagnose transport, server, proxy, or TLS trust before changing task inputs.
-
-## Source Calibration
-
-Primary upstream pages: Build Cache, Build Cache Concepts, Build Cache Debugging, Build Cache Performance, Build Cache Use Cases, Common Caching Problems, Incremental Build, Best Practices for Performance, TaskOutputs API, LocalState API.

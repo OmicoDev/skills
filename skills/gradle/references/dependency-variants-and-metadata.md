@@ -81,7 +81,3 @@ Use reports to compare requested attributes with producer attributes before edit
 - Publishing feature variants requires `maven-publish` or `ivy-publish`; Gradle Module Metadata preserves the feature contract, while Maven represents it through optional dependencies and classifiers.
 - Consumers can require published feature capabilities reliably only from project dependencies, Gradle Module Metadata, or explicit Ivy configurations; Maven POM metadata is lossy and should not be treated as preserving feature selection semantics.
 - Use shared capabilities to model mutually exclusive implementations so resolution fails with an explicit choice instead of silently combining incompatible runtime features.
-
-## Source Calibration
-
-Primary upstream pages: Variant Selection and Attribute Matching, Variant Attributes, Capabilities, Feature Variants, Create Feature Variants for a Library, Gradle Module Metadata, ResolvableConfigurationsReportTask, OutgoingVariantsReportTask.

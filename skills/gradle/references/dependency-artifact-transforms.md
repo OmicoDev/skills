@@ -68,7 +68,3 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Transform resolves or downloads more artifacts than expected: check `@InputArtifactDependencies` and broad artifact view attributes before changing the dependency graph.
 - Cache misses: inspect input artifact normalization, parameters, input artifact dependencies, tool versions, and non-deterministic outputs.
 - Reserved-location write failure: check for tasks or ad hoc code writing into transform workspaces; only the transform action should create files in locations returned by `TransformOutputs`.
-
-## Source Calibration
-
-Primary upstream pages: Artifact Transforms, Artifact Views, Build Cache, Build Cache Debugging, Validation Problems, TransformAction API, TransformOutputs API.

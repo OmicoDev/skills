@@ -91,7 +91,3 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - Copy task deliberately always runs: check for `doNotTrackState` and confirm the destination is unmanaged or unreadable enough to justify disabling state tracking.
 - Missing task dependency for copied generated files: pass the producing task/output provider to `from(...)` or declare the source as an input.
 - Reproducible archive mismatch: inspect timestamps, file order, permissions, generated metadata, duplicate entries, and host-specific content.
-
-## Source Calibration
-
-Primary upstream pages: Working With Files, Base Plugin, Distribution Plugin, Application Plugin, Java Library Distribution Plugin, War Plugin, Ear Plugin, Implementing Custom Tasks, Configuration Cache Requirements, Build Cache Concepts.

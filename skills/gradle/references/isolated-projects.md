@@ -82,7 +82,3 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 - Diagnostics mode is clean but normal mode fails: investigate lazy task configuration, workflow-specific plugins, and parallel configuration ordering.
 - Performance does not improve: check configuration-time share, `org.gradle.workers.max`, IDE model parallelism, tooling model cache status, work graph discovery, and whether Configuration Cache already hits.
 - Parent property lookup changed: enable and migrate toward `NO_IMPLICIT_LOOKUP_IN_PARENT_PROJECTS`; under Isolated Projects, `properties` reports omit inherited parent properties and `Project.getProperties()` remains a violation.
-
-## Source Calibration
-
-Primary upstream pages: Isolated Projects, Configuration Cache, Performance, Sharing Build Logic, Build Services, Gradle 9 upgrade notes. Primary APIs: IsolatedProject, GradleLifecycle, IsolatedAction.

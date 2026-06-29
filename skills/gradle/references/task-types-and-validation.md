@@ -85,7 +85,3 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Using global singletons for shared state instead of build services.
 - Relying on reference identity for mutable collections after configuration cache reload.
 - Marking individual task instances cacheable with `outputs.cacheIf` when the task type's cacheability is stable; prefer `@CacheableTask` or `@DisableCachingByDefault`.
-
-## Source Calibration
-
-Primary upstream pages: Implementing Custom Tasks, Dealing with Validation Problems, Advanced Tasks, Incremental Build, Task Configuration Avoidance, Best Practices for Tasks, Configuration Cache Requirements.

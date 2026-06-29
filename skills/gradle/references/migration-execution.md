@@ -89,7 +89,3 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 - For 9.x within-line upgrades, watch deprecations that point at the next owner cleanup: task actions reading Gradle model objects, project objects as dependency notation, implicit parent-project property/method lookup, Kotlin DSL delegated properties, map-style repository overloads, and legacy lifecycle tasks.
 - Remove broad `allprojects`/`subprojects` mutation in favor of convention plugins, move configuration-time IO/process work into tasks or provider/value-source APIs, and move subproject `gradle.properties` policy to root properties or typed extensions.
 - Check Isolated Projects only after configuration-cache, task validation, and cross-project coupling issues are understood.
-
-## Source Calibration
-
-Primary upstream pages: Upgrading Gradle, Gradle 4.x through 9.x upgrade guides, Gradle 8 to 9 major upgrade guide, Feature Lifecycle, Kotlin DSL Migration, Build Init Plugin, Migrating from Maven, Migrating from Ant, Using Ant from Gradle, Task Configuration Avoidance.

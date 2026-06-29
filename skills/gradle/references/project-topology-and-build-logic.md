@@ -93,7 +93,3 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 - Composite invocation deadlocks or conflicts: check whether parallel Gradle invocations include the same build instead of sharing one build tree.
 - Build logic change invalidates every configuration: evaluate whether `buildSrc` should move to an included `build-logic` build.
 - Cross-project convention is invisible in a subproject: replace `allprojects` or `subprojects` mutation with an applied convention plugin.
-
-## Source Calibration
-
-Primary upstream pages: Structuring and Organizing Gradle Projects, Best Practices for Structuring Builds, Best Practices General, Multi-Project Builds, Composite Builds, Sharing Build Logic using buildSrc, Use a Local Fork of a Module Dependency, Build Init Plugin, How to Convert a Single-Project Build into a Multi-Project Build.

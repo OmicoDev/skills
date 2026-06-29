@@ -91,7 +91,3 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Modeling extension values as plain `var` fields or passing mutable extension objects into task actions.
 - Eagerly iterating containers with `all`, `getByName`, `findByName`, or action-style `withType(...)`.
 - Creating ad hoc mutable collections where a Gradle container would preserve lazy DSL ownership, or converting file providers to raw `File` too early.
-
-## Source Calibration
-
-Primary upstream pages: Properties and Providers, Gradle Managed Types, Collections, Services and Service Injection, Lazy Configuration, Configuration Cache Requirements, Binary Plugins, General Gradle Best Practices. Primary APIs: Provider, Property, HasConfigurableValue, ProviderFactory, ValueSource, FileSystemLocationProperty, ProjectLayout, BuildLayout, DependencyFactory. Local architecture docs: ADR-0006 and provider/property architecture tests.

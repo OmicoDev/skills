@@ -83,7 +83,3 @@ Treat Gradle and major plugin upgrades as their own measured lane before deep tu
 - Treating configuration on demand as a modern substitute for configuration cache or isolated projects.
 - Enabling Isolated Projects before checking current limitations, local-only cache behavior, and representative IDE/CI workflows in [isolated-projects.md](isolated-projects.md).
 - Uploading Build Scan data where policy forbids it.
-
-## Source Calibration
-
-Primary upstream pages: Performance, Inspecting Builds, Best Practices for Performance, Configuration Cache, Build Cache, File System Watching, Gradle Daemon, Isolated Projects.

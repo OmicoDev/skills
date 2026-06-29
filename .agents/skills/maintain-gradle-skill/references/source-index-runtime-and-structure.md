@@ -1,0 +1,18 @@
+# Gradle Runtime And Structure
+
+## Documentation
+
+- [ADR-0007 - Java prerequisite](https://github.com/gradle/gradle/blob/master/architecture/standards/0007-java-pre-requisite.md)
+- [Best Practices for Performance](https://docs.gradle.org/current/userguide/best_practices_performance.html)
+- [Best Practices for Security](https://docs.gradle.org/current/userguide/best_practices_security.html)
+- [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
+- [Build Execution Model](https://github.com/gradle/gradle/blob/master/architecture/build-execution-model.md)
+- [Build Lifecycle](https://docs.gradle.org/current/userguide/build_lifecycle.html)
+- [Build State Model](https://github.com/gradle/gradle/blob/master/architecture/build-state-model.md)
+- [Continuous Builds](https://docs.gradle.org/current/userguide/continuous_builds.html)
+- [File System Watching](https://docs.gradle.org/current/userguide/file_system_watching.html)
+- [Gradle Daemon](https://docs.gradle.org/current/userguide/gradle_daemon.html)
+- [Gradle Runtimes](https://github.com/gradle/gradle/blob/master/architecture/runtimes.md)
+- [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
+- [Gradle-managed Directories](https://docs.gradle.org/current/userguide/directory_layout.html)
+- [Initialization Scripts and Init Plugins](https://docs.gradle.org/current/userguide/init_scripts.html)

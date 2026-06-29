@@ -87,7 +87,3 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Check wrapper validation, dependency verification, lock diffs, and signing configuration before remote publish.
 - For CI release jobs that compute versions from VCS tags, fetch tags in the checkout and prevent tag-triggered recursion before blaming Gradle publishing or versioning behavior.
 - For private wrapper distributions, prefer host-scoped wrapper credentials or `wrapperToken` in CI/user properties; a token takes precedence over username/password and should not be sent to unintended hosts.
-
-## Source Calibration
-
-Primary upstream pages: Gradle on CI, Gradle on GitHub Actions, Gradle on GitLab CI, Gradle Docker Images, Securing Gradle Builds, Best Practices for Security, Verifying Dependencies, Supported Repository Protocols, Gradle Wrapper, Maven Publish Plugin, Publishing Plugins to the Gradle Plugin Portal.

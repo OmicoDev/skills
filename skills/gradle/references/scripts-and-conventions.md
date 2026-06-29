@@ -92,7 +92,3 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Does this script call `.get()` where a provider-aware API exists?
 - Does this script duplicate convention logic already present in build logic?
 - Does this script hide behavior in `afterEvaluate` or root `subprojects`?
-
-## Source Calibration
-
-Primary upstream pages: Writing Build Scripts, Working with Plugins, Version Catalogs, Gradle Managed Types, Kotlin DSL, Groovy Build Script Primer, Public Gradle APIs, Pre-compiled Script Plugins, Writing Tasks, Properties and Providers, General Gradle Best Practices, Best Practices for Structuring Builds. Local architecture docs: ADR-0010 Gradle properties naming.

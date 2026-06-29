@@ -92,7 +92,3 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - Plugin resolves locally but fails when applied: inspect marker module coordinates, implementation-class metadata, plugin classpath dependencies, and variant attributes before changing Portal credentials.
 - Duplicate or stale publication: inspect repository coordinates and relocation metadata.
 - Legacy publishing logic depending on deferred configuration: prefer provider/plugin ordering repairs; use `afterEvaluate` only as a migration bridge.
-
-## Source Calibration
-
-Primary upstream pages: Maven Publish Plugin, Ivy Publish Plugin, Signing Plugin, Publishing Gradle Module Metadata, Customizing Publishing, Preparing to Publish Plugins, Publishing Plugins to the Gradle Plugin Portal.

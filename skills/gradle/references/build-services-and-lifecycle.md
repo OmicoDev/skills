@@ -86,7 +86,3 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Listener stops receiving events after configuration-cache adoption: check that `onTaskCompletion(...)` received the raw build-service provider, not a mapped or wrapped provider.
 - Listener side effects race with consumers: move the work into declared task inputs/outputs or a lifecycle Flow action; build-event listeners observe completion but do not order downstream work.
 - Flow action does not run or runs at a surprising time: check that the plugin registered it before failure, used the intended `FlowScope`, and supplied a lifecycle event provider input.
-
-## Source Calibration
-
-Primary upstream pages: Using Shared Build Services, Dataflow Actions, Service Injection, Configuration Cache Requirements, Isolated Projects. Primary APIs: BuildServiceSpec, BuildServiceRegistration, ServiceReference, Task.

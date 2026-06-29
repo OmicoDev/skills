@@ -77,7 +77,3 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - The selected plugin variant targets the highest Gradle API version that does not exceed the current build's Gradle version.
 - Version-specific plugin variants are selected for plugin/buildscript/build-logic and plugin-development classpaths; ordinary dependency resolution prefers an unversioned plugin variant when one exists.
 - Keep variant implementation classes, descriptors, capabilities, and `gradleApi()` wiring consistent across variants.
-
-## Source Calibration
-
-Primary upstream pages: Introduction to Plugins, Binary Plugins, Binary Plugin Development, Precompiled Script Plugins, Convention Plugins, Java Gradle Plugin Development Plugin, Public Gradle APIs, Services and Service Injection, Build Features API.

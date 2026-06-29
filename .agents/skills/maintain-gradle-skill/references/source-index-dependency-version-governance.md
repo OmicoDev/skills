@@ -1,0 +1,17 @@
+# Gradle Dependency Version Governance
+
+## Documentation
+
+- [Declaring Dependency Constraints](https://docs.gradle.org/current/userguide/dependency_constraints.html)
+- [Declaring Versions and Ranges](https://docs.gradle.org/current/userguide/dependency_versions.html)
+- [Dependency Resolution Consistency](https://docs.gradle.org/current/userguide/dependency_resolution_consistency.html)
+- [How to Align Dependency Versions in Gradle](https://docs.gradle.org/current/userguide/how_to_align_dependency_versions.html)
+- [How to Downgrade Transitive Dependencies in Gradle](https://docs.gradle.org/current/userguide/how_to_downgrade_transitive_dependencies.html)
+- [How to Prevent Accidental or Eager Dependency Upgrades in Gradle](https://docs.gradle.org/current/userguide/how_to_prevent_accidental_dependency_upgrades.html)
+- [How to Troubleshoot Version Catalog Problems in Gradle](https://docs.gradle.org/current/userguide/how_to_fix_version_catalog_problems.html)
+- [How to Upgrade Transitive Dependencies in Gradle](https://docs.gradle.org/current/userguide/how_to_upgrade_transitive_dependencies.html)
+- [Platforms](https://docs.gradle.org/current/userguide/platforms.html)
+- [Upgrading within Gradle 8.x](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
+- [Using Catalogs with Platforms](https://docs.gradle.org/current/userguide/centralizing_catalog_platform.html)
+- [Version Catalogs](https://docs.gradle.org/current/userguide/version_catalogs.html)

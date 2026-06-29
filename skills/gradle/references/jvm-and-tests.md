@@ -91,7 +91,3 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - Slow tests: inspect forks, parallelism, reports, test isolation, and cacheability policy.
 - Missing aggregate reports: inspect `testReportAggregation` or `jacocoAggregation` project dependencies, producer verification attributes, suite names, Android plugin boundaries, and whether the build stopped before report tasks.
 - External test fixtures fail to resolve: verify the producer publishes Gradle Module Metadata and the `-test-fixtures` capability before replacing it with classifier or file dependencies.
-
-## Source Calibration
-
-Primary upstream pages: Java Plugin, Java Library Plugin, Application Plugin, Toolchains for JVM projects, Build Environment, Testing in Java and JVM projects, JVM Test Suite Plugin, Test Fixtures, Test Report Aggregation Plugin, JaCoCo Plugin, JaCoCo Report Aggregation Plugin, Checkstyle Plugin, PMD Plugin, CodeNarc Plugin, Best Practices for Dependencies.

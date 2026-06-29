@@ -76,7 +76,3 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - Cache test is flaky: isolate TestKit dir and local build cache, then verify clean/warm runs separately.
 - Root `check` misses convention-plugin regressions: confirm whether the plugin lives in an included build whose own `check` task was never invoked.
 - Functional test leaks machine policy: inspect Gradle User Home, init scripts, repositories, credentials, and fixture settings.
-
-## Source Calibration
-
-Primary upstream pages: Testing Plugins, Testing Build Logic with TestKit, Best Practices for Testing Gradle Plugins, Initialization Scripts and Init Plugins, Java Gradle Plugin Development Plugin, JVM Test Suite Plugin, Build Cache, GradleRunner API, BuildResult API, Gradle 6 Upgrade Guide, Gradle 9 Upgrade Guide.

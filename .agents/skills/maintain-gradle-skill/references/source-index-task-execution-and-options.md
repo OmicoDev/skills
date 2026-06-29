@@ -1,0 +1,15 @@
+# Gradle Task Execution And Options
+
+## Documentation
+
+- [Advanced Tasks](https://docs.gradle.org/current/userguide/custom_tasks.html)
+- [Best Practices for Tasks](https://docs.gradle.org/current/userguide/best_practices_tasks.html)
+- [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
+- [Controlling Task Execution](https://docs.gradle.org/current/userguide/controlling_task_execution.html)
+- [Organizing Tasks](https://docs.gradle.org/current/userguide/organizing_tasks.html)
+
+## Source Code
+
+- `subprojects/core-api/src/main/java/org/gradle/api/Task.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/tasks/StopExecutionException.java`
+- `subprojects/core/src/main/java/org/gradle/api/tasks/StopActionException.java`

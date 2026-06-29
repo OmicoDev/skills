@@ -66,7 +66,3 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Every daemon, worker, client, or Tooling API concern should name which runtime owns the failure.
 - Every dependency policy should state its owner layer.
 - Every performance change should name configuration, execution, dependency resolution, or output reuse as the target.
-
-## Source Calibration
-
-Primary upstream pages: Build Lifecycle, Lazy vs Eager Evaluation, Task Configuration Avoidance, Initialization Scripts and Init Plugins, Dataflow Actions, Build Environment Configuration, Dependency Configurations, Variant Selection and Attribute Matching, Toolchains for JVM projects, Isolated Projects. Local architecture docs: Build State Model, Build Execution Model, Gradle Runtimes.

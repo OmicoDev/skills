@@ -88,7 +88,3 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Strict version does not control the selected module: inspect all dependency paths, platform endorsement, and competing strict versions before adding `force`.
 - Newer transitive version wins over a declared version: use `failOnVersionConflict()` to expose the conflict, then choose constraint/platform/rich-version/lock ownership instead of forcing globally.
 - Compile/runtime classpaths disagree: inspect selected versions first, then consider targeted consistent resolution.
-
-## Source Calibration
-
-Primary upstream pages: Using Catalogs with Platforms, Version Catalogs, Troubleshoot Version Catalog Problems, Platforms, Declaring Dependency Constraints, Declaring Versions and Ranges, Dependency Resolution Consistency, Align Dependency Versions, Upgrade Transitive Dependencies, Downgrade Transitive Dependencies, Prevent Accidental Dependency Upgrades, Gradle 8/9 Upgrade Guides.

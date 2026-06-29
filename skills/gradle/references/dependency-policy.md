@@ -92,7 +92,3 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Catalog accessor error: inspect alias naming, reserved words, and plugin-vs-library context.
 - Declaration version changed but selected version did not: inspect conflict resolution, platform, constraint, or lock owners.
 - Compile/runtime or test/runtime classpaths disagree unexpectedly: inspect consistent resolution before adding broad forces.
-
-## Source Calibration
-
-Primary upstream pages: Declaring Dependencies, Dependency Configurations, Version Catalogs, Declaring Versions and Ranges, Platforms, Using Resolution Rules, Viewing and Debugging Dependencies, Dependency Resolution Consistency, Best Practices for Dependencies.

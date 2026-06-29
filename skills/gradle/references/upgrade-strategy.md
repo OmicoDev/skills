@@ -68,7 +68,3 @@ Split separate phases when possible:
 - CI/publishing changes
 
 Only combine phases when their dependency is real and visible.
-
-## Source Calibration
-
-Primary upstream pages: Compatibility Matrix, Feature Lifecycle, Upgrading Gradle, Command Line Interface, Migrating from Maven, Migrating from Ant, General Gradle Best Practices.

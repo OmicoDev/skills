@@ -82,7 +82,3 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Interpret task outcome labels before changing wiring: no label/`EXECUTED` means actions ran, `UP-TO-DATE` reused local outputs, `FROM-CACHE` restored outputs, `SKIPPED` skipped actions, and `NO-SOURCE` skipped because expected sources were absent.
 - `SKIPPED` needs a different owner depending on cause: command-line exclusion, `onlyIf`, `enabled = false`, or `StopExecutionException`; `NO-SOURCE` usually points to source/input configuration instead.
 - Use `-x` or `--exclude-task` only as a local diagnostic or one-off workflow override; if the workflow is expected, model it as a lifecycle task.
-
-## Source Calibration
-
-Primary upstream pages: Controlling Task Execution, Command Line Interface, Organizing Tasks, Advanced Tasks, Best Practices for Tasks. Primary APIs: Task, StopExecutionException, StopActionException.

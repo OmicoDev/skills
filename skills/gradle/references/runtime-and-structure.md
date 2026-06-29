@@ -90,7 +90,3 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 - Check whether Gradle user home, init scripts, CI-injected properties, or cache cleanup policy can explain behavior that is not reproducible from repository files alone.
 - Check daemon logs under `GRADLE_USER_HOME/daemon/<gradle-version>/` when client output hides startup, crash, or connection details.
 - Check whether the failure happens before settings are loaded, during daemon startup, during dependency resolution, or inside worker JVM work.
-
-## Source Calibration
-
-Primary upstream pages: Gradle Wrapper, Gradle Daemon, File System Watching, Continuous Builds, Directory Layout, Build Environment, Build Lifecycle, Initialization Scripts and Init Plugins, Best Practices for Performance, Best Practices for Security. Local architecture docs: Gradle Runtimes, Build Execution Model, Build State Model, ADR-0007 Java prerequisite.

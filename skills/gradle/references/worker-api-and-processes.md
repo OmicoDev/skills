@@ -73,7 +73,3 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Library integrity check or agent-sensitive code fails only under Gradle: move the library work to classloader/process isolation or a dedicated `JavaExec` task and model that classpath as an input.
 - Cancellation hangs: inspect interrupt handling in loops, blocking I/O, external processes, and cleanup code.
 - Configuration cache failure names worker parameters: replace captured Gradle model objects with managed parameter properties or stable scalar/file values.
-
-## Source Calibration
-
-Primary upstream pages: Worker API, Service Injection, Implementing Custom Tasks, Command Line Interface, Build Environment, Dealing with Validation Problems, Configuration Cache Requirements, Gradle 9 Upgrade Guide. Primary APIs: WorkerExecutor, WorkQueue, WorkAction, WorkParameters, ClassLoaderWorkerSpec, ProcessWorkerSpec.

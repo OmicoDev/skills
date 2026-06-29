@@ -87,7 +87,3 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Start rollout with `help`, then test ordinary verification, publishing dry-runs, and custom task workflows separately.
 - Check IDE task execution separately from IDE sync/import.
 - Keep a known opt-out command while migration is active, then remove it from release workflows once blockers are fixed.
-
-## Source Calibration
-
-Primary upstream pages: Configuration Cache, Configuration Cache Requirements, Debugging and Troubleshooting the Configuration Cache, Configuration Cache Status, Isolated Projects.

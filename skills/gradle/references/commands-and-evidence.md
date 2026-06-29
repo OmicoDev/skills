@@ -90,7 +90,3 @@ Use the wrapper and the smallest useful command.
 - Treating `clean`, `--refresh-dependencies`, `--rerun`, `--rerun-tasks`, disabled verification, or warning suppression as permanent repairs.
 - Running `./gradlew build` before a narrower task can identify the owner.
 - Changing repositories, plugin versions, or global properties before inspecting settings and wrapper evidence.
-
-## Source Calibration
-
-Primary upstream pages: Command-Line Interface, Build Environment Configuration, Build Scan, Logging and Output, Continuous Builds, File System Watching, Understanding Tasks, Viewing Dependencies, Gradle Wrapper, Project Report Plugin, Build Dashboard Plugin.

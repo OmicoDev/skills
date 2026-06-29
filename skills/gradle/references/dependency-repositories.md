@@ -92,7 +92,3 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - If a project repository is ignored or forbidden, inspect `repositoriesMode` and project repositories added by plugins before changing repository URLs or content filters.
 - If resolution is slow, inspect repository count/order, dynamic selectors, changing modules, [dependency-metadata-rules.md](dependency-metadata-rules.md), and network/cache behavior.
 - If `--refresh-dependencies` appears to do nothing, check whether the dependency is static and unchanged, whether remote checksums match, and whether a changing dependency was declared correctly.
-
-## Source Calibration
-
-Primary upstream pages: Declaring Repositories, Centralizing Repositories, Filtering Repository Content, Supported Metadata Formats, Supported Repository Types, Dependency Caching, Best Practices for Dependencies. Primary API: RepositoriesMode, MetadataSupplierAware, ComponentMetadataSupplier, ComponentMetadataVersionLister.

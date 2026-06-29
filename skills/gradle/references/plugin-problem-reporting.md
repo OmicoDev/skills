@@ -63,7 +63,3 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - Problems report path differs from an expected location: trust the path Gradle prints for that invocation and check `--problems-report`, `--no-problems-report`, or `org.gradle.problems.report` before changing plugin code.
 - Recoverable problem absent from `GradleConnectionException.getFailures()`: the operation did not fail; listen for root-operation problem progress events instead.
 - Test asserts console text only: prefer checking task outcome plus stable problem metadata or report evidence when accessible.
-
-## Source Calibration
-
-Primary upstream pages: Reporting Plugin Problems with the Problems API, Problems HTML Report, Command Line Interface, Build Environment, Tooling API problem events. Primary APIs: Problems, ProblemReporter, ProblemSpec, ProblemId, ProblemGroup, AdditionalData, LongRunningOperation, SingleProblemEvent, ProblemSummariesEvent, Failure.

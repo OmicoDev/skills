@@ -84,7 +84,3 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - Lock ignore rules are project scoped and do not remove transitive dependencies from lock state.
 - Ignored modules are filtered out when reading, validating, and writing lock state, and Gradle does not verify that they appear in any resolved configuration.
 - To remove stale lock state, stop locking that configuration and run a command that resolves it while writing locks; Gradle cannot clean a configuration's lock state if that configuration is not visited.
-
-## Source Calibration
-
-Primary upstream pages: Locking Dependency Versions, Prevent Accidental Dependency Upgrades, DependencyLockingHandler API, LockMode API, ResolutionStrategy API.

@@ -72,7 +72,3 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 - Excluded module still appears: find every path to the module and confirm all paths agree on the exclusion.
 - Old and replacement modules coexist: add capabilities or module replacement metadata, then choose a provider or replacement policy.
 - Runtime `ClassNotFoundException` after excluding or disabling transitivity: restore the dependency or add the missing runtime dependency explicitly.
-
-## Source Calibration
-
-Primary upstream pages: Using Resolution Rules, Composite Builds, How to Use a Local Fork of a Module Dependency with Gradle, How to Exclude Transitive Dependencies in Gradle, ResolutionStrategy API.

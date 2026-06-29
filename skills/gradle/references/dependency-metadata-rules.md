@@ -72,7 +72,3 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Validate that the rule remains correct outside the current build. If it only hides a local conflict, choose a local dependency policy instead.
 - Re-run the original dependency report after adding the rule and confirm the selected component, variant, dependencies, capabilities, or status changed for the intended reason only.
 - Treat uncached or broad metadata rules as dependency-resolution performance risks; inspect slow resolution with repository order, dynamic/changing modules, and metadata-rule scope together.
-
-## Source Calibration
-
-Primary upstream pages: Modifying Dependency Metadata, Variant Attributes, Capabilities, Resolving Specific Artifacts, ComponentMetadataRule API, ComponentMetadataDetails API, RulesMode API, ComponentMetadataSupplier API.

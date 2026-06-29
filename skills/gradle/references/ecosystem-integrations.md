@@ -90,7 +90,3 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - The default root reporter close behavior fails the task when the root test tree failed; use the explicit `closeThrowsOnTestFailures` overload only when task outcome is intentionally managed elsewhere and the supported Gradle version has that overload.
 - Keep test execution ownership in the custom task; the reporting API records results, it does not replace declaring task inputs, outputs, classpaths, or environment.
 - Empty or partial custom test report: check reporter hierarchy, `started(...)`, `succeeded(...)`/`failed(...)`, and resource closure before changing report directories.
-
-## Source Calibration
-
-Primary upstream pages: Gradle and Third-party Tools, Tooling API, Services and Service Injection, IDEA Plugin, Eclipse Plugins, Visual Studio Plugin, Xcode Plugin, Test Event Reporting API, Building C++ Projects, Building Swift Projects, C++ Application/Library/Unit Test plugins, Swift Application/Library and XCTest plugins, Native Software, Using Ant from Gradle, Migrating from Maven, Migrating from Ant. Primary APIs: GradleConnector, ProjectConnection, BuildLauncher, ModelBuilder, TestLauncher, LongRunningOperation, ToolingModelBuilderRegistry, TestEventReporterFactory, AntBuilder, FileCollection.

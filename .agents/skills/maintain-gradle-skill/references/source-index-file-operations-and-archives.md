@@ -1,0 +1,14 @@
+# Gradle File Operations And Archives
+
+## Documentation
+
+- [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
+- [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
+- [Important concepts](https://docs.gradle.org/current/userguide/build_cache_concepts.html)
+- [The Application Plugin](https://docs.gradle.org/current/userguide/application_plugin.html)
+- [The Base Plugin](https://docs.gradle.org/current/userguide/base_plugin.html)
+- [The Distribution Plugin](https://docs.gradle.org/current/userguide/distribution_plugin.html)
+- [The Ear Plugin](https://docs.gradle.org/current/userguide/ear_plugin.html)
+- [The Java Library Distribution Plugin](https://docs.gradle.org/current/userguide/java_library_distribution_plugin.html)
+- [The War Plugin](https://docs.gradle.org/current/userguide/war_plugin.html)
+- [Working With Files](https://docs.gradle.org/current/userguide/working_with_files.html)
