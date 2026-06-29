@@ -12,6 +12,7 @@
 
 ## Source Code
 
+- `subprojects/core-api/src/main/java/org/gradle/api/Task.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/CacheableTask.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/InputDirectory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/InputFile.java`
@@ -21,4 +22,7 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/PathSensitive.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/PathSensitivity.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/tasks/UntrackedTask.java`
 - `subprojects/core-api/src/main/java/org/gradle/work/DisableCachingByDefault.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolver.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/DefaultTaskCacheabilityResolver.java`

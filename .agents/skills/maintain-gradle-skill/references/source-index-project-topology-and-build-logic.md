@@ -11,3 +11,10 @@
 - [Sharing Build Logic using buildSrc](https://docs.gradle.org/current/userguide/sharing_build_logic_between_subprojects.html)
 - [Structuring and Organizing Gradle Projects](https://docs.gradle.org/current/userguide/organizing_gradle_projects.html)
 - [The Build Init Plugin](https://docs.gradle.org/current/userguide/build_init_plugin.html)
+
+## Source Code
+
+- `subprojects/core/src/integTest/groovy/org/gradle/initialization/buildsrc/BuildSrcIncludedBuildIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/initialization/buildsrc/DisallowBuildSrcAsNameIntegTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/initialization/buildsrc/BuildSrcDetector.java`
+- `subprojects/core/src/test/groovy/org/gradle/initialization/buildsrc/BuildSrcDetectorTest.groovy`

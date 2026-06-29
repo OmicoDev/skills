@@ -45,6 +45,7 @@ Bootstrap or update only after reviewing the dependency change:
 - `strict` is the default and should own CI/release gates.
 - `lenient` records and reports verification failures while allowing the build to continue; use it for migration and review only.
 - `off` disables verification and should be limited to explicit local escape hatches.
+- If `verification-metadata.xml` exists but verification appears inactive, inspect `--dependency-verification`, `org.gradle.dependency.verification`, and configuration `resolutionStrategy.disableDependencyVerification()` before trusting coverage.
 - `org.gradle.dependency.verification.console=verbose` helps CI logs when the HTML report is hard to retrieve.
 
 ## Scope Boundaries
@@ -56,7 +57,7 @@ Bootstrap or update only after reviewing the dependency change:
 - Generated verification entries should be reviewed like dependency upgrades.
 - Keyring files can be committed to avoid repeated keyserver lookups; commit one format and treat it as public-key material.
 - Disabling metadata verification shrinks metadata but can miss malicious POM, Ivy, or Gradle Module Metadata changes that alter transitive dependencies or selected variants.
-- Configuration-level opt-outs are for plugins that resolve unknown future versions or similar cases where verification cannot be meaningful; Gradle prints a warning when verification is disabled for a configuration.
+- Configuration-level opt-outs are for plugins that resolve unknown future versions or similar cases where verification cannot be meaningful; avoid plugin or buildscript opt-outs because executable plugin code can otherwise weaken its own verification path, and Gradle prints a warning when verification is disabled for a configuration.
 - `trusted-artifacts` rules bypass all verification for every matched file; plain `group` matching is exact, and subgroup regex trusts should be rare, reasoned, and reviewed like other security exceptions.
 - Trusting source or javadoc artifacts by filename can reduce IDE/import churn, but it is still a trust exception and should not cover runtime artifacts.
 

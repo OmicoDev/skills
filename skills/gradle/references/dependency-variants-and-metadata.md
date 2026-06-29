@@ -74,10 +74,12 @@ Use reports to compare requested attributes with producer attributes before edit
 ## Feature Variants
 
 - Feature variants are Java-library variant contracts for optional or mutually exclusive library features; use them instead of Maven optional dependencies when Gradle consumers need precise dependency and capability metadata.
-- The feature-variant DSL is Java plugin support on top of the general variant/capability model; other ecosystems need their own variant-producing plugin conventions.
+- The feature-variant DSL is Java plugin support on top of the general variant/capability model; apply `java`, `java-library`, or another JVM plugin that provides the Java component before calling `registerFeature`.
 - Give each feature its own source set and feature-specific dependency buckets. Do not register a feature on the `main` source set.
 - Consumers request a feature by declaring the dependency and requiring the feature capability; multiple distinct capabilities from one component can coexist, but variants that share a capability are mutually exclusive.
 - Follow the default capability naming convention of main artifact name plus the kebab-case feature name unless the domain needs a custom capability.
+- Calling `FeatureSpec.capability(...)` replaces the default feature capability set; re-declare the default feature capability when adding an extra shared or alternate capability.
+- Use `disablePublication()` for local-only feature variants that should participate in project dependency resolution without becoming published API.
 - Publishing feature variants requires `maven-publish` or `ivy-publish`; Gradle Module Metadata preserves the feature contract, while Maven represents it through optional dependencies and classifiers.
 - Consumers can require published feature capabilities reliably only from project dependencies, Gradle Module Metadata, or explicit Ivy configurations; Maven POM metadata is lossy and should not be treated as preserving feature selection semantics.
 - Use shared capabilities to model mutually exclusive implementations so resolution fails with an explicit choice instead of silently combining incompatible runtime features.

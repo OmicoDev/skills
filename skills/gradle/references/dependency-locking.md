@@ -21,6 +21,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - If a convention or plugin enables locking broadly, disable locking on intentionally volatile configurations instead of papering over them with ignored modules.
 - Buildscript classpath locking is separate from project dependency locking.
 - Use `resolutionStrategy.deactivateDependencyLocking()` or `dependencyLocking.unlockAllConfigurations()` when a resolvable configuration should stay unlocked after broad activation; deleting lock entries alone does not change the locking policy.
+- Decide locking activation, deactivation, dependencies, hierarchy, and resolution strategy before a configuration is observed or resolved; do not hide locking changes in `incoming.beforeResolve { ... }`.
 - In multi-project builds, each project can have its own `gradle.lockfile`.
 - The build must resolve a configuration before Gradle can create, update, or clean up its lock state.
 

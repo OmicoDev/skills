@@ -31,6 +31,8 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, va
 - `ArtifactCollection.getResolvedArtifacts()` returns a live provider that keeps producer task dependencies; use it to map `ResolvedArtifactResult` into stable task properties when metadata is needed, rather than iterating `getArtifacts()` during configuration.
 - For configuration-cache-compatible tasks, split `ResolvedArtifactResult` data into stable file and metadata task properties instead of storing resolution result objects as task inputs.
 - Avoid new use of legacy `ResolvedConfiguration`, `LenientConfiguration`, `ResolvedArtifact`, and `ResolvedDependency` APIs; they use default artifact attributes and are maintenance-mode surfaces.
+- Replace filtered `Configuration.files(...)`, `Configuration.fileCollection(...)`, and legacy lenient filtering with `incoming.artifactView { componentFilter { ... } }`, remembering that the filter sees each selected component owner, not dependency-declaration ancestry.
+- Avoid new `ArtifactResolutionQuery` use for sources or javadoc; prefer an artifact view with `withVariantReselection()` and documentation attributes.
 - Without variant reselection, artifact selection must still come from the graph-selected component variant.
 - Use `withVariantReselection` only when the consumer intentionally wants a parallel variant of each selected component, such as sources or javadoc. Treat it as an incubating API and provide the complete target variant attributes because the configuration's graph attributes are ignored during reselection.
 - Without variant reselection, artifact view attributes are combined with the graph resolution attributes for artifact selection and may trigger transforms when no selected artifact set matches.

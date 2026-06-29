@@ -16,15 +16,13 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 
 Treat broad Gradle best-practice reviews as multi-owner audits, not one generic rewrite. Map each finding to the narrowest owning reference before editing.
 
-| Best-practice area | First route | Narrow when the finding is about |
-| --- | --- | --- |
-| General | [scripts-and-conventions.md](scripts-and-conventions.md), [providers-and-properties.md](providers-and-properties.md), [runtime-and-structure.md](runtime-and-structure.md), [project-topology-and-build-logic.md](project-topology-and-build-logic.md), or [upgrade-strategy.md](upgrade-strategy.md) | DSL style, plugin timing, properties, root naming, or wrapper currency |
-| Structuring builds | [project-topology-and-build-logic.md](project-topology-and-build-logic.md) | Repeated script blocks then route to [scripts-and-conventions.md](scripts-and-conventions.md) or [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md) |
-| Dependencies | [dependency-policy.md](dependency-policy.md) | Repositories, version governance, resolution rules, locks, verification, or JVM-language dependency behavior |
-| Tasks | [task-execution-and-options.md](task-execution-and-options.md) or [task-types-and-validation.md](task-types-and-validation.md) | Graph/public-surface behavior versus inputs, outputs, cacheability, and validation; provider or file-collection eagerness may route to [providers-and-properties.md](providers-and-properties.md), [file-operations-and-archives.md](file-operations-and-archives.md), or dependency owners |
-| Performance | [performance-strategy.md](performance-strategy.md) | Configuration cache, build cache, runtime, repository, or task-validation owners |
-| Security | [ci-and-security.md](ci-and-security.md) | Wrapper details then route to [runtime-and-structure.md](runtime-and-structure.md) |
-| Testing | [plugin-testing.md](plugin-testing.md) or [jvm-and-tests.md](jvm-and-tests.md) | Plugin/build-logic functional tests versus ordinary JVM test behavior |
+- General: route by issue type to [scripts-and-conventions.md](scripts-and-conventions.md), [providers-and-properties.md](providers-and-properties.md), [runtime-and-structure.md](runtime-and-structure.md), [project-topology-and-build-logic.md](project-topology-and-build-logic.md), or [upgrade-strategy.md](upgrade-strategy.md) for DSL style, plugin timing, properties, root naming, or wrapper currency.
+- Structuring builds: start in [project-topology-and-build-logic.md](project-topology-and-build-logic.md); repeated script blocks then route to [scripts-and-conventions.md](scripts-and-conventions.md) or [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md).
+- Dependencies: start in [dependency-policy.md](dependency-policy.md), then narrow to repository, version-governance, resolution-rule, locking, verification, or JVM-language dependency owners.
+- Tasks: choose [task-execution-and-options.md](task-execution-and-options.md) for graph/public-surface behavior and [task-types-and-validation.md](task-types-and-validation.md) for inputs, outputs, cacheability, and validation; provider or file-collection eagerness may route to [providers-and-properties.md](providers-and-properties.md), [file-operations-and-archives.md](file-operations-and-archives.md), or dependency owners.
+- Performance: route through [performance-strategy.md](performance-strategy.md), then narrow to configuration cache, build cache, runtime, repository, or task-validation owners.
+- Security: route through [ci-and-security.md](ci-and-security.md); wrapper details then route to [runtime-and-structure.md](runtime-and-structure.md).
+- Testing: route to [plugin-testing.md](plugin-testing.md) for plugin/build-logic functional tests or [jvm-and-tests.md](jvm-and-tests.md) for ordinary JVM test behavior.
 
 ## Model Boundaries
 

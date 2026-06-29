@@ -33,6 +33,8 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Precompiled script plugin IDs come from the script file name plus an optional Kotlin package; `.settings.gradle(.kts)` targets `Settings`, `.init.gradle(.kts)` targets `Gradle`, and plain `.gradle(.kts)` targets `Project`.
 - External plugins used inside precompiled script plugins must be on the plugin project's implementation classpath; `version "..."` and `apply false` are not valid inside the precompiled script plugin's own `plugins {}` block.
 - Convention plugins encode build policy applied by participating projects.
+- Use precompiled convention plugins when Kotlin DSL static accessors for applied plugin extensions, tasks, and configurations make the convention clearer; switch to a binary plugin when behavior needs reusable implementation classes, service injection, a custom dependency DSL, or a stable public API beyond script composition.
+- Let convention plugins compose other convention plugins for layered policy, but keep the leaf/project-type plugin explicitly applied by each consuming project instead of using root `allprojects` or `subprojects` mutation as the composition mechanism.
 - Choose binary plugin targets by owner: `Plugin<Gradle>` for init/runtime policy, `Plugin<Settings>` for build topology and plugin/repository resolution, and `Plugin<Project>` for tasks, dependencies, extensions, source sets, and publications.
 - Binary plugins fit reusable behavior, extensions, custom tasks, services, diagnostics, custom dependency blocks, variants, and publishing.
 - Keep capabilities separate from conventions: a base plugin can expose extensions, tasks, and services without forcing defaults, while a convention plugin can apply the base plugin and set organization defaults.
@@ -47,6 +49,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Keep plugin IDs stable and namespace them by ownership.
 - Avoid internal Gradle APIs; prefer public services and model APIs.
 - Do not infer API stability from an importable `org.gradle` type; only documented public packages and services are stable, and `.internal.` packages, `Internal`, or `Impl` types are not plugin contracts.
+- Treat `@Incubating` Gradle APIs as version-coupled plugin inputs: document the supported Gradle range, cover them with TestKit against representative Gradle versions, and avoid exposing them as your own stable extension API without a fallback plan.
 - Keep external dependencies in plugins minimal to reduce classpath conflicts.
 - Validate behavior with TestKit before publishing or applying broadly.
 - Use `java-gradle-plugin` for plugin projects instead of hand-maintaining descriptors, `gradleApi()`/`compileOnlyApi` wiring, validation, marker publications, and TestKit classpath metadata.

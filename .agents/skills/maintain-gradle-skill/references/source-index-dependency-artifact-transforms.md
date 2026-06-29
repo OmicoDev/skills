@@ -7,9 +7,11 @@
 - [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html)
 - [Dealing with validation problems](https://docs.gradle.org/current/userguide/validation_problems.html)
 - [Debugging and diagnosing Build Cache misses](https://docs.gradle.org/current/userguide/build_cache_debugging.html)
+- [Using Shared Build Services](https://docs.gradle.org/current/userguide/build_services.html)
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformValuesInjectionIntegrationTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformAction.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformParameters.java`

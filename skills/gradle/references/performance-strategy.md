@@ -35,6 +35,7 @@ For broad best-practice audits, baseline representative workflows first; a fast 
 - Slow compilation: inspect toolchains, compiler daemon reuse, annotation processors, ABI changes, and source layout.
 - Poor cache reuse: inspect declared inputs, output determinism, path normalization, environment reads, and remote cache trust policy.
 - Poor parallel speedup: inspect the Build Scan timeline for critical-path tasks, late long-running tasks, and unnecessary task dependencies before raising worker counts or adding parallel flags.
+- Poor task configuration avoidance: in Build Scan configuration performance, minimize tasks created immediately or during configuration; tasks created during task graph calculation should roughly track selected work, and a high not-created count is a healthy signal.
 
 ## Distinctions
 

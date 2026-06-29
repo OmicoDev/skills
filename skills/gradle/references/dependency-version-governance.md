@@ -36,6 +36,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Create Java ecosystem platforms with `java-platform` plus dependency constraints; the platform project has no binaries and cannot also be a `java` or `java-library` project.
 - In Java platforms, `api` and `runtime` scope constraints or explicit platform dependencies to compile/runtime consumers; prefer constraints, and enable `allowDependencies()` only when the platform intentionally contributes dependency edges.
 - Import Maven BOMs with `platform(...)`; Gradle maps BOM dependency management entries to platform constraints.
+- If a catalog alias names a BOM or platform coordinate, keep the alias as coordinate notation and wrap the provider at the use site with `platform(libs.alias)` or `enforcedPlatform(libs.alias)`; catalog TOML does not mark an alias as a platform.
 - `platform(...)` selects platform variants and endorses strict versions by default, so strict platform opinions can control versions in the consumer's subgraph. Use `doNotEndorseStrictVersions` only when that enforcement is not policy.
 - Use `enforcedPlatform(...)` cautiously for reusable components because forced versions are transitive to consumers. If consumers should be allowed to disagree, prefer normal platforms plus strict/rich versions where appropriate.
 - Prefer a published BOM or platform when a module family already publishes alignment metadata. Use a virtual platform through component metadata rules only when the upstream family lacks usable alignment metadata.

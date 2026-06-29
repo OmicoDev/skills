@@ -2,6 +2,7 @@
 
 ## Documentation
 
+- [Avoiding Unnecessary Task Configuration](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
 - [Best Practices for Performance](https://docs.gradle.org/current/userguide/best_practices_performance.html)
 - [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html)
 - [Build Scan](https://docs.gradle.org/current/userguide/inspect.html)

@@ -9,7 +9,12 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/rules/AdditionalVariantsMetadataRulesIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/rules/VariantFilesMetadataRulesIntegrationTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataDetails.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataRule.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataSupplier.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/MutableVariantFilesMetadata.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VariantMetadata.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/ComponentMetadataHandler.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/initialization/resolve/RulesMode.java`

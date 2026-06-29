@@ -16,3 +16,8 @@
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Using Catalogs with Platforms](https://docs.gradle.org/current/userguide/centralizing_catalog_platform.html)
 - [Version Catalogs](https://docs.gradle.org/current/userguide/version_catalogs.html)
+
+## Source Code
+
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyHandler.java`

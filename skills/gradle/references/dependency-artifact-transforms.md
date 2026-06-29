@@ -26,6 +26,8 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Do not implement `getParameters()` or custom constructors on a `TransformAction`; Gradle supplies parameters and transform actions may only have a default constructor.
 - Use `TransformParameters.None` when no parameters are needed.
 - Define transform parameters as a managed interface or abstract class implementing `TransformParameters`; use managed properties with input annotations for every behavior-affecting parameter.
+- Pass build service providers into transforms through `TransformParameters`, such as an `@Internal Property<ServiceType>` assigned during `registerTransform`; do not look up shared services from inside the transform action.
+- Treat a build service as shared execution state, not a cache key. If service configuration, tool versions, or external options affect outputs, mirror those values as ordinary annotated transform parameters.
 - Register outputs with `TransformOutputs.file(...)` or `TransformOutputs.dir(...)`. Relative paths allocate transform workspace locations; absolute paths can point at the input artifact or locations inside an input directory.
 - Every registered output file or directory must exist when `transform(...)` returns; `outputs.file(...)` creates parent directories for relative file outputs, but the transform still has to create the file contents.
 - When a transform decides no conversion is needed for one artifact, register the unchanged input artifact as the output instead of copying it into a new workspace file.

@@ -26,7 +26,8 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Use read-only configuration cache only for ephemeral CI or probe jobs where misses cannot be reused; disable read-only mode when the build must write entries.
 - Treat parallel configuration-cache load/store as incubating; `ConcurrentModificationException` during configuration is a compatibility signal, not a reason to ignore cache problems.
 - Treat `STABLE_CONFIGURATION_CACHE` as a version-sensitive early opt-in. Verify current Gradle behavior before using it as a rollout gate, and do not rely on it to surface undeclared build-service usage because that check moved behind internal test-only coverage.
-- Inject `BuildFeatures` when plugin code must react to configuration cache status; use `requested` for reporting and `active` for behavior changes, not ad hoc command-line parsing, and do not treat either value as evidence of a cache hit or miss.
+- Inject `BuildFeatures` when plugin code must react to configuration cache status; use `requested` for reporting and `active` for behavior changes instead of ad hoc command-line parsing.
+- `BuildFeature.requested` is tri-state: explicit true, explicit false, or no value when the user expressed no preference. Do not treat absence as false; `active` can differ because another feature enables configuration cache or another option disables it, and neither value proves a cache hit or miss.
 - Track third-party plugin blockers separately from local build-logic repairs.
 
 ## Input Boundaries

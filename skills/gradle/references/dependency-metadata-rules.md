@@ -32,6 +32,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Prefer `withModule(group:name, Rule::class)` over broad `all(...)` rules unless the rule is correct for every affected module.
 - Prefer isolated `ComponentMetadataRule` classes over inline actions; make reusable rules deterministic and `@CacheableRule` so dependency resolution does not rerun them unnecessarily.
 - Treat a class rule as isolated metadata code: use `ComponentMetadataContext.details`, optional Maven/Ivy descriptors, serializable or Gradle-recognized parameters, and supported injected services such as `ObjectFactory`; do not make rule behavior depend on ambient project state.
+- Avoid deprecated rule-source object APIs; use actions for throwaway local repair or class rules with `ActionConfiguration` parameters for reusable policy.
 - Put reusable rules in settings or convention build logic instead of scattering them across project build scripts.
 - Settings-level rules are incubating and use `RulesMode`: `PREFER_PROJECT` is the default and ignores settings rules when a project declares rules, `PREFER_SETTINGS` ignores project rules, and `FAIL_ON_PROJECT_RULES` turns project rules into a build error.
 
@@ -41,6 +42,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - A rule may change variant attributes, capabilities, dependencies, dependency constraints, and files.
 - Use `maybeAddVariant(name, base)` instead of `addVariant(name, base)` in broad `all(...)` rules when the base may not exist; use strict `addVariant` for targeted modules where a missing base should expose a bad metadata assumption.
 - Treat `addVariant` file state as part of the rule contract: empty variants need files added directly, while variants derived from a base may expose inherited artifacts, so enter `withFiles` and either remove/replace copied files for classifier replacements or keep and supplement them for additive runtime artifacts.
+- `withFiles { addFile(name, url) }` uses a URL relative to the component metadata file; do not add the same file name twice with different locations.
 - Maven POM metadata is derived into library variants, sources/javadoc variants, and platform/enforced-platform variants from dependency management.
 - Ordinary Maven dependencies request library variants. `platform(...)` and `enforcedPlatform(...)` request the platform-derived variants and import constraints instead of ordinary dependencies.
 - POM dependency management is not converted into constraints for ordinary library variants.
@@ -53,6 +55,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Wrong transitive dependency: remove or add it on the affected variant rather than excluding broadly.
 - Optional feature hidden in POM metadata: model it as a feature variant and capability.
 - Classifier jar represents a real variant: add a variant with attributes and files instead of resolving classifier paths manually.
+- If a build has no ecosystem derivation rule for the module shape, an added variant must provide the full attribute and file contract itself.
 - When a classifier replaces the main artifact, copy the base variant and remove copied files before adding the classifier file. When a classifier supplements runtime, such as a native jar, keep the base files and add the classifier file.
 - When a classifier variant has different dependencies or provides a different feature flavor, adjust the new variant dependencies or capabilities as part of the metadata rule; classifier notation can choose a file but cannot express semantic dependency differences.
 - Version suffixes encode variants only awkwardly because Gradle selects a module version before variant selection; model them only when every semantic alternative is published in lockstep and the alternate files can be addressed from the selected metadata.
@@ -70,5 +73,5 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 
 - Before writing a rule, identify whether Gradle consumed Gradle Module Metadata, a Maven POM, or Ivy metadata. Traditional metadata is more likely to need enrichment.
 - Validate that the rule remains correct outside the current build. If it only hides a local conflict, choose a local dependency policy instead.
-- Re-run the original dependency report after adding the rule and confirm the selected component, variant, dependencies, capabilities, or status changed for the intended reason only.
+- Re-run the original dependency report after adding the rule and confirm the selected component, variant, files, dependencies, capabilities, or status changed for the intended reason only.
 - Treat uncached or broad metadata rules as dependency-resolution performance risks; inspect slow resolution with repository order, dynamic/changing modules, and metadata-rule scope together.

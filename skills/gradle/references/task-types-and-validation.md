@@ -26,6 +26,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use `@Classpath` or runtime classpath normalization for classpaths where appropriate.
 - Use `@Internal` only when the value truly does not affect outputs.
 - Mark tasks cacheable only after outputs are deterministic and relocatable enough for the intended cache.
+- Use `@UntrackedTask(because = "...")` or `Task.doNotTrackState(...)` only when Gradle cannot safely snapshot task state, such as remote state, unreadable files, or an external tool that owns up-to-date checks; untracked tasks are never up-to-date, never cached, and cannot use `InputChanges`.
 - Prefer built-in task types (`Copy`, `Sync`, `Zip`, `JavaExec`, `Test`, `JacocoReport`) when they already model the work; read [file-operations-and-archives.md](file-operations-and-archives.md) for copy/archive/delete specifics.
 - Wire provider-backed values with `map` or `flatMap` instead of `get()` during configuration so Gradle keeps value provenance and implicit task dependencies.
 - Use unique output directories or files per task; shared outputs break up-to-date and cache reasoning.
@@ -49,6 +50,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 - Use incremental inputs when processing changed files is materially cheaper.
 - A task may have only one incremental `@TaskAction`, and that action takes a single `InputChanges` parameter.
+- Incremental task actions require declared outputs or an `outputs.upToDateWhen(...)` predicate; otherwise Gradle has no execution history boundary for `InputChanges`.
 - Query changes from stable file property instances such as `RegularFileProperty`, `DirectoryProperty`, or `ConfigurableFileCollection`.
 - Keep incremental logic correct for added, modified, and removed files.
 - Fall back to full processing when `InputChanges.isIncremental()` is false; Gradle reports all input files as added in that mode.
