@@ -28,6 +28,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Use `buildscript {}` only for script classpath resolution. Do not create or resolve arbitrary buildscript configurations in project, settings, init, or standalone scripts.
 - Do not rely on plugin application order. If custom plugin logic requires another plugin, apply it explicitly; if integration is optional, react with `pluginManager.withPlugin(...)`, `plugins.withId(...)`, or type-based `plugins.configureEach(...)`.
 - Keep top-level build script work small; top-level statements run during configuration.
+- Keep build scripts declarative: tasks and plugins should own IO, process execution, network calls, timestamps/randomness, and generated files; use Gradle logging for reusable diagnostics instead of leaving `println` debugging in shared scripts.
 - Prefer `tasks.register`, `tasks.named`, and `configureEach` over `create`, `getByName`, and broad eager iteration.
 - Wire task outputs into inputs/source sets with providers instead of manual `dependsOn`.
 - Because task configuration actions may run immediately, later, or never, mutate only that task inside its action; configure relationships or other tasks through their own providers/actions.
@@ -46,6 +47,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead. If it appears necessary, limit it to final validation or diagnostics and document why providers, conventions, or plugin-application callbacks cannot express the timing.
 - `afterEvaluate` callbacks run by registration order, can see stale or default extension values, defeat task configuration avoidance when they touch tasks, and are configuration-cache hostile when they capture mutable project state.
 - Assume only a last or single `afterEvaluate` callback sees final state; treat missing lazy hooks as a Gradle API gap before making `afterEvaluate` design policy.
+- Do not rely on implicit lookup of properties or methods from parent projects; qualify cross-project intent through `rootProject`, providers, shared extensions, convention plugins, or modeled dependencies.
 
 ## DSL Notes
 

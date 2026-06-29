@@ -25,6 +25,7 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 - Compare project identity with `path` or `buildTreePath`, not reference identity; Gradle 9.3+ may expose different `Project` instances for the same logical project.
 - Check `./gradlew -q projects` before renaming projects, changing directories, or updating CI task paths.
 - Avoid accidentally empty projects: starting with Gradle 9, included project directories must exist and be writable unless the settings script deliberately creates or remaps them.
+- Do not include directories as Gradle projects only for visual grouping; empty/grouping projects add configuration and task-path surface without owning source, variants, or lifecycle aggregation.
 - Split monoliths by natural code boundaries early; Gradle's work avoidance, parallelism, and classpath narrowing only help when source and dependencies are separated into coherent projects.
 - Prefer project dependencies for subprojects in the same build. Do not reach across projects through task paths or files when variants can express the relationship.
 - Keep repository and catalog policy in settings when the policy is meant to apply consistently across projects.

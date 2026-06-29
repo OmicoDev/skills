@@ -22,6 +22,7 @@ Read this when: build speed, task avoidance, configuration cache, build cache, i
 ```
 
 Compare repeated runs and avoid broad optimization changes before identifying the dominant cost.
+For broad best-practice audits, baseline representative workflows first; a fast `help` run mainly proves initialization/configuration behavior, not compile, test, publication, or cache reuse behavior.
 
 ## Diagnosis Matrix
 
@@ -72,6 +73,7 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 5. Roll out remote cache, default configuration cache, or Isolated Projects only after representative workflows are stable.
 
 Treat cache, configuration-cache, parallelism, and UTF-8 flags in `gradle.properties` as shared build policy; trial with CLI flags first, then commit only after representative workflows pass.
+Treat Gradle and major plugin upgrades as their own measured lane before deep tuning; old versions can hide fixed performance problems, but upgrade churn should not be mixed with cache, parallelism, or topology changes.
 
 ## Avoid
 

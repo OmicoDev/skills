@@ -81,13 +81,15 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 
 ## Legacy Gradle Modernization
 
-- Replace `compile`/`runtime` era configurations with modern buckets.
-- Replace eager task APIs with registration and configuration avoidance.
-- Remove broad `allprojects`/`subprojects` mutation in favor of convention plugins.
-- Move configuration-time IO/process work into tasks or provider/value-source APIs.
-- Move subproject `gradle.properties` policy to root properties or convention plugins.
-- Check Isolated Projects only after configuration-cache and cross-project coupling issues are understood.
+- For 4.x/5.x sources, clear legacy foundations first: eager task creation, `compile`/`runtime`, legacy `maven`/`uploadArchives` publishing, old archive property names, and repositories that relied on artifact lookup without metadata.
+- For 5.x/6.x sources, treat settings and build logic isolation as migration owners: keep a real `settings.gradle(.kts)`, move settings classpath logic out of `buildSrc`, and do not expect root project properties to leak into included builds or `buildSrc`.
+- For 6.x/7.x sources, remove APIs that became hard errors: removed `compile`/`runtime`, legacy Maven/upload tasks, late `afterEvaluate`, invalid provider/file-collection mutation, and task validation problems.
+- For 7.x/8.x sources, fix warning-era validation before changing behavior: invalid toolchain specs, missing task dependencies, legacy artifact transforms, `IncrementalTaskInputs`, configurations used as dependencies, identical consumable variants, and non-consumable configurations.
+- For 8.x/9.x sources, separate runtime and DSL breaks: Java 17+ to run Gradle, Groovy 4/Kotlin 2.2 DSL changes, removed conventions, removed `Project.exec/javaexec`, Unix mode API removal, default reproducible archives, existing project-directory requirements, and `Test` tasks failing when sources produce no discovered tests.
+- For 9.x within-line upgrades, watch deprecations that point at the next owner cleanup: task actions reading Gradle model objects, project objects as dependency notation, implicit parent-project property/method lookup, Kotlin DSL delegated properties, map-style repository overloads, and legacy lifecycle tasks.
+- Remove broad `allprojects`/`subprojects` mutation in favor of convention plugins, move configuration-time IO/process work into tasks or provider/value-source APIs, and move subproject `gradle.properties` policy to root properties or typed extensions.
+- Check Isolated Projects only after configuration-cache, task validation, and cross-project coupling issues are understood.
 
 ## Source Calibration
 
-Primary upstream pages: Upgrading Gradle, Feature Lifecycle, Kotlin DSL Migration, Build Init Plugin, Migrating from Maven, Migrating from Ant, Using Ant from Gradle, Task Configuration Avoidance.
+Primary upstream pages: Upgrading Gradle, Gradle 4.x through 9.x upgrade guides, Gradle 8 to 9 major upgrade guide, Feature Lifecycle, Kotlin DSL Migration, Build Init Plugin, Migrating from Maven, Migrating from Ant, Using Ant from Gradle, Task Configuration Avoidance.

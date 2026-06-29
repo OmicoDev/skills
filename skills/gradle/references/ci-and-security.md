@@ -72,6 +72,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 ## Security Boundaries
 
 - Treat supply-chain hardening as three separate checks: dependency artifacts/plugins, repository source policy, and the Gradle runtime/wrapper.
+- Treat Gradle plugins as executable dependencies: pin versions, resolve them from scoped plugin repositories, and review plugin upgrades with the same care as library or wrapper upgrades.
 - Wrapper verification protects the Gradle runtime distribution and wrapper JAR.
 - `distributionSha256Sum` protects the downloaded distribution ZIP; wrapper JAR validation protects the checked-in launcher JAR. Run both checks when wrapper files change.
 - Dependency verification protects downloaded dependencies.

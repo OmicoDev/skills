@@ -35,11 +35,13 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - When using legacy configuration creation APIs, set `canBeDeclared`, `canBeResolved`, and `canBeConsumed` intentionally; historical defaults can otherwise create legacy all-role configurations.
 - Consumable configurations from bundled plugins may be initialized lazily on Gradle 9.2+; do not put required side effects in `configurations.named("apiElements").configure { ... }` unless realization is guaranteed.
 - `extendsFrom` inherits dependencies, constraints, excludes, artifacts, and capabilities, but not attributes or role flags.
+- If an old build adds a `Configuration` as a dependency, decide whether the real relationship is inherited declarations (`extendsFrom`), resolved files (`files(configuration)` as a task input), or a proper project/module dependency; do not preserve configuration-as-dependency migration glue.
 - Resolving another project's configuration directly from a script, task action, task input, or settings file is unsafe. Use project dependencies, variants, or publications to cross project boundaries.
 
 ## Declaration Rules
 
 - Add a dependency to the project that directly uses it.
+- If code imports a transitive dependency's type, add a direct dependency in the narrowest configuration; if code no longer uses a declared dependency, remove it instead of preserving historical classpath bulk.
 - Use `api` only when dependency types are part of the public ABI; otherwise prefer `implementation`.
 - Declare the same external module once in the narrowest correct configuration; duplicate declarations across `compileOnly`, `implementation`, runtime, and test buckets can create confusing classpaths.
 - When not using a catalog alias, prefer single-string GAV notation such as `group:name:version`; map-style and multi-string dependency notation are deprecated for normal module declarations.
@@ -78,6 +80,8 @@ Read this when: dependency declarations, configuration roles, version ownership,
 ./gradlew outgoingVariants
 ./gradlew resolvableConfigurations
 ```
+
+- Use dependency-analysis tooling or focused compile/runtime reports when cleaning dependencies so unused declarations, ABI leaks, and transitive-use gaps are fixed by ownership rather than by copying dependency blocks.
 
 ## Symptom Map
 
