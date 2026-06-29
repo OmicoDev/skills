@@ -14,6 +14,7 @@
 
 ## Source Code
 
+- `subprojects/core/src/integTest/groovy/org/gradle/NameValidationIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/initialization/buildsrc/BuildSrcIncludedBuildIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/initialization/buildsrc/DisallowBuildSrcAsNameIntegTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/initialization/buildsrc/BuildSrcDetector.java`

@@ -12,6 +12,8 @@
 
 ## Source Code
 
+- `platforms/core-configuration/model-reflect/src/test/groovy/org/gradle/internal/reflect/validation/ValidationMessageCheckerTest.groovy`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/ServiceReferencePropertyAnnotationHandler.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/Task.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/CacheableTask.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/InputDirectory.java`
@@ -24,5 +26,6 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/UntrackedTask.java`
 - `subprojects/core-api/src/main/java/org/gradle/work/DisableCachingByDefault.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/services/BuildServiceIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolver.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/DefaultTaskCacheabilityResolver.java`

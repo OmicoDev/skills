@@ -22,6 +22,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Before adding `dependsOn` to an actionable task, ask whether the relationship is really artifact flow; if so, expose the producer output as a provider-backed input instead.
 - Prefer a purpose-built lifecycle task over telling users to run `build -x test`; exclusions can remove actionable work that downstream tasks expected.
 - Do not use ordering rules to compensate for missing declared inputs and outputs.
+- Destroyable paths participate in scheduling: Gradle avoids parallel execution when a task's destroyables overlap another task's inputs or outputs, but explicit `dependsOn`, `mustRunAfter`, or `shouldRunAfter` relationships still define the graph/order you asked for.
 - Command-line task order can protect explicitly requested workflows such as `clean build`, but task dependencies still determine the precise graph; model recurring ordering or cleanup requirements in task relationships instead of relying on how humans type tasks.
 - Avoid broad task graph callbacks for ordinary wiring; prefer lazy task registration, providers, and output properties.
 - If Gradle reports implicit dependencies, replace raw `File` or path wiring with task providers, output properties, or the producing task as an input.
@@ -42,6 +43,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 ## Lifecycle Tasks
 
 - Lifecycle tasks should normally have no actions; they collect actionable task targets through dependencies.
+- Task names must not contain `/`, `\`, `:`, `<`, `>`, `"`, `?`, `*`, or `|`; use project paths or lifecycle tasks for hierarchy instead of encoding separators inside one task name.
 - Put lifecycle and user-facing ad hoc tasks in short, existing groups and give them descriptions; ungrouped tasks are hidden from `tasks` unless `--all` is used, but they are still invokable and should not be treated as private.
 - Root lifecycle tasks are useful for CI-wide orchestration; keep project-specific work in subproject tasks or convention plugins.
 - Treat Java plugin `buildNeeded` and `buildDependents` as deprecated legacy graph shortcuts; request concrete project tasks, use test/report aggregation, or consume project artifacts through dependency resolution instead.

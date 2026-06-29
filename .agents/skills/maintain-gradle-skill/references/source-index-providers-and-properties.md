@@ -23,3 +23,5 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/Provider.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ProviderFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSource.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSourceParameters.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSourceSpec.java`

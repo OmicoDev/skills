@@ -11,3 +11,7 @@
 - [Using Resolution Rules](https://docs.gradle.org/current/userguide/resolution_rules.html)
 - [Version Catalogs](https://docs.gradle.org/current/userguide/version_catalogs.html)
 - [Viewing and Debugging Dependencies](https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html)
+
+## Source Code
+
+- `subprojects/core/src/integTest/groovy/org/gradle/NameValidationIntegrationTest.groovy`

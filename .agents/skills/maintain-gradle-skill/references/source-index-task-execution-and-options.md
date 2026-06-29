@@ -12,4 +12,6 @@
 
 - `subprojects/core-api/src/main/java/org/gradle/api/Task.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/StopExecutionException.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/NameValidationIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/execution/taskgraph/ParallelTaskExecutionIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/StopActionException.java`

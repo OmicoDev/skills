@@ -44,7 +44,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use `@Console` only for values that affect console output but not outputs, and `@ReplacedBy` only for migration bridges that should not affect up-to-date checks.
 - For Gradle's `WriteProperties` task on Gradle 9+, use `destinationFile`; the old `outputFile` property is removed.
 - Use `@ServiceReference` when a shared build service is part of task behavior.
-- Do not mark a build service as an input. Use `@ServiceReference`, or `@Internal` plus explicit `usesService` when automatic reference matching does not fit.
+- Do not mark a build service as task input, output, local state, or destroyable state. Use `@ServiceReference`, or `@Internal` plus explicit `usesService(...)` when automatic reference matching does not fit.
 
 ## Incremental Work
 
@@ -64,12 +64,14 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Required value missing: set a convention, require user input, or make the property optional only when absent values are valid.
 - File type mismatch: use `@InputFile` for regular files and `@InputDirectory` for directories; do not hide a directory behind scalar `@Input`.
 - Missing input file: wire the producer task output or use a non-failing file collection only when the file is genuinely optional.
+- Cannot write output: align the output annotation and configured path shape; `@OutputFile` must point at a file path, `@OutputDirectory`/directory collections must point at directories, every parent must be a directory, and task outputs must not target Gradle-managed reserved locations.
 - Properties without annotations: annotate every behavior-affecting property or mark it `@Internal` with intent.
 - Annotations on fields, private getters, or non-property methods are usually ignored; annotate public property getters instead.
 - In Kotlin task classes, use getter use-site targets such as `@get:InputFile`; otherwise the annotation may land somewhere Gradle does not inspect.
 - Boolean properties must not expose both `getX()` and `isX()` as annotated getters; remove one or mark one `@Internal`.
 - Mutable Gradle property types must not have setters that replace the property object; mutate the existing property value with `set`, `convention`, or collection mutation APIs.
 - `@Optional` is only a modifier on an input/output property. Use `@Internal` when a property should not participate in validation or up-to-date checks; do not combine `@Internal` with `@Optional`, and do not put `@Optional` on primitive properties.
+- `@ServiceReference` on a non-build-service property: make the referenced type implement `BuildService`, or replace the annotation with `@Internal` and assign the value explicitly when it is not a shared build service.
 - Implicit dependency validation usually means a consumer used a raw file path such as `archivePath` instead of a provider-backed producer output such as `archiveFile`, a task provider, or the producing task itself.
 - Missing reason for not caching: use `@CacheableTask` only when safe, otherwise add `@DisableCachingByDefault(because = "...")`.
 - Unsupported value type: map Gradle resolution results, `java.net.URL`, nested maps, lambdas, classloader-owned implementation objects, and nested objects to stable supported input types before exposing them to tasks. Prefer `URI` over `URL`; keep nested map keys to `String`, `Integer`, or enum values.

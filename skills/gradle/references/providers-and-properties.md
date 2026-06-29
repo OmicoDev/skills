@@ -24,6 +24,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Use `providers.systemProperty(...)`, `providers.environmentVariable(...)`, `providers.fileContents(...)`, `providers.exec(...)`, `providers.javaexec(...)`, and `providers.credentials(...)` when configuration or task inputs need those values tracked; attach credentials providers to task inputs so required secrets are validated only when that task runs.
 - Use prefix provider APIs when a real policy depends on a whole property or environment namespace; adding a matching key will invalidate configuration cache entries.
 - Use `ValueSource` when built-in providers are too small for complex environment, file, process, or network-derived values. Gradle tracks the returned value, not every read inside `obtain()`.
+- Model custom `ValueSourceParameters` as interfaces with property-like getters; put cache-significant inputs in parameters and let Gradle supply `getParameters()` instead of implementing it.
 - Keep `ValueSource.obtain()` fast and return effectively immutable values because queried value sources run on every build to decide configuration-cache reuse.
 
 ## Finalization And Defaults

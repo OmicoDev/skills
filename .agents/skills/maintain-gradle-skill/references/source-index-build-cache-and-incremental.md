@@ -15,3 +15,4 @@
 
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/LocalState.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/internal/changedetection/rules/OverlappingOutputsIntegrationTest.groovy`

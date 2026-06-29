@@ -14,17 +14,23 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 
 ## Best-Practice Audits
 
-Treat broad Gradle best-practice reviews as routing-first audits. Each item should name the finding, the owning reference, and the smallest follow-up edit.
+Treat broad Gradle best-practice reviews as routing-first audits. Keep each audit item simple:
 
-- Start with the issue type: classify each finding as general DSL/style, build structure, dependencies, tasks, performance, security, or testing before editing runtime guidance.
-- General items: route DSL style to [scripts-and-conventions.md](scripts-and-conventions.md), eager provider/property usage to [providers-and-properties.md](providers-and-properties.md), wrapper/runtime concerns to [runtime-and-structure.md](runtime-and-structure.md), root naming or plugin timing to [project-topology-and-build-logic.md](project-topology-and-build-logic.md), and wrapper currency to [upgrade-strategy.md](upgrade-strategy.md).
-- Structure items: start in [project-topology-and-build-logic.md](project-topology-and-build-logic.md); repeated script blocks route to [scripts-and-conventions.md](scripts-and-conventions.md), while reusable plugin behavior routes to [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md).
-- Dependency items: start in [dependency-policy.md](dependency-policy.md), then narrow to repository, version-governance, resolution-rule, locking, verification, or JVM-language dependency owners.
-- Task items: route graph or public task-surface behavior to [task-execution-and-options.md](task-execution-and-options.md); route inputs, outputs, cacheability, and validation to [task-types-and-validation.md](task-types-and-validation.md); route provider or file-collection eagerness to [providers-and-properties.md](providers-and-properties.md), [file-operations-and-archives.md](file-operations-and-archives.md), or dependency owners.
-- Performance items: start in [performance-strategy.md](performance-strategy.md), baseline representative workflows, then narrow to configuration cache, build cache, runtime, repository, or task-validation owners.
-- Security items: start in [ci-and-security.md](ci-and-security.md); wrapper details route to [runtime-and-structure.md](runtime-and-structure.md).
-- Testing items: route plugin and build-logic functional tests to [plugin-testing.md](plugin-testing.md); route ordinary JVM test behavior to [jvm-and-tests.md](jvm-and-tests.md).
-- Finish by editing only the owning reference and running the validation gate for changed files, internal links, source indexes, and Markdown policy.
+- Finding: name the concrete smell, risk, or missing rule.
+- Type: choose general DSL/style, build structure, dependencies, tasks, performance, security, or testing.
+- Owner: link one owning reference.
+- Follow-up: name the smallest runtime guidance edit, or say `no durable rule` when nothing should be promoted.
+
+Route common item types like this:
+
+- General DSL/style: route script style to [scripts-and-conventions.md](scripts-and-conventions.md), eager provider/property usage to [providers-and-properties.md](providers-and-properties.md), runtime concerns to [runtime-and-structure.md](runtime-and-structure.md), naming or plugin timing to [project-topology-and-build-logic.md](project-topology-and-build-logic.md), and wrapper currency to [upgrade-strategy.md](upgrade-strategy.md).
+- Build structure: start in [project-topology-and-build-logic.md](project-topology-and-build-logic.md); route repeated script blocks to [scripts-and-conventions.md](scripts-and-conventions.md) and reusable plugin behavior to [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md).
+- Dependencies: start in [dependency-policy.md](dependency-policy.md), then narrow to repository, version-governance, resolution-rule, locking, verification, or JVM-language dependency owners.
+- Tasks: route graph and public task-surface behavior to [task-execution-and-options.md](task-execution-and-options.md); route inputs, outputs, cacheability, and validation to [task-types-and-validation.md](task-types-and-validation.md); route provider or file-collection eagerness to [providers-and-properties.md](providers-and-properties.md), [file-operations-and-archives.md](file-operations-and-archives.md), or dependency owners.
+- Performance: start in [performance-strategy.md](performance-strategy.md), baseline representative workflows, then narrow to configuration cache, build cache, runtime, repository, or task-validation owners.
+- Security: start in [ci-and-security.md](ci-and-security.md); route wrapper details to [runtime-and-structure.md](runtime-and-structure.md).
+- Testing: route plugin and build-logic functional tests to [plugin-testing.md](plugin-testing.md); route ordinary JVM test behavior to [jvm-and-tests.md](jvm-and-tests.md).
+- Finish: edit only the owning reference and run the validation gate for changed files, internal links, source indexes, and Markdown policy.
 
 ## Model Boundaries
 

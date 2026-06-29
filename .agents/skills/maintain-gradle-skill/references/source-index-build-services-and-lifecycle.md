@@ -14,3 +14,5 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/services/BuildServiceRegistration.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/services/BuildServiceSpec.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/services/ServiceReference.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/services/BuildServiceIntegrationTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/api/services/internal/BuildServiceProviderNagger.java`

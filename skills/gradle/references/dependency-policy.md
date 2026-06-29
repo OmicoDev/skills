@@ -32,6 +32,7 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Consumable configurations expose outgoing variants and artifacts to other projects or external consumers.
 - Do not declare dependencies on resolvable/consumable-only configurations. Do not resolve declaration buckets directly.
 - For custom configurations, use one intended role only: dependency scope, resolvable classpath/data, or consumable outgoing variant. Prefer role-specific factory APIs when available; otherwise set role flags directly.
+- Configuration names must not contain `/`, `\`, `:`, `<`, `>`, `"`, `?`, `*`, or `|`; use plain stable names because they become dependency DSL, reports, and diagnostic surface.
 - When using legacy configuration creation APIs, set `canBeDeclared`, `canBeResolved`, and `canBeConsumed` intentionally; historical defaults can otherwise create legacy all-role configurations.
 - Consumable configurations from bundled plugins may be initialized lazily on Gradle 9.2+; do not put required side effects in `configurations.named("apiElements").configure { ... }` unless realization is guaranteed.
 - `extendsFrom` inherits dependencies, constraints, excludes, artifacts, and capabilities, but not attributes or role flags.

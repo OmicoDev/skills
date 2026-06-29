@@ -31,6 +31,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Then compare task input fingerprints, output property names, Gradle version, Java/tool versions, environment inputs, and normalized paths.
 - Cross-machine misses often come from absolute paths, generated metadata, timestamps, locale/time zone, line endings, or tool installation paths.
 - Overlapping outputs disable reliable cache/up-to-date reasoning. Give each task a distinct output location unless a built-in task type models sharing.
+- Pre-existing unmanaged files inside a declared output location count as output overlap evidence; move the task output to an empty task-owned location or model the external producer before expecting cache storage.
 - Incorrect hits are more serious than misses; disable caching until undeclared inputs or non-deterministic outputs are fixed.
 - Annotation processors and code generators need special care because they often read files or classpaths not obvious from compile task inputs; declare processor config/resources as `JavaCompile` inputs when they affect generated sources or compiler behavior.
 - For Java compilation, an annotation processor on the compile classpath makes the processor path default to the full compile classpath and reduces compile-avoidance benefits; declare a narrow annotation processor path or disable processing when unused.

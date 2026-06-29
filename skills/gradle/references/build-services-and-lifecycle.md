@@ -30,7 +30,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Prefer `@ServiceReference` for task properties that consume a service. Matching is by service type and optional service name.
 - When multiple services of the same type are registered and no `@ServiceReference` name disambiguates them, assign the provider manually.
 - If the task property is `@Internal`, assign the service provider to the property and call `usesService(...)`; otherwise concurrency limits and service usage tracking can be missed.
-- Do not model a build service as a task input. Services may be referenced only through `@ServiceReference`, `@Internal` plus `usesService`, or supported action parameters.
+- Do not model a build service as task input, output, local state, or destroyable state. Services may be referenced only through `@ServiceReference`, `@Internal` plus `usesService(...)`, or supported action parameters.
 - Avoid calling `Provider.get()` for a service during configuration unless the service truly models configuration-time state.
 - Do not derive configuration-cache fingerprints or `ValueSource` parameters from build service providers; a build service is safe as a task reference, but it cannot invalidate the configuration cache.
 
@@ -80,6 +80,8 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 ## Failure Map
 
 - Service concurrency limit ignored: check that competing tasks use the same service registration and that usage is visible through `@ServiceReference` or explicit `usesService(...)`, especially for `@Internal` service properties.
+- Undeclared build-service usage warning: declare the exact consuming task property with `@ServiceReference` or call `usesService(...)` for the provider; do not rely on task-action `provider.get()` because Gradle cannot honor usage tracking or `maxParallelUsages` from that indirect access.
+- Service provider type loaded by a different plugin classloader: prefer by-type `@ServiceReference`, or put the plugin on the root buildscript classpath with `apply false` so sibling projects share the service type.
 - Service unexpectedly created during configuration: look for `provider.get()` or eager work in plugin application.
 - Service state races: make the implementation thread-safe or move shared state behind a concurrency-limited service.
 - Listener breaks configuration cache: replace broad listeners with `BuildEventsListenerRegistry` and a registered build service.
