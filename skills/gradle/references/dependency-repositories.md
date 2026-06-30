@@ -23,6 +23,8 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - During a fresh resolve, the repository that supplies module metadata is also where Gradle tries to download that module's artifacts; later repositories are not per-artifact fallbacks.
 - Include filters exclude everything not included; exclude filters include everything not excluded. When both are present, only explicitly included and not excluded modules remain.
 - A normal include filter does not make a coordinate exclusive. Other repositories can still provide it unless every repository is filtered.
+- Content filters affect dynamic version listing as well as metadata and artifact lookup; if a dynamic selector cannot see a version, check the repository filter before changing metadata sources.
+- Configure repository content filters before any dependency resolution; once a repository has been used, Gradle rejects content-filter mutation.
 - Use `exclusiveContent` when exactly one repository owns a group, module, or version range.
 - When using exclusive content in `pluginManagement`, declare all plugin and buildscript repositories in that layer; later `buildscript.repositories` additions can become illegal.
 - For Maven repositories that physically or politically split release and snapshot artifacts, use `mavenContent { releasesOnly() }` or `mavenContent { snapshotsOnly() }`.

@@ -49,6 +49,7 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 ## Maven Detail Checks
 
 - Map Maven scopes to Gradle buckets deliberately; do not put everything on `implementation`.
+- When reviewing `gradle init` output, treat its scope mapping as a heuristic: Maven `compile` maps to `api`, `runtime` to `runtimeOnly`, `test` to `testImplementation`, and non-WAR `provided` to `compileOnly`; recheck WAR provided dependencies, project dependencies, and published metadata against the Maven build.
 - Use `api` only for dependencies exposed to consumers at compile time; otherwise prefer `implementation`.
 - Translate Maven parent dependency management separately from module layout.
 - Replace Maven parent build logic with convention plugins or shared platforms, not broad `allprojects` mutation.

@@ -13,6 +13,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 
 - Transforms convert artifacts during dependency resolution before task inputs consume them.
 - A transform modifies artifact files and creates a virtual artifact set; it does not change dependency metadata, transitive dependencies, capabilities, or the component variant itself.
+- Transformed artifacts still belong to the original component identity; when output file names collide, inspect component IDs and artifact identifiers instead of file names alone.
 - Artifact selection is per graph node. Gradle selects one artifact set from the selected variant, then looks for a transform chain only when no artifact set matches the requested attributes.
 - Gradle runs transforms only when no existing variant or artifact set can satisfy the requested attributes.
 - Requested artifact attributes are the resolved configuration attributes plus artifact view attributes plus dependency-declared artifact attributes; inspect all three when a transform does not select.
@@ -39,6 +40,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Declare `@InputArtifactDependencies` as an abstract `FileCollection` getter only when transitive dependency files genuinely affect the conversion; it can force extra resolution/downloads, and cacheable transforms must normalize those injected dependency files.
 - Incremental transforms can inject `InputChanges`, but only the input artifact is incremental.
 - Keep transforms parallel-safe; the same transform may run concurrently for different artifacts.
+- Do not rely on transform side effects, logging, or external mutation running once per consumer; Gradle serializes a single transform workspace and may share one result across parallel resolution requests.
 
 ## Registration And Scheduling
 
@@ -51,6 +53,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - If a project dependency transform runs inside the consuming task, inspect whether the producer artifact is task-backed and declared as a task input/output correctly before blaming transform scheduling.
 - A transform action is instantiated only when input artifacts exist. Empty input artifact sets skip that transform and any later transforms in the chain.
 - If multiple resolution requests need the same cacheable transform on the same artifacts, Gradle can reuse the transform result instead of rerunning the action.
+- Transform workspace/cache identity includes the input artifact, transform implementation, parameters, and declared dependency files; changing any of them can produce a different output directory even when the registered output path is the same.
 
 ## Diagnostics
 
@@ -61,12 +64,16 @@ Read this when: artifact transform implementation, registration, chaining, sched
 
 - Use `artifactTransforms` in the project that registers or resolves transforms; the root report can be empty when subprojects own the registrations.
 - The `artifactTransforms` report shows transform type, cacheable status, and `from`/`to` attributes; confirm those facts before changing cache policy or attribute wiring.
+- The report does not show transform parameters, input artifact dependencies, build-service wiring, selected chains, or cache identity. Use resolution output, cache/debug logs, or build-operation evidence when those fields own the behavior.
 - Treat `artifactTransforms` as registration evidence, not execution evidence; prove execution by resolving the consuming configuration or artifact view and inspecting resulting files, task inputs, transform cache behavior, or build-operation evidence.
+- A successful `help` run or unqueried file collection does not prove a transform executes; query the configuration or artifact view that requests transformed attributes.
 - Confirm requested artifact attributes from the resolvable configuration or artifact view before changing transform registration.
 - Transform never runs: an existing artifact set already matches, the transform is registered in the wrong project, attributes do not connect, or the input variant has no artifacts.
 - Chain stops after an earlier transform: confirm the previous transform produced at least one registered output artifact; empty output skips downstream transforms.
 - Ambiguous transform chain: reduce overlapping transform registrations, make requested attributes more specific, or remove unrequested extra output attributes that let equally short chains produce different suitable results.
+- Parallel transform failure: inspect every reported "Failed to transform ..." cause; Gradle may collect multiple artifact failures from the same resolution instead of stopping at the first one.
 - Transform runs for external modules but not project dependencies: compare project outgoing artifact attributes with module metadata and check whether an existing project variant already satisfies the request.
 - Transform resolves or downloads more artifacts than expected: check `@InputArtifactDependencies` and broad artifact view attributes before changing the dependency graph.
+- Transform reuses less than expected with `@InputArtifactDependencies`: compare the resolved upstream dependency files for each graph; constraints-only dependencies are not supplied as dependency files, while different dependency-file sets partition transform results.
 - Cache misses: inspect input artifact normalization, parameters, input artifact dependencies, tool versions, and non-deterministic outputs.
 - Reserved-location write failure: check for tasks or ad hoc code writing into transform workspaces; only the transform action should create files in locations returned by `TransformOutputs`.

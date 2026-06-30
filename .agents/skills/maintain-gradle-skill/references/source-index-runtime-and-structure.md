@@ -16,3 +16,11 @@
 - [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
 - [Gradle-managed Directories](https://docs.gradle.org/current/userguide/directory_layout.html)
 - [Initialization Scripts and Init Plugins](https://docs.gradle.org/current/userguide/init_scripts.html)
+
+## Source Code
+
+- `platforms/core-runtime/build-configuration/src/integTest/groovy/org/gradle/interal/buildconfiguration/tasks/UpdateDaemonJvmIntegrationTest.groovy`
+- `platforms/core-runtime/build-configuration/src/main/java/org/gradle/buildconfiguration/tasks/UpdateDaemonJvm.java`
+- `platforms/core-runtime/build-configuration/src/main/java/org/gradle/internal/buildconfiguration/DaemonJvmPropertiesConfigurator.java`
+- `platforms/core-runtime/build-configuration/src/main/java/org/gradle/internal/buildconfiguration/tasks/DaemonJvmPropertiesModifier.java`
+- `platforms/core-runtime/launcher/src/main/java/org/gradle/launcher/cli/converter/LayoutToPropertiesConverter.java`

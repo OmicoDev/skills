@@ -11,6 +11,7 @@
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsTaskPathDependencyIntegrationTest.groovy`
 - `platforms/core-runtime/base-services/src/main/java/org/gradle/api/IsolatedAction.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/invocation/GradleLifecycle.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/project/IsolatedProject.java`

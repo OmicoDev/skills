@@ -69,6 +69,7 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 
 - Replace `allprojects` and `subprojects` cross-project mutation with convention plugins applied by each project that needs the behavior.
 - Share artifacts through project dependencies, consumable variants, reports, or publications rather than another project's task, extension, or configuration state.
+- For pure task ordering, a `dependsOn(":other:task")` task path can stay isolated-projects-compatible; do not dereference another project's task object such as `rootProject.tasks.foo`, and use variants or providers when files or artifacts are the real contract.
 - Use `gradle.lifecycle.beforeProject` or `afterProject` state-isolating callbacks only when settings/init/settings-plugin lifecycle wiring is the real owner; `beforeProject` can add extensions before build scripts evaluate, while `afterProject` is for post-evaluation checks.
 - Gradle recreates each `IsolatedAction` through Configuration Cache serialization per target project; captured values must be isolatable, and build services or shared mutable state are not supported inside the action.
 - Use `project.isolated` or `rootProject.isolated` when another project's safe identity data is genuinely needed; the view is limited to identity/root/directory data, not a back door to `group`, `version`, `layout`, tasks, extensions, or configurations.

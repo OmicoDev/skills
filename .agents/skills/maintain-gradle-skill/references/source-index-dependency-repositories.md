@@ -12,6 +12,8 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/RepositoryContentFilteringIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/repositories/DefaultRepositoryContentDescriptorTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataSupplier.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataVersionLister.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/repositories/MetadataSupplierAware.java`

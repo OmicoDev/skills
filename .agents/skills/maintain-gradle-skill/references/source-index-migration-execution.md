@@ -16,3 +16,11 @@
 - [Upgrading within Gradle 8.x](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Using Ant from Gradle](https://docs.gradle.org/current/userguide/ant.html)
+
+## Source Code
+
+- `platforms/software/build-init/src/integTest/groovy/org/gradle/buildinit/plugins/MavenConversionIntegrationTest.groovy`
+- `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/Maven2Gradle.java`
+- `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/MavenProjectsCreator.java`
+- `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/PomProjectInitDescriptor.java`
+- `platforms/software/build-init/src/test/groovy/org/gradle/buildinit/plugins/internal/maven/MavenProjectsCreatorSpec.groovy`

@@ -3,7 +3,6 @@
 ## Documentation
 
 - [Avoiding Unnecessary Task Configuration](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
-- [Best Practices Index](https://docs.gradle.org/current/userguide/best_practices_index.html)
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Build Execution Model](https://github.com/gradle/gradle/blob/master/architecture/build-execution-model.md)
 - [Build Lifecycle](https://docs.gradle.org/current/userguide/build_lifecycle.html)
@@ -16,3 +15,14 @@
 - [Lazy vs Eager Evaluation](https://docs.gradle.org/current/userguide/lazy_eager_evaluation.html)
 - [Toolchains for JVM projects](https://docs.gradle.org/current/userguide/toolchains.html)
 - [Variant Selection and Attribute Matching](https://docs.gradle.org/current/userguide/variant_aware_resolution.html)
+
+## Source Code
+
+- `subprojects/composite-builds/src/main/java/org/gradle/composite/internal/DefaultBuildTreeLocalComponentProvider.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/Project.java`
+- `subprojects/core-api/src/test/groovy/org/gradle/api/internal/project/ProjectIdentityTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/api/internal/project/DefaultProjectState.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/project/DefaultProjectStateRegistry.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/project/ProjectState.java`
+- `subprojects/core/src/main/java/org/gradle/internal/build/BuildState.java`
+- `subprojects/core/src/main/java/org/gradle/internal/build/BuildStateRegistry.java`

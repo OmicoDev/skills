@@ -37,6 +37,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Treat unsafe input-ignore properties as temporary third-party-plugin workarounds, not repairs.
 - Read environment variables and system properties through providers when they affect configuration; query concrete names or provider-backed prefixes because enumerating all values, including `.values()`, makes the whole set a configuration-cache input.
 - Use provider-backed process APIs for simple configuration-time process output and `ValueSource` when input selection or parsing is more complex.
+- Treat init scripts as first-class configuration-cache owners: command-line and Gradle user home init scripts are tracked by content and order, and direct external process starts from them are reported as init-script problems before project build logic is involved.
 - `ValueSource` tracks the returned value, not every environment variable, file, process, or network read inside `obtain()`; do not use `BuildService` providers, or providers derived with `map`/`flatMap`, as configuration-time parameters to invalidate the cache.
 - Do not implement `ValueSource.getParameters()` yourself; use `ValueSourceParameters.None` when no parameters are needed, and inject only supported services such as `ExecOperations`.
 - `ValueSource` should return an effectively immutable value, and `obtain()` must stay fast because configuration-time queries run on every build to decide cache reuse.

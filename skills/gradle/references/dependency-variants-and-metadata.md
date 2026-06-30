@@ -24,6 +24,7 @@ Read this when: variant-aware resolution, attributes, capabilities, or published
 - Secondary variants are artifact sets on an existing variant, not separate components; verification-only variants carry test or coverage results and should not be added to publishable components.
 - Component-level metadata can influence version selection before Gradle selects variants. Variant-level metadata influences artifact and dependency selection after a component version is chosen; repair external metadata through [dependency-metadata-rules.md](dependency-metadata-rules.md).
 - Maven POM and Ivy metadata are mapped into Gradle's variant model; Gradle Module Metadata already carries explicit variants, attributes, and capabilities.
+- Dependency and constraint declarations can add edge-specific attributes that merge with, and can override, configuration attributes for that module; when diagnostics mention dependency or constraint attributes, fix the edge owner before changing producer variants.
 
 ## Attribute Rules
 
@@ -70,6 +71,7 @@ Use reports to compare requested attributes with producer attributes before edit
 - Do not use excludes for replacement when capabilities or module replacement express the domain better.
 - Capability conflict resolution can only select a provider present among the current conflict candidates; it cannot add a desired module to the graph, and `select(null)` is an error, not a way to leave the conflict unresolved.
 - If a capability has multiple unresolved conflict sets, every set needs a valid selection policy or the build still fails.
+- Gradle can select multiple variants of the same component only when their capabilities differ and their attributes are mutually compatible; same capability or incompatible attributes still fail.
 
 ## Feature Variants
 

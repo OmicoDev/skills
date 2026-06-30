@@ -19,10 +19,12 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - Activate locking for the configurations whose selected versions must stay stable.
 - `lockAllConfigurations()` covers project configurations, not buildscript classpaths.
 - If a convention or plugin enables locking broadly, disable locking on intentionally volatile configurations instead of papering over them with ignored modules.
-- Buildscript classpath locking is separate from project dependency locking.
+- Buildscript classpath locking is separate from project dependency locking; strict mode and custom lock files do not leak between them.
 - Use `resolutionStrategy.deactivateDependencyLocking()` or `dependencyLocking.unlockAllConfigurations()` when a resolvable configuration should stay unlocked after broad activation; deleting lock entries alone does not change the locking policy.
+- Configuration inheritance does not inherit locking policy: resolving an unlocked child ignores a locked parent's lock state, while a locked child locks inherited dependencies.
 - Decide locking activation, deactivation, dependencies, hierarchy, and resolution strategy before a configuration is observed or resolved; do not hide locking changes in `incoming.beforeResolve { ... }`.
 - In multi-project builds, each project can have its own `gradle.lockfile`.
+- A project dependency's lockfile does not constrain the consuming project; the consumer's own locked configuration can lock external modules reached transitively through that project dependency.
 - The build must resolve a configuration before Gradle can create, update, or clean up its lock state.
 
 ## Lock State Files
@@ -34,6 +36,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - Custom lockfile names or locations are for real execution-context boundaries, such as platform-specific native graphs, not for hiding unrelated lock churn.
 - If you customize `dependencyLocking.lockFile`, keep the file unique per project and separate from buildscript lock state; shared lock paths mix cleanup, update, and review ownership.
 - Legacy per-configuration lockfiles can migrate incrementally: writing the new per-project lockfile transfers resolved configurations and deletes only the old state that was transferred.
+- Malformed lockfiles fail lock-state loading before dependency selection; repair the `group:name:version` entries and configuration mappings before changing repositories or declarations.
 
 ## Commands
 
@@ -51,6 +54,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - `dependencies --write-locks` resolves only configurations reached by that invocation.
 - Prefer targeted `--update-locks` for routine upgrades.
 - `--update-locks` implies `--write-locks`; treat it as a lock-state update command, not as read-only dependency selection.
+- In strict mode, bootstrap missing lock state with `--write-locks` before targeted `--update-locks`; update commands still fail when a locked configuration has no lock state.
 - `--update-locks` accepts comma-separated module notations; wildcards may stand alone or appear at the end of the group or module name.
 - `--update-locks` still loads existing lock state, but filters out the targeted modules for that resolution; non-targeted locked modules continue to constrain selection.
 - Targeted lock updates still run normal resolution, so aligned platforms, constraints, conflicts, or transitive edges can update related modules too.
@@ -65,6 +69,8 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - New or removed dependencies can fail default lock validation because the resolved graph no longer matches lock state.
 - Strict mode also fails when a locked configuration has no associated lock state.
 - Lenient mode pins dynamic versions but can allow version shifts and graph additions/removals; use it for controlled exploration, not release defaults.
+- Locking constrains modules that remain in the resolved graph; it does not resurrect excluded modules, and it skips versionless dependencies and included-build substitutions when producing or loading lock state.
+- If a force, dependency substitution, or `eachDependency` rule selects a different version from the lock, treat the failure as a lock-policy conflict and update the rule or lock together.
 - Locking does not apply to source dependencies.
 
 ## Review Rules

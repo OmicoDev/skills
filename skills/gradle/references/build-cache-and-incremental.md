@@ -76,6 +76,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Third-party plugins can damage built-in task cacheability by adding absolute paths, volatile values, or outcome-dependent runtime inputs; inspect plugin-added inputs before changing Gradle's cache policy or built-in task settings.
 - Do not base build logic on whether a task executed. `FROM-CACHE`, up-to-date, and executed outputs must be modeled through inputs and outputs.
 - Runtime classpath normalization is declared by the consuming project/task and can ignore volatile classpath entries, such as audit `build-info.properties`, without changing the actual runtime classpath.
+- Prefer runtime classpath properties normalization when only selected keys are volatile; use resource-level ignores only when the entire file or `META-INF` area is non-semantic for the consumer.
 - Non-repeatable upstream outputs become unstable inputs for downstream cacheable tasks. Prefer reproducible producer outputs or consumer input normalization before trying to cache a volatile producer just to stabilize downstream keys.
 - If volatile data is only needed for publishing or auditing, split expensive cacheable work from cheap volatile stamping.
 - Re-released non-changing dependencies, snapshots, changing modules, and volatile web resources create unexplained cross-machine misses; prefer fixed inputs, locks, or composite builds.

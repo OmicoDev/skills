@@ -23,11 +23,13 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Put classifiers, artifact types, excludes, and capabilities at the dependency declaration, variant, or metadata-rule owner; catalog TOML cannot encode them. Use `variantOf()` when a catalog alias needs a classifier, and a dependency `artifact {}` block when the use site needs a specific artifact type.
 - In project `plugins {}` blocks, catalog access is limited to `alias(libs.plugins...)`; share plugin versions by using `version.ref` inside `[plugins]` entries, not by reading catalog libraries, bundles, or versions from the block. Settings files/settings plugins still cannot use catalog plugin aliases.
 - `buildSrc` and included build logic do not inherit the main catalog automatically. Import catalogs explicitly in their settings, use `VersionCatalogsExtension` inside precompiled script plugin code when needed, and remember precompiled script plugin `plugins {}` blocks cannot read catalog aliases.
+- When build logic reads catalogs through `VersionCatalogsExtension` or `VersionCatalog`, treat catalog and alias lookups as optional API boundaries, pass library providers with `addProvider(...)` when adding dependencies, and remember `find*`/alias-list APIs normalize `-`, `_`, and `.` separators.
 - Prefer one `libs.versions.toml` with naming conventions. Split catalogs only for real boundaries such as shipped artifacts, independent build-logic dependencies, organization-wide published catalogs, or unavoidable JVM accessor-size limits.
 - Keep aliases descriptive and stable: prefer dash-separated segments, derive the first segment from group/artifact identity without the top-level domain, omit generic or repeated words, convert artifact-internal dashes to camel case for accessors, and suffix plugin libraries with `-plugin` when the plugin is used as a library dependency.
 - Catalog TOML files are self-contained; there is no cross-file `include` or `version.ref`, and `from(...)` may be called once per catalog. Layer programmatic `version(...)`, `library(...)`, `bundle(...)`, or `plugin(...)` calls after `from(...)` when intentionally injecting shared versions or overriding imported catalogs; this changes requested notation, not conflict resolution results.
 - Treat published base catalogs as versioned artifacts with their own release lifecycle. They centralize requested coordinates but still do not enforce selected versions like platforms or locks.
 - Catalog library accessors return providers. When a Gradle API accepts dependency notation, prefer passing the provider instead of unwrapping with `.get()`, especially in substitution, constraints, or selector APIs that may require a different selector type.
+- Some selector APIs narrow catalog provider shapes: `force(...)` accepts library accessors with simple versions, but not plugin, version, bundle, or rich-version catalog entries; use direct module notation, constraints, or platforms when rich policy matters.
 - Catalog aliases generate accessors after normalization; avoid aliases that collide after dash/underscore/dot/camel-case normalization, create unwanted subgroup accessors, or use reserved names such as `versions`, `bundles`, `plugins`, `extensions`, or `class`. If a consumed catalog already has parent/subgroup collisions such as version aliases `jackson` and `jackson-databind`, use `asProvider()` to read the parent alias.
 
 ## Platforms And BOMs
@@ -61,11 +63,13 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Use constraints to upgrade or downgrade a transitive module without adding a direct dependency just to control its version.
 - Before downgrading a transitive module, first decide whether the source should instead adapt to the newer selected version; if a downgrade is still required, inspect existing platforms, catalogs, constraints, and locks that may already own the selected version.
 - Use dependency locking when the requirement is reproducible selected versions across builds; use constraints or platforms when the requirement is compatibility policy.
+- Resolution rules such as `eachDependency` can rewrite a version selected through a strict constraint; if reports show `selectedByRule`, route to [dependency-resolution-rules.md](dependency-resolution-rules.md) before tightening constraints.
 
 ## Consistency Decisions
 
 - Use dependency resolution consistency for real compile/runtime or test/runtime drift across related configurations, not as a global replacement for platforms, constraints, or locks.
 - `shouldResolveConsistentlyWith(...)` makes one resolvable configuration align shared dependency versions with another chosen source configuration.
+- The consistency source must also be resolvable, and consistency sources must not form cycles; when setup fails, choose a classpath configuration as the source instead of a declarable bucket.
 - In Java projects, prefer the Java ecosystem consistency convention when all source-set runtime classpaths should align with their compile classpaths.
 - `java { consistentResolution { useCompileClasspathVersions() } }` applies the Java convention; avoid it when a source set intentionally tests or runs against a different runtime graph.
 - Treat consistent resolution as an incubating feature; keep the scope narrow and document which configuration is the version source of truth.

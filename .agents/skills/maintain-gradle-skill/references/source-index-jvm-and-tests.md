@@ -19,3 +19,10 @@
 - [The Scala Plugin](https://docs.gradle.org/current/userguide/scala_plugin.html)
 - [The Test Report Aggregation Plugin](https://docs.gradle.org/current/userguide/test_report_aggregation_plugin.html)
 - [Toolchains for JVM projects](https://docs.gradle.org/current/userguide/toolchains.html)
+
+## Source Code
+
+- `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/AbstractTestFilteringIntegrationTest.groovy`
+- `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/testng/TestNGDryRunFilteringIntegrationTest.groovy`
+- `platforms/jvm/testing-jvm/src/main/java/org/gradle/api/internal/tasks/testing/junitplatform/JUnitPlatformTestFramework.java`
+- `platforms/jvm/testing-jvm/src/main/java/org/gradle/api/tasks/testing/Test.java`

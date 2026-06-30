@@ -35,6 +35,7 @@ Bootstrap or update only after reviewing the dependency change:
 - Dry-run metadata is written to `gradle/verification-metadata.dryrun.xml`; compare it as a preview, but remember it can miss dependencies resolved only during task execution.
 - Bootstrapping trusts the repositories and artifacts currently reachable by the build; review generated diffs manually.
 - Metadata generation can resolve root, subproject, `buildSrc`, included-build, and plugin configurations; expect broad diffs after topology or plugin changes, and add entries manually for dependencies resolved only during task execution or custom resolution logic.
+- Metadata generation writes external artifacts from resolvable configurations; expect project dependencies, file dependencies, changing dependencies, and consumable-only buckets to be absent rather than "missing" from generated metadata.
 - Bootstrapping signatures is optimistic; bootstrap checksums first when integrity evidence matters, then add PGP trust.
 - Treat auto-added trusted keys, ignored keys, and group-level key trust from PGP bootstrap as review items; narrow trusted keys with `group`, `name`, `version`, or `file` scopes after verifying the signer.
 - Keep generation parameters consistent after the project chooses checksum-only or checksum-plus-signature policy.
@@ -51,6 +52,7 @@ Bootstrap or update only after reviewing the dependency change:
 ## Scope Boundaries
 
 - Dependency verification checks downloaded dependencies, metadata files, plugins, and artifacts resolved through advanced resolution APIs.
+- Artifact-view leniency does not bypass dependency verification; checksum, signature, and trust failures still belong to verification metadata or trust policy, not artifact-view configuration.
 - It does not verify locally produced artifacts or changing dependencies whose bytes intentionally change.
 - It does not verify the Gradle wrapper JAR or distribution; handle those through wrapper validation and `distributionSha256Sum`.
 - Signature verification uses ASCII-armored PGP `.asc` signatures from remote repositories; if signatures are unavailable through that path, keep checksum coverage explicit.
@@ -58,7 +60,8 @@ Bootstrap or update only after reviewing the dependency change:
 - Keyring files can be committed to avoid repeated keyserver lookups; commit one format and treat it as public-key material.
 - Disabling metadata verification shrinks metadata but can miss malicious POM, Ivy, or Gradle Module Metadata changes that alter transitive dependencies or selected variants.
 - Configuration-level opt-outs are for plugins that resolve unknown future versions or similar cases where verification cannot be meaningful; avoid plugin or buildscript opt-outs because executable plugin code can otherwise weaken its own verification path, and Gradle prints a warning when verification is disabled for a configuration.
-- `trusted-artifacts` rules bypass all verification for every matched file; plain `group` matching is exact, and subgroup regex trusts should be rare, reasoned, and reviewed like other security exceptions.
+- `disableDependencyVerification()` is per resolved configuration, including detached configurations; resolving the same coordinates through another configuration still verifies them.
+- `trusted-artifacts` rules bypass all verification for every matched file and can keep generated metadata from adding checksum entries for those artifacts; plain `group` matching is exact, and subgroup regex trusts should be rare, reasoned, and reviewed like other security exceptions.
 - Trusting source or javadoc artifacts by filename can reduce IDE/import churn, but it is still a trust exception and should not cover runtime artifacts.
 
 ## Failure Triage

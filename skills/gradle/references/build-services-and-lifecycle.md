@@ -46,6 +46,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 
 - Use `maxParallelUsages` when the service guards a scarce external resource, global process, lock, or rate-limited endpoint.
 - Leaving `maxParallelUsages` unset means Gradle does not constrain concurrent use of that service.
+- When a task uses multiple build services, the effective parallelism is constrained by every visible service usage. The narrowest shared service limit can serialize or cap tasks even when other services allow more concurrency.
 - A concurrency limit coordinates only tasks associated with that service registration; separate service names for the same external resource, or indirect service use without `@ServiceReference`/`usesService(...)`, can split or bypass the limit.
 - Gradle cannot infer indirect service usage through another service. Declare indirect usage explicitly through `@ServiceReference` or `usesService(...)`.
 - A service passed into [artifact transforms](dependency-artifact-transforms.md), another service, or no-isolation Worker API actions must still be registered and tracked from the consuming owner.
@@ -56,6 +57,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Use a build service implementing `OperationCompletionListener` when plugin logic needs task execution events.
 - Register event listeners through the injected `BuildEventsListenerRegistry`, not broad task execution callbacks.
 - Task finish events are delivered concurrently with task execution and other work, soon after a task completes; listener work must not be used as a synchronization point, task dependency, or producer for downstream task inputs.
+- One listener receives task events one at a time, while separate listeners and task execution can proceed concurrently. Use listener `close()` only to finalize listener-owned aggregation after queued events are handled, not to publish inputs for later tasks.
 - Pass the provider returned by `registerIfAbsent(...)` or `BuildServiceRegistration.getService()` directly to build-event registration; Gradle 9 reports configuration-cache problems for mapped, flat-mapped, or ad hoc listener providers, including identity maps.
 - Filter operation completion events by type, such as `TaskFinishEvent`, before reading task-specific data.
 - Keep event listeners small and thread-safe; they observe execution, they should not mutate project configuration.
@@ -74,6 +76,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Use `FlowScope.always(...)` when the action should run on every build invocation after its inputs are available; register it early enough for the failures it is meant to observe.
 - Lifecycle event providers such as `buildWorkResult` can be transformed with `map` or `flatMap` while preserving the ordering guarantee for the Flow action.
 - Do not query `buildWorkResult` during configuration; its value is available only after scheduled work completes or configuration fails before execution, and early reads are errors.
+- Do not wire `buildWorkResult` into task properties or `ValueSource` parameters. Those values are calculated before build work completes and fail instead of delaying the task or value source until the build result exists.
 - Without a lifecycle event provider input, Flow action timing is not stable.
 - Treat Flow actions as incubating. If configuration fails before registration, the action cannot run.
 
@@ -83,6 +86,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Undeclared build-service usage warning: declare the exact consuming task property with `@ServiceReference` or call `usesService(...)` for the provider; do not rely on task-action `provider.get()` because Gradle cannot honor usage tracking or `maxParallelUsages` from that indirect access.
 - Service provider type loaded by a different plugin classloader: prefer by-type `@ServiceReference`, or put the plugin on the root buildscript classpath with `apply false` so sibling projects share the service type.
 - Service unexpectedly created during configuration: look for `provider.get()` or eager work in plugin application.
+- Service create or stop failure: inspect the service constructor, parameter values, and `close()` implementation before changing task actions; creation failures surface through the consuming task, while stop failures are reported as service lifecycle failures after use.
 - Service state races: make the implementation thread-safe or move shared state behind a concurrency-limited service.
 - Listener breaks configuration cache: replace broad listeners with `BuildEventsListenerRegistry` and a registered build service.
 - Listener stops receiving events after configuration-cache adoption: check that `onTaskCompletion(...)` received the raw build-service provider, not a mapped or wrapped provider.

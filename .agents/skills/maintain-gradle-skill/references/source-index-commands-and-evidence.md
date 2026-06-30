@@ -13,3 +13,13 @@
 - [The Project Report Plugin](https://docs.gradle.org/current/userguide/project_report_plugin.html)
 - [Understanding Tasks](https://docs.gradle.org/current/userguide/more_about_tasks.html)
 - [Viewing and Debugging Dependencies](https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html)
+
+## Source Code
+
+- `platforms/core-configuration/base-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/HelpTaskIntegrationTest.groovy`
+- `platforms/core-configuration/base-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/TaskReportTaskIntegrationTest.groovy`
+- `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/TaskReportTask.java`
+- `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/TaskDetails.java`
+- `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/TaskReportRenderer.java`
+- `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/configuration/TaskDetailPrinter.java`
+- `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/configuration/TaskDetailsModel.java`

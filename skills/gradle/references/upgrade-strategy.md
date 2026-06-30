@@ -27,11 +27,14 @@ Then run representative tasks. `help` alone proves startup, not build correctnes
 - For cross-major upgrades, clear the previous major's within-line upgrade guide and deprecations before reading the target-major guide; removals often correspond to warnings from the older line.
 - Capture deprecation evidence before changing the wrapper. Prefer Build Scan deprecation views when upload policy permits; otherwise capture `--warning-mode=all` output.
 - Use `--warning-mode=fail` as a post-cleanup regression gate, not the first discovery command; keep `--warning-mode=all` or Build Scan evidence for owner attribution.
+- If `--warning-mode=all` still leaves ownership unclear, rerun the same representative task with `--stacktrace` or `-Dorg.gradle.deprecation.trace=true` before editing; Gradle may otherwise print only the first Gradle script frame and suppress repeated warning messages by message or location.
 - Audit `enableFeaturePreview(...)` entries and incubating API usage during wrapper upgrades; preview flags live in settings, become obsolete when a feature is promoted or removed, and should not be treated as durable compatibility policy.
 - Classify broken usage by feature lifecycle: public API removals should have prior deprecations, incubating APIs may change with release notes, and internal APIs have no compatibility promise.
 - Update third-party plugins before a major wrapper jump when compatibility says they support both the current and target Gradle versions. If a plugin requires the target Gradle first, isolate that plugin change as its own phase.
 - Keep plugins on latest compatible versions, but phase risky plugin updates from wrapper upgrades unless compatibility requires coupling; use shadow or parallel CI lanes when the compatibility signal is incomplete.
 - Isolate expected one-time generated-file churn from behavioral upgrade work, such as wrapper script rewrites, lockfile line-ending normalization, or dependency-verification keyring encoding updates, so review does not mistake upgrade housekeeping for dependency or build logic changes.
+- When `gradle-wrapper.properties` contains `distributionSha256Sum`, pair every wrapper version or distribution URL change with the matching new checksum; a stale or missing checksum is a wrapper-security failure to fix before dependency or task debugging.
+- Treat wrapper `networkTimeout`, `retries`, `retryBackOffMs`, and URL validation as wrapper runtime policy; review them with `gradle-wrapper.properties` instead of scattering retry workarounds through CI scripts.
 - After wrapper upgrade, repeat deprecation capture and representative tasks before treating the target version as promoted.
 
 ## Compatibility Surface

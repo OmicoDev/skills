@@ -10,12 +10,20 @@
 
 ## Source Code
 
+- `platforms/core-execution/worker-process-services/src/main/java/org/gradle/process/internal/worker/DefaultWorkerProblemProtocol.java`
+- `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorProblemsApiIntegrationTest.groovy`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/AdditionalData.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemGroup.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemId.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemReporter.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemSpec.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/Problems.java`
+- `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/internal/AdditionalDataBuilderFactory.java`
+- `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/internal/DefaultProblemBuilder.java`
+- `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/AdditionalDataBuilderFactoryTest.groovy`
+- `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/DefaultProblemBuilderTest.groovy`
+- `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/ProblemIdAndProblemGroupTest.groovy`
+- `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r89/ProblemProgressEventCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/Failure.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/GradleConnectionException.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/LongRunningOperation.java`

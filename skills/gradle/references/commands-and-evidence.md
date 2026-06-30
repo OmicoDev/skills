@@ -14,7 +14,7 @@ Read this when: choosing Gradle commands, flags, log levels, reports, or evidenc
 Use the wrapper and the smallest useful command.
 
 - Runtime and topology: `./gradlew --version`, `./gradlew -q projects`; buildscript classpath: `./gradlew buildEnvironment`.
-- Task surface: `./gradlew tasks --all`, `./gradlew tasks --provenance`, `./gradlew help --task <task>`, `./gradlew <task> --dry-run`, Gradle 9.1+: `./gradlew <task> --task-graph`.
+- Task surface: `./gradlew tasks --all`, `./gradlew tasks --types`, `./gradlew tasks --provenance`, `./gradlew tasks --group <group>`, `./gradlew help --task <task>`, `./gradlew <task> --dry-run`, Gradle 9.1+: `./gradlew <task> --task-graph`.
 - Dependency evidence: `./gradlew dependencies --configuration <configuration>`, `./gradlew dependencyInsight --dependency <module> --configuration <configuration>`, `./gradlew outgoingVariants`, `./gradlew resolvableConfigurations`.
 - File-backed project reports: `dependencyReport`, `htmlDependencyReport`, `propertyReport`, `taskReport`, and `projectReport` require the `project-report` plugin and mirror command-line report content into files.
 - Migration and performance: `./gradlew help --warning-mode=all`, `./gradlew <task> --configuration-cache --configuration-cache-problems=warn`, `./gradlew <task> --scan`, `./gradlew <task> --profile`. Use `--scan` only when project policy permits uploading build metadata; otherwise use local reports.
@@ -41,6 +41,7 @@ Use the wrapper and the smallest useful command.
 ## Evidence Patterns
 
 - For task failures, keep task outcome, task provenance, full task path, and task type from `help --task`, `tasks --provenance`, or the failure message; verification failures such as tests can omit provenance from the failure text.
+- For task public-surface surprises, use `tasks --types --provenance --all` to separate task type from registration owner, then `help --task <path-or-selector>` to inspect matching paths, task options, available option values, descriptions, and groups.
 - For task selection surprises, keep the start directory, exact task token, whether it was a full path or selector, and any name-abbreviation expansion shown with `--info`.
 - For task graph surprises, prefer Gradle 9.1+ `--task-graph` when included-build edges, repeated subtrees, task types, or exact dependency parents matter more than the flat `--dry-run` execution list.
 - For dependency selection, keep the configuration name. `runtimeClasspath` and `compileClasspath` can explain different selected versions.

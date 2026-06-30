@@ -25,12 +25,19 @@
 
 ## Source Code
 
+- `platforms/ide/tooling-api-builders/src/main/java/org/gradle/tooling/internal/provider/runner/DefaultBuildController.java`
+- `platforms/ide/tooling-api-builders/src/main/java/org/gradle/tooling/internal/provider/runner/DefaultInternalFetchModelResult.java`
+- `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r930/ResilientGradleBuildBuilderCrossVersionSpec.groovy`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/BuildController.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/BuildLauncher.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/FetchModelResult.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/GradleConnector.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/LongRunningOperation.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/ModelBuilder.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/ProjectConnection.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/TestLauncher.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/DefaultFetchModelResult.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/connection/FetchAwareBuildControllerAdapter.java`
 - `platforms/software/ant-api/src/main/java/org/gradle/api/AntBuilder.java`
 - `platforms/software/testing-base/src/main/java/org/gradle/api/tasks/testing/TestEventReporterFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/FileCollection.java`

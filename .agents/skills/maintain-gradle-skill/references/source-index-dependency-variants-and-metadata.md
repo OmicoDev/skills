@@ -14,5 +14,7 @@
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/JavaPluginExtension.java`
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/internal/DefaultJavaFeatureSpec.java`
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/internal/DefaultJavaPluginExtension.java`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/DependenciesAttributesIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/MultipleVariantSelectionIntegrationTest.groovy`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/OutgoingVariantsReportTask.java`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/ResolvableConfigurationsReportTask.java`

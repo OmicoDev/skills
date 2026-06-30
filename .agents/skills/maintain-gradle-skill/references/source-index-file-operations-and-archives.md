@@ -12,3 +12,8 @@
 - [The Java Library Distribution Plugin](https://docs.gradle.org/current/userguide/java_library_distribution_plugin.html)
 - [The War Plugin](https://docs.gradle.org/current/userguide/war_plugin.html)
 - [Working With Files](https://docs.gradle.org/current/userguide/working_with_files.html)
+
+## Source Code
+
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CopyTaskIntegrationSpec.groovy`
+- `subprojects/core/src/main/java/org/gradle/api/tasks/Copy.java`

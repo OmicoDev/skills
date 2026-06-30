@@ -15,3 +15,12 @@
 - [Version Catalogs](https://docs.gradle.org/current/userguide/version_catalogs.html)
 - [Working with Plugins](https://docs.gradle.org/current/userguide/plugins_intermediate.html)
 - [Writing Build Scripts](https://docs.gradle.org/current/userguide/writing_build_scripts_intermediate.html)
+
+## Source Code
+
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/precompile/v1/PrecompiledScriptTemplates.kt`
+- `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/plugins/PrecompiledGroovyPluginsIntegrationTest.groovy`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/GeneratePluginAdaptersTask.java`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/PrecompiledGroovyScript.java`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/PrecompiledScriptTarget.java`
+- `platforms/extensibility/plugin-development/src/test/groovy/org/gradle/plugin/devel/internal/precompiled/PrecompiledGroovyScriptTest.groovy`

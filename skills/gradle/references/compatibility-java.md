@@ -31,6 +31,7 @@ Read this when: deciding whether a Java version can run Gradle, is only safe as 
 - Gradle `8.14.x` is the last line that can run on Java 8 through 16; Gradle 9 requires a runtime JVM of 17+ even when project code targets older Java.
 - Java 20, 21, and 22 show why runtime and toolchain columns must not be collapsed: toolchain support appears before that Java can safely run Gradle.
 - Wrapper, Gradle client, Tooling API client, and TestKit client JVM compatibility does not prove daemon compatibility; the daemon JVM must still satisfy the runtime column for the selected Gradle version.
+- When Gradle reports that it requires a newer JVM, distinguish the current-process case from the build-configured daemon JVM case; fix `JAVA_HOME`, IDE/TestKit launcher, `org.gradle.java.home`, or daemon JVM criteria before changing project toolchains or source compatibility.
 - `N/A` in the toolchains column for Java 8 through 14 is not a ban on compiling or testing against those Java levels; use the task's toolchain support and `options.release`/target settings instead of treating the table cell as a failure.
 - `Unsupported class file major version`, `invalid source release`, and `Unsupported Java runtime` can point to different owners: Gradle runtime JVM, plugin bytecode, compile toolchain, test launcher, or dependency bytecode.
 - For older target APIs, pair toolchains with `JavaCompile.options.release`; toolchains choose a JDK but do not forbid newer APIs.

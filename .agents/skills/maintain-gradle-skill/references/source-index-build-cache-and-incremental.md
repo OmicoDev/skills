@@ -13,6 +13,11 @@
 
 ## Source Code
 
+- `platforms/core-execution/normalization-api/src/main/java/org/gradle/normalization/InputNormalization.java`
+- `platforms/core-execution/normalization-api/src/main/java/org/gradle/normalization/PropertiesFileNormalization.java`
+- `platforms/core-execution/normalization-api/src/main/java/org/gradle/normalization/RuntimeClasspathNormalization.java`
+- `platforms/core-execution/normalization/src/integTest/groovy/org/gradle/normalization/ConfigureRuntimeClasspathNormalizationIntegrationTest.groovy`
+- `platforms/core-execution/normalization/src/test/groovy/org/gradle/normalization/internal/DefaultRuntimeClasspathNormalizationTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/LocalState.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/changedetection/rules/OverlappingOutputsIntegrationTest.groovy`

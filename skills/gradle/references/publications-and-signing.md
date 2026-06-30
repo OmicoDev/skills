@@ -23,9 +23,10 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 - Gradle Module Metadata validates unique variant names, at least one attribute per variant, no duplicate attribute/capability sets, and dependency version information across dependency-bearing variants.
 - Suppress a `GenerateModuleMetadata` validation error only after naming the validation and proving the published consumer behavior still works.
 - Publishing a unique build identifier in module metadata makes the metadata differ every invocation; use it only when downstream out-of-date behavior is intended.
+- Do not add `org.gradle.category=verification` variants, including test result variants, to Maven or Ivy publications; keep verification outputs in test/reporting flows or publish a deliberately modeled non-verification artifact.
 - If Gradle-only semantics such as rich versions, transitive constraints, capabilities, feature variant dependencies, or custom component contracts matter to consumers, prefer publishing Gradle Module Metadata instead of hiding Maven/Ivy warnings.
 - Publish extra consumable artifacts as component variants or an adhoc component when they have dependencies, attributes, or capabilities; direct `artifact(...)` attachments are out-of-context and usually reachable only by classifier.
-- If a direct custom artifact is unavoidable, make its `classifier` and `extension` distinct within the publication; archive tasks provide those values, raw files often need explicit metadata.
+- If a direct custom artifact is unavoidable, make its `classifier` and `extension` distinct within the publication, and do not replace or remove artifacts contributed by an attached component while Gradle Module Metadata is enabled.
 - When adding variants from configurations, decide Maven/Ivy scope mapping or skip variants that cannot be represented externally; Gradle Module Metadata can represent the variant contract exactly, but Maven POMs cannot.
 - Feature variants degrade in Maven to uploaded classifier artifacts plus optional dependencies, and in Ivy to uploaded artifacts without dependencies; publish GMM when the feature dependency graph matters.
 - Disable Gradle Module Metadata publication only when the repository rejects it or Maven/Ivy-specific modeling truly cannot be represented safely.

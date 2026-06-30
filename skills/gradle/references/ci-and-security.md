@@ -20,7 +20,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Keep release and publishing tasks behind explicit gates.
 - Run publishing dry-runs or local publication checks before real remote publishing.
 - Validate wrapper JARs in pull requests when CI ecosystem supports it.
-- When wrapper `distributionUrl` or `distributionSha256Sum` changes, include one CI/review lane with a clean or controlled Gradle user home so an already-downloaded distribution cannot mask checksum verification.
+- When wrapper `distributionUrl` or `distributionSha256Sum` changes, include one CI/review lane that deletes the matching wrapper distribution entry or uses a clean controlled Gradle user home; an already-installed distribution can bypass the ZIP download path where `distributionSha256Sum` is checked.
 - On GitHub Actions, prefer the maintained `gradle/actions/setup-gradle` action over the deprecated `gradle/gradle-build-action`; it handles Gradle User Home caching, wrapper validation, and Build Scan summaries.
 - Use standalone `gradle/actions/wrapper-validation` only when a workflow does not otherwise use `setup-gradle`.
 - Use `gradle/actions/dependency-submission` when GitHub's dependency graph and Dependabot alerts are part of the supply-chain signal; it needs `contents: write` and the repository dependency graph features enabled.

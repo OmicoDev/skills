@@ -45,6 +45,7 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - If the target build has no wrapper or configured distribution, the Tooling API falls back to the client library's Gradle version; embedded tools should make that choice visible instead of treating it as project-owned.
 - Treat Tooling API library upgrades as integration compatibility work: the client supports running target builds from the last five Gradle major releases plus current/next-major forward compatibility, and individual launcher/model/test methods can still require newer target Gradle versions.
 - Use Tooling API launchers, stdout/stderr capture, progress listeners, cancellation tokens, and public models before scraping command-line output from an embedded Gradle invocation.
+- On Gradle 9.3+, use incubating resilient `BuildController.fetch(...)` when a Tooling API build action should continue after model-fetch failures; always inspect `FetchModelResult.getFailures()` and the nullable model before treating missing data as an unsupported or absent model.
 - `withArguments(...)` supports build-execution options modeled by `StartParameter`; do not pass CLI-only commands such as `-?`, `-v`, or daemon toggles through Tooling API launchers.
 - `setEnvironmentVariables(...)` replaces the operation environment; copy the current environment first when adding overrides, especially on Windows.
 - Close `ProjectConnection` instances when finished. `ProjectConnection` is thread-safe and long-lived, while `GradleConnector` instances are not thread-safe.

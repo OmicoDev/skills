@@ -20,17 +20,20 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 ## Force And Failure Gates
 
 - Use `force` only as a temporary or emergency override with a removal path. Prefer constraints, platforms, rich versions, metadata repair, or locks for durable version policy.
+- `force(...)` appends forced modules, while assigning `forcedModules` replaces the set; be explicit when convention plugins layer or reset emergency overrides.
 - `failOnVersionConflict()`, `failOnDynamicVersions()`, `failOnChangingVersions()`, and `failOnNonReproducibleResolution()` are detection or policy gates; they do not choose the correct version.
 - Use `preferProjectModules()` only when a resolved conflict should prefer a project component over a binary component; it does not include missing projects, rewrite coordinates, or replace an external module by itself.
 - Use component selection rules when a configuration must reject candidate versions during selection, especially dynamic selectors or metadata-based rejects.
 - Component selection starts from the highest matching candidate; a candidate is accepted unless a rule rejects it. Target rules to `group:module` when possible and handle optional metadata defensively.
 - Use rich-version `reject` when the build should express unacceptable versions as version intent; use dependency resolve rules only when a rejected request should be rewritten to a known replacement.
+- `eachDependency` and dependency substitution rules run after forced modules are applied; if a rewrite seems ignored, inspect whether a force already selected the target version.
 - For `force(...)`, `useTarget(...)`, or plugin `useModule(...)`, pass supported module notation such as `group:name:version`; do not route dependency constraints or other `ModuleVersionSelector` objects through deprecated conversion.
 
 ## Substitution And Local Forks
 
 - Prefer a composite build with `includeBuild` for a Gradle-built local fork that should replace an external module during development.
 - Keep the consuming dependency declaration on the external coordinates when using a local fork; default composite substitution matches the included project's `group` and `name`, while version alignment is still useful evidence that the fork represents the requested release.
+- When an included build's global dependency substitution is too broad, set `resolutionStrategy.useGlobalDependencySubstitutionRules` on the specific resolvable configuration that must resolve published modules; the setting is configuration-scoped and can be re-enabled for other classpaths.
 - Use explicit dependency substitution for module-to-project, project-to-module, module-to-module, variant, capability, classifier, or version-divergent fork substitution when the replacement is a local resolution policy.
 - For variant or capability substitution, match the requested attributes or required capability deliberately; composite-build substitution is broader and implicitly replaces all variants of the external module with equivalent variants from the included build.
 - Use classifier substitution as a local repair when conflict resolution selects a version whose classified artifact does not exist. If the classifier encodes a reusable platform, JVM, native, or feature variant, prefer [dependency-metadata-rules.md](dependency-metadata-rules.md) so attributes, files, capabilities, and dependencies stay together.

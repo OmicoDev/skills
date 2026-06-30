@@ -13,3 +13,10 @@
 - [Supported Repository Protocols](https://docs.gradle.org/current/userguide/supported_repository_protocols.html)
 - [The Maven Publish Plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
 - [Verifying Dependencies](https://docs.gradle.org/current/userguide/dependency_verification.html)
+
+## Source Code
+
+- `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperChecksumVerificationTest.groovy`
+- `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperConcurrentDownloadTest.groovy`
+- `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/Install.java`
+- `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/WrapperExecutor.java`

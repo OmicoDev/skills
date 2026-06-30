@@ -19,5 +19,12 @@
 
 ## Source Code
 
+- `platforms/jvm/language-jvm/src/integTest/groovy/org/gradle/integtests/resolve/consistency/JavaProjectResolutionConsistencyIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/catalog/KotlinDslVersionCatalogExtensionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/catalog/VersionCatalogExtensionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/strict/StrictVersionConstraintsFeatureInteractionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/configurations/DefaultConfiguration.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalog.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalogsExtension.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyHandler.java`

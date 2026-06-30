@@ -53,6 +53,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 
 - Use `@Option` on custom task setters when a task property should be configurable immediately after the task name on the command line.
 - Task options are task-specific, not global plugin or project options. The task exposing the option must be requested explicitly.
+- When an unqualified task selector matches multiple tasks, options after that selector apply to every selected task; use explicit task paths when only one matching task type owns the option.
 - Built-in task option `--rerun` reruns only the requested task it follows; use global `--rerun-tasks` only when every task should ignore up-to-date state.
 - Task options can only be declared on custom task types through annotations; there is no project-level or programmatic task-option API.
 - Put task options after the task name they configure; options on tasks reached only through dependencies are not available unless that task is explicitly requested.
@@ -62,6 +63,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - `DirectoryProperty` and `RegularFileProperty` option values are resolved relative to the project directory that owns the property instance.
 - Keep `@Option` properties to supported scalar, enum, file, list, set, or Gradle property types. Use extension properties, project properties, or build services for complex or cross-task build knobs.
 - Use `@OptionValues` to document accepted values, but validate unsupported values in the task action because the annotation itself does not reject them.
+- Keep `@OptionValues` methods non-static, parameterless, and returning `Collection<String>` or `Provider<Collection<String>>`; wrong signatures fail option discovery before the task action can validate values.
 - When a task option conflicts with a built-in Gradle option, use the `--` delimiter before the task name or option sequence.
 
 ## Diagnostics

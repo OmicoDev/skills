@@ -54,6 +54,7 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - Use `forkEvery` only to contain leaky tests or frameworks; low nonzero values create many fresh test JVMs and can dominate test time.
 - Use `useJUnitPlatform()`, TestNG, or other framework configuration explicitly when required. JUnit Jupiter needs platform execution plus Jupiter, Platform, and launcher runtime dependencies; JUnit 3/4 on the platform needs Vintage.
 - Use test filtering for narrow execution, but do not commit local filters accidentally. `--test-dry-run` proves selected tests without executing them and still generates reports for inspection.
+- Treat dry-run test reports as selection evidence, not pass/fail evidence; selected tests are reported as skipped because their bodies did not execute.
 - `--tests` filters are additive with build-script filters and wildcards are text-based, not package-depth aware; use command-line filters for temporary local selection and keep persistent script filters intentional.
 - When `scanForTestClasses = false`, `includes` and `excludes` own class selection; without patterns Gradle falls back to `**/*Tests.class` and `**/*Test.class` while excluding `**/Abstract*.class`. JUnit Platform ignores `scanForTestClasses`.
 - Use `ignoreFailures` only when downstream tasks must continue after a failing `Test` task; it does not skip remaining detected tests or turn failures into passes.

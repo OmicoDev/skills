@@ -28,6 +28,7 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - Include/exclude patterns apply to the owning copy spec: no includes means everything is eligible, at least one include narrows the set, and exclusions override inclusions.
 - Duplicate relative paths in a copy spec or archive fail unless `duplicatesStrategy` is set. Prefer fixing the sources or applying a narrow strategy on the child spec that owns the duplicate.
 - `rename(...)` changes copied file names, not the owning directory topology; use child `into(...)` or `eachFile` when the relative path needs to move, and keep rename closures cheap because they run for each copied file.
+- `filesMatching(...)` and `filesNotMatching(...)` match the original source path, not the destination path after `into(...)`, `rename(...)`, or an earlier `eachFile`/matching action changed `path`.
 - Treat `filter(...)` and `expand(...)` sources as text and set `filteringCharset`; otherwise the JVM default charset can make transformed outputs host-dependent.
 - Use `expand(...)` only when Groovy template semantics are intended. It evaluates `${...}` expressions, so choose a narrower token filter when the input should be literal text with simple placeholders.
 - `Copy` does not remove stale files already in the destination. Use `Sync` when the destination must be an exact mirror, and keep that destination task-owned or intentionally managed.

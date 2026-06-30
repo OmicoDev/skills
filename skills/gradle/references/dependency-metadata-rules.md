@@ -13,6 +13,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 
 - Published external metadata that is wrong or incomplete: dependencies, constraints, artifacts, capabilities, attributes, variants, Ivy configurations, Maven packaging, status, or virtual-platform membership.
 - Legacy Maven/Ivy modules where classifiers, version suffixes, optional features, or configurations encode a real variant contract that Gradle cannot infer.
+- Artifact-only modules without Maven/Ivy metadata when repository metadata sources still create a component and the missing dependency or variant contract is known.
 - Missing capabilities when two modules are mutually exclusive providers and the metadata does not declare the conflict.
 - Cross-module alignment without a published platform only when the modules genuinely share a version family.
 - Status or status-scheme changes only when `latest.<status>` version selection semantics are the real owner.
@@ -32,9 +33,12 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Prefer `withModule(group:name, Rule::class)` over broad `all(...)` rules unless the rule is correct for every affected module.
 - Prefer isolated `ComponentMetadataRule` classes over inline actions; make reusable rules deterministic and `@CacheableRule` so dependency resolution does not rerun them unnecessarily.
 - Treat a class rule as isolated metadata code: use `ComponentMetadataContext.details`, optional Maven/Ivy descriptors, serializable or Gradle-recognized parameters, and supported injected services such as `ObjectFactory`; do not make rule behavior depend on ambient project state.
+- Inject `RepositoryResourceAccessor` only when the rule truly needs repository-relative resources; repositories without a URL cannot supply it, and flat directory repositories provide a no-op accessor, so required repairs should not depend on reading sidecar metadata there.
+- Cacheable metadata rules can be reused across builds; changing the rule implementation invalidates the cached result, so put every behavior-affecting choice in rule code or declared parameters.
 - Avoid deprecated rule-source object APIs; use actions for throwaway local repair or class rules with `ActionConfiguration` parameters for reusable policy.
 - Put reusable rules in settings or convention build logic instead of scattering them across project build scripts.
 - Settings-level rules are incubating and use `RulesMode`: `PREFER_PROJECT` is the default and ignores settings rules when a project declares rules, `PREFER_SETTINGS` ignores project rules, and `FAIL_ON_PROJECT_RULES` turns project rules into a build error.
+- Settings-level component metadata rules apply to project dependency resolution, not plugin resolution; use `pluginManagement` owners for plugin artifacts and repositories.
 
 ## Metadata Surface
 
@@ -74,4 +78,5 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Before writing a rule, identify whether Gradle consumed Gradle Module Metadata, a Maven POM, or Ivy metadata. Traditional metadata is more likely to need enrichment.
 - Validate that the rule remains correct outside the current build. If it only hides a local conflict, choose a local dependency policy instead.
 - Re-run the original dependency report after adding the rule and confirm the selected component, variant, files, dependencies, capabilities, or status changed for the intended reason only.
+- When failure text says Gradle was evaluating a component metadata rule for a module, debug rule code, rule parameters, and descriptor assumptions before changing repositories or version policy.
 - Treat uncached or broad metadata rules as dependency-resolution performance risks; inspect slow resolution with repository order, dynamic/changing modules, and metadata-rule scope together.

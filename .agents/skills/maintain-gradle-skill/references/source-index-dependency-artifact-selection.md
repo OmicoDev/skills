@@ -10,11 +10,19 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ArtifactSelectionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ArtifactVariantReselectionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/LenientArtifactViewIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ResolvedArtifactOrderingIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ResolvedFileOrderingIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/UnsafeConfigurationResolutionDeprecationIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/api/ArtifactCollectionResultProviderIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewArtifactSelectionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewAttributesIntegrationTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactCollection.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactView.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/LenientConfiguration.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ResolutionStrategy.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ResolvableDependencies.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyHandler.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/query/ArtifactResolutionQuery.java`

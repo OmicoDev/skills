@@ -4,6 +4,7 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 
 ## Route
 
+- Read [best-practice-audits.md](best-practice-audits.md) when the task asks for a broad Gradle best-practice audit, official best-practice coverage, or every-practice review.
 - Read [commands-and-evidence.md](commands-and-evidence.md) when the first job is choosing commands, flags, logs, or evidence.
 - Read [runtime-and-structure.md](runtime-and-structure.md) when wrapper files, Gradle runtime, daemon JVM selection, Gradle user home, or init scripts own the change.
 - Read [project-topology-and-build-logic.md](project-topology-and-build-logic.md) when settings scripts, project inclusion, included builds, build logic placement, or directory layout owns the change.
@@ -11,26 +12,6 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Read [dependency-policy.md](dependency-policy.md) when configurations, repositories, variants, locks, verification, or selected versions are involved.
 - Read [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md) when plugin shape, shared services, lifecycle-result work, structured diagnostics, or TestKit coverage owns the change.
 - Read [performance-strategy.md](performance-strategy.md) when configuration time, task avoidance, cache reuse, or incremental behavior is involved.
-
-## Best-Practice Audits
-
-Treat broad Gradle best-practice reviews as routing-first audits. Keep each audit item simple:
-
-- Finding: name the concrete smell, risk, or missing rule.
-- Type: choose general DSL/style, build structure, dependencies, tasks, performance, security, or testing.
-- Owner: link one owning reference.
-- Follow-up: name the smallest runtime guidance edit, or say `no durable rule` when nothing should be promoted.
-
-Route common item types like this:
-
-- General DSL/style: route script style to [scripts-and-conventions.md](scripts-and-conventions.md), eager provider/property usage to [providers-and-properties.md](providers-and-properties.md), runtime concerns to [runtime-and-structure.md](runtime-and-structure.md), naming or plugin timing to [project-topology-and-build-logic.md](project-topology-and-build-logic.md), and wrapper currency to [upgrade-strategy.md](upgrade-strategy.md).
-- Build structure: start in [project-topology-and-build-logic.md](project-topology-and-build-logic.md); route repeated script blocks to [scripts-and-conventions.md](scripts-and-conventions.md) and reusable plugin behavior to [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md).
-- Dependencies: start in [dependency-policy.md](dependency-policy.md), then narrow to repository, version-governance, resolution-rule, locking, verification, or JVM-language dependency owners.
-- Tasks: route graph and public task-surface behavior to [task-execution-and-options.md](task-execution-and-options.md); route inputs, outputs, cacheability, and validation to [task-types-and-validation.md](task-types-and-validation.md); route provider or file-collection eagerness to [providers-and-properties.md](providers-and-properties.md), [file-operations-and-archives.md](file-operations-and-archives.md), or dependency owners.
-- Performance: start in [performance-strategy.md](performance-strategy.md), baseline representative workflows, then narrow to configuration cache, build cache, runtime, repository, or task-validation owners.
-- Security: start in [ci-and-security.md](ci-and-security.md); route wrapper details to [runtime-and-structure.md](runtime-and-structure.md).
-- Testing: route plugin and build-logic functional tests to [plugin-testing.md](plugin-testing.md); route ordinary JVM test behavior to [jvm-and-tests.md](jvm-and-tests.md).
-- Finish: edit only the owning reference and run the validation gate for changed files, internal links, source indexes, and Markdown policy.
 
 ## Model Boundaries
 
@@ -56,6 +37,8 @@ Route common item types like this:
 - Build tree state belongs to one execution of one build definition, including included builds.
 - Build state belongs to one root or included build inside the build tree.
 - Project state belongs to one project inside one build execution. Cross-project reads must be immutable identity reads or modeled through dependencies, variants, publications, or convention plugins.
+- Project paths such as `:lib` are build-local; build-tree identity paths are the global identity across included builds. In composite-build triage, keep the owning build identity attached to project paths before diagnosing task selection, dependency substitution, or cross-build model access.
+- When Gradle exposes both `path` and `buildTreePath`, use `buildTreePath` or identity path for tooling, composite, and external references; use `path`, `project(...)`, or relative project names only for lookup inside the owning build.
 
 ## Ownership Questions
 

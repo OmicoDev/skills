@@ -23,6 +23,7 @@ Read this when: build speed, task avoidance, configuration cache, build cache, i
 
 Compare repeated runs and avoid broad optimization changes before identifying the dominant cost.
 For broad best-practice audits, baseline representative workflows first; a fast `help` run mainly proves initialization/configuration behavior, not compile, test, publication, or cache reuse behavior.
+Treat `--profile` task, project, dependency-resolution, and artifact-transform times as coarse event-duration evidence, not a critical-path timeline; parallel task or transform durations can add up beyond wall-clock time, so use a Build Scan timeline when the question is parallel speedup, idle time, or critical-path ownership.
 
 ## Diagnosis Matrix
 
