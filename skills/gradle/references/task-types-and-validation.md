@@ -54,7 +54,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Query changes from stable file property instances such as `RegularFileProperty`, `DirectoryProperty`, or `ConfigurableFileCollection`.
 - Keep incremental logic correct for added, modified, and removed files.
 - Fall back to full processing when `InputChanges.isIncremental()` is false; Gradle reports all input files as added in that mode.
-- Expect non-incremental execution when history is missing, Gradle version changes, `upToDateWhen` returns false, non-incremental inputs change, or outputs are edited externally.
+- Expect non-incremental execution when history is missing, Gradle version changes, `upToDateWhen` returns false, non-incremental inputs change, output locations change, or outputs are edited or removed externally.
 - Do not confuse incremental execution with build-cache correctness.
 - Test clean, up-to-date, cache-hit, and changed-input paths separately.
 

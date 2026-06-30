@@ -15,7 +15,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - `gradleTestKit()` supplies TestKit and the Tooling API client, not JUnit, TestNG, Spock, or Gradle's implementation dependencies; declare test frameworks and helper libraries explicitly.
 - On Gradle 9+, direct `ValidatePlugins` usage needs the Java Toolchains service, supplied by `jvm-toolchains` or JVM plugins such as `java-library`; its `launcher` must also run on a Java version supported by the Gradle daemon.
 - For plugin projects on Gradle 9.4+, `java-gradle-plugin` exposes `gradleApi()` as `compileOnlyApi`; register extra test source sets with `gradlePlugin.testSourceSets(...)` or add explicit `gradleApi()` when custom lanes no longer see Gradle API types.
-- Published plugin builds should treat stricter `validatePlugins` checks as release gates; enable them for local build-logic projects when preparing code for publication.
+- With `java-gradle-plugin`, `validatePlugins` is wired into `check`, warnings fail by default, and applying a publishing plugin enables stricter validation by convention; do not relax `failOnWarning` or `ignoreFailures` in release gates unless the risk is explicitly accepted.
 - Script-local custom tasks or plugins are prototypes; once extracted into `buildSrc`, included `build-logic`, or a plugin project, use composite builds for manual tryouts but add automated TestKit functional tests instead of treating manual runs as release evidence.
 
 ## TestKit Model
@@ -27,6 +27,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - Automatic classpath injection expects the plugin-under-test to be applied in the test build with the `plugins {}` DSL.
 - If functional tests use a custom source set or suite, register it with the plugin development extension so plugin classpath metadata is generated for that lane; use additive `gradlePlugin.testSourceSet(functionalTest)` or include every intended lane in a replacing `gradlePlugin.testSourceSets(...)` call, because `testSourceSets(...)` clears earlier/default test source sets.
 - Prefer `withPluginClasspath()` backed by `java-gradle-plugin` metadata over hard-coded `build/classes`, JAR, or runtime classpath assembly.
+- Treat an empty explicit `withPluginClasspath(files)` as no injected plugin classpath. When a plugin-not-found failure lacks the `Gradle TestKit (classpath: ...)` hint, inspect the fixture's generated metadata or file list before debugging plugin resolution.
 - Treat injected plugin classpath as plugin-resolution classpath, not a global buildscript classpath. Classes become visible when the plugin is applied in a project and can flow to its child projects, but they are not visible to unrelated projects or to later TestKit builds unless the runner injects them again.
 - `buildSrc` and injected plugin classpaths stay isolated from each other; a class name clash should resolve according to whether the build applies the plugin from TestKit injection or from `buildSrc`.
 - TestKit uses isolated fixture directories, a TestKit-controlled Gradle User Home, and dedicated Gradle daemons; it does not inherit default `~/.gradle/gradle.properties`, caches, init scripts, or environment customizations unless the fixture wires them.
@@ -67,6 +68,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 
 - Keep fixture builds minimal and explicit: settings, build script, plugin application, sample sources, and expected outputs.
 - Include at least one fixture that applies the plugin by public ID through the `plugins {}` DSL so descriptor generation and automatic classpath injection are covered together.
+- A fixture that puts plugin classes on `buildscript { dependencies { classpath(...) } }` and uses `apply plugin:` can prove legacy or manual classpath consumption, but it does not prove plugin marker metadata or `plugins {}` DSL injection.
 - Test both Groovy and Kotlin DSL fixtures when the plugin exposes public DSL, typed accessors, or convention APIs users will write in both DSLs.
 - Include configuration-cache and build-cache fixture coverage when the plugin advertises support for those modes.
 - Tests inside an included `build-logic` build do not run just because the root build needs build-logic artifacts; invoke `:build-logic:check` or wire CI explicitly.

@@ -29,6 +29,7 @@
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/ClassLoaderWorkerSpec.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/ProcessWorkerSpec.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/WorkQueue.java`
+- `platforms/core-execution/workers/src/main/java/org/gradle/workers/WorkerExecutionException.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/WorkerExecutor.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/internal/DaemonForkOptions.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/internal/WorkerDaemonClientsManager.java`

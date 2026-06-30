@@ -20,3 +20,4 @@
 - `subprojects/core/src/integTest/groovy/org/gradle/api/services/BuildServiceParallelExecutionIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/build/event/BuildEventsParallelIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/services/internal/BuildServiceProviderNagger.java`
+- `subprojects/core/src/main/java/org/gradle/api/services/internal/RegisteredBuildServiceProvider.java`

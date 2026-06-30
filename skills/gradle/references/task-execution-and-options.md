@@ -79,9 +79,12 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 ```
 
 - Use `help --task` to confirm task-specific options, groups, descriptions, and available values.
-- Use `tasks --provenance` when an unexpected task exists or a task failure names a registration source; it distinguishes plugin-registered, script-registered, and other task owners.
+- Use `tasks --provenance` when an unexpected task exists or a task failure names a registration source; it identifies where the task was registered, not which action, dependency, or plugin behavior caused execution.
+- Combine `tasks --types --provenance` when both the public task type and registration source matter; provenance can be absent when Gradle does not know the user-code source, and verification-style failures may omit provenance from failure text.
 - Use `--dry-run` to inspect graph shape and ordering without running actions.
-- Use `--task-graph` on Gradle 9.1+ when the dependency graph is better evidence than the flat dry-run execution list.
+- Use `--task-graph` on Gradle 9.1+ when the dependency tree is better evidence than the flat dry-run execution list; it prints selected tasks, hard dependencies, finalizers, disabled tasks, and included-build task edges without running task actions.
+- Do not expect `--task-graph` to show ordering-only rules, artifact transforms, nested `GradleBuild` task internals, or build-logic tasks that ran only to configure the requested build; run the graph request inside that owning build when those tasks are the subject.
+- If `--dry-run` and `--task-graph` are both present, dry-run output wins; rerun without `--dry-run` when the tree shape is the evidence you need.
 - Use `--info` when a task is skipped by `onlyIf` or when execution ordering needs more evidence.
 - Interpret task outcome labels before changing wiring: no label/`EXECUTED` means actions ran, `UP-TO-DATE` reused local outputs, `FROM-CACHE` restored outputs, `SKIPPED` skipped actions, and `NO-SOURCE` skipped because expected sources were absent.
 - `SKIPPED` needs a different owner depending on cause: command-line exclusion, `onlyIf`, `enabled = false`, or `StopExecutionException`; `NO-SOURCE` usually points to source/input configuration instead.

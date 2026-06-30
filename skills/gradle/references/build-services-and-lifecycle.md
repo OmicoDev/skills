@@ -26,6 +26,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Registration is lazy: the service instance is not created when no task/action actually uses it in that build.
 - Build services are scoped to one build, not one project. Use a stable registration name when one shared resource should coordinate tasks across projects in the same build.
 - Mutate parameters only inside the registration action so configuration cache and Isolated Projects see one stable service definition.
+- Gradle snapshots service parameters when it first creates the service instance; values changed after the first service query do not reconfigure that instance, so put mutable runtime coordination inside the service implementation.
 - Do not inspect `gradle.sharedServices.registrations` under Isolated Projects; register by stable name and keep later lookups to the returned provider.
 - Prefer `@ServiceReference` for task properties that consume a service. Matching is by service type and optional service name.
 - When multiple services of the same type are registered and no `@ServiceReference` name disambiguates them, assign the provider manually.

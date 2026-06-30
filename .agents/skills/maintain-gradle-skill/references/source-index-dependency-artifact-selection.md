@@ -17,6 +17,7 @@
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ResolvedFileOrderingIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/UnsafeConfigurationResolutionDeprecationIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/api/ArtifactCollectionResultProviderIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/api/ResolvedArtifactsApiIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewArtifactSelectionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewAttributesIntegrationTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactCollection.java`

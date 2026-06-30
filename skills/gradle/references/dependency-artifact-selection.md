@@ -45,6 +45,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, va
 - Use lenient artifact views to collect available artifacts while keeping failures inspectable. Do not use lenient resolution to hide required dependencies in verification or release paths.
 - Lenient artifact views can tolerate missing modules, missing artifacts, or artifact download failures, but dependency verification failures still fail the build; route checksum, signature, and trust fixes to [dependency-verification.md](dependency-verification.md).
 - Lenient artifact views can omit failed modules, unresolved conflicts, or failed artifact downloads; use the `ArtifactCollection` failure details before treating partial files as complete.
+- Lenient artifact views wired as task inputs still build producer tasks for successfully selected local artifacts; if expected local artifacts are missing, inspect variant selection, producer artifacts, and `artifacts.failures` before blaming lenient mode.
 - Use `componentFilter` for per-component artifact filtering. It filters selected artifacts by component owner, not by arbitrary file path, and each artifact view has only one component filter.
 - When an artifact view requests attributes that the selected artifact set does not expose, Gradle may trigger registered artifact transforms; read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) before implementing or debugging one.
 

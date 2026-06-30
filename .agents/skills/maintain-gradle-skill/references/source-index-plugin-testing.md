@@ -15,18 +15,25 @@
 ## Source Code
 
 - `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/plugins/JavaGradlePluginPluginTestKitSetupIntegrationTest.groovy`
+- `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/tasks/PublishedPluginsStricterValidationIntegrationSpec.groovy`
+- `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/tasks/ValidatePluginsPart1IntegrationTest.groovy`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/GradlePluginDevelopmentExtension.java`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/plugins/JavaGradlePluginPlugin.java`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/tasks/PluginUnderTestMetadata.java`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/tasks/ValidatePlugins.java`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/TestKitDependencyClassVisibilityIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerBuildFailureIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerCaptureOutputIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerConfigurationIntegrationTest.groovy`
+- `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerConventionalPluginClasspathInjectionIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerEnvironmentVariablesIntegrationTest.groovy`
+- `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerManualPluginClasspathInjectionIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerMechanicalFailureIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerPluginClasspathInjectionIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerResultIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerUnsupportedFeatureFailureIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/enduser/GradleRunnerConsoleInputEndUserIntegrationTest.groovy`
+- `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/enduser/GradleRunnerPluginClasspathInjectionEndUserIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/jvm/GradleRunnerCliGradlePropertyFileDaemonJvmIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/jvm/GradleRunnerExplicitDaemonJvmIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/jvm/GradleRunnerGradlePropertiesFileDaemonJvmIntegrationTest.groovy`
@@ -40,6 +47,7 @@
 - `platforms/extensibility/test-kit/src/main/java/org/gradle/testkit/runner/internal/DefaultBuildResult.java`
 - `platforms/extensibility/test-kit/src/main/java/org/gradle/testkit/runner/internal/DefaultGradleRunner.java`
 - `platforms/extensibility/test-kit/src/main/java/org/gradle/testkit/runner/internal/FeatureCheckBuildResult.java`
+- `platforms/extensibility/test-kit/src/main/java/org/gradle/testkit/runner/internal/PluginUnderTestMetadataReading.java`
 - `platforms/extensibility/test-kit/src/main/java/org/gradle/testkit/runner/internal/feature/BuildResultOutputFeatureCheck.java`
 - `platforms/extensibility/test-kit/src/main/java/org/gradle/testkit/runner/internal/feature/TestKitFeature.java`
 - `platforms/extensibility/test-kit/src/test/groovy/org/gradle/testkit/runner/internal/DefaultBuildResultTest.groovy`

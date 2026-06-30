@@ -18,9 +18,11 @@
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperChecksumVerificationTest.groovy`
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperGenerationIntegrationTest.groovy`
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperHttpIntegrationTest.groovy`
+- `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperHttpsIntegrationTest.groovy`
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperUpgradeIntegrationTest.groovy`
 - `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/WrapperExecutor.java`
 - `platforms/software/build-init/src/main/java/org/gradle/api/tasks/wrapper/Wrapper.java`
+- `platforms/software/build-init/src/main/java/org/gradle/api/tasks/wrapper/internal/WrapperGenerator.java`
 - `platforms/software/build-init/src/test/groovy/org/gradle/api/tasks/wrapper/WrapperTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/internal/buildevents/BuildResultLogger.java`
 - `subprojects/core/src/main/java/org/gradle/internal/buildtree/DeprecationsReporter.java`

@@ -23,6 +23,8 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Treat warning mode and max-problems settings as migration aids, not release defaults; warning mode fails at 512 problems by default unless `org.gradle.configuration-cache.max-problems` changes the limit.
 - Warning mode can still store and reuse entries with reported problems; manually invalidate during exploration if behavior becomes surprising.
 - Prefer `Task.notCompatibleWithConfigurationCache("because")` over persistent warning mode when one task cannot yet be repaired; if that task executes, Gradle discards configuration state at the end of the build.
+- Do not copy Gradle-internal graceful-degradation services into external build logic; use public task incompatibility APIs and treat internal degradation as context for Gradle-owned tasks and features.
+- Task-scoped incompatibility only matters when the task is in the requested graph; a task that is merely configured, hidden behind `-x`, or registered during execution should not by itself prevent storing a configuration-cache entry.
 - Use read-only configuration cache only for ephemeral CI or probe jobs where misses cannot be reused; disable read-only mode when the build must write entries.
 - Treat parallel configuration-cache load/store as incubating; `ConcurrentModificationException` during configuration is a compatibility signal, not a reason to ignore cache problems.
 - Treat `STABLE_CONFIGURATION_CACHE` as a version-sensitive early opt-in. Verify current Gradle behavior before using it as a rollout gate, and do not rely on it to surface undeclared build-service usage because that check moved behind internal test-only coverage.
@@ -51,6 +53,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Gradle property sources can invalidate configuration cache entries even when the specific source is not listed in the report.
 - Fix store-time problems first, then load-time problems.
 - Treat "entry discarded" as evidence that reuse was prevented for this run. Fix the owner or declare a temporary incompatible task; deleting `.gradle/configuration-cache` only removes evidence.
+- When post-build output says configuration cache was disabled but the console summary has no problems, open the HTML report anyway; incompatible task or feature reasons can be suppressed from console output while still preventing storage.
 - Keep secrets out of shared configuration-cache entries unless the environment supplies equivalent protection; when `GRADLE_USER_HOME` is shared across machines, provide a valid and stable `GRADLE_ENCRYPTION_KEY` across intended reuse boundaries.
 
 ## Task State Rules

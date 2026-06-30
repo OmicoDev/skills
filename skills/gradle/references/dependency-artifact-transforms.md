@@ -67,6 +67,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - The report does not show transform parameters, input artifact dependencies, build-service wiring, selected chains, or cache identity. Use resolution output, cache/debug logs, or build-operation evidence when those fields own the behavior.
 - Treat `artifactTransforms` as registration evidence, not execution evidence; prove execution by resolving the consuming configuration or artifact view and inspecting resulting files, task inputs, transform cache behavior, or build-operation evidence.
 - A successful `help` run or unqueried file collection does not prove a transform executes; query the configuration or artifact view that requests transformed attributes.
+- If a transform failure appears as missing files, an empty copy, or `NO-SOURCE`, check whether the consuming artifact view is lenient; lenient views collect transform failures on `artifacts.failures` and can omit failed artifacts from `artifactFiles`, so reproduce with strict resolution before changing transform wiring.
 - Confirm requested artifact attributes from the resolvable configuration or artifact view before changing transform registration.
 - Transform never runs: an existing artifact set already matches, the transform is registered in the wrong project, attributes do not connect, or the input variant has no artifacts.
 - Chain stops after an earlier transform: confirm the previous transform produced at least one registered output artifact; empty output skips downstream transforms.

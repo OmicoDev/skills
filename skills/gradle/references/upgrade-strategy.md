@@ -34,7 +34,10 @@ Then run representative tasks. `help` alone proves startup, not build correctnes
 - Keep plugins on latest compatible versions, but phase risky plugin updates from wrapper upgrades unless compatibility requires coupling; use shadow or parallel CI lanes when the compatibility signal is incomplete.
 - Isolate expected one-time generated-file churn from behavioral upgrade work, such as wrapper script rewrites, lockfile line-ending normalization, or dependency-verification keyring encoding updates, so review does not mistake upgrade housekeeping for dependency or build logic changes.
 - When `gradle-wrapper.properties` contains `distributionSha256Sum`, pair every wrapper version or distribution URL change with the matching new checksum; a stale or missing checksum is a wrapper-security failure to fix before dependency or task debugging.
+- If the wrapper task fails because an existing `distributionSha256Sum` has no replacement, provide `--gradle-distribution-sha256-sum` or task configuration for the target distribution instead of deleting checksum enforcement.
+- Treat `--no-validate-url` as only bypassing wrapper generation-time URL HEAD/file existence validation; it does not prove the distribution can be downloaded later or that the checksum is correct.
 - Treat wrapper `networkTimeout`, `retries`, `retryBackOffMs`, and URL validation as wrapper runtime policy; review them with `gradle-wrapper.properties` instead of scattering retry workarounds through CI scripts.
+- Review wrapper upgrades as a four-file artifact set: `gradlew`, `gradlew.bat`, `gradle/wrapper/gradle-wrapper.jar`, and `gradle/wrapper/gradle-wrapper.properties`; the wrapper task can rewrite all of them even when the visible version change is only in properties.
 - After wrapper upgrade, repeat deprecation capture and representative tasks before treating the target version as promoted.
 
 ## Compatibility Surface

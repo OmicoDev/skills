@@ -18,9 +18,14 @@
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsBuildStateAccessIntegrationTest.groovy`
+- `platforms/core-runtime/base-services/src/main/java/org/gradle/api/IsolatedAction.java`
 - `subprojects/composite-builds/src/main/java/org/gradle/composite/internal/DefaultBuildTreeLocalComponentProvider.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/Project.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/invocation/Gradle.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/invocation/GradleLifecycle.java`
 - `subprojects/core-api/src/test/groovy/org/gradle/api/internal/project/ProjectIdentityTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/build/event/BuildEventsIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/project/DefaultProjectState.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/project/DefaultProjectStateRegistry.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/project/ProjectState.java`

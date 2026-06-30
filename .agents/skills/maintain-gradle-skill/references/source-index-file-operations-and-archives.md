@@ -15,5 +15,11 @@
 
 ## Source Code
 
+- `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/SyncCopyActionDecorator.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/file/CopySpec.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/file/SyncSpec.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/ArchiveTaskPermissionsIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CopyTaskIntegrationSpec.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/Copy.java`
+- `subprojects/core/src/main/java/org/gradle/api/tasks/Sync.java`
+- `subprojects/core/src/main/java/org/gradle/api/tasks/bundling/AbstractArchiveTask.java`

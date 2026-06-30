@@ -11,6 +11,7 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/LenientArtifactViewIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformCachingIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformParallelIntegrationTest.groovy`
@@ -22,6 +23,8 @@
 - `platforms/software/software-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/ArtifactTransformsReportTaskIntegrationTest.groovy`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/artifact/transforms/ArtifactTransformReports.java`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/artifact/transforms/model/ArtifactTransformReportModelFactory.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactCollection.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactView.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformAction.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformParameters.java`

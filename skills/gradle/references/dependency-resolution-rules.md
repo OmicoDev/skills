@@ -25,6 +25,8 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 - Use `preferProjectModules()` only when a resolved conflict should prefer a project component over a binary component; it does not include missing projects, rewrite coordinates, or replace an external module by itself.
 - Use component selection rules when a configuration must reject candidate versions during selection, especially dynamic selectors or metadata-based rejects.
 - Component selection starts from the highest matching candidate; a candidate is accepted unless a rule rejects it. Target rules to `group:module` when possible and handle optional metadata defensively.
+- Put cheap `selection.candidate` checks before metadata or descriptor reads. Once any rule rejects a candidate, later component selection rules do not run for that candidate.
+- Reading `selection.metadata` or `selection.getDescriptor(...)` can require metadata download; missing or broken metadata may fail resolution before artifact download, so avoid metadata reads when coordinates alone can decide the rule.
 - Use rich-version `reject` when the build should express unacceptable versions as version intent; use dependency resolve rules only when a rejected request should be rewritten to a known replacement.
 - `eachDependency` and dependency substitution rules run after forced modules are applied; if a rewrite seems ignored, inspect whether a force already selected the target version.
 - For `force(...)`, `useTarget(...)`, or plugin `useModule(...)`, pass supported module notation such as `group:name:version`; do not route dependency constraints or other `ModuleVersionSelector` objects through deprecated conversion.

@@ -14,6 +14,7 @@
 
 ## Source Code
 
+- `platforms/core-configuration/model-core/src/testFixtures/groovy/org/gradle/api/internal/provider/PropertySpec.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/BuildLayout.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/FileSystemLocationProperty.java`

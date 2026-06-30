@@ -34,6 +34,7 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - Put required user action in labels, details, `documentedAt(...)` links, locations, and solutions. Use stable documentation URLs for reusable explanations, and additional data for tool clients rather than the only human-readable fix.
 - Treat `AdditionalData` as serializable client payload: keep it to simple values, collections, composites, and Provider API property types, and do not attach live Gradle model objects. Tooling API custom-data view types should expose plain values; Provider API properties map to their resolved value types.
 - Model additional data with public `AdditionalData` interfaces or abstract classes passed to `additionalData(Class, action)`; unsupported or internal-only data spec types are not a substitute for human-readable labels, details, and solutions.
+- Do not make additional data the only assertion or integration surface; Tooling API progress conversion can omit unsupported generic values and serialize custom typed payloads separately, while CLI and HTML rendering still depend on labels, details, locations, documentation, and solutions.
 - A `WorkAction` can inject `Problems`; Gradle reports worker problems under the owning task, but process-isolated workers may not preserve the same `stackLocation()` origin as in-process workers, so provide explicit file or contextual locations when the diagnostic must point at user-authored input.
 
 ## Reporting Boundaries
@@ -53,7 +54,9 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - The HTML problems report is generated only when problems are reported; generation is enabled by default and can be disabled with `--no-problems-report` or `org.gradle.problems.report=false`.
 - `AdditionalData` is for client integration and is not rendered in CLI or HTML problem output.
 - For Tooling API checks, register `OperationType.PROBLEMS` when you need `SingleProblemEvent`/`ProblemSummariesEvent`; for fatal failure details, use incubating `LongRunningOperation.withDetailedFailure()` or `OperationType.ROOT`, inspect `FailureResult.getFailures()` or `GradleConnectionException.getFailures()` recursively, then read each `Failure.getProblems()`.
+- When checking failure-attached problems, traverse causes recursively and assert stable problem metadata instead of exact cause depth; Gradle can flatten multi-cause wrappers or add worker/build failure layers.
 - When asserting Tooling API problem locations, assert the plugin-supplied file/task location and stable problem metadata; Gradle may attach additional build-script or task-path locations, and their count can vary across Gradle versions.
+- For Tooling API location assertions, prefer `originLocations` and `contextualLocations` when the client API exposes them; use a combined legacy location list only for older client/target pairs.
 - Test fatal and recoverable paths separately because `throwing(...)` changes task/build outcome.
 - For duplicate problems, assert representative `SingleProblemEvent`s plus `ProblemSummariesEvent`; Gradle sends the summary event before build finish even when empty, and each `ProblemSummary.count` is the follow-up occurrence count beyond Gradle's event threshold, not the total number of matching problems.
 

@@ -28,11 +28,12 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - Include/exclude patterns apply to the owning copy spec: no includes means everything is eligible, at least one include narrows the set, and exclusions override inclusions.
 - Duplicate relative paths in a copy spec or archive fail unless `duplicatesStrategy` is set. Prefer fixing the sources or applying a narrow strategy on the child spec that owns the duplicate.
 - `rename(...)` changes copied file names, not the owning directory topology; use child `into(...)` or `eachFile` when the relative path needs to move, and keep rename closures cheap because they run for each copied file.
-- `filesMatching(...)` and `filesNotMatching(...)` match the original source path, not the destination path after `into(...)`, `rename(...)`, or an earlier `eachFile`/matching action changed `path`.
+- `filesMatching(...)` and `filesNotMatching(...)` act on file entries, not directories, and match the original source path rather than the destination path after `into(...)`, `rename(...)`, or an earlier `eachFile`/matching action changed `path`.
 - Treat `filter(...)` and `expand(...)` sources as text and set `filteringCharset`; otherwise the JVM default charset can make transformed outputs host-dependent.
 - Use `expand(...)` only when Groovy template semantics are intended. It evaluates `${...}` expressions, so choose a narrower token filter when the input should be literal text with simple placeholders.
 - `Copy` does not remove stale files already in the destination. Use `Sync` when the destination must be an exact mirror, and keep that destination task-owned or intentionally managed.
 - `Sync` is a destructive copy: it removes files in the destination that were not copied. Restrict its destination to task-owned build output or an intentionally managed install directory.
+- `Sync.preserve {}` filters deletion of existing destination entries that were not visited by the copy; it does not add sources, stop copied files from overwriting destinations, or make an unmanaged destination safe by itself.
 - When a `Copy` task deploys a single file into an unmanaged system or application-server directory that may contain unrelated, unreadable, or pipe-like files, mark that dedicated task with `doNotTrackState("reason")` instead of letting Gradle snapshot the whole destination.
 - Treat `doNotTrackState` as an explicit untracked-task tradeoff: the task is always out of date, cannot use incremental `InputChanges`, and is not stored in or loaded from the build cache.
 - Use `FileSystemOperations.copy` or `sync` in typed tasks that must copy during execution. Avoid `Project.copy` and `Project.sync` in task actions because they are not configuration-cache compatible and do not infer task dependencies for action-time sources.
@@ -78,10 +79,11 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - Set `filePermissions {}` and `dirPermissions {}` on the relevant `CopySpec` or child spec when permissions are part of the artifact contract.
 - On Gradle 9+, raw Unix mode APIs such as `fileMode`, `dirMode`, `FileTreeElement.getMode()`, and `FileCopyDetails.setMode(...)` are removed; use `filePermissions {}` and `dirPermissions {}` instead.
 - Empty permission blocks still set explicit defaults: files `0644`, directories `0755`.
+- Archive permissions are per entry type: `filePermissions {}` does not change directory entries and `dirPermissions {}` does not change file entries; set both when the archive contract requires both.
 - Per-file permission overrides can disable up-to-date checks for that task; prefer broad spec-level permissions when possible.
 - Gradle 9 archive tasks are reproducible by default: deterministic order, fixed timestamps, and fixed file/directory permissions.
 - Preserve filesystem timestamps, order, or permissions only when the filesystem or VCS metadata is intentionally part of the output contract.
-- Reproducibility escape hatches are per concern: `preserveFileTimestamps`, `reproducibleFileOrder = false`, `useFileSystemPermissions()`, or `org.gradle.archives.use-file-system-permissions=true` for all archives.
+- Reproducibility escape hatches are per concern: `preserveFileTimestamps`, `reproducibleFileOrder = false`, `useFileSystemPermissions()`, or `org.gradle.archives.use-file-system-permissions=true` for all archives. Explicit `filePermissions` or `dirPermissions` override filesystem-permission preservation only for that entry type, while `useFileSystemPermissions()` resets both entry types to source filesystem modes for that task.
 - For executable scripts in archives, prefer explicit file permissions over global filesystem-permission preservation.
 
 ## Symptom Map

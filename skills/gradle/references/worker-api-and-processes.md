@@ -33,6 +33,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Treat each work item as concurrently executable. Avoid shared mutable state unless it is protected by a build service or another explicit concurrency boundary.
 - Do not rely on work item completion order. Give each item unique outputs or add an explicit deterministic aggregation step.
 - Use `WorkQueue.await()` only when the same task action must read worker results before returning; it blocks same-project task parallelism while waiting, and failures otherwise surface from the surrounding task action before completion.
+- When `WorkQueue.await()` fails, inspect every nested cause; one queue can report multiple failed work items instead of stopping at the first failure.
 - Waiting one `WorkQueue` reports that queue's failures but does not make other submitted queues successful; failures in another queue can still fail the surrounding task action later.
 - Prefer queue-level `await()` for one queue; `WorkerExecutor.await()` waits all work associated with the current build operation and can over-block unrelated queues.
 - Only no-isolation work actions can submit nested Worker API work; classloader- and process-isolated work actions cannot inject `WorkerExecutor`, so use the owning task action as the scheduler for isolated work.

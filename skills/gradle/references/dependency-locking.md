@@ -22,7 +22,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - Buildscript classpath locking is separate from project dependency locking; strict mode and custom lock files do not leak between them.
 - Use `resolutionStrategy.deactivateDependencyLocking()` or `dependencyLocking.unlockAllConfigurations()` when a resolvable configuration should stay unlocked after broad activation; deleting lock entries alone does not change the locking policy.
 - Configuration inheritance does not inherit locking policy: resolving an unlocked child ignores a locked parent's lock state, while a locked child locks inherited dependencies.
-- Decide locking activation, deactivation, dependencies, hierarchy, and resolution strategy before a configuration is observed or resolved; do not hide locking changes in `incoming.beforeResolve { ... }`.
+- Decide locking activation, deactivation, lock mode, custom lockfile, ignored dependencies, dependencies, hierarchy, and resolution strategy before a configuration is observed or resolved; Gradle finalizes lock options when lock state is first used, so do not hide locking changes in `incoming.beforeResolve { ... }`.
 - In multi-project builds, each project can have its own `gradle.lockfile`.
 - A project dependency's lockfile does not constrain the consuming project; the consumer's own locked configuration can lock external modules reached transitively through that project dependency.
 - The build must resolve a configuration before Gradle can create, update, or clean up its lock state.

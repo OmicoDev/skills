@@ -29,6 +29,7 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Init scripts and init plugins run before repository build logic and can affect every build attached to that Gradle user home or CI image.
 - Flow actions and build services model lifecycle-adjacent work. Ordinary tasks still own source, output, process, and filesystem work.
 - Isolated Projects forbids cross-project mutable model access during configuration. Read immutable project identity sparingly; move shared policy to convention plugins, variants, or state-isolating lifecycle callbacks. Route migration details to [isolated-projects.md](isolated-projects.md).
+- Register `gradle.lifecycle.beforeProject/afterProject` only from the owning build/settings scope. Its isolated actions are configuration-cache-serialized per target and cannot share mutable state or make an included build's build logic access another build's Gradle model.
 
 ## State Scope
 

@@ -11,10 +11,18 @@
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheGracefulDegradationIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheInitScriptsIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/inputs/process/ProcessInInitScriptIntegrationTest.groovy`
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsToolingApiGracefulDegradationIntegrationTest.groovy`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/DefaultConfigurationCacheDegradationController.kt`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/TaskExecutionAccessCheckers.kt`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/problems/ConfigurationCacheProblems.kt`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/promo/ConfigurationCachePromoHandler.kt`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeature.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeatures.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/configuration/BuildFeaturesIntegrationTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/api/internal/ConfigurationCacheDegradation.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/ConfigurationCacheDegradationController.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/configuration/DefaultBuildFeature.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/configuration/DefaultBuildFeatures.java`

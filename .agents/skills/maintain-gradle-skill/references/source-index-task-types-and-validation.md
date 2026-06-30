@@ -27,5 +27,6 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/UntrackedTask.java`
 - `subprojects/core-api/src/main/java/org/gradle/work/DisableCachingByDefault.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/services/BuildServiceIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/IncrementalInputsIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolver.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/DefaultTaskCacheabilityResolver.java`

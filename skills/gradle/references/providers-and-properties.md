@@ -35,6 +35,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - `finalizeValue()` queries any backing provider immediately, replaces the provider link with the current value, and freezes the property; use it only when eager finalization and loss of later provider updates are intentional.
 - Use `finalizeValueOnRead` when the first consumer should lazily freeze the value and every later consumer must see the same result.
 - Use `disallowChanges` after the plugin has intentionally closed mutation.
+- Use `disallowUnsafeRead` when a property must reject configuration-time reads until the owning lifecycle is ready; the first allowed read finalizes the value and can finalize upstream provider-backed properties.
 - Task properties are finalized automatically when the task starts execution; explicit finalization is for closing plugin or model lifecycle earlier than execution.
 - Use `forUseAtConfigurationTime` only for older Gradle compatibility work; in modern builds prefer proper configuration inputs and providers.
 - Do not finalize extension values before all intended conventions have had a chance to apply.
