@@ -16,6 +16,9 @@
 
 ## Source Code
 
+- `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/tasks/PublishedPluginsStricterValidationIntegrationSpec.groovy`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/plugins/JavaGradlePluginPlugin.java`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/tasks/ValidatePlugins.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/DomainObjectCollection.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/Project.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeatures.java`

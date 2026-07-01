@@ -25,6 +25,7 @@
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/strict/StrictVersionConstraintsFeatureInteractionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/configurations/DefaultConfiguration.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/DefaultVersionCatalogBuilder.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalog.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalogsExtension.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyHandler.java`

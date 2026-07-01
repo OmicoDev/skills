@@ -22,3 +22,5 @@
 - `platforms/core-runtime/build-profile/src/main/java/org/gradle/profile/ReportGeneratingProfileListener.java`
 - `platforms/core-runtime/build-profile/src/test/groovy/org/gradle/profile/BuildProfileTest.groovy`
 - `platforms/core-runtime/build-profile/src/test/groovy/org/gradle/profile/ProfileReportRendererTest.groovy`
+- `platforms/core-runtime/launcher/src/main/java/org/gradle/tooling/internal/provider/FileSystemWatchingBuildActionRunner.java`
+- `platforms/core-runtime/launcher/src/test/groovy/org/gradle/tooling/internal/provider/FileSystemWatchingBuildActionRunnerTest.groovy`

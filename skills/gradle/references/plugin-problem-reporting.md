@@ -13,6 +13,7 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 
 - Use the Problems API when a plugin owns diagnostics that should be structured for CLI, IDEs, Build Scan, and Tooling API clients.
 - Inject the public `Problems` service into plugin-owned task or plugin types; avoid internal problem-reporting APIs.
+- For custom Tooling API model diagnostics, inject `Problems` into the plugin that registers the `ToolingModelBuilder`, pass it to the builder, report from `buildAll(...)`, and verify model requests through problem progress events or failure details rather than task outcomes.
 - Treat the public Problems API as incubating and minimum-Gradle-version-sensitive; isolate calls behind small plugin-owned helpers when supporting a Gradle version range.
 - When supporting older Gradle 8.x lines, version-gate newer public entrypoints such as `Problems.getReporter()`, `ProblemReporter.create(...)`, collection report/throwing overloads, `contextualLabel(...)`, `withException(...)`, and `additionalData(...)` instead of falling back to `org.gradle.api.problems.internal.*`.
 - Treat problem rendering as Gradle UI/service infrastructure; plugin code should provide stable public metadata, not console-specific formatting.
@@ -52,11 +53,14 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - Use `--warning-mode=all` when verifying console rendering for recoverable plugin-reported problems.
 - Preserve the console problem text, problem ID/group when visible, and the exact HTML report path Gradle prints when diagnosing.
 - The HTML problems report is generated only when problems are reported; generation is enabled by default and can be disabled with `--no-problems-report` or `org.gradle.problems.report=false`.
+- `--warning-mode=none` can hide the console problem text and the printed problems-report path while the HTML report and problem events still exist; verify with report files or `OperationType.PROBLEMS` before treating a recoverable problem as unreported.
 - `AdditionalData` is for client integration and is not rendered in CLI or HTML problem output.
 - For Tooling API checks, register `OperationType.PROBLEMS` when you need `SingleProblemEvent`/`ProblemSummariesEvent`; for fatal failure details, use incubating `LongRunningOperation.withDetailedFailure()` or `OperationType.ROOT`, inspect `FailureResult.getFailures()` or `GradleConnectionException.getFailures()` recursively, then read each `Failure.getProblems()`.
+- Absence of Tooling API problem events is version-sensitive: targets at or below Gradle 8.5 do not expose problem events, and older 8.x targets may expose only failure-derived problems, so cross-check target Gradle, client Tooling API version, console or HTML report evidence, and detailed failure data before changing plugin reporting code.
 - When checking failure-attached problems, traverse causes recursively and assert stable problem metadata instead of exact cause depth; Gradle can flatten multi-cause wrappers or add worker/build failure layers.
 - When asserting Tooling API problem locations, assert the plugin-supplied file/task location and stable problem metadata; Gradle may attach additional build-script or task-path locations, and their count can vary across Gradle versions.
 - For Tooling API location assertions, prefer `originLocations` and `contextualLocations` when the client API exposes them; use a combined legacy location list only for older client/target pairs.
+- When asserting Tooling API severity, treat Gradle 9.6+ severities as outcome-derived: recoverable reported problems are warnings and fatal problems are errors; `ADVICE` or explicit warning/error configuration points to an older target Gradle, so keep cross-version assertions tolerant.
 - Test fatal and recoverable paths separately because `throwing(...)` changes task/build outcome.
 - For duplicate problems, assert representative `SingleProblemEvent`s plus `ProblemSummariesEvent`; Gradle sends the summary event before build finish even when empty, and each `ProblemSummary.count` is the follow-up occurrence count beyond Gradle's event threshold, not the total number of matching problems.
 

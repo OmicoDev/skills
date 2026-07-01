@@ -31,10 +31,12 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 
 - Declare rules in `dependencies { components { ... } }` or centrally in settings when the rule should govern the whole build.
 - Prefer `withModule(group:name, Rule::class)` over broad `all(...)` rules unless the rule is correct for every affected module.
+- `withModule(group:name, ...)` targets every version of that module; put version-specific repairs behind a `details.id.version` check inside the rule instead of trying to encode a version in the module notation.
 - Prefer isolated `ComponentMetadataRule` classes over inline actions; make reusable rules deterministic and `@CacheableRule` so dependency resolution does not rerun them unnecessarily.
 - Treat a class rule as isolated metadata code: use `ComponentMetadataContext.details`, optional Maven/Ivy descriptors, serializable or Gradle-recognized parameters, and supported injected services such as `ObjectFactory`; do not make rule behavior depend on ambient project state.
 - Inject `RepositoryResourceAccessor` only when the rule truly needs repository-relative resources; repositories without a URL cannot supply it, and flat directory repositories provide a no-op accessor, so required repairs should not depend on reading sidecar metadata there.
 - Cacheable metadata rules can be reused across builds; changing the rule implementation invalidates the cached result, so put every behavior-affecting choice in rule code or declared parameters.
+- When a cacheable rule injects a service that records implicit inputs, those service inputs can expire cached metadata; inspect service up-to-date checks, rule parameters, and module metadata freshness before assuming the repository changed.
 - Avoid deprecated rule-source object APIs; use actions for throwaway local repair or class rules with `ActionConfiguration` parameters for reusable policy.
 - Put reusable rules in settings or convention build logic instead of scattering them across project build scripts.
 - Settings-level rules are incubating and use `RulesMode`: `PREFER_PROJECT` is the default and ignores settings rules when a project declares rules, `PREFER_SETTINGS` ignores project rules, and `FAIL_ON_PROJECT_RULES` turns project rules into a build error.
@@ -43,6 +45,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 ## Metadata Surface
 
 - Use `allVariants` for every variant, `withVariant(name)` for a named variant or Ivy configuration, and `addVariant(name)` or `addVariant(name, base)` to introduce a new variant.
+- Variant dependency and file metadata actions are evaluated lazily for selected variants and then cached; when a `withVariant(...)`, `addVariant(..., base)`, or `withFiles` rule appears to do nothing, first prove the requested attributes select that variant or derived variant.
 - A rule may change variant attributes, capabilities, dependencies, dependency constraints, and files.
 - Use `maybeAddVariant(name, base)` instead of `addVariant(name, base)` in broad `all(...)` rules when the base may not exist; use strict `addVariant` for targeted modules where a missing base should expose a bad metadata assumption.
 - Treat `addVariant` file state as part of the rule contract: empty variants need files added directly, while variants derived from a base may expose inherited artifacts, so enter `withFiles` and either remove/replace copied files for classifier replacements or keep and supplement them for additive runtime artifacts.
@@ -80,4 +83,5 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Validate that the rule remains correct outside the current build. If it only hides a local conflict, choose a local dependency policy instead.
 - Re-run the original dependency report after adding the rule and confirm the selected component, variant, files, dependencies, capabilities, or status changed for the intended reason only.
 - When failure text says Gradle was evaluating a component metadata rule for a module, debug rule code, rule parameters, and descriptor assumptions before changing repositories or version policy.
+- Component metadata rules execute synchronously during dependency resolution; if resolution is slow, inspect broad rules, expensive descriptor reads, sidecar resource access, and shared mutable rule state before tuning repository parallelism.
 - Treat uncached or broad metadata rules as dependency-resolution performance risks; inspect slow resolution with repository order, dynamic/changing modules, and metadata-rule scope together.

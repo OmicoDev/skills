@@ -15,10 +15,16 @@
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheInitScriptsIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/inputs/process/ProcessInInitScriptIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsToolingApiGracefulDegradationIntegrationTest.groovy`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/ConfigurationTimeBarrierBasedExecutionAccessChecker.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/DefaultConfigurationCacheDegradationController.kt`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/DeprecatedFeaturesListener.kt`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/InstrumentedExecutionAccessListener.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/TaskExecutionAccessCheckers.kt`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/barrier/VintageConfigurationTimeActionRunner.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/problems/ConfigurationCacheProblems.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/promo/ConfigurationCachePromoHandler.kt`
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/ConfigurationTimeBarrier.java`
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/DefaultConfigurationTimeBarrier.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeature.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeatures.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/configuration/BuildFeaturesIntegrationTest.groovy`

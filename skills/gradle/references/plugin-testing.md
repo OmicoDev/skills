@@ -33,6 +33,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - TestKit uses isolated fixture directories, a TestKit-controlled Gradle User Home, and dedicated Gradle daemons; it does not inherit default `~/.gradle/gradle.properties`, caches, init scripts, or environment customizations unless the fixture wires them.
 - TestKit working directories are not deleted by default.
 - Set `org.gradle.testkit.dir` or `GradleRunner.withTestKitDir(...)` when TestKit state should live under a build-managed directory or be cleaned predictably.
+- Set TestKit directory and Gradle distribution cache controls in the test JVM or runner process; fixture `gradle.properties` and build scripts affect the build under test, not where the runner downloads Gradle or stores TestKit state.
 - If the fixture passes `-g` or `--gradle-user-home`, that directory overrides the TestKit directory as the test build's Gradle User Home; isolate and clean it with the same care as `withTestKitDir(...)`.
 - On Windows, TestKit disables file-system watching for `GradleRunner` builds to avoid fixture root locks; pass `--watch-fs` only when watcher behavior is the behavior under test.
 
@@ -40,6 +41,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 
 - Always call `withProjectDir(...)` with an isolated fixture root before `build()` or `buildAndFail()`; TestKit requires it and suppresses parent `settings.gradle` discovery for that fixture build.
 - Keep the TestKit directory fixture-owned, writable, and directory-shaped; a file path, unwritable location, or uncreatable parent fails before the build under test starts.
+- Treat `withArguments(...)` as setting the complete Gradle argument list for that runner; compose fixture defaults and per-test flags before calling it so one helper does not silently replace another.
 - Use `build()` when success is expected and `buildAndFail()` when failure is part of the contract.
 - Use `run()` when the test intentionally inspects the returned result without treating success or failure as the API-level expectation.
 - When `build()` or `buildAndFail()` reports an unexpected result, inspect the exception's `BuildResult` for output and started tasks before rewriting the fixture; runner configuration errors, daemon startup failures, and Tooling API transport failures are not ordinary target-build assertions.

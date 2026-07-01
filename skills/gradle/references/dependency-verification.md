@@ -5,11 +5,8 @@ Read this when: `verification-metadata.xml`, checksums, signatures, trusted keys
 ## Verification Model
 
 - Dependency verification checks artifacts resolved through Gradle dependency management against expected checksums or signatures.
-- Checksums prove byte integrity. Signatures prove provenance. Use both for strongest release trust when maintainable.
-- Signature verification without checksums can miss weak-hash integrity problems.
-- With signature verification enabled, unsigned artifacts still require checksum fallback, and any configured checksums are checked even after a signature passes.
-- When multiple checksum algorithms are declared for one artifact, Gradle verifies all of them; a stale weak checksum can fail an otherwise valid artifact.
-- For artifacts signed by multiple keys, every signature must validate; one bad signature can fail the artifact even when another trusted signature passes.
+- Checksums prove byte integrity; signatures prove provenance. Use both for strongest release trust when maintainable because signatures can use weak hashes, unsigned artifacts still need checksum fallback, and configured checksums are checked even after a signature passes.
+- When multiple checksum algorithms or signatures are declared for one artifact, Gradle verifies all of them; a stale weak checksum or one bad signature can fail an otherwise valid artifact.
 - Verification metadata is security policy, not a cache artifact.
 - Dependency verification is enabled when `gradle/verification-metadata.xml` exists; this XML file is currently Gradle's only dependency verification metadata source.
 - Do not commit only a minimal `<configuration>` skeleton as a staged rollout; once the file exists, external dependencies and plugins without recorded metadata will fail in strict mode.
@@ -31,7 +28,6 @@ Bootstrap or update only after reviewing the dependency change:
 ./gradlew --export-keys
 ```
 
-- Use lenient mode for review and migration, not as a permanent release setting.
 - Dry-run metadata is written to `gradle/verification-metadata.dryrun.xml`; compare it as a preview, but remember it can miss dependencies resolved only during task execution.
 - Bootstrapping trusts the repositories and artifacts currently reachable by the build; review generated diffs manually.
 - Metadata generation can resolve root, subproject, `buildSrc`, included-build, and plugin configurations; expect broad diffs after topology or plugin changes, and add entries manually for dependencies resolved only during task execution or custom resolution logic.
@@ -44,14 +40,15 @@ Bootstrap or update only after reviewing the dependency change:
 ## Verification Modes
 
 - `strict` is the default and should own CI/release gates.
-- `lenient` records and reports verification failures while allowing the build to continue; use it for migration and review only.
+- `lenient` records and reports verification failures while allowing the build to continue; use it for migration and review only, and pair it with verbose console output when CI cannot archive the HTML report.
 - `off` disables verification and should be limited to explicit local escape hatches.
 - If `verification-metadata.xml` exists but verification appears inactive, inspect `--dependency-verification`, `org.gradle.dependency.verification`, and configuration `resolutionStrategy.disableDependencyVerification()` before trusting coverage.
-- `org.gradle.dependency.verification.console=verbose` helps CI logs when the HTML report is hard to retrieve.
+- Dependency verification reports include repository evidence and affected cached files; inspect the HTML report before changing trust policy, especially when console output is grouped or truncated.
 
 ## Scope Boundaries
 
 - Dependency verification checks downloaded dependencies, metadata files, plugins, and artifacts resolved through advanced resolution APIs.
+- Verification runs when Gradle accesses verified external artifact or metadata files; use a representative task that resolves files, not only graph reports, before declaring coverage complete.
 - Artifact-view leniency does not bypass dependency verification; checksum, signature, and trust failures still belong to verification metadata or trust policy, not artifact-view configuration.
 - It does not verify locally produced artifacts or changing dependencies whose bytes intentionally change.
 - It does not verify the Gradle wrapper JAR or distribution; handle those through wrapper validation and `distributionSha256Sum`.
@@ -72,7 +69,7 @@ Bootstrap or update only after reviewing the dependency change:
 - Do not trust a PGP key only because the key name, email, or error message looks plausible; verify the full fingerprint from an official project-controlled source.
 - Failed signature: compare upstream-published signatures and downloaded signatures before adding exceptions.
 - Expired signing keys do not automatically invalidate signatures; if the artifact was signed before key expiry and the signature verifies, keep triage focused on key ownership and artifact bytes.
-- Wrong artifact from internal/public repository order: repair repository content filters before adding trust exceptions.
+- Wrong artifact from internal/public repository order: use the report's repository evidence, then repair repository content filters before adding trust exceptions.
 - Repeated missing keys: retry with `--refresh-keys`, then add public keys to a committed keyring if the owner is verified.
 - Signature mismatch with safe artifact: use an artifact-level key exclusion paired with a checksum, not a broad group trust exception.
 - Ignored unavailable keys are not trust evidence. If no other trusted key verifies the signature, provide a reviewed checksum.
@@ -85,7 +82,7 @@ Bootstrap or update only after reviewing the dependency change:
 - To clean stale metadata, move the existing metadata file aside before dry-run generation; dry-run and bootstrap are incremental and copy existing metadata such as trusted keys.
 - Prefer SHA-256 or SHA-512 checksums; avoid MD5 and SHA-1 for new policy.
 - Verify new checksums from a source independent of the artifact repository when possible, especially after repository compromise, mirroring, or shadowing suspicion.
-- Use `also-trust` only after verifying alternate checksums for the same artifact from mirrors or separately produced repository metadata; do not treat it as a blanket mismatch escape hatch.
+- Use `also-trust` only after verifying alternate checksums for the same artifact from mirrors or separately produced repository metadata; it is a checksum alternative, not a blanket mismatch escape hatch, and other declared algorithms must still pass.
 - Prefer artifact-level exceptions over broad component or group exceptions.
 - Record reasons for ignored keys, trusted artifacts, and additional checksums.
 - Use full 40-character fingerprints for `pgp` and `trusted-key` entries; `ignored-key` can use a long ID, but full fingerprints reduce collision risk.

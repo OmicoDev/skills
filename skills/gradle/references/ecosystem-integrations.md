@@ -53,6 +53,7 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - Progress notifications from one `ProjectConnection` are serialized, but the delivery thread may change; keep listeners thread-safe and marshal UI updates explicitly.
 - Recreate a Tooling API connection after connector inputs such as `gradle.properties`, daemon JVM policy, distribution choice, or Gradle user home change.
 - Treat Tooling API `BuildAction` classes as serialized code sent into the build; compile them to the lowest Java level supported by the target Gradle range.
+- Kotlin DSL script editor models are Tooling API root-project models, not project-source Kotlin compilation: request `KotlinDslScriptsModel` with `prepareKotlinBuildScriptModel` and classpath or strict-classpath provider mode, use `org.gradle.tooling.model.kotlin.dsl.scripts` only for explicit script files, and when Isolated Projects is enabled diagnose discovery through the isolated model builder because explicit script lists are rejected.
 - In composite builds, Tooling API task paths and prior test descriptors can target included builds, but class/method selectors without task targets apply only to the root build; use task-scoped test selectors for included-build tests.
 - Use `org.gradle.tooling.parallel` when IDE/model-building parallelism needs a different risk profile from task execution parallelism.
 - Notify Gradle daemons about files changed by the external tool itself; do not replay changes discovered by another watcher because Gradle already watches the file system.

@@ -13,11 +13,14 @@
 
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/LenientArtifactViewIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformCachingIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformIncrementalIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformIsolationIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformParallelIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformValuesInjectionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformWithDependenciesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/CrashingBuildsArtifactTransformIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/DefaultTransform.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/DefaultTransformOutputs.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/TransformationChainsDisambiguator.java`
 - `platforms/software/software-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/ArtifactTransformsReportTaskIntegrationTest.groovy`

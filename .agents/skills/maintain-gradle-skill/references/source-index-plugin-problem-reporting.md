@@ -7,11 +7,13 @@
 - [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html#sec:generated_html_report)
 - [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html#sec:receiving_problem_reports)
 - [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html)
+- [Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
 
 ## Source Code
 
 - `platforms/core-execution/worker-process-services/src/main/java/org/gradle/process/internal/worker/DefaultWorkerProblemProtocol.java`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorProblemsApiIntegrationTest.groovy`
+- `platforms/ide/problems-api/src/integTest/groovy/org/gradle/api/problems/ProblemsServiceIntegrationTest.groovy`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/AdditionalData.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemGroup.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemId.java`
@@ -28,6 +30,9 @@
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r812/BuildFailureProblemsCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r812/ProblemProgressEventCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r812/ProblemThresholdCrossVersionSpec.groovy`
+- `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r86/ProblemsServiceModelBuilderCrossVersionSpec.groovy`
+- `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r87/ProblemProgressEventCrossVersionSpec.groovy`
+- `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r88/ProblemProgressEventCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r89/ProblemProgressEventCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/Failure.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/GradleConnectionException.java`
@@ -40,4 +45,5 @@
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/ProblemId.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/ProblemSummariesEvent.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/ProblemSummary.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/Severity.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/events/problems/SingleProblemEvent.java`

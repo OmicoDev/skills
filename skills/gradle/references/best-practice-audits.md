@@ -17,6 +17,7 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 - Use Kotlin DSL ([scripts-and-conventions.md](scripts-and-conventions.md)): keep new examples and build logic in Kotlin DSL unless a Groovy migration is the task.
 - Use the latest Gradle minor ([upgrade-strategy.md](upgrade-strategy.md)): check compatibility, then update the wrapper deliberately.
 - Apply plugins with the `plugins {}` block ([project-topology-and-build-logic.md](project-topology-and-build-logic.md)): replace imperative plugin application only when classpath and ordering stay valid.
+- Do not rely on plugin application order ([plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md)): apply mandatory plugins explicitly and use plugin callbacks for optional integrations.
 - Avoid Gradle internal APIs ([scripts-and-conventions.md](scripts-and-conventions.md), [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md)): move to public APIs before changing behavior.
 - Put build flags in `gradle.properties` ([runtime-and-structure.md](runtime-and-structure.md)): centralize flags instead of scattering command-line or script defaults.
 - Name the root project ([project-topology-and-build-logic.md](project-topology-and-build-logic.md)): set stable project identity in settings.
@@ -45,6 +46,7 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 ### Tasks
 
 - Avoid `dependsOn` as wiring ([task-execution-and-options.md](task-execution-and-options.md)): model inputs, outputs, artifacts, or buildable providers instead.
+- Avoid consuming task outputs by raw paths ([task-execution-and-options.md](task-execution-and-options.md)): wire task providers or output properties so Gradle sees the producer-consumer relationship.
 - Prefer task cacheability annotations over ad hoc predicates ([build-cache-and-incremental.md](build-cache-and-incremental.md)): make cacheability explicit with task inputs and outputs.
 - Group and describe custom tasks ([task-execution-and-options.md](task-execution-and-options.md)): make public task surfaces discoverable before adding options.
 - Do not call `Provider.get()` outside a task action ([providers-and-properties.md](providers-and-properties.md)): keep values lazy until a Gradle-owned consumer needs them.

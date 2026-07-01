@@ -24,6 +24,7 @@ Read this when: Gradle version compatibility is involved but the exact owner is 
 
 - Wrapper, Gradle client, Tooling API client, and TestKit client may run on older JVMs than the Gradle daemon they launch.
 - Tooling API/TestKit compatibility is not just the wrapper matrix: the client library supports target Gradle releases from the last five major lines and current/next major forward, while daemon JVM requirements and serialized `BuildAction` or fixture bytecode still follow the target Gradle range.
+- When Java-version evidence mentions Daemon JVM criteria, `org.gradle.java.home`, Tooling API `setJavaHome`, IDE Gradle JDK, or `JAVA_HOME`, route daemon policy to [runtime-and-structure.md](runtime-and-structure.md) and version bounds to [compatibility-java.md](compatibility-java.md) before changing project toolchains.
 - Target-platform compatibility is about the host Gradle runtime and file watching, not project output targets; route native cross-compilation or `targetMachines` to [ecosystem-integrations.md](ecosystem-integrations.md).
 - Do not infer KGP, Compose compiler, KSP, KAPT, AGP, or Android Studio support from the embedded Kotlin table.
 - Beta, RC, and alpha versions in tested ranges are not release promises.

@@ -14,7 +14,11 @@
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/JavaPluginExtension.java`
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/internal/DefaultJavaFeatureSpec.java`
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/internal/DefaultJavaPluginExtension.java`
+- `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/jvm/internal/DefaultJvmLanguageUtilities.java`
+- `platforms/jvm/plugins-java-library/src/integTest/groovy/org/gradle/java/JavaLibraryCrossProjectTargetJvmVersionIntegrationTest.groovy`
+- `platforms/jvm/plugins-java-library/src/integTest/groovy/org/gradle/java/JavaLibraryPublishedTargetJvmVersionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/DependenciesAttributesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/MultipleVariantSelectionIntegrationTest.groovy`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/OutgoingVariantsReportTask.java`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/ResolvableConfigurationsReportTask.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/attributes/java/TargetJvmVersion.java`

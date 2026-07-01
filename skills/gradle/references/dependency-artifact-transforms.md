@@ -24,10 +24,13 @@ Read this when: artifact transform implementation, registration, chaining, sched
 ## Implementation
 
 - Implement transforms as `TransformAction<P>` classes with exactly one `@InputArtifact` `Provider<FileSystemLocation>` and optional `TransformParameters`.
+- Define transform action classes in ordinary build logic or plugin classpaths; dynamically generated or custom-classloader action types can fail isolation before artifact resolution.
 - Do not implement `getParameters()` or custom constructors on a `TransformAction`; Gradle supplies parameters and transform actions may only have a default constructor.
 - Use `TransformParameters.None` when no parameters are needed.
 - Define transform parameters as a managed interface or abstract class implementing `TransformParameters`; use managed properties with input annotations for every behavior-affecting parameter.
+- Treat transform parameters as isolated inputs, not shared state; do not rely on mutating build-script objects or parameter-held collections after registration to communicate between transforms or tasks.
 - Pass build service providers into transforms through `TransformParameters`, such as an `@Internal Property<ServiceType>` assigned during `registerTransform`; do not look up shared services from inside the transform action.
+- Transform actions can inject isolated public execution services such as `ObjectFactory`, `ProviderFactory`, `FileSystemOperations`, and `ExecOperations`; they cannot inject project-scoped model such as `ProjectLayout` or internal services, so pass needed directories, files, tools, and service providers through annotated parameters.
 - Treat a build service as shared execution state, not a cache key. If service configuration, tool versions, or external options affect outputs, mirror those values as ordinary annotated transform parameters.
 - Register outputs with `TransformOutputs.file(...)` or `TransformOutputs.dir(...)`. Relative paths allocate transform workspace locations; absolute paths can point at the input artifact or locations inside an input directory.
 - Every registered output file or directory must exist with the registered type when `transform(...)` returns; `outputs.file(...)` creates parent directories for relative file outputs, but the transform still has to create a file, while `outputs.dir(...)` must end as a directory.
@@ -38,7 +41,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Add `@CacheableTransform` only when outputs are deterministic and relocatable. Cacheable transforms need normalization such as `@PathSensitive` on `@InputArtifact` and `@InputArtifactDependencies`, but absolute path sensitivity is invalid for artifact transforms.
 - Use `@DisableCachingByDefault(because = "...")` when a transform is intentionally not cacheable; missing cacheability intent is a validation signal for transform actions just like task types.
 - Declare `@InputArtifactDependencies` as an abstract `FileCollection` getter only when transitive dependency files genuinely affect the conversion; it can force extra resolution/downloads, and cacheable transforms must normalize those injected dependency files.
-- Incremental transforms can inject `InputChanges`, but only the input artifact is incremental.
+- Incremental transforms can inject `InputChanges` with an `@Inject` getter while `transform(...)` still takes only `TransformOutputs`; only the input artifact is incremental.
 - Keep transforms parallel-safe; the same transform may run concurrently for different artifacts.
 - Do not rely on transform side effects, logging, or external mutation running once per consumer; Gradle serializes a single transform workspace and may share one result across parallel resolution requests.
 
@@ -51,6 +54,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Project dependency transforms can often be discovered before task execution; external module transforms are usually scheduled inside the consuming task execution.
 - Do not expect external module transforms to appear as separate scheduled tasks; prove them through artifact resolution output, transform cache behavior, or the consuming task's inputs.
 - If a project dependency transform runs inside the consuming task, inspect whether the producer artifact is task-backed and declared as a task input/output correctly before blaming transform scheduling.
+- Task graph dependency inspection can stop at an artifact-transform boundary; absence of the producer task from `task.taskDependencies` is not proof that the producer artifact is unordered or unused.
 - A transform action is instantiated only when input artifacts exist. Empty input artifact sets skip that transform and any later transforms in the chain.
 - If multiple resolution requests need the same cacheable transform on the same artifacts, Gradle can reuse the transform result instead of rerunning the action.
 - Transform workspace/cache identity includes the input artifact, transform implementation, parameters, and declared dependency files; changing any of them can produce a different output directory even when the registered output path is the same.

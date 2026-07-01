@@ -10,3 +10,10 @@
 - [Best Practices for Testing](https://docs.gradle.org/current/userguide/best_practices_testing.html)
 - [Best Practices Index](https://docs.gradle.org/current/userguide/best_practices_index.html)
 - [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
+
+## Source Code
+
+- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_general.adoc`
+- `platforms/documentation/docs/src/snippets/best-practices/dontAssumePluginOrder-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/dontAssumePluginOrder-do/kotlin/app/build.gradle.kts`
+- `subprojects/core/src/main/java/org/gradle/execution/plan/MissingTaskDependencyDetector.java`

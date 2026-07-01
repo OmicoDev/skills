@@ -44,7 +44,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 
 - Expose user intent through extensions and containers.
 - Register tasks lazily and wire extension properties to task properties.
-- Do not rely on plugin application order across scripts, projects, convention plugins, or included builds. If another plugin is mandatory, apply it inside `Plugin.apply`; if integration is optional, react with `pluginManager.withPlugin(...)`, `plugins.withId(...)`, or type-based `plugins.configureEach(...)`, which handle already-applied and later-applied plugins without `afterEvaluate` ordering assumptions.
+- Do not rely on plugin application order across scripts, projects, convention plugins, or included builds. If another plugin is mandatory, apply it inside `Plugin.apply`; plugin application is idempotent, so avoid `hasPlugin` guards around required plugins. If integration is optional, react with `pluginManager.withPlugin(...)`, `plugins.withId(...)`, or type-based `plugins.configureEach(...)`, which handle already-applied and later-applied plugins without `afterEvaluate` ordering assumptions.
 - Use the injectable `BuildFeatures` service when plugin behavior should adapt to Gradle feature state such as configuration cache or Isolated Projects; `requested` is a possibly-absent `Provider<Boolean>` for user intent/reporting, while `active` is the effective status to gate incompatible behavior.
 - Keep plugin IDs stable and namespace them by ownership.
 - Avoid internal Gradle APIs; prefer public services and model APIs.
@@ -53,6 +53,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Keep external dependencies in plugins minimal to reduce classpath conflicts.
 - Validate behavior with TestKit before publishing or applying broadly.
 - Use `java-gradle-plugin` for plugin projects instead of hand-maintaining descriptors, `gradleApi()`/`compileOnlyApi` wiring, validation, marker publications, and TestKit classpath metadata.
+- Treat `validatePlugins` failures as plugin API contract work, not publication plumbing: `java-gradle-plugin` wires validation into `check`, warnings fail by default, and applying `maven-publish`, `ivy-publish`, or `com.gradle.plugin-publish` enables stricter cacheable-task validation.
 - Register every public plugin in `gradlePlugin { plugins { ... } }`; treat plugin ID and `implementationClass` as release-facing API.
 - Treat plugin descriptor, `implementation-class`, and task property validation warnings as blockers for publishable plugin code.
 - Keep plugin classes as model coordinators: create extensions, set conventions, register tasks lazily, and wire extension properties to task properties without reading them during `apply`.

@@ -7,14 +7,17 @@
 - [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
 - [Migrating Builds From Apache Ant](https://docs.gradle.org/current/userguide/migrating_from_ant.html)
 - [Migrating Builds From Apache Maven](https://docs.gradle.org/current/userguide/migrating_from_maven.html)
+- [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html)
 - [The Feature Lifecycle](https://docs.gradle.org/current/userguide/feature_lifecycle.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code
 
 - `platforms/core-runtime/logging-api/src/main/java/org/gradle/api/logging/configuration/WarningMode.java`
+- `platforms/core-runtime/logging/src/integTest/groovy/org/gradle/DeprecatedUsageBuildOperationProgressIntegrationTest.groovy`
 - `platforms/core-runtime/logging/src/main/java/org/gradle/internal/featurelifecycle/LoggingDeprecatedFeatureHandler.java`
 - `platforms/core-runtime/logging/src/main/java/org/gradle/internal/logging/LoggingConfigurationBuildOptions.java`
+- `platforms/core-runtime/start-parameter/src/main/java/org/gradle/initialization/StartParameterBuildOptions.java`
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperChecksumVerificationTest.groovy`
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperGenerationIntegrationTest.groovy`
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperHttpIntegrationTest.groovy`

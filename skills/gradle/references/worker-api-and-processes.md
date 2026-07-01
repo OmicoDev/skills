@@ -28,6 +28,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Make work actions abstract, annotate constructors with `@Inject`, and use `WorkParameters.None` when no parameters are needed; do not implement `WorkAction.getParameters()` or concrete `WorkParameters` because Gradle generates and injects them.
 - Obtain a `WorkQueue` from `noIsolation()`, `classLoaderIsolation(...)`, or `processIsolation(...)`; do not use old `WorkerExecutor.submit(...)` patterns.
 - Keep a `WorkQueue` local to the task action; the queue has one set of worker requirements and is not a thread-safe coordination object.
+- Submit Worker API work from the owning task action or another Gradle-managed execution thread. Do not create arbitrary threads just to call `WorkQueue.submit`; let Worker API own the parallelism and pass per-item inputs through `WorkParameters`.
 - Work actions can inject public worker services such as `FileSystemOperations`, `ObjectFactory`, `ProviderFactory`, and `ExecOperations`; do not inject `Project`, `ProjectLayout`, or internal Gradle services. Relative paths used through `FileSystemOperations` resolve from the owning project directory.
 - A work action can inject `Problems` for structured diagnostics; route problem IDs, labels, locations, additional data, and Tooling API assertions to [plugin-problem-reporting.md](plugin-problem-reporting.md), and verify each isolation mode because process-isolated workers can emit the problem without the same origin stack location as in-process workers.
 - Treat each work item as concurrently executable. Avoid shared mutable state unless it is protected by a build service or another explicit concurrency boundary.
@@ -60,6 +61,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Worker daemon reuse depends on compatibility: Java executable, classpath, heap settings, JVM args, system properties, environment variables, bootstrap classpath, debug flag, assertions, and default encoding.
 - Worker daemon reuse can also be broken by keep-alive scope, classloader structure changes, log-level changes, failed clients, or memory pressure; treat extra worker starts as compatibility evidence before tuning `org.gradle.workers.max`.
 - Keep process-isolated worker requirements stable across submitted items when reuse matters; changing classpaths or fork options can intentionally split worker daemon pools.
+- For classloader- or process-isolated classpath issues, compare the declared task input classpath with Gradle's copied/transformed worker classpath in the project cache before blaming daemon reuse.
 - Worker daemon default max heap is limited, and reuse matching is stricter for executable, exact classpath, debug, assertions, and encoding than for superset-like JVM args, system properties, environment, bootstrap classpath, or higher heap.
 - Process isolation has startup cost. Prefer classloader isolation when classpath isolation is enough.
 - Gradle may stop worker daemons when system memory is low; do not use them as durable state stores.

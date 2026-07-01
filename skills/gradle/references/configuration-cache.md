@@ -73,6 +73,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 
 - Replace execution-time `project.file(...)` with file properties wired during configuration.
 - Replace task-action `project.files`, `project.fileTree`, `project.zipTree`, `project.tarTree`, `project.copy`, `project.sync`, `project.delete`, `project.exec`, and `project.javaexec` with task/file properties plus injected `ObjectFactory`, `ArchiveOperations`, `FileSystemOperations`, or `ExecOperations` as appropriate.
+- If the warning names reading an injected `Project`, `Gradle`, or other disallowed service at execution time, remove the broad model service from the task action path; copy required scalar/provider values during configuration or inject a narrower execution service such as `ExecOperations` or `FileSystemOperations`.
 - Replace `System.getenv(...)` or `System.getProperty(...)` reads during configuration with provider-backed reads.
 - Replace simple external process reads during configuration with `providers.exec` or `providers.javaexec`; use `ValueSource` when the input selection is more complex.
 - Treat configuration-time `providers.exec`, `providers.javaexec`, and `ValueSource` queries as cache-reuse checks, not memoized process results; keep them fast because they run on every build that evaluates cache validity.

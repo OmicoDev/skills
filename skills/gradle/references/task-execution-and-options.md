@@ -25,7 +25,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Destroyable paths participate in scheduling: Gradle avoids parallel execution when a task's destroyables overlap another task's inputs or outputs, but explicit `dependsOn`, `mustRunAfter`, or `shouldRunAfter` relationships still define the graph/order you asked for.
 - Command-line task order can protect explicitly requested workflows such as `clean build`, but task dependencies still determine the precise graph; model recurring ordering or cleanup requirements in task relationships instead of relying on how humans type tasks.
 - Avoid broad task graph callbacks for ordinary wiring; prefer lazy task registration, providers, and output properties.
-- If Gradle reports implicit dependencies, replace raw `File` or path wiring with task providers, output properties, or the producing task as an input.
+- If Gradle reports implicit dependencies, first replace raw `File` or path wiring with task providers, output properties, or the producing task as an input; use `dependsOn` or `mustRunAfter` only when the relationship is pure execution order and no consumer should model the producer's output as an input.
 
 ## Finalizers, Skips, And Timeouts
 
@@ -53,12 +53,16 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 
 - Use `@Option` on custom task setters when a task property should be configurable immediately after the task name on the command line.
 - Task options are task-specific, not global plugin or project options. The task exposing the option must be requested explicitly.
+- `@Option` annotations on task interfaces are discovered, but overriding the same property on the concrete task type can change the effective option behavior; lock public option contracts with `help --task` and a functional test.
 - When an unqualified task selector matches multiple tasks, options after that selector apply to every selected task; use explicit task paths when only one matching task type owns the option.
 - Built-in task option `--rerun` reruns only the requested task it follows; use global `--rerun-tasks` only when every task should ignore up-to-date state.
 - Task options can only be declared on custom task types through annotations; there is no project-level or programmatic task-option API.
 - Put task options after the task name they configure; options on tasks reached only through dependencies are not available unless that task is explicitly requested.
+- Included-build task paths can carry that included task's `@Option` values through both CLI and Tooling API launchers; diagnose option failures as target task path or target task option-surface issues, not root-project global options.
 - Custom task options use double-dash long option syntax such as `--output-dir`; single-dash syntax is not valid for `@Option`.
 - Boolean options support `--flag` and generated `--no-flag` forms when they do not conflict with an existing option.
+- An explicitly declared `no-*` boolean option shadows the generated opposite option; confirm the public flag set with `help --task` before renaming or adding paired flags.
+- `@Option` names must be unique across the task type hierarchy; duplicates on different fields, methods, or interfaces fail option discovery before the task action runs.
 - Multi-value options must be repeated, such as `--id=one --id=two`; comma-separated or space-separated lists are not equivalent.
 - `DirectoryProperty` and `RegularFileProperty` option values are resolved relative to the project directory that owns the property instance.
 - Keep `@Option` properties to supported scalar, enum, file, list, set, or Gradle property types. Use extension properties, project properties, or build services for complex or cross-task build knobs.

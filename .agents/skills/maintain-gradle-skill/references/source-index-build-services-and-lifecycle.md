@@ -13,6 +13,7 @@
 - `platforms/core-configuration/flow-services/src/integTest/groovy/org/gradle/internal/flow/services/FlowScopeIntegrationTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/Task.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/services/BuildServiceRegistration.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/services/BuildServiceRegistry.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/services/BuildServiceSpec.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/services/ServiceReference.java`
 - `subprojects/core-api/src/main/java/org/gradle/build/event/BuildEventsListenerRegistry.java`
@@ -20,4 +21,6 @@
 - `subprojects/core/src/integTest/groovy/org/gradle/api/services/BuildServiceParallelExecutionIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/build/event/BuildEventsParallelIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/services/internal/BuildServiceProviderNagger.java`
+- `subprojects/core/src/main/java/org/gradle/api/services/internal/DefaultBuildServicesRegistry.java`
 - `subprojects/core/src/main/java/org/gradle/api/services/internal/RegisteredBuildServiceProvider.java`
+- `subprojects/core/src/test/groovy/org/gradle/api/services/internal/DefaultBuildServicesRegistryTest.groovy`

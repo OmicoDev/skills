@@ -39,7 +39,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - Use `@CompileClasspath` for Java compilation classpaths when appropriate.
 - Use `@LocalState` for task-owned state that should not be cached, `@Destroys` for destructive tasks, and `@Nested` for nested beans that expose their own annotated properties.
 - Use `@SkipWhenEmpty` or `@Incremental` on file inputs whose changes will be queried through `InputChanges`.
-- Use `@IgnoreEmptyDirectories` when directory entries themselves do not affect the output.
+- `@InputDirectory` already ignores empty directories; add `@IgnoreEmptyDirectories` to `@InputFiles`, `@SkipWhenEmpty`, or transform inputs when directory entries themselves do not affect the output.
 - Use `@NormalizeLineEndings` for text inputs where CRLF/LF differences should not invalidate up-to-date or cache keys.
 - Use `@Console` only for values that affect console output but not outputs, and `@ReplacedBy` only for migration bridges that should not affect up-to-date checks.
 - For Gradle's `WriteProperties` task on Gradle 9+, use `destinationFile`; the old `outputFile` property is removed.
@@ -80,6 +80,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 ## Common Failures
 
+- `Execution optimizations have been disabled...` means task or work validation produced warnings; Gradle deduplicates and truncates those problems, reports them as deprecations, and disables optimizations for correctness, so fix the underlying property or annotation problem before investigating cache misses or up-to-date failures.
 - Hidden eager task realization through Groovy DSL task blocks.
 - Calling `Provider.get()` during configuration to pass values to provider-aware APIs.
 - Resolving configurations during configuration.

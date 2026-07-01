@@ -21,7 +21,7 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 
 - Use `force` only as a temporary or emergency override with a removal path. Prefer constraints, platforms, rich versions, metadata repair, or locks for durable version policy.
 - `force(...)` appends forced modules, while assigning `forcedModules` replaces the set; be explicit when convention plugins layer or reset emergency overrides.
-- `failOnVersionConflict()`, `failOnDynamicVersions()`, `failOnChangingVersions()`, and `failOnNonReproducibleResolution()` are detection or policy gates; they do not choose the correct version.
+- `failOnVersionConflict()`, `failOnDynamicVersions()`, `failOnChangingVersions()`, and `failOnNonReproducibleResolution()` are detection or policy gates; they do not choose the correct version, and `failOnNonReproducibleResolution()` is just the dynamic-plus-changing gate combination.
 - Use `preferProjectModules()` only when a resolved conflict should prefer a project component over a binary component; it does not include missing projects, rewrite coordinates, or replace an external module by itself.
 - Use component selection rules when a configuration must reject candidate versions during selection, especially dynamic selectors or metadata-based rejects.
 - Component selection starts from the highest matching candidate; a candidate is accepted unless a rule rejects it. Target rules to `group:module` when possible and handle optional metadata defensively.
@@ -29,6 +29,7 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 - Reading `selection.metadata` or `selection.getDescriptor(...)` can require metadata download; missing or broken metadata may fail resolution before artifact download, so avoid metadata reads when coordinates alone can decide the rule.
 - Use rich-version `reject` when the build should express unacceptable versions as version intent; use dependency resolve rules only when a rejected request should be rewritten to a known replacement.
 - `eachDependency` and dependency substitution rules run after forced modules are applied; if a rewrite seems ignored, inspect whether a force already selected the target version.
+- Force, dependency substitution, `eachDependency`, and module replacement rules also affect dependency constraints; when a constraint line shows `selectedByRule` or forced selection, inspect `resolutionStrategy` before editing platform or constraint declarations.
 - For `force(...)`, `useTarget(...)`, or plugin `useModule(...)`, pass supported module notation such as `group:name:version`; do not route dependency constraints or other `ModuleVersionSelector` objects through deprecated conversion.
 
 ## Substitution And Local Forks
@@ -59,6 +60,8 @@ Read this when: `resolutionStrategy`, dependency substitution, local forks, modu
 ## Plugin-Owned Defaults
 
 - Use default dependencies for plugin-owned configurations when the plugin needs a tool or library only if the user has not declared one.
+- `defaultDependencies` runs when that configuration first participates in dependency resolution, including through a child configuration or project dependency; do not assume it waits until the configuration is resolved directly.
+- A configuration is considered empty for `defaultDependencies` even when it extends a non-empty configuration, and multiple default actions stop once one action adds a dependency; add explicit user dependencies to the plugin-owned configuration when users must suppress the default.
 - Expose an override path for every default dependency, normally through the configuration itself or a typed version property.
 - Use lazy dependency additions such as provider-backed additions when the decision depends on values that should not be read during configuration.
 - Prefer a constraint with `prefer(...)` when plugin build logic wants to supply a default version for a user-declared dependency without adding a dependency itself; use `dependencies.addLater(...)` when the plugin may conditionally add the dependency.

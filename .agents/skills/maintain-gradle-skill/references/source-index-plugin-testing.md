@@ -33,6 +33,7 @@
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerResultIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/GradleRunnerUnsupportedFeatureFailureIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/enduser/GradleRunnerConsoleInputEndUserIntegrationTest.groovy`
+- `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/enduser/GradleRunnerDefaultTestKitDirIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/enduser/GradleRunnerPluginClasspathInjectionEndUserIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/jvm/GradleRunnerCliGradlePropertyFileDaemonJvmIntegrationTest.groovy`
 - `platforms/extensibility/test-kit/src/integTest/groovy/org/gradle/testkit/runner/jvm/GradleRunnerExplicitDaemonJvmIntegrationTest.groovy`

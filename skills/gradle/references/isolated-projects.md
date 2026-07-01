@@ -74,11 +74,13 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 - Gradle recreates each `IsolatedAction` through Configuration Cache serialization per target project; captured values must be isolatable, and build services or shared mutable state are not supported inside the action.
 - Use `project.isolated` or `rootProject.isolated` when another project's safe identity data is genuinely needed; the view is limited to identity/root/directory data, not a back door to `group`, `version`, `layout`, tasks, extensions, or configurations.
 - Register shared build services with `registerIfAbsent` and mutate parameters only inside the registration action. Do not inspect `gradle.sharedServices.registrations`.
+- Treat custom Tooling API model builders as isolated build logic too; do not aggregate by reading subproject extensions, tasks, configurations, or plugins from a root-project builder.
 - Keep included builds as separate build owners; communicate through plugin management, coordinates, substitutions, or duplicated settings policy.
 
 ## Symptom Map
 
 - Violation names another project: replace cross-project model access with a convention plugin, dependency, variant, publication, or isolated identity read.
+- Violation names another build's `Gradle.getTaskGraph`, `getSharedServices`, `getProviders`, `rootProject`, `allprojects`, or lifecycle callbacks: an included build is reading parent-build mutable state through `gradle.parent`; move the policy to settings/plugin management, duplicate immutable settings, or exchange modeled artifacts instead of retaining the parent `Gradle` model.
 - Violation appears only in IDE sync: model building exercised a path ordinary task runs did not; reproduce with IDE properties and inspect Tooling API/model builders.
 - Diagnostics mode is clean but normal mode fails: investigate lazy task configuration, workflow-specific plugins, and parallel configuration ordering.
 - Performance does not improve: check configuration-time share, `org.gradle.workers.max`, IDE model parallelism, tooling model cache status, work graph discovery, and whether Configuration Cache already hits.

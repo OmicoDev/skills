@@ -29,5 +29,9 @@
 - `subprojects/core/src/main/java/org/gradle/api/internal/project/DefaultProjectState.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/project/DefaultProjectStateRegistry.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/project/ProjectState.java`
+- `subprojects/core/src/main/java/org/gradle/internal/build/AllProjectsAccess.java`
+- `subprojects/core/src/main/java/org/gradle/internal/build/BuildProjectRegistry.java`
 - `subprojects/core/src/main/java/org/gradle/internal/build/BuildState.java`
 - `subprojects/core/src/main/java/org/gradle/internal/build/BuildStateRegistry.java`
+- `subprojects/core/src/main/java/org/gradle/invocation/DefaultGradle.java`
+- `subprojects/core/src/main/java/org/gradle/invocation/IsolatedProjectEvaluationListenerProvider.java`

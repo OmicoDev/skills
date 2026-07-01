@@ -25,6 +25,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Register services with `gradle.sharedServices.registerIfAbsent(...)`.
 - Registration is lazy: the service instance is not created when no task/action actually uses it in that build.
 - Build services are scoped to one build, not one project. Use a stable registration name when one shared resource should coordinate tasks across projects in the same build.
+- `registerIfAbsent` reuses the first same-name registration; do not expect later calls with different parameters, limits, or implementation intent to merge. Centralize registration ownership and use deliberately unique names when the services are not the same shared resource.
 - Mutate parameters only inside the registration action so configuration cache and Isolated Projects see one stable service definition.
 - Gradle snapshots service parameters when it first creates the service instance; values changed after the first service query do not reconfigure that instance, so put mutable runtime coordination inside the service implementation.
 - Do not inspect `gradle.sharedServices.registrations` under Isolated Projects; register by stable name and keep later lookups to the returned provider.

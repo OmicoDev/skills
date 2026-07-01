@@ -43,8 +43,11 @@ Read this when: embedded Kotlin, Kotlin DSL compilation, Kotlin language level, 
 ## Diagnostic Rules
 
 - Embedded Kotlin affects Kotlin DSL script compilation, Kotlin DSL APIs, and Gradle plugins compiled against Gradle's Kotlin DSL. It is not the Kotlin Gradle Plugin version used for project source.
+- The `gradle --version` Kotlin line reports the embedded Kotlin DSL version from the Gradle distribution; use it to verify wrapper/runtime alignment, not the project source KGP version.
+- The `embedded-kotlin` plugin applies `org.jetbrains.kotlin.jvm`, creates an `embeddedKotlin` configuration, and wires embedded `kotlin-stdlib`/`kotlin-reflect` to `compileOnly` and `testImplementation`; do not treat that alignment as project-source KGP guidance.
 - On Gradle 9+, Kotlin DSL scripts and Kotlin build logic use Kotlin language level 2.2; replace script-instance labels such as `this@Build_gradle`, `this@Settings_gradle`, or `this@Init_gradle` with `project`, `settings`, or `gradle` when they mean the script target.
 - On Gradle 9+, `kotlinDslPluginOptions.jvmTarget` is removed; configure the Java toolchain or JVM target for `kotlin-dsl` build logic through toolchain APIs instead of Kotlin DSL plugin options.
+- Kotlin DSL script bytecode targets the build JVM up to the maximum JVM target supported by the embedded Kotlin compiler; precompiled script plugins can use a Java toolchain, but publishing higher-target bytecode means consumers must run a compatible Gradle JVM.
 - Plugins built and published with the `kotlin-dsl` plugin on Gradle 9 require consumer Gradle 8.11+ unless the plugin explicitly compiles against an earlier Kotlin 1.x language/API level.
 - On Gradle 9+, public Gradle APIs use JSpecify nullability; Kotlin build-logic errors around `Provider<T>`, `Property<T>`, or Gradle API maps often need non-null generic bounds or non-null value types, not suppression or looser casts.
 - Kotlin DSL failures after a Gradle upgrade can come from embedded Kotlin, script accessors, third-party plugins, or build logic classpaths.

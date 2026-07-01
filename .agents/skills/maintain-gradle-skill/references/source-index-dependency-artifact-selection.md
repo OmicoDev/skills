@@ -20,6 +20,12 @@
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/api/ResolvedArtifactsApiIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewArtifactSelectionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewAttributesIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/compatibility/ArtifactAndClassifierCompatibilityIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/maven/ClassifierToVariantResolveIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/dependencysubstitution/ArtifactSelectionDetailsInternal.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/dependencysubstitution/DefaultArtifactSelectionDetails.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolveengine/artifact/VariantResolvingArtifactSet.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/resolver/DefaultResolutionOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactCollection.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactView.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/LenientConfiguration.java`

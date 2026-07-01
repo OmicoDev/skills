@@ -9,11 +9,13 @@
 ## Source Code
 
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/BeforeResolveIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/AbstractLockingIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/DependencyLockingStrictModeIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/LockingInteractionsIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/MixedDependencyLockingIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/MultiProjectDependencyLockingIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/UsingLockingOnNonProjectConfigurationsIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ResolutionExecutor.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/internal/locking/DefaultDependencyLockingProvider.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/internal/locking/DependencyLockingGraphVisitor.java`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/internal/locking/DefaultDependencyLockingProviderTest.groovy`

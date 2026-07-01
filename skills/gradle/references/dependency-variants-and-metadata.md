@@ -36,6 +36,7 @@ Read this when: variant-aware resolution, attributes, capabilities, or published
 - Register custom attributes and their compatibility/disambiguation rules in `dependencies.attributesSchema`; rules do not help consumers that never load the schema.
 - For custom attributes typed as `Named`, create values through `ObjectFactory.named(...)` so producer and consumer values have the same typed identity.
 - For JVM variants, `org.gradle.jvm.version` prefers the highest compatible target; do not patch this like an arbitrary string attribute.
+- Treat `java.disableAutoTargetJvm()` as a consumer-side escape hatch for dependency selection, not a producer metadata repair. It stops Gradle from constraining non-consumable Java configurations to the module's target compatibility, but the producer variant still publishes its own `org.gradle.jvm.version` and lower-JVM consumers can still fail.
 
 ## Matching Repair Order
 

@@ -63,6 +63,7 @@ Treat `--profile` task, project, dependency-resolution, and artifact-transform t
 
 - Treat file-system watching as daemon-local VFS reuse, not as task input declaration. If Gradle misses a change, first suspect undeclared inputs/outputs or unsupported file-system behavior.
 - Diagnose with `--watch-fs`/`--no-watch-fs` and `-Dorg.gradle.vfs.verbose=true`; keep verbose VFS logging out of default CI unless it is actively proving a watcher issue.
+- Do not combine explicit `--watch-fs` or `org.gradle.vfs.watch=true` with `--project-cache-dir`; default watching is disabled for custom project cache dirs, while continuous build and running deployments require active watching.
 - On Linux, large builds can hit inotify watch limits; raising limits costs memory, so memory-constrained CI may be better served by disabling watching.
 - Symlink-heavy or unsupported file systems can reduce watcher value and cross-platform cache reuse. Route persistent cache misses to [build-cache-and-incremental.md](build-cache-and-incremental.md).
 

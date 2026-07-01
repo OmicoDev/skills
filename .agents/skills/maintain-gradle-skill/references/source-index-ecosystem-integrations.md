@@ -25,6 +25,13 @@
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsToolingApiKotlinDslIntegrationTest.groovy`
+- `platforms/core-configuration/kotlin-dsl-tooling-builders/src/crossVersionTest/groovy/org/gradle/kotlin/dsl/tooling/builders/r68/KotlinDslDefaultScriptsModelCrossVersionSpec.groovy`
+- `platforms/core-configuration/kotlin-dsl-tooling-builders/src/crossVersionTest/groovy/org/gradle/kotlin/dsl/tooling/builders/r68/KotlinDslGivenScriptsModelCrossVersionSpec.groovy`
+- `platforms/core-configuration/kotlin-dsl-tooling-builders/src/main/kotlin/org/gradle/kotlin/dsl/tooling/builders/KotlinDslScriptsModelBuilder.kt`
+- `platforms/core-configuration/kotlin-dsl-tooling-builders/src/main/kotlin/org/gradle/kotlin/dsl/tooling/builders/internal/IsolatedProjectsSafeKotlinDslScriptsModelBuilder.kt`
+- `platforms/core-configuration/kotlin-dsl-tooling-builders/src/main/kotlin/org/gradle/kotlin/dsl/tooling/builders/internal/KotlinScriptingModelBuildersRegistrant.kt`
+- `platforms/core-configuration/kotlin-dsl-tooling-builders/src/testFixtures/groovy/org/gradle/kotlin/dsl/tooling/fixtures/KotlinScriptModelParameters.groovy`
 - `platforms/ide/tooling-api-builders/src/main/java/org/gradle/tooling/internal/provider/runner/DefaultBuildController.java`
 - `platforms/ide/tooling-api-builders/src/main/java/org/gradle/tooling/internal/provider/runner/DefaultInternalFetchModelResult.java`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r930/ResilientGradleBuildBuilderCrossVersionSpec.groovy`
@@ -38,6 +45,8 @@
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/TestLauncher.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/DefaultFetchModelResult.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/connection/FetchAwareBuildControllerAdapter.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/model/kotlin/dsl/KotlinDslModelsParameters.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/model/kotlin/dsl/KotlinDslScriptsModel.java`
 - `platforms/software/ant-api/src/main/java/org/gradle/api/AntBuilder.java`
 - `platforms/software/testing-base/src/main/java/org/gradle/api/tasks/testing/TestEventReporterFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/FileCollection.java`

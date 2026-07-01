@@ -11,14 +11,18 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/constraints/DependencyConstraintsAndResolutionStrategiesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ivy/ComponentSelectionRulesDependencyResolveIntegTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ivy/ComponentSelectionRulesErrorHandlingIntegTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ivy/ComponentSelectionRulesProcessingIntegTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/rules/DependencyResolveRulesDisableGlobalDependencySubstitutionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolutionstrategy/DefaultCapabilitiesResolution.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolutionstrategy/DefaultResolutionStrategy.java`
+- `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/configurations/DefaultConfigurationSpec.groovy`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/ivyservice/resolutionstrategy/DefaultResolutionStrategySpec.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/CapabilitiesResolution.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/CapabilityResolutionDetails.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentSelection.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentSelectionRules.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/Configuration.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ResolutionStrategy.java`

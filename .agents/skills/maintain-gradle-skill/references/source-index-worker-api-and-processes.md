@@ -21,6 +21,7 @@
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerDaemonFailureLoggingIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerDaemonLifecycleTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorErrorHandlingIntegrationTest.groovy`
+- `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorJdkVersionsIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorNestingIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorParallelIntegrationTest.groovy`
@@ -32,6 +33,7 @@
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/WorkerExecutionException.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/WorkerExecutor.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/internal/DaemonForkOptions.java`
+- `platforms/core-execution/workers/src/main/java/org/gradle/workers/internal/DefaultWorkerExecutor.java`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/internal/WorkerDaemonClientsManager.java`
 - `platforms/core-execution/workers/src/test/groovy/org/gradle/workers/internal/DaemonForkOptionsTest.groovy`
 - `platforms/core-execution/workers/src/test/groovy/org/gradle/workers/internal/WorkerDaemonClientsManagerTest.groovy`

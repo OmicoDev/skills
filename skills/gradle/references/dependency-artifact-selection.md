@@ -23,6 +23,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, va
 - If the build still needs metadata-backed variant selection but wants a different file, use an artifact view, variant reselection, or metadata repair instead of `@extension`.
 - If direct artifact-only retrieval fails or starts needing metadata behavior, remove `@extension` and repair metadata or variants; do not expect component metadata rules to restore variant-aware semantics to an artifact-only declaration.
 - Use classifier notation for a specific legacy Maven/Ivy artifact only when the classifier is not a real variant contract. If the classifier represents JVM, native, platform, or feature semantics, model it with [dependency-metadata-rules.md](dependency-metadata-rules.md) or variants.
+- When a classifier request resolves a module that also publishes Gradle Module Metadata, Gradle may map the classifier to the matching metadata variant for compatibility; inspect the selected variant before assuming classifier notation bypassed variant matching, but still prefer attributes or metadata repair for new modeling.
 
 ## Artifact Views
 
@@ -39,6 +40,7 @@ Read this when: artifact views, artifact-only notation, classifier artifacts, va
 - Avoid new `ArtifactResolutionQuery` use for sources or javadoc; prefer an artifact view with `withVariantReselection()` and documentation attributes.
 - Without variant reselection, artifact selection must still come from the graph-selected component variant.
 - Use `withVariantReselection` only when the consumer intentionally wants a parallel variant of each selected component, such as sources or javadoc. Treat it as an incubating API and provide the complete target variant attributes because the configuration's graph attributes are ignored during reselection.
+- Variant reselection still follows the selected component capabilities; if feature variants share documentation attributes, sources or javadoc views return only documentation artifacts for the capabilities selected by the graph.
 - Variant reselection can legitimately return no artifact for a selected dependency whose requested parallel variant is absent, and it excludes dependencies declared with an explicit artifact or classifier request; diagnose empty sources/javadoc views before changing the graph.
 - Without variant reselection, artifact view attributes are combined with the graph resolution attributes for artifact selection and may trigger transforms when no selected artifact set matches.
 - When an artifact view adds artifact attributes, no matching artifact variant may produce an empty view instead of a dependency resolution failure; inspect the view attributes and producer artifact variants before changing dependency declarations.

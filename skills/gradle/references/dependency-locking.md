@@ -72,6 +72,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - Locking constrains modules that remain in the resolved graph; it does not resurrect excluded modules, and it skips versionless dependencies and included-build substitutions when producing or loading lock state.
 - If a force, dependency substitution, or `eachDependency` rule selects a different version from the lock, treat the failure as a lock-policy conflict and update the rule or lock together.
 - Locking does not apply to source dependencies.
+- Do not combine dependency locking with `failOnDynamicVersions()` or `failOnChangingVersions()` on the same configuration; choose locking to preserve selected dynamic/changing results, or choose fail-fast resolution to reject those selectors before lock state is relevant.
 
 ## Review Rules
 
@@ -90,4 +91,5 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - `*:*` is not accepted as an ignore pattern because it effectively disables locking.
 - Lock ignore rules are project scoped and do not remove transitive dependencies from lock state.
 - Ignored modules are filtered out when reading, validating, and writing lock state, and Gradle does not verify that they appear in any resolved configuration.
+- Ignored changing modules are filtered before the changing-module warning too; do not treat quiet `--write-locks` output as proof that a SNAPSHOT or changing dependency is reproducible.
 - To remove stale lock state, stop locking that configuration and run a command that resolves it while writing locks; Gradle cannot clean a configuration's lock state if that configuration is not visited.
