@@ -25,7 +25,17 @@
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/strict/StrictVersionConstraintsFeatureInteractionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/configurations/DefaultConfiguration.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/AbstractExternalDependencyFactory.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/AliasNormalizer.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/DefaultVersionCatalog.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/DefaultVersionCatalogBuilder.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/LibrariesSourceGenerator.java`
+- `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/catalog/DefaultVersionCatalogBuilderTest.groovy`
+- `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/catalog/LibrariesSourceGeneratorTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalog.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalogsExtension.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyHandler.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/initialization/dsl/VersionCatalogBuilder.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/catalog/parser/StrictVersionParser.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/catalog/parser/TomlCatalogFileParser.java`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/catalog/parser/TomlCatalogFileParserTest.groovy`

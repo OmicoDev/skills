@@ -57,6 +57,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Register every public plugin in `gradlePlugin { plugins { ... } }`; treat plugin ID and `implementationClass` as release-facing API.
 - Treat plugin descriptor, `implementation-class`, and task property validation warnings as blockers for publishable plugin code.
 - Keep plugin classes as model coordinators: create extensions, set conventions, register tasks lazily, and wire extension properties to task properties without reading them during `apply`.
+- For reporting plugins or tasks, derive report locations from `ReportingExtension.getBaseDirectory().dir(...)` or `.file(...)`; do not use deprecated `ReportingExtension.file(String)`, and replace `getApiDocTitle()` with plugin-owned title conventions because Gradle provides no direct replacement.
 
 ## Task Discovery And Surface
 

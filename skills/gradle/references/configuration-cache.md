@@ -59,6 +59,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 ## Task State Rules
 
 - Task fields and task actions, including `doFirst` and `doLast`, must not reference live JVM state such as threads, sockets, classloaders, streams, or synchronization primitives.
+- If Gradle 9.6+ reports a `java.util.concurrent` or `java.util.concurrent.locks` type such as `ReentrantLock`, `CountDownLatch`, or `SynchronousQueue` during configuration-cache storage, remove it from task state; use a shared build service for cross-task coordination instead of serializing synchronization primitives.
 - Task actions must not use Gradle model objects such as `Project`, `Settings`, `Gradle`, `SourceSet`, `Configuration`, publications, or dependency results; Gradle 9.6+ also flags task dependency relationship getters, `Task.getExtensions()`, and injected `Project` or `Gradle` services at execution time.
 - Replace `Configuration` task inputs with `FileCollection` or provider-backed resolution results that defer dependency resolution to the owning consumer.
 - Replace `SourceDirectorySet` task inputs with `FileTree` or file properties when only files are needed.

@@ -33,8 +33,7 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 
 ## Composite Builds
 
-- Use `includeBuild(...)` when separate builds should be composed together, such as local module replacement or a dedicated build-logic build.
-- The `includeBuild(...)` path should point at the included build root that contains its settings file. Relative paths resolve from the including settings directory; avoid absolute paths in checked-in topology.
+- Use `includeBuild(...)` when separate builds should be composed together, such as local module replacement or a dedicated build-logic build; point it at the included build root containing its settings file, resolve relative paths from the including settings directory, and avoid absolute paths in checked-in topology.
 - Included builds are not subprojects. Do not use `project(":included-build:module")`; depend on their external coordinates and let composite substitution replace them.
 - Included-build tasks can be invoked by fully qualified path or wired with `gradle.includedBuild("name").task(":path")`; use this for orchestration, not as a substitute for project dependencies.
 - Included builds do not share repositories, plugin management, version catalogs, `buildSrc`, or user-defined root `gradle.properties`; runtime Gradle properties from the root invocation still apply.

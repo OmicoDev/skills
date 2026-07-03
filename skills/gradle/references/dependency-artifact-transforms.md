@@ -36,9 +36,10 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Every registered output file or directory must exist with the registered type when `transform(...)` returns; `outputs.file(...)` creates parent directories for relative file outputs, but the transform still has to create a file, while `outputs.dir(...)` must end as a directory.
 - When a transform decides no conversion is needed for one artifact, register the unchanged input artifact as the output instead of copying it into a new workspace file.
 - Do not write transform outputs to arbitrary external paths. Use relative `TransformOutputs` locations for new outputs, or absolute paths only when returning the input artifact or files already inside an input directory.
-- Do not declare transform outputs with task-style `@OutputFile` or `@OutputDirectory` properties; artifact transforms own outputs only through the `TransformOutputs` parameter.
+- Do not declare transform outputs with task-style `@OutputFile` or `@OutputDirectory` properties, including on `TransformParameters`; artifact transforms own outputs only through the `TransformOutputs` parameter.
 - A transform may produce zero, one, or many output artifacts; registered outputs replace the input artifacts in registration order.
-- Add `@CacheableTransform` only when outputs are deterministic and relocatable. Cacheable transforms need normalization such as `@PathSensitive` on `@InputArtifact` and `@InputArtifactDependencies`, but absolute path sensitivity is invalid for artifact transforms.
+- Add `@CacheableTransform` only when outputs are deterministic and relocatable. Cacheable transforms need normalization such as `@PathSensitive`, `@Classpath`, or `@CompileClasspath` on `@InputArtifact`, `@InputArtifactDependencies`, and file-valued parameters, but absolute path sensitivity is invalid for artifact transforms.
+- Add `@NormalizeLineEndings` when text inputs or parameter files should be line-ending agnostic; cacheable transforms are line-ending-sensitive by default.
 - Use `@DisableCachingByDefault(because = "...")` when a transform is intentionally not cacheable; missing cacheability intent is a validation signal for transform actions just like task types.
 - Declare `@InputArtifactDependencies` as an abstract `FileCollection` getter only when transitive dependency files genuinely affect the conversion; it can force extra resolution/downloads, and cacheable transforms must normalize those injected dependency files.
 - Incremental transforms can inject `InputChanges` with an `@Inject` getter while `transform(...)` still takes only `TransformOutputs`; only the input artifact is incremental.
@@ -64,10 +65,11 @@ Read this when: artifact transform implementation, registration, chaining, sched
 ```bash
 ./gradlew artifactTransforms
 ./gradlew :subproject:artifactTransforms
+./gradlew :subproject:artifactTransforms --type <TransformSimpleName>
 ```
 
 - Use `artifactTransforms` in the project that registers or resolves transforms; the root report can be empty when subprojects own the registrations.
-- The `artifactTransforms` report shows transform type, cacheable status, and `from`/`to` attributes; confirm those facts before changing cache policy or attribute wiring.
+- The `artifactTransforms` report shows transform type, cacheable status, and `from`/`to` attributes, and `--type` filters by transform simple name; confirm those facts before changing cache policy or attribute wiring.
 - The report does not show transform parameters, input artifact dependencies, build-service wiring, selected chains, or cache identity. Use resolution output, cache/debug logs, or build-operation evidence when those fields own the behavior.
 - Treat `artifactTransforms` as registration evidence, not execution evidence; prove execution by resolving the consuming configuration or artifact view and inspecting resulting files, task inputs, transform cache behavior, or build-operation evidence.
 - A successful `help` run or unqueried file collection does not prove a transform executes; query the configuration or artifact view that requests transformed attributes.
@@ -75,7 +77,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Confirm requested artifact attributes from the resolvable configuration or artifact view before changing transform registration.
 - Transform never runs: an existing artifact set already matches, the transform is registered in the wrong project, attributes do not connect, or the input variant has no artifacts.
 - Chain stops after an earlier transform: confirm the previous transform produced at least one registered output artifact; empty output skips downstream transforms.
-- Ambiguous transform chain: reduce overlapping transform registrations, make requested attributes more specific, or remove unrequested extra output attributes that let equally short chains produce different suitable results.
+- Ambiguous transform chain: read the reported source variants and candidate chains, then reduce overlapping registrations, make requested attributes more specific, or remove unrequested extra output attributes that let equally short chains produce different suitable results.
 - Parallel transform failure: inspect every reported "Failed to transform ..." cause; Gradle may collect multiple artifact failures from the same resolution instead of stopping at the first one.
 - Transform runs for external modules but not project dependencies: compare project outgoing artifact attributes with module metadata and check whether an existing project variant already satisfies the request.
 - Transform resolves or downloads more artifacts than expected: check `@InputArtifactDependencies` and broad artifact view attributes before changing the dependency graph.

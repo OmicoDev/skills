@@ -65,6 +65,7 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - IDE metadata plugins are integration aids, not the source of build truth.
 - Modern IDEA and Eclipse should usually import the Gradle build directly; apply `idea` or `eclipse` only when the build intentionally contributes IDE model customization or generated project files.
 - IDEA/Eclipse generated-file tasks are deprecated for removal in Gradle 10, but their DSL customization can still be consumed by IDE import. Keep generated-file hooks separate from build model fixes.
+- If Gradle 9.6+ warns about IDE file-generation tasks or types, remove `idea`, `openIdea`, `cleanIdea*`, `eclipse`, `cleanEclipse*`, and generated-file hooks such as `iml`, `ipr`, `workspace`, `eclipse.wtp`, or `EclipseJdt.file`; keep model settings that affect IDE import such as source directories, language levels, and dependency scopes.
 - Use `beforeMerged`, `whenMerged`, and `withXml` only for generated IDE metadata. These hooks do not change Gradle task execution, dependency resolution, or published metadata.
 - Eclipse WTP is web/enterprise IDE metadata: it is applied with War/Ear projects for generated Eclipse files, not a packaging substitute for the War/Ear plugins.
 - Visual Studio generation mirrors native components and linkages into solution/project files; inspect native component and binary modeling before patching generated `.sln` or `.vcxproj` output.
@@ -84,11 +85,13 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 ## Test Reporting Integrations
 
 - Use Gradle's normal `Test` task for JVM test frameworks it can execute directly.
-- Use the Test Event Reporting API when a plugin or platform provider needs non-JVM or custom test execution to produce Gradle-compatible test events and HTML reports; treat the API and `TestEventReporterFactory` as incubating and keep wrappers small.
+- Use the Test Event Reporting API when a plugin or platform provider needs non-JVM or custom test execution to produce Gradle-compatible test events and HTML reports; treat the API and `TestEventReporterFactory` as incubating, minimum-Gradle-version-sensitive public API and keep wrappers small.
 - Inject `TestEventReporterFactory` into the custom task or plugin-owned type that records events; do not synthesize Gradle test result files by hand.
 - Put binary test results and HTML report directories under the task's `build/` ownership and model them as outputs when the custom test task should be cacheable or incremental.
 - Model the reporting hierarchy deliberately: root and group reporters can create child groups or leaf test reporters, while leaf test reporters cannot have children.
 - Emit events in lifecycle order: call `started(...)` once, record output or metadata only after start, finish with exactly one `succeeded(...)`, `skipped(...)`, or `failed(...)`, and close every reporter even when the underlying test engine fails.
+- Version-gate newer convenience entrypoints in cross-version plugins: `TestEventReporterFactory` is Gradle 8.12+, the three-argument root factory is 8.13+, the explicit `closeThrowsOnTestFailures` overload is 9.3+, and single key/value `metadata(...)` is 9.4+.
 - The default root reporter close behavior fails the task when the root test tree failed; use the explicit `closeThrowsOnTestFailures` overload only when task outcome is intentionally managed elsewhere and the supported Gradle version has that overload.
+- For Gradle 8.13 to 9.3 compatibility, prefer the map-form `metadata(...)`; omit metadata or isolate it behind a helper rather than binding custom test plugins to internal test result writers.
 - Keep test execution ownership in the custom task; the reporting API records results, it does not replace declaring task inputs, outputs, classpaths, or environment.
 - Empty or partial custom test report: check reporter hierarchy, `started(...)`, `succeeded(...)`/`failed(...)`, and resource closure before changing report directories.

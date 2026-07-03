@@ -11,10 +11,12 @@
 - [Gradle Managed Types](https://docs.gradle.org/current/userguide/gradle_managed_types_intermediate.html)
 - [Properties and Providers](https://docs.gradle.org/current/userguide/properties_providers.html)
 - [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code
 
 - `platforms/core-configuration/model-core/src/testFixtures/groovy/org/gradle/api/internal/provider/PropertySpec.groovy`
+- `subprojects/core-api/src/main/java/org/gradle/api/Project.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/BuildLayout.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/FileSystemLocationProperty.java`
@@ -26,3 +28,6 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSource.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSourceParameters.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSourceSpec.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/ContainerElementServiceInjectionIntegrationTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/api/internal/model/DefaultObjectFactory.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/project/DefaultProject.java`

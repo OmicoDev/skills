@@ -24,7 +24,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Match the existing DSL and style; for brand-new builds or subprojects without an established repository DSL, prefer Kotlin DSL.
 - Prefer `plugins {}` for static plugin application; keep it constrained, idempotent, side-effect-free, and before ordinary script body logic. Put plugin repositories, default plugin versions, and version-loading logic in settings `pluginManagement`, use catalog plugin aliases only where supported, and avoid buildscript classpath plugin wiring unless legacy constraints require it.
 - In settings scripts, keep `pluginManagement {}` before plugin requests and ordinary statements; in init scripts, keep `initscript {}` before ordinary script body when it declares the init script classpath.
-- In precompiled script plugins, put external plugin versions on the plugin project's implementation classpath; plugin requests with `version "..."` fail, and `apply false` is a deprecated no-op because plugin dependencies already add the plugin to the script classpath.
+- In precompiled script plugins, put external plugin versions on the plugin project's implementation classpath; avoid `version "..."` and `apply false` inside the script `plugins {}` block, and expect precompiled settings plugin requests to be resolved during compilation even when the plugin is not applied by a consuming build.
 - Use `buildscript {}` only for script classpath resolution. Do not create or resolve arbitrary buildscript configurations in project, settings, init, or standalone scripts.
 - Do not rely on plugin application order. If custom plugin logic requires another plugin, apply it explicitly; if integration is optional, react with `pluginManager.withPlugin(...)`, `plugins.withId(...)`, or type-based `plugins.configureEach(...)`.
 - Keep top-level build script work small; top-level statements run during configuration.
@@ -43,11 +43,12 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - Use `layout.buildDirectory.dir(...)` and `layout.projectDirectory.file(...)` instead of `file("$buildDir/...")`.
 - Use task outputs, `CopySpec`, and provider-backed file properties instead of manual filesystem work during configuration.
 - Use `providers.gradleProperty`, `providers.systemProperty`, and `providers.environmentVariable` when values affect build configuration; prefer `withType(...).configureEach` for lazy bulk configuration by type and `named(...)` for known task or container names.
-- When filtering is unavoidable, restrict by type before `matching { ... }` and finish with `configureEach`; avoid broad `matching`, Groovy `findAll`, `tasks.all`, `whenTaskAdded`, and collection iteration.
+- For Gradle 9.6+ `getProperties()` deprecations, replace `project.properties`, script `properties`, and filtered bulk maps with targeted provider reads, `providers.gradlePropertiesPrefixedBy(...)` for deliberate namespaces, or explicit maps for the exact keys being forwarded.
+- When filtering Gradle domain-object collections, prefer `withType(...).matching { ... }.configureEach`; do not use deprecated `DomainObjectCollection.findAll(Closure)` because it eagerly snapshots instead of returning a live filtered collection, and still avoid broad `matching`, `tasks.all`, `whenTaskAdded`, and collection iteration.
 - Avoid `afterEvaluate`; react to plugins, providers, and domain object collections instead. If it appears necessary, limit it to final validation or diagnostics and document why providers, conventions, or plugin-application callbacks cannot express the timing.
 - `afterEvaluate` callbacks run by registration order, can see stale or default extension values, defeat task configuration avoidance when they touch tasks, and are configuration-cache hostile when they capture mutable project state.
 - Assume only a last or single `afterEvaluate` callback sees final state; treat missing lazy hooks as a Gradle API gap before making `afterEvaluate` design policy.
-- Do not rely on implicit lookup of properties or methods from parent projects; qualify cross-project intent through `rootProject`, providers, shared extensions, convention plugins, or modeled dependencies.
+- Do not rely on parent-project property/method lookup through Groovy bare names, `property`, `getProperty`, `findProperty`, or `hasProperty`; migrate to `providers.gradleProperty`, local `extra[...]`, convention plugins, modeled dependencies, or explicit transitional `rootProject`/`parent` references, then enable `NO_IMPLICIT_LOOKUP_IN_PARENT_PROJECTS` to verify Gradle 10 behavior.
 
 ## DSL Notes
 
@@ -60,6 +61,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 - On Gradle 9.6+, replace Kotlin DSL delegated properties such as `by registering`, `by existing`, `by project`, `by extra`, and `Property<T>`/`ConfigurableFileCollection` delegates with explicit `register`, `named`, `providers.gradleProperty`, `extra[...]`, `get`, or `set` APIs.
 - Lazy property assignment with `=` works for final lazy properties such as `Property<T>` or `ConfigurableFileCollection`; custom setters can block it.
 - In settings Kotlin DSL, apply Develocity explicitly with `id("com.gradle.develocity") version "..."`; the old `gradle-enterprise` plugin-block shorthand is gone in Gradle 9.
+- On Gradle 9.6+ or Isolated Projects, use Develocity plugin 4.0+; older Develocity plugins rely on implicit parent-project lookup, so upgrade the plugin instead of preserving the old lookup path in build scripts.
 - Groovy DSL dynamic lookup can hide misspellings and eager task realization. In Groovy blocks, unqualified members resolve against the block delegate; inspect the `Action<T>` or `Closure` delegate type in API docs.
 - After Groovy upgrades, especially Gradle 9's Groovy 4 move, qualify ambiguous closure access with `owner`, `this`, `delegate`, or `super` before changing Gradle model logic; `DELEGATE_FIRST` dynamic lookup may pick a different member than before.
 - Avoid modeling Gradle DSL Boolean properties as `isX: Boolean`; Groovy 4 no longer treats `Boolean` `is` getters as properties, and Gradle is moving toward that behavior.

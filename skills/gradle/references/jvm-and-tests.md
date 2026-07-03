@@ -44,17 +44,17 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - Groovy and Scala source directories may contain Java for joint compilation; keep Java in Java source directories unless bidirectional language dependencies require joint compilation, because Java under Groovy/Scala directories is owned by `GroovyCompile`/`ScalaCompile` and contributes to source-set `allJava`/`allSource`.
 - Keep resources, generated outputs, and dependencies scoped to the owning source set.
 - Keep source-set class outputs under `build/`; on Gradle 9+, stale class outputs outside the build directory are no longer deleted, so external class dirs need explicit cleanup or different output ownership.
-- A custom JVM source set creates compile, resources, classes tasks, and source-set configurations; it does not by itself create a runnable verification task or attach work to `check`.
+- A custom JVM source set creates compile, resources, classes tasks, and configurations; declare dependencies after it exists, and do not expect a runnable verification task or `check` attachment without a `Test` task or suite target.
 
 ## Testing
 
-- `Test` tasks execute tests; JVM Test Suite models suites and targets.
+- `Test` tasks execute test classes or definitions; JVM Test Suite models a suite, its source set, dependencies, target `Test` task, and verification variants.
 - Custom `Test` tasks need `testClassesDirs` and execution `classpath`; JVM language plugins and source sets wire these for conventional tests, but hand-authored tasks must not rely on legacy implicit `test` source-set wiring.
 - `Test` tasks run in forked JVMs. Increase `maxParallelForks` only when tests isolate filesystem, ports, services, and static state; use `org.gradle.test.worker` for per-fork resources.
 - Use `forkEvery` only to contain leaky tests or frameworks; low nonzero values create many fresh test JVMs and can dominate test time.
-- Use `useJUnitPlatform()`, TestNG, or other framework configuration explicitly when required. JUnit Jupiter needs platform execution plus Jupiter, Platform, and launcher runtime dependencies; JUnit 3/4 on the platform needs Vintage.
-- Use test filtering for narrow execution, but do not commit local filters accidentally. `--test-dry-run` proves selected tests without executing them and still generates reports for inspection.
-- Treat dry-run test reports as selection evidence, not pass/fail evidence; selected tests are reported as skipped because their bodies did not execute.
+- Replace deprecated `setAllJvmArgs(...)` on `Test`, `JavaExec`, or other `JavaForkOptions` with `setJvmArgs`, `jvmArgs`, or `jvmArgumentProviders`; manually clear system properties, argument providers, heap settings, assertions, or debug flags when the old clear-all behavior was intentional.
+- Configure frameworks explicitly: `useJUnitPlatform()`, TestNG, and JUnit Vintage/Jupiter launcher/runtime dependencies belong on the test classpath; use TestNG 6.9.13.3+ for stable class/method reporting on Gradle 9.3+, and replace Gradle 9.4+ closure-style `Test` hooks (`beforeTest`, `afterTest`, `beforeSuite`, `afterSuite`, `onOutput`, `testFramework(Closure)`) with `addTestListener(...)`, `addTestOutputListener(...)`, or `options(Action)`.
+- Use test filtering for narrow execution, but do not commit local filters accidentally. `--test-dry-run` proves selected tests without execution; treat its reports as selection evidence, not pass/fail evidence, because selected tests are reported as skipped.
 - `--tests` filters are additive with build-script filters and wildcards are text-based, not package-depth aware; use command-line filters for temporary local selection and keep persistent script filters intentional.
 - When `scanForTestClasses = false`, `includes` and `excludes` own class selection; without patterns Gradle falls back to `**/*Tests.class` and `**/*Test.class` while excluding `**/Abstract*.class`. JUnit Platform ignores `scanForTestClasses`.
 - Use `ignoreFailures` only when downstream tasks must continue after a failing `Test` task; it does not skip remaining detected tests or turn failures into passes.
@@ -62,8 +62,8 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 - JUnit XML `mergeReruns` changes reporting of pass-on-retry failures and groups executions by reported test name; it does not add retry behavior. Keep retry policy in the framework or a retry plugin.
 - Configure fork options, logging, reports, debug ports, and task-level framework options on `Test` tasks or suite targets; `--debug-jvm` starts the test JVM suspended on port 5005 unless `debugOptions` changes it.
 - Single-project HTML reports include all `Test` tasks that ran in that project; cross-project test or coverage reports should use `test-report-aggregation` or `jacoco-report-aggregation` rather than file-tree collection from subproject `build/` directories.
-- Aggregation plugins resolve verification variants by suite name through `testReportAggregation` or `jacocoAggregation`. They need JVM Test Suite producers for automatic report objects; manually register reports when the aggregation project does not apply `jvm-test-suite`, and keep `com.android.application` outside the current aggregation-plugin boundary.
-- Treat aggregate test and coverage reports as variant selection: producers expose `org.gradle.category=verification`, `org.gradle.testsuite.name=<suite>`, and a verification type; use public attributes/constants or `outgoingVariants` evidence before hard-coding literal strings.
+- Aggregation plugins resolve project verification variants by suite name through `testReportAggregation` or `jacocoAggregation`; automatic report objects require JVM Test Suite producers, standalone aggregators must register reports and project dependencies, and `com.android.application` remains outside the current boundary.
+- Treat aggregate test and coverage reports as variant selection: producers expose `org.gradle.category=verification`, `org.gradle.testsuite.name=<suite>`, and `org.gradle.verificationtype`; use public attributes/constants or `outgoingVariants` evidence before hard-coding literals.
 - Do not assume JaCoCo tasks are lifecycle-wired: `jacocoTestReport` does not depend on `test`, and `jacocoTestCoverageVerification` is not a dependency of Java's `check` task unless the build wires it deliberately.
 - The JaCoCo plugin instruments `Test` tasks and can instrument other `JavaForkOptions` tasks; execution data is deleted when an instrumented task starts, so model report dependencies instead of relying on stale `.exec` files.
 - Use test fixtures when reusable test support is part of the project contract. Fixture `implementation` dependencies do not leak to consuming test compile classpaths, and published external fixtures rely on Gradle Module Metadata variants/capabilities.
@@ -71,11 +71,11 @@ Read this when: Java/Kotlin/Groovy/Scala build authoring, Java toolchains, JVM t
 
 ## Test Suite Decisions
 
-- Use an extra `Test` task for a narrow local workflow; use JVM Test Suite when a suite has its own sources, dependencies, targets, or reusable convention.
-- For integration, functional, smoke, or contract tests, wire execution and `check` participation deliberately; keep flaky, expensive, or environment-dependent suites behind explicit tasks or CI stages.
-- Treat JVM Test Suite as an incubating API behind shared convention plugins. The built-in `test` suite keeps legacy names and still needs an explicit framework; additional suites conventionally use JUnit Jupiter, but they do not automatically depend on production outputs or attach to `check`.
-- Configure suite dependencies inside the suite; add a `project()` dependency when the suite needs the project outputs and API/compile-only API dependencies. Configure target `Test` tasks for ordering, forks, logging, debug, filters, and framework options.
-- Suite-level `useJUnitJupiter()` adds framework libraries and configures target `Test` tasks; task-level `useJUnitPlatform()` only changes the execution framework.
+- Model a new suite when tests differ by purpose, sources, dependencies, runtime environment, duration, or CI stage; use framework tags/groups and `--tests` only for narrowing tests inside the same purpose.
+- Use an extra `Test` task for a narrow local workflow; use JVM Test Suite for reusable convention, variant-aware reporting, or a source/dependency owner that should survive across projects.
+- For integration, functional, smoke, or contract tests, wire execution and `check` participation deliberately. `shouldRunAfter` orders work but does not select it; keep flaky, expensive, or environment-dependent suites behind explicit tasks or CI stages.
+- Treat JVM Test Suite as an incubating API behind shared convention plugins. The built-in `test` suite keeps legacy names, needs an explicit framework, and automatically sees production dependencies; additional suites conventionally use JUnit Jupiter but need explicit `project()` dependencies when they test project outputs.
+- Configure suite dependencies inside the suite; suite-level `useJUnitJupiter()` adds framework libraries and configures target `Test` tasks, while task-level `useJUnitPlatform()` only changes execution. Configure target `Test` tasks for ordering, forks, logging, debug, filters, and framework options.
 - Treat suite names as published verification coordinates. Renaming a suite or aggregating a non-`test` suite requires matching report objects and matching producer variants.
 
 ## JVM Quality Checks

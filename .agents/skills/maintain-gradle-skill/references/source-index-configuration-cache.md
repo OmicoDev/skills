@@ -8,11 +8,14 @@
 - [Debugging and Troubleshooting the Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_debugging.html)
 - [Implementing Binary Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_binary.html)
 - [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/readme.md`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheGracefulDegradationIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheInitScriptsIntegrationTest.groovy`
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheUnsupportedTypesIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/inputs/process/ProcessInInitScriptIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsToolingApiGracefulDegradationIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/ConfigurationTimeBarrierBasedExecutionAccessChecker.kt`
@@ -23,6 +26,8 @@
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/barrier/VintageConfigurationTimeActionRunner.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/problems/ConfigurationCacheProblems.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/promo/ConfigurationCachePromoHandler.kt`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/serialize/ConfigurationCacheCodecs.kt`
+- `platforms/core-configuration/core-serialization-codecs/src/main/kotlin/org/gradle/internal/serialize/codecs/core/UnsupportedTypesCodecs.kt`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/ConfigurationTimeBarrier.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/DefaultConfigurationTimeBarrier.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeature.java`

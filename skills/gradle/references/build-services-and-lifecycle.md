@@ -73,6 +73,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Flow actions are parameterized isolated work; use `FlowParameters.None` when no parameters are needed, annotate service parameters with `@ServiceReference`, and annotate other parameters with `@Input`.
 - Flow parameter types should be managed interfaces or abstract types with property-like getters; do not implement `getParameters()` or hand-create action instances.
 - Wire extension values, lifecycle providers, and services into Flow parameters; do not make the action read `Project`, task, or extension objects directly from `execute(...)`.
+- Do not pass task output providers or other providers with task dependencies into Flow parameters; Flow actions are not a hidden task pipeline, so move producer/consumer work into ordinary tasks or expose lifecycle-only inputs.
 - Flow action service injection is intentionally narrow; use documented services such as `FileSystemOperations`, `ArchiveOperations`, and `ExecOperations`, not arbitrary project/model services.
 - Inject `FlowScope` and `FlowProviders` into project or settings plugins; do not instantiate `FlowAction` manually.
 - Use `FlowScope.always(...)` when the action should run on every build invocation after its inputs are available; register it early enough for the failures it is meant to observe.

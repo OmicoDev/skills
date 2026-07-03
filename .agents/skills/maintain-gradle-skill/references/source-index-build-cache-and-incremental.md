@@ -13,6 +13,26 @@
 
 ## Source Code
 
+- `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/internal/services/BuildCacheControllerFactory.java`
+- `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/internal/services/DefaultBuildCacheControllerFactory.java`
+- `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/local/internal/DirectoryBuildCacheServiceFactory.java`
+- `platforms/core-execution/build-cache-http/src/integTest/groovy/org/gradle/caching/http/internal/HttpBuildCacheServiceErrorHandlingIntegrationTest.groovy`
+- `platforms/core-execution/build-cache-local/src/integTest/groovy/org/gradle/caching/BuildCacheLocalCacheIntegrationTest.groovy`
+- `platforms/core-execution/build-cache-spi/src/main/java/org/gradle/caching/BuildCacheService.java`
+- `platforms/core-execution/build-cache/src/main/java/org/gradle/caching/internal/controller/DefaultBuildCacheController.java`
+- `platforms/core-execution/build-cache/src/main/java/org/gradle/caching/internal/controller/service/BaseRemoteBuildCacheServiceHandle.java`
+- `platforms/core-execution/build-cache/src/main/java/org/gradle/caching/internal/controller/service/OpFiringRemoteBuildCacheServiceHandle.java`
+- `platforms/core-execution/build-cache/src/test/groovy/org/gradle/caching/internal/controller/DefaultBuildCacheControllerTest.groovy`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/caching/CachingDisabledReasonCategory.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/caching/impl/DefaultCachingStateFactory.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/AbstractResolveCachingStateStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/BuildCacheStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/HandleStaleOutputsStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/ResolveChangesStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/ResolveImmutableCachingStateStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/ResolveInputChangesStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/ResolveMutableCachingStateStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/SkipUpToDateStep.java`
 - `platforms/core-execution/normalization-api/src/main/java/org/gradle/normalization/InputNormalization.java`
 - `platforms/core-execution/normalization-api/src/main/java/org/gradle/normalization/PropertiesFileNormalization.java`
 - `platforms/core-execution/normalization-api/src/main/java/org/gradle/normalization/RuntimeClasspathNormalization.java`
@@ -21,4 +41,10 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/LocalState.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/changedetection/rules/OverlappingOutputsIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CachedCustomTaskExecutionIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CachedTaskExecutionIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/UntrackedTaskIntegrationTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolver.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/DefaultTaskCacheabilityResolver.java`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolverTest.groovy`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/tasks/execution/DefaultTaskCacheabilityResolverTest.groovy`

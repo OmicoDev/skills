@@ -19,8 +19,14 @@
 
 ## Source Code
 
+- `platforms/software/build-init/src/integTest/groovy/org/gradle/buildinit/plugins/MavenConversionDynamicPomIntegrationTest.groovy`
 - `platforms/software/build-init/src/integTest/groovy/org/gradle/buildinit/plugins/MavenConversionIntegrationTest.groovy`
+- `platforms/software/build-init/src/main/java/org/gradle/buildinit/InsecureProtocolOption.java`
+- `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/Dependency.java`
+- `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/ExternalDependency.java`
 - `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/Maven2Gradle.java`
+- `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/Maven2GradleWorkAction.java`
 - `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/MavenProjectsCreator.java`
 - `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/PomProjectInitDescriptor.java`
+- `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/ProjectDependency.java`
 - `platforms/software/build-init/src/test/groovy/org/gradle/buildinit/plugins/internal/maven/MavenProjectsCreatorSpec.groovy`

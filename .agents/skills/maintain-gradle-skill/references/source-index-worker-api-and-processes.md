@@ -25,6 +25,7 @@
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorJdkVersionsIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorNestingIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorParallelIntegrationTest.groovy`
+- `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorParametersIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorProblemsApiIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorServicesIntegrationTest.groovy`
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/ClassLoaderWorkerSpec.java`

@@ -17,9 +17,12 @@
 ## Source Code
 
 - `platforms/core-configuration/base-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/HelpTaskIntegrationTest.groovy`
+- `platforms/core-configuration/base-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/TaskGraphIntegrationTest.groovy`
 - `platforms/core-configuration/base-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/TaskReportTaskIntegrationTest.groovy`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/TaskReportTask.java`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/TaskDetails.java`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/TaskReportRenderer.java`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/configuration/TaskDetailPrinter.java`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/configuration/TaskDetailsModel.java`
+- `platforms/core-runtime/start-parameter/src/main/java/org/gradle/initialization/StartParameterBuildOptions.java`
+- `subprojects/core/src/main/java/org/gradle/internal/execution/TaskGraphBuildExecutionAction.java`

@@ -71,3 +71,6 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 ### Testing
 
 - Test custom tasks and plugins with TestKit ([plugin-testing.md](plugin-testing.md)): cover build logic behavior through functional builds, not only unit tests.
+- Separate test purposes ([jvm-and-tests.md](jvm-and-tests.md)): use JVM Test Suite or explicit `Test` tasks/source sets when dependencies, runtime environment, duration, or CI policy differs.
+- Wire non-default test suites deliberately ([jvm-and-tests.md](jvm-and-tests.md), [plugin-testing.md](plugin-testing.md)): `shouldRunAfter` only orders work, and included `build-logic` tests do not run just because the root build uses build-logic artifacts.
+- Prove cacheable TestKit behavior ([plugin-testing.md](plugin-testing.md), [build-cache-and-incremental.md](build-cache-and-incremental.md)): verify deterministic inputs, warm cache reuse, input changes, and relocatability when advertised.

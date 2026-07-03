@@ -17,6 +17,7 @@
 - [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
 - [Gradle-managed Directories](https://docs.gradle.org/current/userguide/directory_layout.html)
 - [Initialization Scripts and Init Plugins](https://docs.gradle.org/current/userguide/init_scripts.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code
 
@@ -27,3 +28,6 @@
 - `platforms/core-runtime/launcher/src/main/java/org/gradle/launcher/cli/converter/LayoutToPropertiesConverter.java`
 - `platforms/core-runtime/wrapper-main/src/main/java/org/gradle/wrapper/GradleWrapperMain.java`
 - `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/GradleUserHomeLookup.java`
+- `platforms/software/build-init/src/integTest/groovy/org/gradle/buildinit/plugins/internal/WrapperOptionsIntegrationTest.groovy`
+- `platforms/software/build-init/src/main/java/org/gradle/api/tasks/wrapper/Wrapper.java`
+- `platforms/software/build-init/src/test/groovy/org/gradle/api/tasks/wrapper/WrapperTest.groovy`

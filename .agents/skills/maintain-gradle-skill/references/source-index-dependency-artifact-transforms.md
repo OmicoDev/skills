@@ -22,7 +22,10 @@
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/CrashingBuildsArtifactTransformIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/DefaultTransform.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/DefaultTransformOutputs.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/MutableTransformExecution.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/TransformationChainsDisambiguator.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/internal/component/resolution/failure/describer/AmbiguousArtifactTransformsFailureDescriber.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/internal/component/resolution/failure/type/AmbiguousArtifactTransformsFailure.java`
 - `platforms/software/software-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/ArtifactTransformsReportTaskIntegrationTest.groovy`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/artifact/transforms/ArtifactTransformReports.java`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/artifact/transforms/model/ArtifactTransformReportModelFactory.java`
@@ -32,3 +35,4 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformParameters.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/transform/TransformSpec.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/AbstractLineEndingSensitivityIntegrationSpec.groovy`

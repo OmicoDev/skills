@@ -47,6 +47,9 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Put lifecycle and user-facing ad hoc tasks in short, existing groups and give them descriptions; ungrouped tasks are hidden from `tasks` unless `--all` is used, but they are still invokable and should not be treated as private.
 - Root lifecycle tasks are useful for CI-wide orchestration; keep project-specific work in subproject tasks or convention plugins.
 - Treat Java plugin `buildNeeded` and `buildDependents` as deprecated legacy graph shortcuts; request concrete project tasks, use test/report aggregation, or consume project artifacts through dependency resolution instead.
+- Do not use `Configuration.getTaskDependencyFromProjectDependency(...)` to reach tasks across project boundaries; it exists for the deprecated Java lifecycle shortcuts, has no direct replacement, and should usually become artifact views or ordinary project dependencies.
+- For `GradleBuild` nested builds, keep `startParameter.projectProperties` values as `String`; Gradle 10 turns non-string values into an error, so coerce numbers, booleans, and structured values before putting them in the map.
+- Closures passed to `dependsOn` may still return dependency objects, but Gradle 10 stops passing the owning `Task` into them; replace `dependsOn { task -> ... }` or `dependsOn { it... }` with captured `TaskProvider`s, explicit `dependsOn(provider)`, or precomputed values.
 - Do not list every transitive task in a lifecycle task. Depend on the meaningful target tasks and let Gradle infer their required work.
 
 ## Command-Line Task Options
@@ -60,8 +63,7 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 - Put task options after the task name they configure; options on tasks reached only through dependencies are not available unless that task is explicitly requested.
 - Included-build task paths can carry that included task's `@Option` values through both CLI and Tooling API launchers; diagnose option failures as target task path or target task option-surface issues, not root-project global options.
 - Custom task options use double-dash long option syntax such as `--output-dir`; single-dash syntax is not valid for `@Option`.
-- Boolean options support `--flag` and generated `--no-flag` forms when they do not conflict with an existing option.
-- An explicitly declared `no-*` boolean option shadows the generated opposite option; confirm the public flag set with `help --task` before renaming or adding paired flags.
+- Boolean options support `--flag` and generated `--no-flag` forms unless an explicitly declared `no-*` option shadows the generated opposite; confirm the public flag set with `help --task` before renaming or adding paired flags.
 - `@Option` names must be unique across the task type hierarchy; duplicates on different fields, methods, or interfaces fail option discovery before the task action runs.
 - Multi-value options must be repeated, such as `--id=one --id=two`; comma-separated or space-separated lists are not equivalent.
 - `DirectoryProperty` and `RegularFileProperty` option values are resolved relative to the project directory that owns the property instance.

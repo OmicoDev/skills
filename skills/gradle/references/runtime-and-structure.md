@@ -24,6 +24,7 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 - Upgrade with the `wrapper` task, not only by editing `distributionUrl`; run it once for properties and again when scripts/JAR should be refreshed.
 - Since Gradle 9, `gradle-wrapper.properties` requires `X.Y.Z` versions even when the `wrapper` task can resolve labels or major/minor selectors.
 - Use `-bin` distributions by default; choose `-all` only for offline or air-gapped source/docs needs, or when policy explicitly requires the larger distribution.
+- When build logic or help text needs the supported wrapper distribution types, read `Wrapper.DistributionType.values()` directly instead of deprecated `Wrapper.getAvailableDistributionTypes()`.
 - Use `distributionSha256Sum` from the Gradle release checksums for the distribution ZIP; validate `gradle-wrapper.jar` separately because a ZIP checksum does not prove the checked-in JAR.
 - `distributionSha256Sum` is checked when the wrapper downloads the distribution; verify checksum policy with a clean or controlled Gradle user home when an existing cached distribution could mask the check.
 - If `gradle-wrapper.properties` contains `distributionSha256Sum`, keep wrapper task configuration or CLI checksum input in sync when regenerating wrapper properties.

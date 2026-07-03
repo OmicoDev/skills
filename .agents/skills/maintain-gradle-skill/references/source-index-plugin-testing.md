@@ -55,3 +55,5 @@
 - `platforms/extensibility/test-kit/src/test/groovy/org/gradle/testkit/runner/internal/DefaultGradleRunnerTest.groovy`
 - `platforms/extensibility/test-kit/src/test/groovy/org/gradle/testkit/runner/internal/FeatureCheckBuildResultTest.groovy`
 - `platforms/extensibility/test-kit/src/test/groovy/org/gradle/testkit/runner/internal/feature/BuildResultOutputFeatureCheckTest.groovy`
+- `platforms/extensibility/unit-test-fixtures/src/main/java/org/gradle/testfixtures/ProjectBuilder.java`
+- `platforms/extensibility/unit-test-fixtures/src/test/groovy/org/gradle/testfixtures/ProjectBuilderTest.groovy`

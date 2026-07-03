@@ -8,6 +8,7 @@
 - [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html#sec:receiving_problem_reports)
 - [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html)
 - [Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code
 
@@ -25,6 +26,7 @@
 - `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/AdditionalDataBuilderFactoryTest.groovy`
 - `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/DefaultProblemBuilderTest.groovy`
 - `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/ProblemIdAndProblemGroupTest.groovy`
+- `platforms/ide/problems/src/integTest/groovy/org/gradle/api/problems/LegacyInternalProblemsApiIntegrationTest.groovy`
 - `platforms/ide/tooling-api-builders/src/main/java/org/gradle/tooling/internal/provider/runner/ClientForwardingBuildOperationListener.java`
 - `platforms/ide/tooling-api-builders/src/main/java/org/gradle/tooling/internal/provider/runner/ProblemsProgressEventUtils.java`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r812/BuildFailureProblemsCrossVersionSpec.groovy`

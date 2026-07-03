@@ -23,6 +23,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 
 - Inject `WorkerExecutor` into the task type and submit `WorkAction<P>` items from the task action.
 - Model work item parameters with `WorkParameters` and managed properties; pass serializable values, file properties, classpaths, and tool locations, not `Project`, task instances, or mutable Gradle model objects.
+- Prefer Gradle-managed value carriers for worker parameters: `Property`, `ListProperty`, `SetProperty`, `MapProperty`, `RegularFileProperty`, `DirectoryProperty`, and `ConfigurableFileCollection`; use plain setters only for simple scalar or managed-object values that Gradle can isolate in every selected mode.
 - Treat worker parameters as isolated at submission, even with `noIsolation()`. Do not rely on parameter object identity or later mutation to communicate between work items.
 - Treat work action construction, parameter isolation, and parameter deserialization as worker-boundary failures. When errors mention value isolation, serialization, parameter creation, or action instantiation, inspect the parameter graph and isolated worker classpath before rewriting task action logic.
 - Make work actions abstract, annotate constructors with `@Inject`, and use `WorkParameters.None` when no parameters are needed; do not implement `WorkAction.getParameters()` or concrete `WorkParameters` because Gradle generates and injects them.

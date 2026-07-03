@@ -7,15 +7,20 @@
 - [Composite Builds (Included Builds)](https://docs.gradle.org/current/userguide/composite_builds.html)
 - [How to Exclude Transitive Dependencies in Gradle](https://docs.gradle.org/current/userguide/how_to_exclude_transitive_dependencies.html)
 - [How to Use a Local Fork of a Module Dependency with Gradle](https://docs.gradle.org/current/userguide/how_to_use_local_forks.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Using Resolution Rules](https://docs.gradle.org/current/userguide/resolution_rules.html)
 
 ## Source Code
 
+- `platforms/extensibility/plugin-use/src/main/java/org/gradle/plugin/management/internal/DefaultPluginResolveDetails.java`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/constraints/DependencyConstraintsAndResolutionStrategiesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ivy/ComponentSelectionRulesDependencyResolveIntegTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ivy/ComponentSelectionRulesErrorHandlingIntegTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ivy/ComponentSelectionRulesProcessingIntegTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/rules/DependencyResolveRulesDisableGlobalDependencySubstitutionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/rules/DependencyResolveRulesIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dsl/ModuleComponentSelectorParsers.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/dependencysubstitution/DefaultDependencyResolveDetails.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolutionstrategy/DefaultCapabilitiesResolution.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolutionstrategy/DefaultResolutionStrategy.java`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/configurations/DefaultConfigurationSpec.groovy`

@@ -16,7 +16,17 @@
 
 ## Source Code
 
+- `platforms/core-runtime/files/src/main/java/org/gradle/internal/file/PathTraversalChecker.java`
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperChecksumVerificationTest.groovy`
 - `platforms/core-runtime/wrapper-main/src/integTest/groovy/org/gradle/integtests/WrapperConcurrentDownloadTest.groovy`
+- `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/internal/file/locking/ExclusiveFileAccessManager.java`
+- `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/util/internal/WrapperCredentials.java`
+- `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/Download.java`
 - `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/Install.java`
+- `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/PathAssembler.java`
+- `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/WrapperConfiguration.java`
 - `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/WrapperExecutor.java`
+- `platforms/core-runtime/wrapper-shared/src/test/groovy/org/gradle/internal/file/PathTraversalCheckerTest.groovy`
+- `platforms/core-runtime/wrapper-shared/src/test/groovy/org/gradle/util/internal/WrapperCredentialsTest.groovy`
+- `platforms/core-runtime/wrapper-shared/src/test/groovy/org/gradle/wrapper/InstallTest.groovy`
+- `platforms/core-runtime/wrapper-shared/src/test/groovy/org/gradle/wrapper/WrapperExecutorTest.groovy`

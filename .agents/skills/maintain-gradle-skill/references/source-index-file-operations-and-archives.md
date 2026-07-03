@@ -11,11 +11,16 @@
 - [The Ear Plugin](https://docs.gradle.org/current/userguide/ear_plugin.html)
 - [The Java Library Distribution Plugin](https://docs.gradle.org/current/userguide/java_library_distribution_plugin.html)
 - [The War Plugin](https://docs.gradle.org/current/userguide/war_plugin.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Working With Files](https://docs.gradle.org/current/userguide/working_with_files.html)
 
 ## Source Code
 
 - `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/SyncCopyActionDecorator.java`
+- `platforms/jvm/plugins-application/src/main/java/org/gradle/api/internal/plugins/StartScriptTemplateBindingFactory.java`
+- `platforms/jvm/plugins-application/src/main/java/org/gradle/jvm/application/tasks/CreateStartScripts.java`
+- `platforms/jvm/plugins-application/src/test/groovy/org/gradle/api/internal/plugins/StartScriptGeneratorTest.groovy`
+- `platforms/jvm/plugins-application/src/test/groovy/org/gradle/api/tasks/application/CreateStartScriptsTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/CopySpec.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/SyncSpec.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/ArchiveTaskPermissionsIntegrationTest.groovy`
