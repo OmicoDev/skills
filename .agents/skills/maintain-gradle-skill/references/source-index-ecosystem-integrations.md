@@ -8,6 +8,8 @@
 - [C++ Application](https://docs.gradle.org/current/userguide/cpp_application_plugin.html)
 - [C++ Library](https://docs.gradle.org/current/userguide/cpp_library_plugin.html)
 - [C++ Unit Test](https://docs.gradle.org/current/userguide/cpp_unit_test_plugin.html)
+- [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
+- [Developing Parallel Tasks](https://docs.gradle.org/current/userguide/worker_api.html)
 - [Gradle & Third-party Tools](https://docs.gradle.org/current/userguide/third_party_integration.html)
 - [Migrating Builds From Apache Ant](https://docs.gradle.org/current/userguide/migrating_from_ant.html)
 - [Migrating Builds From Apache Maven](https://docs.gradle.org/current/userguide/migrating_from_maven.html)

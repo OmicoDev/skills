@@ -16,8 +16,16 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Do not use Worker API to hide undeclared inputs, missing outputs, or task ordering problems. The owning task still declares the full input and output contract.
 - Treat Worker API as task execution parallelism, not configuration-time work; submit work after the owning task properties have been configured and finalized for execution.
 - Use classloader or process isolation when a library fails because Gradle's configuration-cache Java agent modifies buildscript bytecode; if the library has a stable `main` entry point and no per-item parallelism need, a `JavaExec` task can be the simpler isolation boundary.
-- Keep external process execution task-owned: inject `ExecOperations`, `JavaLauncher`, or tool providers into tasks or work actions instead of reaching through `Project`.
-- Do not use `Project.exec`, `Project.javaexec`, or script-level `exec/javaexec`; in Gradle 9 they are removed. Use `ExecOperations` for task/action execution and provider-backed process APIs when a configuration value must come from a process.
+
+## External Process Boundaries
+
+- Use `ExecOperations.exec/javaexec`, `JavaExec`, `JavaLauncher`, or tool providers when the process is task or work-action behavior; do not use `Project.exec`, `Project.javaexec`, or script-level `exec/javaexec` in Gradle 9+.
+- Declare the executable, arguments, working directory, environment, inputs, and outputs on the owning task; process output that affects later work must be a modeled output or provider value, not a hidden side effect.
+- Use `providers.exec/javaexec` only for a simple provider-backed process output needed by configuration logic. If queried during configuration, the output becomes a configuration-cache input and the process runs on later builds to check cache freshness, so keep it fast.
+- Use a custom `ValueSource` with injected `ExecOperations` when configuration-time process work needs parameters, exit handling, custom input streams, streaming output, or non-trivial parsing.
+- Do not hide slow, networked, or mutating external tools inside `providers.exec` or `ValueSource`; model them as tasks unless the build model genuinely needs the value before task graph calculation.
+- `ExecOutput` captures result, standard output, and standard error lazily and runs the process once on first provider query; handle startup failures at the provider consumer instead of assuming the command already ran.
+- `providers.exec/javaexec` cannot customize process input/output streams; use `ValueSource` or a task-owned `ExecOperations` call when stdin, separated streams, or streaming output is part of the contract.
 
 ## Work Model
 

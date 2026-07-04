@@ -28,6 +28,7 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 
 ## Frontend And External Processes
 
+- Read [worker-api-and-processes.md](worker-api-and-processes.md) when process execution APIs, `providers.exec/javaexec`, Worker API isolation, cancellation, or worker daemon behavior owns the implementation.
 - Model Node/npm/pnpm/yarn/Vite/Webpack commands and other external processes as typed tasks.
 - Inputs should include executable/tool versions, lockfiles, package manifests, config files, sources, and relevant environment; outputs should live under `build/` unless another tool requires a different workspace.
 - Wire frontend build outputs into JVM/native packaging with providers.
@@ -56,8 +57,7 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - Kotlin DSL script editor models are Tooling API root-project models, not project-source Kotlin compilation: request `KotlinDslScriptsModel` with `prepareKotlinBuildScriptModel` and classpath or strict-classpath provider mode, use `org.gradle.tooling.model.kotlin.dsl.scripts` only for explicit script files, and when Isolated Projects is enabled diagnose discovery through the isolated model builder because explicit script lists are rejected.
 - In composite builds, Tooling API task paths and prior test descriptors can target included builds, but class/method selectors without task targets apply only to the root build; use task-scoped test selectors for included-build tests.
 - Use `org.gradle.tooling.parallel` when IDE/model-building parallelism needs a different risk profile from task execution parallelism.
-- Notify Gradle daemons about files changed by the external tool itself; do not replay changes discovered by another watcher because Gradle already watches the file system.
-- Pass absolute canonical paths to `notifyDaemonsAboutChangedPaths(...)`; for renames send both old and new paths so retained VFS state cannot miss either side.
+- Notify Gradle daemons about files changed by the external tool itself with absolute canonical paths; for renames send both old and new paths, and do not replay changes discovered by another watcher because Gradle already watches the file system.
 - Do not depend on IDE-only files for Gradle build correctness.
 - Use public models or custom tooling models when external consumers need structured information.
 - Register custom tooling model builders through the injectable `ToolingModelBuilderRegistry` in a plugin; do not scrape task output or CLI text to fabricate IDE models.
