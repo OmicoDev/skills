@@ -26,9 +26,9 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - Directory paths passed to `from(...)` copy the directory contents, not the directory itself. Include the directory name explicitly when the destination should contain that top-level directory.
 - Non-existent paths passed to `from(...)` are ignored. If absence should fail the build, model the source as a required task input or add an explicit validation step.
 - Include/exclude patterns apply to the owning copy spec: no includes means everything is eligible, at least one include narrows the set, and exclusions override inclusions.
-- Duplicate relative paths in a copy spec or archive fail unless `duplicatesStrategy` is set. Prefer fixing the sources or applying a narrow strategy on the child spec that owns the duplicate.
+- Duplicate relative paths in a copy spec or archive fail unless `duplicatesStrategy` is set. Prefer fixing sources; if duplicates are intentional, scope the strategy to the owning child spec or entry, knowing `EXCLUDE` keeps the first entry while `INCLUDE`/`WARN` can overwrite filesystem output or create duplicate archive entries.
 - `rename(...)` changes copied file names, not the owning directory topology; use child `into(...)` or `eachFile` when the relative path needs to move, and keep rename closures cheap because they run for each copied file.
-- `filesMatching(...)` and `filesNotMatching(...)` act on file entries, not directories, and match the original source path rather than the destination path after `into(...)`, `rename(...)`, or an earlier `eachFile`/matching action changed `path`.
+- `filesMatching(...)` and `filesNotMatching(...)` act on file entries, not directories, and match the original source path rather than the destination path after `into(...)`, `rename(...)`, or an earlier `eachFile`/matching action changed `path`; use them for per-entry duplicate or permission overrides only when broad spec-level policy is too coarse.
 - Treat `filter(...)` and `expand(...)` sources as text and set `filteringCharset`; otherwise the JVM default charset can make transformed outputs host-dependent.
 - Use `expand(...)` only when Groovy template semantics are intended. It evaluates `${...}` expressions, so choose a narrower token filter when the input should be literal text with simple placeholders.
 - `Copy` does not remove stale files already in the destination. Use `Sync` when the destination must be an exact mirror, and keep that destination task-owned or intentionally managed.
@@ -37,7 +37,7 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - When a `Copy` task deploys a single file into an unmanaged system or application-server directory that may contain unrelated, unreadable, or pipe-like files, mark that dedicated task with `doNotTrackState("reason")` instead of letting Gradle snapshot the whole destination.
 - Treat `doNotTrackState` as an explicit untracked-task tradeoff: the task is always out of date, cannot use incremental `InputChanges`, and is not stored in or loaded from the build cache.
 - Use `FileSystemOperations.copy` or `sync` in typed tasks that must copy during execution. Avoid `Project.copy` and `Project.sync` in task actions because they are not configuration-cache compatible and do not infer task dependencies for action-time sources.
-- If a custom task copies files internally, declare the copy sources, destination, filters, and behavior-affecting options as task inputs/outputs.
+- If a custom task copies files internally, declare the copy sources, destination, filters, and behavior-affecting options as task inputs/outputs; `caseSensitive`, `includeEmptyDirs`, `duplicatesStrategy`, permissions, and `filteringCharset` are task-state inputs.
 
 ## Delete, Move, And Directories
 
@@ -49,14 +49,14 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 
 ## Archives
 
-- Archive tasks are copy specs whose destination is the archive file. Prefer plugin-provided `jar`, distribution, or publication tasks when they own the artifact.
+- Archive tasks are copy specs whose output is the archive file, while `into(...)` means a path inside the archive; use `destinationDirectory` and archive naming properties for the file location. Prefer plugin-provided `jar`, distribution, or publication tasks when they own the artifact.
 - Archive task names do not determine archive file names. Use `archiveBaseName`, `archiveAppendix`, `archiveVersion`, `archiveClassifier`, `archiveExtension`, `archiveFileName`, and `destinationDirectory`.
 - Consume archives through the `archiveFile` provider rather than reconstructing `destinationDirectory` plus `archiveFileName`; the provider preserves conventions and task dependencies.
 - The Base Plugin supplies archive naming and destination conventions; configure its `base` extension when the convention should affect all archive tasks.
 - Treat the Base Plugin's `archives`, `default`, and `Configuration.visible` surfaces as legacy compatibility, not new assembly or dependency APIs; wire `assemble` explicitly to artifact-producing task providers instead.
 - On Gradle 9+, custom outgoing artifacts are not implicitly built by `assemble`; wire `assemble` to the artifact's task provider or `configuration.artifacts` when the artifact belongs to the lifecycle task.
 - On Gradle 9+, projects that combine Java, War, and Ear packaging can build and add all related artifacts to `archives`; verify lifecycle output before relying on older package-plugin suppression behavior.
-- Use `zipTree(...)` and `tarTree(...)` to treat archives as `FileTree`s for unpacking or repackaging. JAR, WAR, and EAR files are ZIPs for this purpose.
+- Use `zipTree(...)` and `tarTree(...)` to treat archives as `FileTree`s for unpacking or repackaging; JAR, WAR, and EAR files are ZIPs for this purpose. Pass archive file providers when the archive is task-produced, and diagnose duplicate failures from the reported source type: filesystem file, zip entry, or tar entry.
 - In typed tasks or execution-time code, inject `ArchiveOperations` for `zipTree` and `tarTree`; avoid `Project.zipTree` and `Project.tarTree` from task actions.
 - When remapping paths from an unpacked archive with `eachFile`, disable `includeEmptyDirs` if empty directories remain; `eachFile` cannot change empty directory destinations.
 - Prefer a maintained plugin such as Shadow for fat JARs. Manual `zipTree(configurations.runtimeClasspath...)` needs duplicate handling, service file merging, signatures, and metadata review.
@@ -79,19 +79,19 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 
 - Set `filePermissions {}` and `dirPermissions {}` on the relevant `CopySpec` or child spec when permissions are part of the artifact contract.
 - On Gradle 9+, raw Unix mode APIs such as `fileMode`, `dirMode`, `FileTreeElement.getMode()`, and `FileCopyDetails.setMode(...)` are removed; use `filePermissions {}` and `dirPermissions {}` instead.
-- Empty permission blocks still set explicit defaults: files `0644`, directories `0755`.
+- Empty archive permission blocks still set explicit defaults: files `0644`, directories `0755`; ordinary `Copy` preserves source permissions when no explicit permission policy is set.
 - Archive permissions are per entry type: `filePermissions {}` does not change directory entries and `dirPermissions {}` does not change file entries; set both when the archive contract requires both.
 - Per-file permission overrides can disable up-to-date checks for that task; prefer broad spec-level permissions when possible.
 - Gradle 9 archive tasks are reproducible by default: deterministic order, fixed timestamps, and fixed file/directory permissions.
 - Preserve filesystem timestamps, order, or permissions only when the filesystem or VCS metadata is intentionally part of the output contract.
-- Reproducibility escape hatches are per concern: `preserveFileTimestamps`, `reproducibleFileOrder = false`, `useFileSystemPermissions()`, or `org.gradle.archives.use-file-system-permissions=true` for all archives. Explicit `filePermissions` or `dirPermissions` override filesystem-permission preservation only for that entry type, while `useFileSystemPermissions()` resets both entry types to source filesystem modes for that task.
+- Reproducibility escape hatches are per concern: `preserveFileTimestamps`, `reproducibleFileOrder = false`, `useFileSystemPermissions()`, or `org.gradle.archives.use-file-system-permissions=true` for all archives. Explicit `filePermissions` or `dirPermissions` override filesystem-permission preservation only for that entry type; `useFileSystemPermissions()` resets both entry types to source filesystem modes for that task, `*.unset()` restores Gradle's fixed archive defaults, and a provider that returns `null` preserves filesystem permissions for that entry type.
 - For executable scripts in archives, prefer explicit file permissions over global filesystem-permission preservation.
 
 ## Symptom Map
 
 - Destination contains too much or too little directory structure: inspect whether the path was part of `from(...)`, a child `into(...)`, or an include pattern.
 - Files unexpectedly missing from a `FileTree` or copy: inspect Ant default excludes, include/exclude scope, and whether a `from(...)` path does not exist.
-- Copy task always runs: check `Project.copy` in task actions, per-file permission overrides, undeclared inputs/outputs, and volatile filters.
+- Copy task always runs: check `Project.copy` in task actions, per-entry permission overrides, undeclared inputs/outputs, behavior-affecting copy options, and volatile filters.
 - Copy task deliberately always runs: check for `doNotTrackState` and confirm the destination is unmanaged or unreadable enough to justify disabling state tracking.
 - Missing task dependency for copied generated files: pass the producing task/output provider to `from(...)` or declare the source as an input.
 - Reproducible archive mismatch: inspect timestamps, file order, permissions, generated metadata, duplicate entries, and host-specific content.

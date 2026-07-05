@@ -22,8 +22,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 
 ## Registration And Consumption
 
-- Register services with `gradle.sharedServices.registerIfAbsent(...)`.
-- Registration is lazy: the service instance is not created when no task/action actually uses it in that build.
+- Register services with `gradle.sharedServices.registerIfAbsent(...)`; this creates a provider, not the service instance, and the instance is still skipped when no task/action uses it.
 - Build services are scoped to one build, not one project. Use a stable registration name when one shared resource should coordinate tasks across projects in the same build.
 - `registerIfAbsent` reuses the first same-name registration; do not expect later calls with different parameters, limits, or implementation intent to merge. Centralize registration ownership and use deliberately unique names when the services are not the same shared resource.
 - Mutate parameters only inside the registration action so configuration cache and Isolated Projects see one stable service definition.
@@ -42,6 +41,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Service availability is owner-scoped; check the public service table for the exact receiver before relying on injection.
 - Common examples differ by owner: project plugins and project-created types can use `ProjectLayout`, `WorkerExecutor`, `DependencyFactory`, `ToolingModelBuilderRegistry`, or `TestEventReporterFactory`; settings plugins use `BuildLayout`, `ToolingModelBuilderRegistry`, and `DependencyFactory`; worker actions expose a narrower worker service set.
 - Constructor injection declares service requirements up front; property getter injection defers service creation until the getter is called.
+- Do not inject `Project` or `Gradle` into task types for execution-time reads. Capture needed model values during configuration as task properties, or inject a narrow public service such as `FileSystemOperations`, `ArchiveOperations`, or `ExecOperations`.
 - If an ad hoc script task needs `FileSystemOperations`, `ArchiveOperations`, or `ExecOperations` through an injected interface, treat that as a signal to extract a typed task when behavior grows.
 
 ## Concurrency And Indirect Use
@@ -89,6 +89,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Undeclared build-service usage warning: declare the exact consuming task property with `@ServiceReference` or call `usesService(...)` for the provider; do not rely on task-action `provider.get()` because Gradle cannot honor usage tracking or `maxParallelUsages` from that indirect access.
 - Service provider type loaded by a different plugin classloader: prefer by-type `@ServiceReference`, or put the plugin on the root buildscript classpath with `apply false` so sibling projects share the service type.
 - Service unexpectedly created during configuration: look for `provider.get()` or eager work in plugin application.
+- Task action hits Gradle 9 deprecations or configuration-cache problems: search `@TaskAction`, `doFirst`, and `doLast` for `Task.getProject()`, injected `Project`/`Gradle`, `taskDependencies`, `dependsOn`, `mustRunAfter`, `finalizedBy`, `shouldRunAfter`, or `extensions`; move those reads to configuration-time wiring and expose plain properties or file collections to the action.
 - Service create or stop failure: inspect the service constructor, parameter values, and `close()` implementation before changing task actions; creation failures surface through the consuming task, while stop failures are reported as service lifecycle failures after use.
 - Service state races: make the implementation thread-safe or move shared state behind a concurrency-limited service.
 - Listener breaks configuration cache: replace broad listeners with `BuildEventsListenerRegistry` and a registered build service.

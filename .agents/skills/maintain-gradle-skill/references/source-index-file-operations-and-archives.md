@@ -22,9 +22,13 @@
 - `platforms/jvm/plugins-application/src/test/groovy/org/gradle/api/internal/plugins/StartScriptGeneratorTest.groovy`
 - `platforms/jvm/plugins-application/src/test/groovy/org/gradle/api/tasks/application/CreateStartScriptsTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/CopySpec.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/file/DuplicatesStrategy.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/file/FileCopyDetails.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/SyncSpec.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/ArchiveTaskPermissionsIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CopyTaskIntegrationSpec.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/ReproducibleArchivesIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/bundling/ArchiveIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/Copy.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/Sync.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/bundling/AbstractArchiveTask.java`
