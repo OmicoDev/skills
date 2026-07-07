@@ -9,6 +9,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Read [runtime-and-structure.md](runtime-and-structure.md) for wrapper distribution checksums and wrapper JAR validation.
 - Read [dependency-repositories.md](dependency-repositories.md) for repository hardening, content filters, and cache behavior.
 - Read [dependency-locking.md](dependency-locking.md) for lock diffs and reproducible selected versions.
+- Read [build-cache-and-incremental.md](build-cache-and-incremental.md) for Gradle build-cache push/pull policy, remote cache trust, and cache hit/miss evidence.
 
 ## CI Baseline
 
@@ -79,6 +80,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Repository content filters reduce repository shadowing risk.
 - Lockfiles improve reproducibility but do not prove artifact trust.
 - Configuration cache may serialize configuration state; keep secrets modeled according to Gradle guidance.
+- Remote build-cache outputs are reusable build products, not dependency artifacts; decide push trust, pull trust, and provenance before release or audit builds.
 
 ## Release Gate Checks
 

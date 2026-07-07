@@ -17,9 +17,9 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 
 - Locking only attaches to resolvable configurations; enabling it on declarable-only buckets is a no-op.
 - Activate locking for the configurations whose selected versions must stay stable.
-- `lockAllConfigurations()` covers project configurations, not buildscript classpaths.
+- `lockAllConfigurations()` covers project configurations, not buildscript or settings classpaths.
 - If a convention or plugin enables locking broadly, disable locking on intentionally volatile configurations instead of papering over them with ignored modules.
-- Buildscript classpath locking is separate from project dependency locking; strict mode and custom lock files do not leak between them.
+- Buildscript and settings classpath locking are separate from project dependency locking; strict mode and custom lock files do not leak between these scopes.
 - Use `resolutionStrategy.deactivateDependencyLocking()` or `dependencyLocking.unlockAllConfigurations()` when a resolvable configuration should stay unlocked after broad activation; deleting lock entries alone does not change the locking policy.
 - Configuration inheritance does not inherit locking policy: resolving an unlocked child ignores a locked parent's lock state, while a locked child locks inherited dependencies.
 - Decide locking activation, deactivation, lock mode, custom lockfile, ignored dependencies, dependencies, hierarchy, and resolution strategy before a configuration is observed or resolved; Gradle finalizes lock options when lock state is first used, so do not hide locking changes in `incoming.beforeResolve { ... }`.
@@ -30,7 +30,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 ## Lock State Files
 
 - The default lock state is `gradle.lockfile` in each project or subproject directory.
-- Buildscript classpath locks use `buildscript-gradle.lockfile`.
+- Buildscript classpath locks use `buildscript-gradle.lockfile`; settings/plugin classpath locks use `settings-gradle.lockfile`.
 - Lock entries are sorted and record which configurations contain each module; an `empty=` entry preserves locked configurations with no dependencies.
 - Gradle 9.5+ writes lockfiles with LF line endings on every platform; a one-time CRLF-to-LF diff after lock regeneration is formatting churn, not dependency churn.
 - Custom lockfile names or locations are for real execution-context boundaries, such as platform-specific native graphs, not for hiding unrelated lock churn.
@@ -58,18 +58,18 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - `--update-locks` accepts comma-separated module notations; wildcards may stand alone or appear at the end of the group or module name.
 - `--update-locks` still loads existing lock state, but filters out the targeted modules for that resolution; non-targeted locked modules continue to constrain selection.
 - Targeted lock updates still run normal resolution, so aligned platforms, constraints, conflicts, or transitive edges can update related modules too.
-- If a root `dependencies` run misses subprojects or variants, use a purpose-built lock task that filters resolvable configurations instead of resolving every possible platform-specific graph blindly.
+- If a root `dependencies` run misses subprojects or variants, use a purpose-built lock task that filters resolvable configurations, mark that task incompatible with configuration cache, and avoid blindly resolving every platform-specific graph.
 
 ## Resolution Behavior
 
 - If the declared version is lower than the lock, Gradle can select the locked version.
 - If the declared version is higher than the lock, resolution can fail because the lock is strict.
 - Update lock state when selected versions intentionally change; do not expect declarations to override existing locks.
-- Default mode requires every existing lock entry to match the resolved graph and rejects extra resolved dependencies.
-- New or removed dependencies can fail default lock validation because the resolved graph no longer matches lock state.
+- Default mode requires every existing lock entry to match the resolved graph and rejects extra resolved dependencies; new or removed dependencies are lock out-of-date evidence.
 - Strict mode also fails when a locked configuration has no associated lock state.
 - Lenient mode pins dynamic versions but can allow version shifts and graph additions/removals; use it for controlled exploration, not release defaults.
 - Locking constrains modules that remain in the resolved graph; it does not resurrect excluded modules, and it skips versionless dependencies and included-build substitutions when producing or loading lock state.
+- Diagnose lock failures by category: missing locked module means the graph path disappeared, extra module means a new graph edge appeared, and forced/substituted version means a resolution rule conflicts with the lock.
 - If a force, dependency substitution, or `eachDependency` rule selects a different version from the lock, treat the failure as a lock-policy conflict and update the rule or lock together.
 - Locking does not apply to source dependencies.
 - Do not combine dependency locking with `failOnDynamicVersions()` or `failOnChangingVersions()` on the same configuration; choose locking to preserve selected dynamic/changing results, or choose fail-fast resolution to reject those selectors before lock state is relevant.
@@ -87,8 +87,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 
 ## Ignore And Cleanup Rules
 
-- Avoid broad lock ignore patterns; they weaken reproducibility and can hide the dependency that should own the update workflow.
-- `*:*` is not accepted as an ignore pattern because it effectively disables locking.
+- Avoid broad lock ignore patterns; `*:*` is rejected because it effectively disables locking, and broad ignores hide the dependency that should own the update workflow.
 - Lock ignore rules are project scoped and do not remove transitive dependencies from lock state.
 - Ignored modules are filtered out when reading, validating, and writing lock state, and Gradle does not verify that they appear in any resolved configuration.
 - Ignored changing modules are filtered before the changing-module warning too; do not treat quiet `--write-locks` output as proof that a SNAPSHOT or changing dependency is reproducible.

@@ -29,6 +29,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - First ask whether the task is cacheable at all.
 - Locate the first executed cacheable task in a miss chain; later misses may be consequences of that earlier task.
 - Then compare task input fingerprints, output property names, Gradle version, Java/tool versions, environment inputs, and normalized paths.
+- When Gradle says caching is disabled, route by reason: no `cacheIf` or `@DisableCachingByDefault` is task-type policy; no outputs, file-tree outputs, untracked state, validation failures, non-cacheable inputs, and overlap are task modeling defects; unmet `cacheIf`/`doNotCacheIf` is instance policy.
 - Cross-machine misses often come from absolute paths, generated metadata, timestamps, locale/time zone, line endings, or tool installation paths.
 - Overlapping outputs disable reliable cache/up-to-date reasoning. Give each task a distinct output location unless a built-in task type models sharing.
 - Pre-existing unmanaged files inside a declared output location count as output overlap evidence; move the task output to an empty task-owned location or model the external producer before expecting cache storage.
@@ -57,13 +58,11 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Use Build Scan cache performance views when policy permits.
 - Use `--info` to inspect up-to-date and cache reasons.
 - Use `-Dorg.gradle.caching.debug=true` for targeted cache-key and input fingerprint diagnostics, not as a default CI flag.
-- Estimate the fully cached ceiling with a controlled local-cache experiment: clear local build-cache entries, run the same clean cache-enabled command twice, then compare elapsed time and `FROM-CACHE` outcomes.
-- Measure CI cache impact over time with cache-enabled and cache-disabled lanes; separate Gradle execution savings from queue time, checkout time, and other pipeline costs.
+- Measure performance separately: a controlled clean local-cache repeat estimates the fully cached ceiling; cache-enabled and cache-disabled CI lanes measure real impact apart from queue, checkout, and pipeline time.
 - Use Build Scan cache performance data to separate local hits, remote hits, misses, remote transfer time, and network bottlenecks.
-- Validate in order: repeated build without cache should become up-to-date; clean repeated build with local cache should load cacheable work; equivalent checkouts in different directories should prove relocatability before remote rollout.
+- Validate in order: repeated build without cache becomes up-to-date; clean repeated build with local cache loads cacheable work; equivalent checkouts in different directories prove relocatability before remote rollout.
 - Compare local and CI input properties when cross-machine misses occur.
 - Separate "task ran because input changed" from "task is not cacheable" from "cache key differs".
-- Test relocatability by comparing equivalent checkouts in different directories before trusting cross-machine reuse.
 - For cross-platform cache reuse, check file encoding, line endings, symlinks, Java vendor/implementation inputs, and generated archive reproducibility before blaming remote cache transport.
 - When environment variables affect outputs, declare them as inputs. For path-valued environment variables, prefer tracking the pointed-to file contents, directory contents, or tool version instead of a raw absolute path when relocatability matters.
 - Set Gradle daemon encoding explicitly, usually `org.gradle.jvmargs=-Dfile.encoding=UTF-8`, and configure Java tools separately when outputs depend on text encoding.
@@ -77,6 +76,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Third-party plugins can damage built-in task cacheability by adding absolute paths, volatile values, or outcome-dependent runtime inputs; inspect plugin-added inputs before changing Gradle's cache policy or built-in task settings.
 - Do not base build logic on whether a task executed. `FROM-CACHE`, up-to-date, and executed outputs must be modeled through inputs and outputs.
 - Runtime classpath normalization is declared by the consuming project/task and can ignore volatile classpath entries, such as audit `build-info.properties`, without changing the actual runtime classpath.
+- Configure runtime classpath normalization before execution starts; after first use Gradle rejects ignore, property, and `META-INF` rule changes, so keep them in stable project or convention-plugin configuration.
 - Prefer runtime classpath properties normalization when only selected keys are volatile; use resource-level ignores only when the entire file or `META-INF` area is non-semantic for the consumer.
 - Non-repeatable upstream outputs become unstable inputs for downstream cacheable tasks. Prefer reproducible producer outputs or consumer input normalization before trying to cache a volatile producer just to stabilize downstream keys.
 - If volatile data is only needed for publishing or auditing, split expensive cacheable work from cheap volatile stamping.
@@ -92,3 +92,4 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Disable cache use or require provenance evidence for release or audit builds when reused outputs must be traceable to the producing build.
 - Pair remote cache rollout with task validation warnings and representative clean/warm builds.
 - If HTTP remote cache operations keep failing after connection, Gradle retries then disables the remote cache for the rest of that build; diagnose transport, server, proxy, or TLS trust before changing task inputs.
+- Treat insecure HTTP, `allowUntrustedServer`, redirect, and Expect-Continue choices as remote-cache transport or security policy; they do not explain task input cache misses.

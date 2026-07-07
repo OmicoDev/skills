@@ -2,6 +2,7 @@
 
 ## Documentation
 
+- [Configuration Cache Debugging](https://docs.gradle.org/current/userguide/configuration_cache_debugging.html)
 - [How to Prevent Accidental or Eager Dependency Upgrades in Gradle](https://docs.gradle.org/current/userguide/how_to_prevent_accidental_dependency_upgrades.html)
 - [Locking Versions](https://docs.gradle.org/current/userguide/dependency_locking.html)
 - [Upgrading from 8 to 9](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
@@ -10,6 +11,7 @@
 ## Source Code
 
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/BeforeResolveIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ConfigurationCacheDependencyResolutionFeaturesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/AbstractLockingIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/DependencyLockingStrictModeIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/locking/LockingInteractionsIntegrationTest.groovy`
