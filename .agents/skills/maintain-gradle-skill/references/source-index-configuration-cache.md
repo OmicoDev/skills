@@ -2,10 +2,12 @@
 
 ## Documentation
 
+- [Build Lifecycle](https://docs.gradle.org/current/userguide/build_lifecycle.html)
 - [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Configuration Cache Status](https://docs.gradle.org/current/userguide/configuration_cache_status.html)
 - [Debugging and Troubleshooting the Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_debugging.html)
+- [Enabling and Configuring the Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_enabling.html)
 - [Implementing Binary Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_binary.html)
 - [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
@@ -27,6 +29,7 @@
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/problems/ConfigurationCacheProblems.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/promo/ConfigurationCachePromoHandler.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/serialize/ConfigurationCacheCodecs.kt`
+- `platforms/core-configuration/configuration-problems-base/src/main/kotlin/org/gradle/internal/cc/impl/problems/ProblemSeverity.kt`
 - `platforms/core-configuration/core-serialization-codecs/src/main/kotlin/org/gradle/internal/serialize/codecs/core/UnsupportedTypesCodecs.kt`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/ConfigurationTimeBarrier.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/DefaultConfigurationTimeBarrier.java`
