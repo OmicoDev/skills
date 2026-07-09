@@ -14,6 +14,7 @@ Read this when: dependency declarations, configuration roles, version ownership,
 - Read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) for reusable artifact transform implementation, registration, caching, and diagnostics.
 - Read [dependency-verification.md](dependency-verification.md) for `verification-metadata.xml`, checksums, signatures, bootstrapping, and verification failures.
 - Read [publications-and-signing.md](publications-and-signing.md) when dependency metadata is produced by Maven/Ivy publishing or plugin publication.
+- Read [source-control-dependencies.md](source-control-dependencies.md) when `sourceControl` or `vcsMappings` replaces a module with a Git-backed source dependency.
 
 ## Scope Boundary
 
