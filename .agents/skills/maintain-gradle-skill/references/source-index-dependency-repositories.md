@@ -13,13 +13,23 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/README.md`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/RepositoryContentFilteringIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/RepositoryHandlerMapOverloadsDeprecationIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/maven/MavenDynamicResolveIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/maven/MavenGradleMetadataRedirectionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/suppliers/CustomVersionListerIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/suppliers/CustomVersionListerWithSupplierIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/suppliers/DynamicRevisionRemoteResolveWithMetadataSupplierIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dsl/DefaultRepositoryHandler.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/repositories/DefaultMavenArtifactRepository.java`
+- `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/ivyservice/ivyresolve/DefaultMetadataProviderTest.groovy`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/repositories/DefaultMavenArtifactRepositoryTest.groovy`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/repositories/DefaultRepositoryContentDescriptorTest.groovy`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataBuilder.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataListerDetails.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataSupplier.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataSupplierDetails.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ComponentMetadataVersionLister.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/RepositoryHandler.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/repositories/MavenArtifactRepository.java`

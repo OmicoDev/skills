@@ -7,9 +7,7 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - Plugin repositories belong in `pluginManagement { repositories { ... } }`.
 - Dependency repositories usually belong in `dependencyResolutionManagement { repositories { ... } }` when central governance is desired.
 - Project-level repositories should be intentional exceptions, not hidden fallbacks.
-- `PREFER_PROJECT` is the default repository mode: project repositories override settings repositories.
-- Use `PREFER_SETTINGS` when settings dependency repositories should win; project repositories declared directly or by a plugin are ignored after a warning, so do not treat them as fallbacks.
-- Use `FAIL_ON_PROJECT_REPOS` when settings must be the only dependency repository policy; any project repository declared directly or by a plugin becomes a build error.
+- Repository mode is owner policy: default `PREFER_PROJECT` lets project repositories override settings repositories, `PREFER_SETTINGS` ignores project repositories after a warning, and `FAIL_ON_PROJECT_REPOS` turns project repositories into build errors.
 - Use content filters or `exclusiveContent` when an internal repository owns a coordinate namespace.
 - Avoid `mavenLocal()` in normal resolution unless local publication is part of the workflow.
 - Avoid `flatDir` for real dependencies because it has no transitive metadata.
@@ -21,7 +19,7 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 
 - Repository order matters; filters reduce search, leakage, and incorrect artifact risk.
 - During a fresh resolve, the repository that supplies module metadata is also where Gradle tries to download that module's artifacts; later repositories are not per-artifact fallbacks.
-- Include filters exclude everything not included; exclude filters include everything not excluded. When both are present, only explicitly included and not excluded modules remain.
+- Include filters exclude everything not included; exclude filters include everything not excluded; with both, only explicitly included and not excluded modules remain.
 - A normal include filter does not make a coordinate exclusive. Other repositories can still provide it unless every repository is filtered.
 - Content filters affect dynamic version listing as well as metadata and artifact lookup; if a dynamic selector cannot see a version, check the repository filter before changing metadata sources.
 - Configure repository content filters before any dependency resolution; once a repository has been used, Gradle rejects content-filter mutation.
@@ -38,8 +36,7 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - Prefer Gradle Module Metadata when available because it preserves variants, capabilities, constraints, and rich versions.
 - Maven POM and Ivy metadata may need [dependency-metadata-rules.md](dependency-metadata-rules.md) when variants, dependencies, capabilities, or status are incomplete.
 - Artifact-only metadata is a last-resort interop mode for legacy repositories without descriptors.
-- Default metadata probing prefers Gradle Module Metadata before Maven POM or Ivy descriptors; changing `metadataSources` changes the graph Gradle is allowed to see, not just download performance.
-- `metadataSources` selects which metadata formats are allowed; Gradle still searches enabled sources in its predefined order, so do not rely on DSL declaration order as a precedence policy.
+- `metadataSources` selects which metadata formats are allowed; Gradle still probes enabled sources in its predefined order, so changing sources changes the graph Gradle can see, not just download performance or DSL precedence.
 - `artifact()` metadata sources can find files without descriptors, but they cannot recover dependencies, variants, capabilities, or status; do not use them to mask missing publication metadata.
 - Add `artifact()` as a fallback after descriptor sources only when descriptorless modules are expected; artifact-first policies make transitive dependencies invisible.
 - `flatDir` synthesizes ad hoc metadata from files and cannot override a module that another declared repository provides with real metadata.
@@ -48,8 +45,9 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - If all modules in a repository are published with Gradle Module Metadata, a metadata-source policy can reduce network probes.
 - Maven POM or Ivy descriptors can contain a marker that redirects Gradle to matching Gradle Module Metadata; use `ignoreGradleMetadataRedirection()` only for a known broken repository or producer because it can force legacy metadata and lose variant semantics.
 - Enable Ivy dynamic resolve mode only for Ivy repositories where `revConstraint` should override `rev`; it is not a Maven or custom resolver feature.
-- Repository-level `ComponentMetadataSupplier` can provide initial metadata instead of parsing a remote descriptor; Gradle still applies component metadata rules to the supplied result, so use suppliers for repository/probe optimization and initial status or attribute data, not for variant/dependency repairs.
-- Repository-level `ComponentMetadataVersionLister` is only for dynamic selectors that need a module's available versions; fixed versions do not call it, and version-policy fixes still belong in constraints, platforms, locks, or status rules.
+- Repository-level `ComponentMetadataSupplier` provides initial component metadata instead of parsing a remote descriptor; its builder can set status, status scheme, and attributes, then component metadata rules still run for dependency, variant, capability, and file repairs.
+- Repository-level `ComponentMetadataVersionLister` is dynamic-selector infrastructure: it lists available module versions and can use repository resources, but fixed versions do not call it and version policy still belongs in constraints, platforms, locks, or status rules.
+- If `1.+`, version ranges, or `latest.*` fail before fixed-version metadata lookup, inspect content filters, Maven/Ivy version-listing metadata, artifact-directory fallback, or a custom version lister before changing constraints or metadata rules.
 
 ## Local Repositories
 
