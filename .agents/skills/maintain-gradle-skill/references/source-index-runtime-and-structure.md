@@ -9,7 +9,6 @@
 - [Build Lifecycle](https://docs.gradle.org/current/userguide/build_lifecycle.html)
 - [Build State Model](https://github.com/gradle/gradle/blob/master/architecture/build-state-model.md)
 - [Compatibility Matrix](https://docs.gradle.org/current/userguide/compatibility.html)
-- [Continuous Builds](https://docs.gradle.org/current/userguide/continuous_builds.html)
 - [File System Watching](https://docs.gradle.org/current/userguide/file_system_watching.html)
 - [Gradle Daemon](https://docs.gradle.org/current/userguide/gradle_daemon.html)
 - [Gradle Runtimes](https://github.com/gradle/gradle/blob/master/architecture/runtimes.md)

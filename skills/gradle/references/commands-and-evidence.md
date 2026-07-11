@@ -25,7 +25,7 @@ Use the wrapper and the smallest useful command.
 - Add `--info` only when ordinary output lacks owner evidence. Use `--debug` only in trusted log destinations; it can expose environment variables, repository credentials, build cache credentials, Develocity credentials, and publishing credentials.
 - Add `--configuration-cache` to reproduce configuration-cache behavior.
 - Add `--configuration-cache-problems=warn` only to inventory blockers during migration; remove it from release gates.
-- Add `--continuous` only for interactive command-line watch loops. It depends on file system watching, does not work with `--no-daemon`, and must be restarted after build logic or model changes.
+- Add `--continuous` only for an interactive command-line watch loop; read [continuous-builds.md](continuous-builds.md) for runtime requirements, triggering, cancellation, and miss/cycle diagnosis.
 - Add `--rerun` after one task when only that task should ignore up-to-date checks; add `--rerun-tasks` when the selected tasks and their dependencies should all rerun without deleting outputs like `clean` would.
 - Add `--refresh-dependencies` only to test cache/repository hypotheses and `--offline` only to prove whether the cache already contains required modules; do not leave either as a fix.
 - Add `--write-locks`, `--update-locks`, or dependency verification flags only for deliberate lock/verification workflows; `--update-locks` implies `--write-locks`, and durable verification policy belongs in [dependency-verification.md](dependency-verification.md).
@@ -56,7 +56,7 @@ Use the wrapper and the smallest useful command.
 - For warning cleanup, capture `--warning-mode=all` output; use `--warning-mode=fail` only as a gate after the owning warnings are understood.
 - For performance work, record at least two comparable runs before and after a change. Avoid comparing a warm daemon run with a cold daemon run.
 - Build Scan performance data is richer; `--profile` is local but less detailed. Use the local profile report when upload policy blocks scans.
-- For continuous-build misses or build cycles, record the files Gradle reported as changed. Missing input directories, untracked/no-output tasks, files outside project directories, symlinks, and tasks that mutate their own inputs can explain watch behavior.
+- For continuous-build misses or cycles, preserve the reported changed paths and route the evidence through [continuous-builds.md](continuous-builds.md).
 - `buildDashboard` indexes reports from reporting tasks selected in the same invocation; it does not depend on report producers and applying the plugin disables configuration cache.
 - For CI-only failures, record Gradle user home cache settings, CI JDK, wrapper version, working directory, and any init scripts injected by CI.
 - Command-line flags outrank properties and environment. When reproducing a CI issue, compare flags, `gradle.properties`, system properties, and environment in that order.

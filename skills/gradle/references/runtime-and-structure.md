@@ -44,14 +44,14 @@ Read this when: the Gradle client or daemon, daemon JVM selection, Gradle user h
 
 ## VFS And File Watching
 
-- This file owns whether the daemon can retain Virtual File System state; read [performance-strategy.md](performance-strategy.md) for speed evidence and [commands-and-evidence.md](commands-and-evidence.md) for continuous-build flag selection.
+- This file owns whether the daemon can retain Virtual File System state; read [performance-strategy.md](performance-strategy.md) for speed evidence and [continuous-builds.md](continuous-builds.md) for watch-loop execution and triggering.
 - File system watching is daemon-owned state retained between builds; it improves repeat build file snapshots but does not replace declared task inputs and outputs.
 - Toggle with `--watch-fs`/`org.gradle.vfs.watch=true` or `--no-watch-fs`/`org.gradle.vfs.watch=false`; use `org.gradle.vfs.verbose=true` to see VFS events and retained snapshot counts at build start and finish.
 - Unsupported or unstable file systems are runtime evidence, not build logic evidence. Be suspicious of network mounts, unsupported file systems, symlinked inputs, and CI/project directories outside the watched hierarchy.
 - There is no public custom watch-exclude API; reduce noisy watching or re-execution by narrowing the task's declared inputs, such as `fileTree.exclude(...)`.
 - `Dropped VFS state due to lost state` means the daemon lost reliable watch state after unknown or excessive file events; the build can continue, but repeat-build performance evidence is no longer comparable.
 - On Linux, large builds can hit inotify watch limits or memory pressure because each watched directory consumes a watch; raise limits deliberately or disable watching in constrained agents.
-- Continuous build depends on active file watching and daemon execution. It does not work with `--no-daemon`, does not recompute the build model after build logic changes, and may miss newly created previously absent input directories or filtered file trees.
+- Continuous build and running deployments require active watching; route their trigger, miss, cancellation, and cycle behavior to [continuous-builds.md](continuous-builds.md).
 - `--project-cache-dir` disables default file watching and is incompatible with explicitly enabled `--watch-fs`/`org.gradle.vfs.watch=true`.
 
 ## Init Scripts And Lifecycle Hooks
