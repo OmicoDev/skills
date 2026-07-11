@@ -70,7 +70,8 @@ Use the wrapper and the smallest useful command.
 - `No matching variant`, capability conflict, or attributes mismatch: read [dependency-variants-and-metadata.md](dependency-variants-and-metadata.md).
 - Configuration cache report names build logic: read [configuration-cache.md](configuration-cache.md).
 - Slow configuration or many realized tasks: read [performance-strategy.md](performance-strategy.md).
-- Wrapper or JVM mismatch: read [runtime-and-structure.md](runtime-and-structure.md) and [jvm-and-tests.md](jvm-and-tests.md).
+- Checked-in Wrapper or distribution mismatch: read [wrapper-and-distributions.md](wrapper-and-distributions.md).
+- Client, daemon, or task JVM mismatch: read [runtime-and-structure.md](runtime-and-structure.md) and [jvm-and-tests.md](jvm-and-tests.md).
 - New project scaffold or Maven conversion: read [project-topology-and-build-logic.md](project-topology-and-build-logic.md) before accepting generated files.
 
 ## Command Safety

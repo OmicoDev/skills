@@ -61,7 +61,7 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 - Use the build cache ([build-cache-and-incremental.md](build-cache-and-incremental.md)): verify cacheable inputs, outputs, normalization, and reproducibility.
 - Use the configuration cache ([configuration-cache.md](configuration-cache.md)): fix configuration-time work before treating cache misses as infrastructure problems.
 - Avoid expensive configuration-phase computation ([performance-strategy.md](performance-strategy.md)): defer filesystem, process, network, and dependency work into task actions or value sources.
-- Prefer the `-bin` Gradle distribution ([runtime-and-structure.md](runtime-and-structure.md)): use `-all` only when IDE/source distribution needs justify it.
+- Prefer the `-bin` Gradle distribution ([wrapper-and-distributions.md](wrapper-and-distributions.md)): use `-all` only when IDE/source distribution needs justify it.
 
 ### Security
 

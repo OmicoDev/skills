@@ -36,7 +36,8 @@ Keep this list coarse. Add narrow references from their owning file, not from `S
 
 - Read [references/model-boundaries.md](references/model-boundaries.md) when the owner is unclear or the task turns on Gradle model boundaries.
 - Read [references/commands-and-evidence.md](references/commands-and-evidence.md) when choosing commands, flags, logs, reports, or failure evidence.
-- Read [references/runtime-and-structure.md](references/runtime-and-structure.md) when wrapper files, Gradle runtime, daemon JVM selection, Gradle user home, or init scripts own the work.
+- Read [references/wrapper-and-distributions.md](references/wrapper-and-distributions.md) when wrapper files, wrapper generation or upgrades, distribution download, checksum, retry, or installation owns the work.
+- Read [references/runtime-and-structure.md](references/runtime-and-structure.md) when the Gradle client or daemon, daemon JVM selection, Gradle user home, VFS/file watching, or init scripts own the work.
 - Read [references/project-topology-and-build-logic.md](references/project-topology-and-build-logic.md) when settings scripts, project inclusion, multi-project builds, composite builds, build logic placement, root layout, or `init` scaffolding owns the work.
 - Read [references/scripts-and-conventions.md](references/scripts-and-conventions.md) when editing build scripts or reusable build logic.
 - Read [references/dependency-policy.md](references/dependency-policy.md) when dependency declarations, configuration roles, catalogs, platforms, version policy, or selected versions are the main surface.

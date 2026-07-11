@@ -1,10 +1,11 @@
 # Gradle Runtime And Structure
 
-Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user home, VFS/file watching, init scripts, or structure routing owns the work.
+Read this when: the Gradle client or daemon, daemon JVM selection, Gradle user home, VFS/file watching, init scripts, or runtime structure owns the work.
 
 ## Scope Boundary
 
-- This file owns the build's runtime environment: wrapper files, daemon/client boundaries, Daemon JVM policy, Gradle user home, VFS/file watching, and init scripts.
+- This file owns daemon/client boundaries, Daemon JVM policy, Gradle user home, VFS/file watching, and init scripts.
+- Read [wrapper-and-distributions.md](wrapper-and-distributions.md) for wrapper generation or upgrades, distribution download, checksum, retry, installation, or wrapper-file trust.
 - Read [project-topology-and-build-logic.md](project-topology-and-build-logic.md) for settings scripts, project inclusion, multi-project builds, composite builds, build logic placement, root layout, or `init` scaffolding.
 - Build authoring files own script-level changes after the owner surface is clear; JVM files own toolchains used by compile/test tasks, while this file owns only the JVM that starts and runs Gradle.
 
@@ -15,22 +16,6 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 - Project `.gradle/` is local state and project `build/` directories are generated outputs.
 - Gradle user home cache cleanup, cache marking, and daemon log retention are user-home policy, not project policy.
 - Keep shared runtime flags in root/user `gradle.properties` rather than subproject properties.
-
-## Wrapper And Runtime
-
-- The wrapper is the Gradle version of record. Prefer wrapper commands over globally installed `gradle`.
-- Treat wrapper scripts and `gradle-wrapper.jar` as pre-build executable trust roots; dependency verification, repository policy, and build logic safeguards do not run before them.
-- If wrapper files are missing, generate them with a trusted installed Gradle or trusted Gradle distribution by running the `wrapper` task in the project; do not download or copy unaudited wrapper scripts or JARs into the repository.
-- Upgrade with the `wrapper` task, not only by editing `distributionUrl`; run it once for properties and again when scripts/JAR should be refreshed.
-- Since Gradle 9, `gradle-wrapper.properties` requires `X.Y.Z` versions even when the `wrapper` task can resolve labels or major/minor selectors.
-- Use `-bin` distributions by default; choose `-all` only for offline or air-gapped source/docs needs, or when policy explicitly requires the larger distribution.
-- When build logic or help text needs the supported wrapper distribution types, read `Wrapper.DistributionType.values()` directly instead of deprecated `Wrapper.getAvailableDistributionTypes()`.
-- Use `distributionSha256Sum` from the Gradle release checksums for the distribution ZIP; validate `gradle-wrapper.jar` separately because a ZIP checksum does not prove the checked-in JAR.
-- `distributionSha256Sum` is checked when the wrapper downloads the distribution; verify checksum policy with a clean or controlled Gradle user home when an existing cached distribution could mask the check.
-- If `gradle-wrapper.properties` contains `distributionSha256Sum`, keep wrapper task configuration or CLI checksum input in sync when regenerating wrapper properties.
-- For private wrapper distributions, use HTTPS plus host-scoped credentials or tokens in user/CI properties. Do not commit shared credentials in `distributionUrl`.
-- When refreshing Gradle 9.5+ wrapper or application Windows scripts, review custom `.bat` callers/templates for changed environment scoping, `CALL`/exit behavior, and removed exit-environment-variable assumptions.
-- Treat `./gradlew wrapper --gradle-version <version>` as a mutating upgrade command. Review scripts, JAR, properties, URL validation, retry/timeout policy, checksums, and CI entrypoints together; a Wrapper JAR checksum matching a different Gradle version usually means properties changed without regenerating the JAR.
 
 ## Runtime Boundaries
 
@@ -86,9 +71,7 @@ Read this when: wrapper files, Gradle runtime, daemon JVM selection, Gradle user
 
 ## Runtime Review
 
-- Check whether the command uses the checked-in wrapper or a globally installed Gradle.
-- Check whether CI and developers use the same wrapper version, daemon JVM criteria, and Gradle user home policy.
-- Check whether private wrapper credentials are host-scoped and kept in user/CI properties.
+- Check whether CI and developers use the same daemon JVM criteria and Gradle user home policy.
 - When Gradle warns that multiple daemons may spawn because the Gradle JDK and `JAVA_HOME` differ, compare `JAVA_HOME`, IDE Gradle JDK, Daemon JVM criteria, `org.gradle.java.home`, and Java toolchain requests before changing memory or daemon flags.
 - Check whether Gradle user home, init scripts, CI-injected properties, or cache cleanup policy can explain behavior that is not reproducible from repository files alone.
 - Check daemon logs under `GRADLE_USER_HOME/daemon/<gradle-version>/` when client output hides startup, crash, or connection details.

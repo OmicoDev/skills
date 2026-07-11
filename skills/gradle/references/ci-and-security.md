@@ -6,7 +6,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 
 - Read [publications-and-signing.md](publications-and-signing.md) for Maven/Ivy publications, Gradle Module Metadata, signing, Plugin Portal publishing, and dry runs.
 - Read [dependency-verification.md](dependency-verification.md) for dependency checksums, signatures, trusted keys, bootstrapping, and failure handling.
-- Read [runtime-and-structure.md](runtime-and-structure.md) for wrapper distribution checksums and wrapper JAR validation.
+- Read [wrapper-and-distributions.md](wrapper-and-distributions.md) for wrapper distribution checksums, wrapper JAR validation, download policy, and installation behavior.
 - Read [dependency-repositories.md](dependency-repositories.md) for repository hardening, content filters, and cache behavior.
 - Read [dependency-locking.md](dependency-locking.md) for lock diffs and reproducible selected versions.
 - Read [build-cache-and-incremental.md](build-cache-and-incremental.md) for Gradle build-cache push/pull policy, remote cache trust, and cache hit/miss evidence.

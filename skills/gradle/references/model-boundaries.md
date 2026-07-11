@@ -6,7 +6,8 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 
 - Read [best-practice-audits.md](best-practice-audits.md) when the task asks for a broad Gradle best-practice audit, official best-practice coverage, or every-practice review.
 - Read [commands-and-evidence.md](commands-and-evidence.md) when the first job is choosing commands, flags, logs, or evidence.
-- Read [runtime-and-structure.md](runtime-and-structure.md) when wrapper files, Gradle runtime, daemon JVM selection, Gradle user home, or init scripts own the change.
+- Read [wrapper-and-distributions.md](wrapper-and-distributions.md) when wrapper files, wrapper generation or upgrades, distribution download, checksum, retry, or installation owns the change.
+- Read [runtime-and-structure.md](runtime-and-structure.md) when the Gradle client or daemon, daemon JVM selection, Gradle user home, VFS/file watching, or init scripts own the change.
 - Read [project-topology-and-build-logic.md](project-topology-and-build-logic.md) when settings scripts, project inclusion, included builds, build logic placement, or directory layout owns the change.
 - Read [scripts-and-conventions.md](scripts-and-conventions.md) when changing build scripts or reusable conventions.
 - Read [dependency-policy.md](dependency-policy.md) when configurations, repositories, variants, locks, verification, or selected versions are involved.

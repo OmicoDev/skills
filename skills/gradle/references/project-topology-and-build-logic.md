@@ -5,7 +5,8 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 ## Scope Boundary
 
 - This file owns checked-in project topology, project paths, included builds, build logic location, and source/layout conventions.
-- Use [runtime-and-structure.md](runtime-and-structure.md) when the issue is wrapper files, the Gradle runtime JVM, daemon selection, Gradle user home, or init scripts.
+- Use [wrapper-and-distributions.md](wrapper-and-distributions.md) when the issue is wrapper files, wrapper generation or upgrades, distribution download, checksum, retry, or installation.
+- Use [runtime-and-structure.md](runtime-and-structure.md) when the issue is the Gradle runtime JVM, daemon selection, Gradle user home, VFS/file watching, or init scripts.
 - Use [scripts-and-conventions.md](scripts-and-conventions.md) once the topology is clear and the work is ordinary build script or convention plugin editing.
 - Use [source-control-dependencies.md](source-control-dependencies.md) when `sourceControl`, `gitRepository`, `vcsMappings`, Git source dependencies, or `.gradle/vcs-1` checkout state owns the work.
 - Use [dependency-artifact-selection.md](dependency-artifact-selection.md) when a project-to-project problem is specifically about sharing custom artifacts.
@@ -78,7 +79,7 @@ Read this when: settings scripts, project inclusion, multi-project builds, compo
 - Use `--into` and `--project-name` deliberately because output directory and root project identity become checked-in topology. Treat `--overwrite` as destructive until generated changes are reviewed.
 - Review generated settings, wrapper, build scripts, source layout, catalogs, lifecycle mapping, profiles, resources, dependencies, publishing, and insecure repository handling before keeping conversion output.
 - Maven conversion maps Maven `compile` scope to Gradle `api` to preserve exposed dependencies; after conversion, move implementation-only dependencies to `implementation` deliberately.
-- All build-init types set up the wrapper; review wrapper files with [runtime-and-structure.md](runtime-and-structure.md) before accepting scaffold output.
+- All build-init types set up the wrapper; review wrapper files with [wrapper-and-distributions.md](wrapper-and-distributions.md) before accepting scaffold output.
 - When converting one project into many, create a non-source root if needed, move the original source-owning build script and source directories into an app/domain subproject, keep one root `settings.gradle(.kts)`, and keep shared logic in convention plugins instead of root `subprojects` mutation.
 
 ## Structural Review
