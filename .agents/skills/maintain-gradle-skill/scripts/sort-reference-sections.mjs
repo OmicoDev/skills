@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 const scriptFile = fileURLToPath(import.meta.url);
 const scriptDir = path.dirname(scriptFile);
 const sourceIndexPrefix = "source-index-";
+const guidancePrefix = "guidance-";
+const allowedReferencePrefixes = [guidancePrefix, sourceIndexPrefix];
 
 const sectionSpecs = [
   {
@@ -43,16 +45,20 @@ async function loadSourceIndexWorkspace() {
   const repoRoot = await findRepoRoot(scriptDir);
   const referencesDir = path.resolve(scriptDir, "../references");
   const runtimeReferencesDir = path.join(repoRoot, "skills/gradle/references");
-  const sourceIndexFiles = await listMarkdownFiles(referencesDir);
+  const referenceFiles = await listMarkdownFiles(referencesDir);
   const runtimeReferences = await listRuntimeReferences(runtimeReferencesDir);
-  const sourceIndexes = sourceIndexFiles
+  const guidanceFiles = referenceFiles.filter(({ name }) =>
+    name.startsWith(guidancePrefix),
+  );
+  const sourceIndexes = referenceFiles
     .filter(({ name }) => name.startsWith(sourceIndexPrefix))
     .map((file) => toSourceIndex(file, runtimeReferencesDir));
 
   return {
+    guidanceFiles,
+    referenceFiles,
     referencesDir,
     runtimeReferences,
-    sourceIndexFiles,
     sourceIndexes,
   };
 }
@@ -92,22 +98,26 @@ function toSourceIndex(file, runtimeReferencesDir) {
 
 async function validateSourceIndexWorkspace(workspace) {
   const errors = [
-    ...findInvalidSourceIndexNames(workspace),
+    ...findInvalidReferenceNames(workspace),
     ...findMissingRuntimeTargets(workspace),
     ...findMissingSourceIndexes(workspace),
+    ...(await findGuidanceShapeFailures(workspace)),
     ...(await findSourceIndexH1Mismatches(workspace)),
   ];
 
   if (errors.length > 0) {
     throw new Error(
-      ["Source-index topology is invalid:", ...errors].join("\n"),
+      ["Gradle maintenance-reference topology is invalid:", ...errors].join(
+        "\n",
+      ),
     );
   }
 }
 
-function findInvalidSourceIndexNames({ sourceIndexFiles }) {
-  const invalidFiles = sourceIndexFiles.filter(
-    ({ name }) => !name.startsWith(sourceIndexPrefix),
+function findInvalidReferenceNames({ referenceFiles }) {
+  const invalidFiles = referenceFiles.filter(
+    ({ name }) =>
+      !allowedReferencePrefixes.some((prefix) => name.startsWith(prefix)),
   );
 
   if (invalidFiles.length === 0) {
@@ -115,9 +125,7 @@ function findInvalidSourceIndexNames({ sourceIndexFiles }) {
   }
 
   return [
-    `- Source-index files must use the ${sourceIndexPrefix} prefix: ${formatFileList(
-      invalidFiles,
-    )}`,
+    `- Maintenance references must use the ${guidancePrefix} or ${sourceIndexPrefix} prefix: ${formatFileList(invalidFiles)}`,
   ];
 }
 
@@ -143,9 +151,9 @@ function findMissingRuntimeTargets({ runtimeReferences, sourceIndexes }) {
 function findMissingSourceIndexes({
   referencesDir,
   runtimeReferences,
-  sourceIndexFiles,
+  sourceIndexes,
 }) {
-  const sourceIndexNames = new Set(sourceIndexFiles.map(({ name }) => name));
+  const sourceIndexNames = new Set(sourceIndexes.map(({ name }) => name));
   const missingSourceIndexes = [...runtimeReferences.values()].filter(
     ({ sourceIndexName }) => !sourceIndexNames.has(sourceIndexName),
   );
@@ -162,6 +170,33 @@ function findMissingSourceIndexes({
       )
       .join(", ")}`,
   ];
+}
+
+async function findGuidanceShapeFailures({ guidanceFiles }) {
+  const failures = [];
+
+  for (const { file } of guidanceFiles) {
+    const content = await readFile(file, "utf8");
+    const h1Count = content
+      .split(/\r?\n/)
+      .filter((line) => line.startsWith("# ")).length;
+
+    if (h1Count !== 1) {
+      failures.push(`${relativePath(file)} must contain exactly one H1`);
+    }
+
+    if (!/^Read this when: /m.test(content)) {
+      failures.push(
+        `${relativePath(file)} must contain a Read this when: scope`,
+      );
+    }
+  }
+
+  if (failures.length === 0) {
+    return [];
+  }
+
+  return [`- Guidance reference shape is invalid: ${failures.join(", ")}`];
 }
 
 async function findSourceIndexH1Mismatches({
@@ -411,7 +446,7 @@ function parseArgs(args) {
 function printUsage() {
   console.log(`Usage: node ${relativePath(scriptFile)} [--check]
 
-Validates Gradle source-index topology and sorts single-line Markdown entries under "## Documentation" and "## Source Code".
+Validates Gradle maintenance-reference and source-index topology, then sorts single-line Markdown entries under "## Documentation" and "## Source Code".
 
 Options:
   --check              Report files that would change without writing them.
