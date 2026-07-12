@@ -10,6 +10,8 @@
 ## Source Code
 
 - `platforms/core-runtime/process-services-base/src/main/java/org/gradle/process/internal/DefaultExecHandle.java`
+- `platforms/core-runtime/process-services-base/src/main/java/org/gradle/process/internal/ExecHandleRunner.java`
+- `platforms/core-runtime/process-services-base/src/main/java/org/gradle/process/internal/ExecHandleShutdownHookAction.java`
 - `platforms/core-runtime/process-services/src/integTest/groovy/org/gradle/process/internal/CancellationIntegrationTest.groovy`
 - `platforms/core-runtime/process-services/src/integTest/groovy/org/gradle/process/internal/DestroyForkedProcessesIntegrationTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ProviderFactory.java`

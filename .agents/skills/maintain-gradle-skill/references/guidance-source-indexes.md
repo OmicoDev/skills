@@ -10,6 +10,7 @@ Read this when: documentation or Gradle source materially calibrates runtime gui
 - Use one bullet per durable documentation entry: `- [Official title](public URL)`.
 - Use one bullet per durable code-source entry with the Gradle checkout's repository-relative path.
 - When reading `https://docs.gradle.org/**` and changing a runtime file because of it, update the owning source-index file in the same change with each materially used page title and URL.
+- Trace behavior claims through delegating facades to the nearest direct implementation owner. When a direct owner exists, index it and the representative test when both materially establish the rule; a facade plus a test does not replace the source that performs the behavior.
 - Sort documentation entries by normalized title and source-code entries lexicographically by repository-relative path. Use `node scripts/sort-reference-sections.mjs --check` from this skill directory to verify sorting, reference naming, and the runtime target for every source-index file.
 - Omit `## Source Code` when no code source file materially calibrates the runtime reference.
 - Do not create a source-index entry for every page skimmed; include only sources that materially calibrate the runtime reference.

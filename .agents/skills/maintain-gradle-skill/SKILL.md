@@ -28,6 +28,7 @@ Use this skill only when maintaining the Gradle skill artifact in this repositor
 4. Re-evaluate the skill architecture after the batch; rename, merge, split, or delete references when routing becomes clearer.
 5. Update the owning source-index files for every documentation URL or source path that materially calibrates changed runtime guidance.
 6. Rewrite affected runtime files as concise owner guides, not pasted upstream notes or edit-history summaries.
-7. Read the validation reference, run its gate, and report upstream topics read, files reshaped, durable rules added, version decisions, and remaining risks.
+7. Read the validation reference, run its mechanical gates, then perform its fresh evidence review without assuming the draft is correct.
+8. Fix confirmed review findings, rerun affected gates, complete one clean post-fix review, and only then report upstream topics read, files reshaped, durable rules added, version decisions, and remaining risks.
 
-Complete at least one read -> refactor -> validate -> report loop before stopping, unless missing context, missing source docs, or a required user decision blocks the work.
+Complete at least one read -> refactor -> validate -> review -> report loop before stopping, unless missing context, missing source docs, or a required user decision blocks the work.
