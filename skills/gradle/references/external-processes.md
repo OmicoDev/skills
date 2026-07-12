@@ -23,7 +23,7 @@ Read this when: `ExecOperations`, `JavaExec`, `providers.exec/javaexec`, externa
 ## Cancellation And Cleanup
 
 - Design external process work with timeout, cancellation, and cleanup behavior that does not leave orphaned processes, locked files, or partially trusted outputs.
-- Gradle 9.1+ and the Gradle 8 line from 8.14.4 onward terminate known descendants before the main process when cancelling a process launched through Gradle's managed process APIs; Gradle 9.0 and Gradle 8.14.3 or earlier terminate only the main process.
+- Gradle 9.1+ terminates known descendants before the main process when cancelling a process launched through Gradle's managed process APIs. The Gradle 8 line does the same from 8.14.4 onward only when the Gradle daemon runs on Java 9+; on Java 8 it still terminates only the main process, as do Gradle 9.0 and Gradle 8.14.3 or earlier.
 - On those process-tree-cleanup versions, distinguish processes launched directly by build code through raw `Runtime.exec` or custom launchers from `Runtime.exec` descendants of a Gradle-managed root process, which participate in managed cleanup. Also inspect detached modes and tools that deliberately escape the process tree when descendants survive cancellation.
 - On Gradle 4.8+, cancellation does not mark an in-flight `Exec`/`JavaExec`-backed task complete or store its partial result as a new cache entry, even when `ignoreExitValue` is enabled or task code catches the process failure. The next request reevaluates the task and may still reuse an independently valid prior cache entry; otherwise it executes again.
 - Cancellation hangs: inspect blocking I/O, shutdown hooks, child processes that detach or ignore termination, and cleanup code before changing daemon settings.

@@ -2,6 +2,7 @@
 
 ## Documentation
 
+- [Compatibility Matrix](https://docs.gradle.org/current/userguide/compatibility.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
