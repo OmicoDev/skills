@@ -28,7 +28,8 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 
 ## Frontend And External Processes
 
-- Read [worker-api-and-processes.md](worker-api-and-processes.md) when process execution APIs, `providers.exec/javaexec`, Worker API isolation, cancellation, or worker daemon behavior owns the implementation.
+- Read [external-processes.md](external-processes.md) when process execution APIs, `providers.exec/javaexec`, external-tool cancellation, or subprocess cleanup owns the implementation.
+- Read [worker-api-and-processes.md](worker-api-and-processes.md) when Worker API isolation or worker daemon behavior owns the implementation.
 - Model Node/npm/pnpm/yarn/Vite/Webpack commands and other external processes as typed tasks.
 - Inputs should include executable/tool versions, lockfiles, package manifests, config files, sources, and relevant environment; outputs should live under `build/` unless another tool requires a different workspace.
 - Wire frontend build outputs into JVM/native packaging with providers.

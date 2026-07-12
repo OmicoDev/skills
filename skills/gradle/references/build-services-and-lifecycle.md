@@ -7,7 +7,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - This file owns build-scoped shared state, service concurrency, task execution event listeners, and lifecycle-result work.
 - Use [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md) for plugin form, public task surface, and overall plugin design.
 - Use [task-types-and-validation.md](task-types-and-validation.md) for task property annotations and task input/output contracts.
-- Use [worker-api-and-processes.md](worker-api-and-processes.md) when the service is passed into Worker API work or process isolation owns the problem.
+- Use [worker-api-and-processes.md](worker-api-and-processes.md) when the service is passed into Worker API work or worker process isolation owns the problem.
 
 ## Build Service Model
 

@@ -6,7 +6,8 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 - This file owns typed task contracts: task properties, annotations, validation problems, cacheability, and incremental inputs.
 - Read [task-execution-and-options.md](task-execution-and-options.md) when task dependencies, ordering, finalizers, skipping, timeouts, or command-line task options own the change.
-- Read [worker-api-and-processes.md](worker-api-and-processes.md) when task work needs Worker API isolation, worker daemon behavior, process-level isolation, or cancellation design.
+- Read [worker-api-and-processes.md](worker-api-and-processes.md) when task work needs Worker API isolation, worker daemon behavior, or work-action cancellation design.
+- Read [external-processes.md](external-processes.md) when task work launches an external tool or needs process cancellation and cleanup design.
 
 ## Task Type Defaults
 

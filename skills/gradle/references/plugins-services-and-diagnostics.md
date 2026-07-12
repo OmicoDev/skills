@@ -6,7 +6,8 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 
 - Read [task-types-and-validation.md](task-types-and-validation.md) for custom task types, inputs/outputs, validation annotations, file normalization, and cacheability.
 - Read [task-execution-and-options.md](task-execution-and-options.md) for task dependencies, ordering, finalizers, skipping, timeouts, and command-line task options.
-- Read [worker-api-and-processes.md](worker-api-and-processes.md) for Worker API, work isolation, worker daemons, and task-owned process work.
+- Read [worker-api-and-processes.md](worker-api-and-processes.md) for Worker API, work isolation, and worker daemons.
+- Read [external-processes.md](external-processes.md) for `ExecOperations`, `JavaExec`, provider-backed process output, and subprocess cancellation.
 - Read [providers-and-properties.md](providers-and-properties.md) for extension models, managed properties, provider wiring, and domain object containers.
 - Read [build-services-and-lifecycle.md](build-services-and-lifecycle.md) for shared build services, task execution listeners, service concurrency, and Flow actions.
 - Read [plugin-problem-reporting.md](plugin-problem-reporting.md) for Problems API diagnostics, problem IDs/groups, rich failures, and problems reports.
@@ -18,7 +19,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 ## Scope Boundary
 
 - This file owns plugin shape, public task surface, plugin-owned DSL choices, and routing to deeper plugin implementation owners.
-- Custom task implementation details belong in [task-types-and-validation.md](task-types-and-validation.md); task execution surface belongs in [task-execution-and-options.md](task-execution-and-options.md); Worker API and process-isolation choices belong in [worker-api-and-processes.md](worker-api-and-processes.md).
+- Custom task implementation details belong in [task-types-and-validation.md](task-types-and-validation.md); task execution surface belongs in [task-execution-and-options.md](task-execution-and-options.md); Worker API isolation belongs in [worker-api-and-processes.md](worker-api-and-processes.md); external tool execution belongs in [external-processes.md](external-processes.md).
 - Extension/property model design belongs in [providers-and-properties.md](providers-and-properties.md).
 - Build services and lifecycle-result work belong in [build-services-and-lifecycle.md](build-services-and-lifecycle.md).
 - Structured plugin diagnostics belong in [plugin-problem-reporting.md](plugin-problem-reporting.md).

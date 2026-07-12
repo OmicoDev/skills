@@ -69,7 +69,7 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 
 - Every cross-project convention should have an obvious plugin owner.
 - Every generated file should have a producing task and consuming provider.
-- Every external process should be inside a task, worker, or value source.
+- Every external process should be inside a task, worker, or value source; route execution, output, cancellation, and cleanup choices through [external-processes.md](external-processes.md).
 - Every daemon, worker, client, or Tooling API concern should name which runtime owns the failure.
 - Every dependency policy should state its owner layer.
 - Every performance change should name configuration, execution, dependency resolution, or output reuse as the target.

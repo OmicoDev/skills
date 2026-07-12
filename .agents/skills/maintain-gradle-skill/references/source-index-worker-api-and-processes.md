@@ -1,4 +1,4 @@
-# Gradle Worker API And Processes
+# Gradle Worker API And Worker Daemons
 
 ## Documentation
 
@@ -38,10 +38,3 @@
 - `platforms/core-execution/workers/src/main/java/org/gradle/workers/internal/WorkerDaemonClientsManager.java`
 - `platforms/core-execution/workers/src/test/groovy/org/gradle/workers/internal/DaemonForkOptionsTest.groovy`
 - `platforms/core-execution/workers/src/test/groovy/org/gradle/workers/internal/WorkerDaemonClientsManagerTest.groovy`
-- `subprojects/core-api/src/main/java/org/gradle/api/provider/ProviderFactory.java`
-- `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSource.java`
-- `subprojects/core-api/src/main/java/org/gradle/process/BaseExecSpec.java`
-- `subprojects/core-api/src/main/java/org/gradle/process/ExecOperations.java`
-- `subprojects/core-api/src/main/java/org/gradle/process/ExecOutput.java`
-- `subprojects/core-api/src/main/java/org/gradle/process/ExecSpec.java`
-- `subprojects/core-api/src/main/java/org/gradle/process/ProcessForkOptions.java`

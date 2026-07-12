@@ -1,10 +1,11 @@
-# Gradle Worker API And Processes
+# Gradle Worker API And Worker Daemons
 
-Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-owned process work, or cancellation of parallel task work owns the change.
+Read this when: Worker API, `WorkAction`, work isolation, worker daemons, or cancellation of parallel task work owns the change.
 
 ## Scope Boundary
 
 - This file owns how a task divides execution work into isolated or parallel units.
+- Use [external-processes.md](external-processes.md) when `ExecOperations`, `JavaExec`, `providers.exec/javaexec`, external-process cancellation, or subprocess cleanup owns the work.
 - Use [task-types-and-validation.md](task-types-and-validation.md) for the task type's inputs, outputs, cacheability, validation annotations, and task relationships.
 - Use [build-services-and-lifecycle.md](build-services-and-lifecycle.md) for build service lifecycle, service parameters, and task execution event listeners.
 - Use [runtime-and-structure.md](runtime-and-structure.md) when the failing process is the Gradle client, daemon, or a daemon-owned worker JVM at runtime startup.
@@ -16,16 +17,6 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Do not use Worker API to hide undeclared inputs, missing outputs, or task ordering problems. The owning task still declares the full input and output contract.
 - Treat Worker API as task execution parallelism, not configuration-time work; submit work after the owning task properties have been configured and finalized for execution.
 - Use classloader or process isolation when a library fails because Gradle's configuration-cache Java agent modifies buildscript bytecode; if the library has a stable `main` entry point and no per-item parallelism need, a `JavaExec` task can be the simpler isolation boundary.
-
-## External Process Boundaries
-
-- Use `ExecOperations.exec/javaexec`, `JavaExec`, `JavaLauncher`, or tool providers when the process is task or work-action behavior; do not use `Project.exec`, `Project.javaexec`, or script-level `exec/javaexec` in Gradle 9+.
-- Declare the executable, arguments, working directory, environment, inputs, and outputs on the owning task; process output that affects later work must be a modeled output or provider value, not a hidden side effect.
-- Use `providers.exec/javaexec` only for a simple provider-backed process output needed by configuration logic. If queried during configuration, the output becomes a configuration-cache input and the process runs on later builds to check cache freshness, so keep it fast.
-- Use a custom `ValueSource` with injected `ExecOperations` when configuration-time process work needs parameters, exit handling, custom input streams, streaming output, or non-trivial parsing.
-- Do not hide slow, networked, or mutating external tools inside `providers.exec` or `ValueSource`; model them as tasks unless the build model genuinely needs the value before task graph calculation.
-- `ExecOutput` captures result, standard output, and standard error lazily and runs the process once on first provider query; handle startup failures at the provider consumer instead of assuming the command already ran.
-- `providers.exec/javaexec` cannot customize process input/output streams; use `ValueSource` or a task-owned `ExecOperations` call when stdin, separated streams, or streaming output is part of the contract.
 
 ## Work Model
 
@@ -48,7 +39,6 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Prefer queue-level `await()` for one queue; `WorkerExecutor.await()` waits all work associated with the current build operation and can over-block unrelated queues.
 - Only no-isolation work actions can submit nested Worker API work; classloader- and process-isolated work actions cannot inject `WorkerExecutor`, so use the owning task action as the scheduler for isolated work.
 - Wire all files used by workers through the owning task inputs and outputs, even when the work action receives only a subset.
-- Capture standard output, error output, exit handling, and environment deliberately for process work.
 
 ## Isolation Choices
 
@@ -81,7 +71,6 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Custom tasks and work actions should respond to thread interruption. User cancellation and task timeouts rely on cooperative interruption.
 - If a task or work item does not respond to interruption promptly, Gradle may shut down the daemon to free resources.
 - Daemon shutdown after cancellation or timeout is often evidence of ignored interrupts in task or work-action code, not a reason to start by changing daemon JVM policy.
-- Design external process work with timeout, cancellation, and cleanup behavior that does not leave orphaned processes or locked files.
 
 ## Failure Map
 
@@ -92,5 +81,5 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, task-o
 - Process-isolated work starts too many JVMs: align fork options and classpaths so worker daemon reuse is possible.
 - Build service unavailable in worker: verify the isolation mode; services are not supported in classloader- or process-isolated work.
 - Library integrity check or agent-sensitive code fails only under Gradle: move the library work to classloader/process isolation or a dedicated `JavaExec` task and model that classpath as an input.
-- Cancellation hangs: inspect interrupt handling in loops, blocking I/O, external processes, and cleanup code.
+- Cancellation hangs: inspect interrupt handling in loops, blocking I/O, and cleanup code.
 - Configuration cache failure names worker parameters: replace captured Gradle model objects with managed parameter properties or stable scalar/file values.
