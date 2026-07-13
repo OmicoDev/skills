@@ -9,7 +9,8 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Read [wrapper-and-distributions.md](wrapper-and-distributions.md) for wrapper distribution checksums, wrapper JAR validation, download policy, and installation behavior.
 - Read [dependency-repositories.md](dependency-repositories.md) for repository hardening, content filters, and cache behavior.
 - Read [dependency-locking.md](dependency-locking.md) for lock diffs and reproducible selected versions.
-- Read [build-cache-and-incremental.md](build-cache-and-incremental.md) for Gradle build-cache push/pull policy, remote cache trust, and cache hit/miss evidence.
+- Read [remote-build-cache.md](remote-build-cache.md) for Gradle build-cache push/pull policy, remote cache trust, HTTP transport security, and failure isolation.
+- Read [build-cache-and-incremental.md](build-cache-and-incremental.md) for task cacheability and cache hit/miss evidence.
 
 ## CI Baseline
 

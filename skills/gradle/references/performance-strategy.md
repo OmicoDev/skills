@@ -6,7 +6,8 @@ Read this when: build speed, task avoidance, configuration cache, build cache, i
 
 - Read [configuration-cache.md](configuration-cache.md) for configuration-cache enablement, reports, incompatible task/plugin repairs, and configuration inputs.
 - Read [isolated-projects.md](isolated-projects.md) for Isolated Projects adoption, cross-project mutable access, diagnostics mode, IDE sync model caching, and isolation violations.
-- Read [build-cache-and-incremental.md](build-cache-and-incremental.md) for task output caching, up-to-date checks, incremental tasks, remote cache policy, and cache misses.
+- Read [build-cache-and-incremental.md](build-cache-and-incremental.md) for task output caching, up-to-date checks, incremental tasks, and cache misses.
+- Read [remote-build-cache.md](remote-build-cache.md) for shared-cache trust, push/pull policy, HTTP transport failures, or composite-build cache ownership.
 - Read [task-types-and-validation.md](task-types-and-validation.md) when a task's inputs, outputs, validation, or cacheability is the suspected owner.
 - Read [dependency-repositories.md](dependency-repositories.md) when slow resolution, dynamic/changing versions, repository order, or network access dominates.
 - Read [continuous-builds.md](continuous-builds.md) when repeat execution is an interactive file-change loop rather than a build-speed or cache-reuse problem.

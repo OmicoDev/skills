@@ -1,6 +1,6 @@
 # Gradle Build Cache And Incremental Work
 
-Read this when: task output caching, up-to-date checks, build-cache reuse, artifact transform caching, remote cache policy, or cache misses owns the work.
+Read this when: task output caching, up-to-date checks, build-cache reuse, artifact transform caching, or cache misses owns the work.
 
 ## Model
 
@@ -16,11 +16,8 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 ## Adoption
 
 - Start with built-in cacheable tasks and local cache evidence.
-- Use remote cache in CI with clear `enabled`/`push` policy: Gradle loads from local cache first, then remote cache, and stores remote hits back into the local cache.
-- Avoid pushing untrusted or developer-local outputs to shared remote cache.
-- Remember the defaults: local cache push is enabled, remote cache push is disabled. Enable remote push only on trusted producers such as clean CI agents.
+- Read [remote-build-cache.md](remote-build-cache.md) for local/remote ordering, composite-build ownership, trusted push policy, HTTP transport, and remote failure isolation.
 - Combine local and remote caches intentionally: developer local cache helps branch switching and `git bisect`, while CI local cache can mirror remote entries and reduce network transfer.
-- Treat `buildSrc` and included builds as separate builds with their own cache behavior.
 - Keep CI cache of Gradle user home separate from Gradle build cache policy.
 - Do not mark custom task types cacheable by default. Add `@CacheableTask` only when outputs are worth reusing and correctness is tested; use `@DisableCachingByDefault` with a reason otherwise.
 
@@ -81,15 +78,3 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Non-repeatable upstream outputs become unstable inputs for downstream cacheable tasks. Prefer reproducible producer outputs or consumer input normalization before trying to cache a volatile producer just to stabilize downstream keys.
 - If volatile data is only needed for publishing or auditing, split expensive cacheable work from cheap volatile stamping.
 - Re-released non-changing dependencies, snapshots, changing modules, and volatile web resources create unexplained cross-machine misses; prefer fixed inputs, locks, or composite builds.
-
-## Remote Cache Policy
-
-- Developer machines usually pull; CI may push after trusted verification.
-- Do not let untrusted pull requests populate a shared remote cache.
-- Use separate cache namespaces or credentials for release, mainline, and experimental workflows when trust differs.
-- Until every cacheable task has proven stale-output-safe incremental behavior, allow only clean trusted builds to upload to a shared cache.
-- Treat developer uploads as high risk because source or output files can change while tasks execute; allow them only after task cacheability and workspace discipline are proven.
-- Disable cache use or require provenance evidence for release or audit builds when reused outputs must be traceable to the producing build.
-- Pair remote cache rollout with task validation warnings and representative clean/warm builds.
-- If HTTP remote cache operations keep failing after connection, Gradle retries then disables the remote cache for the rest of that build; diagnose transport, server, proxy, or TLS trust before changing task inputs.
-- Treat insecure HTTP, `allowUntrustedServer`, redirect, and Expect-Continue choices as remote-cache transport or security policy; they do not explain task input cache misses.
