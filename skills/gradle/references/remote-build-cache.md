@@ -23,17 +23,18 @@ Read this when: remote build-cache enablement, push/pull policy, composite-build
 
 ## HTTP Contract
 
-- The built-in HTTP cache loads `GET <base>/<cache-key>` and stores `PUT <base>/<cache-key>`. Treat `2xx` as success and `404` on load as a miss; diagnose other statuses as server, proxy, authentication, or protocol evidence rather than task-input misses.
+- The built-in HTTP cache loads `GET <base>/<cache-key>` and stores `PUT <base>/<cache-key>`. Follow the public server contract: return `200` with the cache-entry body for a load hit, `404` for a load miss, and any `2xx` for a successful store; diagnose other statuses as server, proxy, authentication, or protocol evidence rather than task-input misses.
 - HTTP Basic credentials are sent preemptively. Supply them from user/CI secrets, keep them out of the URL and repository files, and require HTTPS so the first request does not expose them in transit.
-- For upload redirects, only `307` and `308` preserve `PUT` and its body. Other redirect codes are followed as `GET`; fix the cache server or proxy redirect instead of changing Gradle task inputs.
+- On Gradle 7.2+, redirects are followed; for uploads, only `307` and `308` preserve `PUT` and its body, while other redirect codes are followed as `GET`. Use the final cache URL instead of relying on redirects when supporting older wrappers.
 - `useExpectContinue` is available since Gradle 7.2. Enable it only when the server and proxies support it and rejected or redirected uploads justify the extra successful-request round trip.
-- Prefer a trusted certificate and HTTPS. `allowUntrustedServer` disables server-identity verification, while `allowInsecureProtocol` permits plaintext HTTP; both are explicit security exceptions, not cache-miss fixes.
+- Prefer a trusted certificate and HTTPS. On Gradle 4.2+, `allowUntrustedServer` disables server-identity verification; on Gradle 6.0+, `allowInsecureProtocol` permits plaintext HTTP. Both are explicit security exceptions, not cache-miss fixes.
 
 ## Failure Isolation
 
-- By default, a remote load or store exception is logged and disables that remote service for the remainder of the current build; Gradle can continue by executing work and using the local cache. The next invocation tries the configured remote service again.
+- By default, an exception thrown while the remote `BuildCacheService` loads or stores is logged and disables that remote service for the remainder of the current build; Gradle can continue by executing work and, when enabled, using the local cache. The next invocation tries the configured remote service again.
+- A downloaded entry that fails archive unpacking or integrity checks is outside that fail-open service boundary and can fail the build. Remove or quarantine the corrupt remote entry before retrying instead of expecting Gradle to execute the task automatically.
 - On Gradle 7.2+, transmission failures after a TCP connection is established, such as dropped connections and read/write timeouts, are retried up to three times before the operation fails. Do not assume HTTP error statuses or initial connection failures receive the same retry path.
 - If only the first cache request appears in server logs, look for the warning that disabled the remote service before diagnosing later tasks as independent misses.
 - If `--offline` reports the remote cache disabled, do not debug TLS, credentials, redirects, or server availability until online access is intentionally restored.
 - Separate transport failures from cache-key failures: transport evidence includes timeouts, connection resets, TLS, authentication, redirects, and HTTP statuses; cache-key evidence includes different normalized inputs, task implementations, tool versions, and output property names.
-- Use `--info` or a policy-approved Build Scan to confirm whether a result came from local cache, remote cache, or execution. Do not infer remote health merely from `FROM-CACHE`, because a remote hit is backfilled locally.
+- Use `--info` to distinguish cache reuse from execution and inspect the configured services; it does not identify whether a hit came from local or remote cache. Use policy-approved Build Scan cache-performance data for origin, transfer time, and remote health, and do not infer remote health merely from `FROM-CACHE` because a remote hit is backfilled locally.
