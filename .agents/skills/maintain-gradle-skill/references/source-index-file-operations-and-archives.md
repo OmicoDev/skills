@@ -17,6 +17,11 @@
 ## Source Code
 
 - `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/SyncCopyActionDecorator.java`
+- `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/building_java_projects.adoc`
+- `platforms/jvm/platform-jvm/src/main/java/org/gradle/api/java/archives/internal/DefaultManifest.java`
+- `platforms/jvm/platform-jvm/src/main/java/org/gradle/api/java/archives/internal/ManifestInternal.java`
+- `platforms/jvm/platform-jvm/src/main/java/org/gradle/jvm/tasks/Jar.java`
+- `platforms/jvm/platform-jvm/src/test/groovy/org/gradle/api/java/archives/internal/DefaultManifestTest.groovy`
 - `platforms/jvm/plugins-application/src/main/java/org/gradle/api/internal/plugins/StartScriptTemplateBindingFactory.java`
 - `platforms/jvm/plugins-application/src/main/java/org/gradle/jvm/application/tasks/CreateStartScripts.java`
 - `platforms/jvm/plugins-application/src/test/groovy/org/gradle/api/internal/plugins/StartScriptGeneratorTest.groovy`
