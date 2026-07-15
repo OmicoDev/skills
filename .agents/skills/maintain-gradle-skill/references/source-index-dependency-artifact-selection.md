@@ -4,6 +4,7 @@
 
 - [Artifact Resolution](https://docs.gradle.org/current/userguide/artifact_resolution.html)
 - [Artifact Views](https://docs.gradle.org/current/userguide/artifact_views.html)
+- [ArtifactView.ViewConfiguration API (Gradle 7.5)](https://docs.gradle.org/7.5/javadoc/org/gradle/api/artifacts/ArtifactView.ViewConfiguration.html)
 - [How to Share Artifacts Between Projects with Gradle](https://docs.gradle.org/current/userguide/how_to_share_outputs_between_projects.html)
 - [Resolving Specific Artifacts](https://docs.gradle.org/current/userguide/resolving_specific_artifacts.html)
 - [Upgrading from 8 to 9](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
