@@ -66,6 +66,8 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Replace resolved dependency result objects with provider-backed results such as `ResolutionResult.getRootComponent()` or `ArtifactCollection.getResolvedArtifacts()` when the task truly needs resolution metadata.
 - Tasks must not inspect or mutate another task instance during execution; wire task outputs, inputs, or providers instead.
 - Do not rely on reference identity for shared mutable standard collections after cache reload. Use task properties or shared build services.
+- Do not store custom subclasses of the concrete collection or map types that configuration cache handles specially, such as a class extending `ArrayList`; Gradle restores them as a supported standard type, so subclass fields and overridden behavior disappear. Use `ListProperty`, `SetProperty`, `MapProperty`, or standard collections and model extra state separately.
+- Starting with Gradle 9.7.0-milestone-3, this unsafe collection round trip emits a deprecation scheduled to become an error in Gradle 10, but the entry is still stored and reused. Do not accept a successful cache summary as proof that the task state retained its type or behavior.
 - Task extensions, conventions, and extra properties must be read during configuration and copied into task properties, not accessed at execution time.
 - Do not call build-script top-level methods or variables from task actions; move reusable execution logic into typed task classes or static helpers and wire data through task properties.
 - Avoid custom Java serialization protocols in task state; configuration cache understands only some Java serialization hooks, they add cost, and broken protocols can surface later as misleading load failures.
