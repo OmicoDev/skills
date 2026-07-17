@@ -10,6 +10,7 @@
 - [Configuring Tasks Lazily](https://docs.gradle.org/current/userguide/lazy_configuration.html)
 - [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
 - [Gradle Managed Types](https://docs.gradle.org/current/userguide/gradle_managed_types_intermediate.html)
+- [Project (Gradle API 6.9.4)](https://docs.gradle.org/6.9.4/javadoc/org/gradle/api/Project.html)
 - [Project (Gradle API 8.14.3)](https://docs.gradle.org/8.14.3/javadoc/org/gradle/api/Project.html)
 - [Properties and Providers](https://docs.gradle.org/current/userguide/properties_providers.html)
 - [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
