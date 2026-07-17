@@ -27,6 +27,12 @@
 - `platforms/core-configuration/kotlin-dsl/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslDelegatedPropertiesDeprecationIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ProjectExtensions.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/precompile/v1/PrecompiledScriptTemplates.kt`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidInternal-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidInternal-do/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/useConventionPlugins-avoid/kotlin/project-a/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/useConventionPlugins-do/kotlin/build-logic/src/main/kotlin/my.java-library.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/usePluginsBlock-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/usePluginsBlock-do/kotlin/build.gradle.kts`
 - `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/plugins/PrecompiledGroovyPluginsIntegrationTest.groovy`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/GeneratePluginAdaptersTask.java`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/PrecompiledGroovyScript.java`

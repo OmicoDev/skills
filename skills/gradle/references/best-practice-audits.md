@@ -16,7 +16,7 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 
 - Use Kotlin DSL ([scripts-and-conventions.md](scripts-and-conventions.md)): keep new examples and build logic in Kotlin DSL unless a Groovy migration is the task.
 - Use the latest Gradle minor ([upgrade-strategy.md](upgrade-strategy.md)): check compatibility, then update the wrapper deliberately.
-- Apply plugins with the `plugins {}` block ([project-topology-and-build-logic.md](project-topology-and-build-logic.md)): replace imperative plugin application only when classpath and ordering stay valid.
+- Apply plugins with the `plugins {}` block ([scripts-and-conventions.md](scripts-and-conventions.md)): replace imperative plugin application only when classpath and ordering stay valid.
 - Do not rely on plugin application order ([plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md)): apply mandatory plugins explicitly and use plugin callbacks for optional integrations.
 - Avoid Gradle internal APIs ([scripts-and-conventions.md](scripts-and-conventions.md), [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md)): move to public APIs before changing behavior.
 - Put build flags in `gradle.properties` ([runtime-and-structure.md](runtime-and-structure.md)): centralize flags instead of scattering command-line or script defaults.
@@ -38,21 +38,25 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 - Centralize versions with version catalogs ([dependency-version-governance.md](dependency-version-governance.md)): move repeated requested versions out of project scripts.
 - Name version catalog entries consistently ([dependency-version-governance.md](dependency-version-governance.md)): choose aliases that survive module swaps and bundle changes.
 - Declare repositories in settings ([dependency-repositories.md](dependency-repositories.md)): enforce repository policy before project scripts resolve anything.
-- Avoid explicit Kotlin standard library dependencies ([compatibility-kotlin.md](compatibility-kotlin.md)): remove redundant stdlib declarations unless a deliberate Kotlin alignment owns them.
+- Avoid explicit Kotlin standard library dependencies ([dependency-policy.md](dependency-policy.md)): remove redundant stdlib declarations unless a deliberate Kotlin alignment owns them.
 - Avoid redundant dependency declarations ([dependency-policy.md](dependency-policy.md)): delete duplicates or model them through constraints, platforms, or shared conventions.
 - Use content filtering with multiple repositories ([dependency-repositories.md](dependency-repositories.md)): restrict each repository to the groups or modules it should serve.
 - Apply exclusions narrowly ([dependency-resolution-rules.md](dependency-resolution-rules.md)): prefer scoped exclusions with evidence over broad graph rewrites.
+- Model custom configurations for variant-aware matching ([dependency-variants-and-metadata.md](dependency-variants-and-metadata.md)): give participating producer and consumer configurations meaningful, aligned attributes.
 
 ### Tasks
 
 - Avoid `dependsOn` as wiring ([task-execution-and-options.md](task-execution-and-options.md)): model inputs, outputs, artifacts, or buildable providers instead.
 - Avoid consuming task outputs by raw paths ([task-execution-and-options.md](task-execution-and-options.md)): wire task providers or output properties so Gradle sees the producer-consumer relationship.
+- Preserve task-output provider provenance ([providers-and-properties.md](providers-and-properties.md)): choose `map` or `flatMap` by output shape and keep the producer relationship attached.
 - Prefer task cacheability annotations over ad hoc predicates ([build-cache-and-incremental.md](build-cache-and-incremental.md)): make cacheability explicit with task inputs and outputs.
 - Group and describe custom tasks ([task-execution-and-options.md](task-execution-and-options.md)): make public task surfaces discoverable before adding options.
-- Do not call `Provider.get()` outside a task action ([providers-and-properties.md](providers-and-properties.md)): keep values lazy until a Gradle-owned consumer needs them.
+- Avoid hardcoded task names unless they are documented public API ([plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md)): prefer a plugin DSL, documented task type, or documented public task identifier.
+- Avoid eager `Provider.get()` calls during configuration ([providers-and-properties.md](providers-and-properties.md)): keep values lazy through provider-aware APIs, and reserve an explicit `get()` bridge for the narrowly scoped derived task-output workaround in the owning reference.
+- Do not access `Project` or other mutable Gradle model objects from task actions ([task-types-and-validation.md](task-types-and-validation.md)): copy required values into tracked task properties during configuration.
 - Do not resolve configurations before task execution ([dependency-policy.md](dependency-policy.md)): wire files through providers, task inputs, or resolvable configurations owned by tasks.
 - Avoid eager file collection APIs ([file-operations-and-archives.md](file-operations-and-archives.md)): keep file inputs lazy and task-owned.
-- Choose path sensitivity deliberately ([build-cache-and-incremental.md](build-cache-and-incremental.md)): use none for path-irrelevant files and relative paths for relocatable directories.
+- Choose path sensitivity deliberately ([task-types-and-validation.md](task-types-and-validation.md)): use none for path-irrelevant files and relative paths for relocatable directories.
 - Use unique output files and directories ([task-types-and-validation.md](task-types-and-validation.md)): avoid overlapping outputs before tuning ordering or cache behavior.
 
 ### Performance

@@ -18,7 +18,8 @@ Read this when: variant-aware resolution, attributes, capabilities, or published
 - A candidate missing a requested attribute can remain in the compatible set and lose later during disambiguation; do not treat every missing-attribute diagnostic as proof that the producer has no usable variant.
 - Variant names are mainly diagnostics surface; ordinary variant matching uses attributes, not names.
 - `No matching variant` means the consumer and producer attributes/capabilities do not describe a compatible variant.
-- Variants/configurations without attributes cannot participate in variant-aware resolution; reports may hide them unless `--all` is used.
+- For custom configurations intended for variant-aware matching, give consumable producer configurations meaningful attributes and give resolvable consumer configurations aligned requested attributes; role flags declare configuration roles, not an attribute-matching contract.
+- A consumable variant without attributes cannot participate in attribute matching; attributes are not strictly required on every resolvable configuration, but omitting them leaves no requested variant contract and makes resolution fragile. Reports may hide attribute-less configurations unless `--all` is used.
 - Consumable configurations in one project that share the same capabilities must have unique attribute sets; duplicate outgoing variant identity is a producer modeling error, usually fixed by adding a real discriminating attribute/capability or removing the duplicate variant.
 - A producer with no variants falls back to a default artifact, and explicitly selecting a configuration by name bypasses normal variant matching; treat both as interop or migration paths, not the preferred model.
 - Secondary variants are artifact sets on an existing variant, not separate components; verification-only variants carry test or coverage results and should not be added to publishable components.

@@ -13,6 +13,11 @@
 
 ## Source Code
 
+- `platforms/documentation/docs/src/snippets/best-practices/contentFiltering-avoid/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/contentFiltering-do/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/contentFilteringExclusive-do/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/settingsRepositories-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/settingsRepositories-do/kotlin/settings.gradle.kts`
 - `platforms/software/dependency-management/README.md`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/RepositoryContentFilteringIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/RepositoryHandlerMapOverloadsDeprecationIntegrationTest.groovy`

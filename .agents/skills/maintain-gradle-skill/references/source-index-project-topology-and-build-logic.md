@@ -25,6 +25,16 @@
 - `platforms/documentation/docs/src/docs/userguide/structuring-builds/multi_project_builds.adoc`
 - `platforms/documentation/docs/src/docs/userguide/structuring-builds/organizing_gradle_projects.adoc`
 - `platforms/documentation/docs/src/docs/userguide/structuring-builds/sharing_build_logic_between_subprojects.adoc`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidEmptyProjects-avoid/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidEmptyProjects-do/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/favorCompositeBuilds-avoid/kotlin/buildSrc/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/favorCompositeBuilds-do/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/modularizeYourBuild-avoid/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/modularizeYourBuild-do/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/nameYourRootProject-avoid/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/nameYourRootProject-do/kotlin/settings.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/noSourceInRoot-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/noSourceInRoot-do/kotlin/settings.gradle.kts`
 - `subprojects/core-api/src/main/java/org/gradle/api/internal/project/ProjectIdentity.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/NameValidationIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/initialization/buildsrc/BuildSrcIncludedBuildIntegrationTest.groovy`

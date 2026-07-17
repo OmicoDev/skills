@@ -2,6 +2,7 @@
 
 ## Documentation
 
+- [Best Practices for Performance](https://docs.gradle.org/current/userguide/best_practices_performance.html)
 - [Build Lifecycle](https://docs.gradle.org/current/userguide/build_lifecycle.html)
 - [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
@@ -39,6 +40,9 @@
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/DefaultConfigurationTimeBarrier.java`
 - `platforms/core-configuration/stdlib-serialization-codecs/src/main/kotlin/org/gradle/internal/serialize/codecs/stdlib/CollectionCodecs.kt`
 - `platforms/core-configuration/stdlib-serialization-codecs/src/main/kotlin/org/gradle/internal/serialize/codecs/stdlib/HashSetCodec.kt`
+- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_performance.adoc`
+- `platforms/documentation/docs/src/snippets/best-practices/useConfigurationCache-avoid/common/gradle.properties`
+- `platforms/documentation/docs/src/snippets/best-practices/useConfigurationCache-do/common/gradle.properties`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeature.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeatures.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/configuration/BuildFeaturesIntegrationTest.groovy`

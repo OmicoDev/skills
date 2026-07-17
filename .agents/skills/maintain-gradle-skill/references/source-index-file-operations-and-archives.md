@@ -2,6 +2,7 @@
 
 ## Documentation
 
+- [Best Practices for Tasks](https://docs.gradle.org/current/userguide/best_practices_tasks.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [Important concepts](https://docs.gradle.org/current/userguide/build_cache_concepts.html)
@@ -17,7 +18,10 @@
 ## Source Code
 
 - `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/SyncCopyActionDecorator.java`
+- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
 - `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/building_java_projects.adoc`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidJdkCollectionApiOnFileCollections-avoid/kotlin/lib/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidJdkCollectionApiOnFileCollections-do/kotlin/lib/build.gradle.kts`
 - `platforms/jvm/platform-jvm/src/main/java/org/gradle/api/java/archives/internal/DefaultManifest.java`
 - `platforms/jvm/platform-jvm/src/main/java/org/gradle/api/java/archives/internal/ManifestInternal.java`
 - `platforms/jvm/platform-jvm/src/main/java/org/gradle/jvm/tasks/Jar.java`

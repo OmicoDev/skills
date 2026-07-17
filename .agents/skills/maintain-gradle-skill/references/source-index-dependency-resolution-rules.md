@@ -12,6 +12,8 @@
 
 ## Source Code
 
+- `platforms/documentation/docs/src/snippets/best-practices/applyExclusionsNarrowly-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/applyExclusionsNarrowly-do/kotlin/build.gradle.kts`
 - `platforms/extensibility/plugin-use/src/main/java/org/gradle/plugin/management/internal/DefaultPluginResolveDetails.java`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/constraints/DependencyConstraintsAndResolutionStrategiesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ivy/ComponentSelectionRulesDependencyResolveIntegTest.groovy`

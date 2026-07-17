@@ -14,6 +14,9 @@
 
 ## Source Code
 
+- `platforms/documentation/docs/src/snippets/best-practices/useTestKit-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/useTestKit-do/common/build-logic/src/functionalTest/java/org/example/MyPluginFunctionalTest.java`
+- `platforms/documentation/docs/src/snippets/best-practices/useTestKit-do/kotlin/build-logic/build.gradle.kts`
 - `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/plugins/JavaGradlePluginPluginTestKitSetupIntegrationTest.groovy`
 - `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/tasks/PublishedPluginsStricterValidationIntegrationSpec.groovy`
 - `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/tasks/ValidatePluginsPart1IntegrationTest.groovy`

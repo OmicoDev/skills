@@ -19,6 +19,9 @@
 
 ## Source Code
 
+- `platforms/documentation/docs/src/snippets/best-practices/useVersionCatalogs-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/useVersionCatalogs-do/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/versionCatalogNaming-do/common/gradle/libs.versions.toml`
 - `platforms/jvm/language-jvm/src/integTest/groovy/org/gradle/integtests/resolve/consistency/JavaProjectResolutionConsistencyIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/catalog/KotlinDslVersionCatalogExtensionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/catalog/VersionCatalogExtensionIntegrationTest.groovy`

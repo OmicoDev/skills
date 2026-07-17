@@ -3,6 +3,7 @@
 ## Documentation
 
 - [Best Practices for Dependencies](https://docs.gradle.org/current/userguide/best_practices_dependencies.html)
+- [Best Practices for Tasks](https://docs.gradle.org/current/userguide/best_practices_tasks.html)
 - [Declaring dependencies](https://docs.gradle.org/current/userguide/declaring_dependencies.html)
 - [Declaring Versions and Ranges](https://docs.gradle.org/current/userguide/dependency_versions.html)
 - [Dependency Configurations](https://docs.gradle.org/current/userguide/dependency_configurations.html)
@@ -16,13 +17,25 @@
 
 ## Source Code
 
+- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_dependencies.adoc`
+- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidDuplicateDependencies-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidDuplicateDependencies-do/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidResolvingConfigurationsManually-avoid/kotlin/app/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidResolvingConfigurationsManually-do/kotlin/app/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/kotlinStdLib-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/kotlinStdLib-do/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/useGavString-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/useGavString-do/kotlin/build.gradle.kts`
 - `platforms/jvm/java-platform/src/main/java/org/gradle/api/plugins/JavaPlatformPlugin.java`
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/jvm/internal/DefaultJvmFeature.java`
 - `platforms/jvm/plugins-java/src/integTest/groovy/org/gradle/api/plugins/JavaPluginIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ProjectDependencyNotationDeprecationIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/api/MultiStringDependencyNotationIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/DefaultDependencyFactory.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/DefaultProjectDependencyFactory.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/notations/DependencyConstraintProjectNotationConverter.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/notations/DependencyMapNotationConverter.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/notations/DependencyProjectNotationConverter.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/Dependencies.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyFactory.java`

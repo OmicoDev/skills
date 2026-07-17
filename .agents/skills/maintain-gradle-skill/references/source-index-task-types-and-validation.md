@@ -17,6 +17,11 @@
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/AbstractInputFilePropertyAnnotationHandler.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/InputDirectoryPropertyAnnotationHandler.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/ServiceReferencePropertyAnnotationHandler.java`
+- `platforms/documentation/docs/src/snippets/best-practices/preferPathSensitivityNone-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/preferPathSensitivityNone-do/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/uniqueOutputs-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/uniqueOutputs-do/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/uniqueOutputs-simple-do/kotlin/build.gradle.kts`
 - `subprojects/core-api/src/main/java/org/gradle/api/Task.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/model/ReplacedBy.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/CacheableTask.java`

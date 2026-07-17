@@ -22,7 +22,5 @@
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_structuring_builds.adoc`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_testing.adoc`
-- `platforms/documentation/docs/src/snippets/best-practices/dontAssumePluginOrder-avoid/kotlin/build.gradle.kts`
-- `platforms/documentation/docs/src/snippets/best-practices/dontAssumePluginOrder-do/kotlin/app/build.gradle.kts`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/MissingTaskDependenciesIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/execution/plan/MissingTaskDependencyDetector.java`

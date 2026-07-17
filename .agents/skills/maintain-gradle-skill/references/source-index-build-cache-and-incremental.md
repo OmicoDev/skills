@@ -3,6 +3,7 @@
 ## Documentation
 
 - [Best Practices for Performance](https://docs.gradle.org/current/userguide/best_practices_performance.html)
+- [Best Practices for Tasks](https://docs.gradle.org/current/userguide/best_practices_tasks.html)
 - [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html)
 - [Build cache performance](https://docs.gradle.org/current/userguide/build_cache_performance.html)
 - [Debugging and diagnosing Build Cache misses](https://docs.gradle.org/current/userguide/build_cache_debugging.html)
@@ -35,6 +36,11 @@
 - `platforms/core-execution/normalization-api/src/main/java/org/gradle/normalization/RuntimeClasspathNormalization.java`
 - `platforms/core-execution/normalization/src/integTest/groovy/org/gradle/normalization/ConfigureRuntimeClasspathNormalizationIntegrationTest.groovy`
 - `platforms/core-execution/normalization/src/test/groovy/org/gradle/normalization/internal/DefaultRuntimeClasspathNormalizationTest.groovy`
+- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
+- `platforms/documentation/docs/src/snippets/best-practices/useBuildCache-avoid/common/gradle.properties`
+- `platforms/documentation/docs/src/snippets/best-practices/useBuildCache-do/common/gradle.properties`
+- `platforms/documentation/docs/src/snippets/best-practices/useCacheabilityAnnotations-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/useCacheabilityAnnotations-do/kotlin/build.gradle.kts`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/LocalState.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/changedetection/rules/OverlappingOutputsIntegrationTest.groovy`

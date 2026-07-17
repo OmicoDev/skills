@@ -19,6 +19,10 @@
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/tasks/DefaultTaskDependency.java`
 - `platforms/core-runtime/start-parameter/src/main/java/org/gradle/StartParameter.java`
 - `platforms/core-runtime/start-parameter/src/main/java/org/gradle/initialization/StartParameterBuildOptions.java`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidDependsOn-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidDependsOn-do/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/groupTasks-avoid/kotlin/app/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/groupTasks-do/kotlin/app/build.gradle.kts`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r68/CompositeBuildTaskExecutionCrossVersionSpec.groovy`
 - `platforms/jvm/plugins-java/src/integTest/groovy/org/gradle/integtests/JavaProjectIntegrationTest.groovy`
 - `platforms/jvm/plugins-java/src/main/java/org/gradle/api/plugins/JavaPlugin.java`

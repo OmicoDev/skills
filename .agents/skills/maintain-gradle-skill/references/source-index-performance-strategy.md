@@ -28,6 +28,8 @@
 - `platforms/core-runtime/launcher/src/integTest/groovy/org/gradle/launcher/cli/MaxWorkersIntegrationTest.groovy`
 - `platforms/core-runtime/launcher/src/main/java/org/gradle/tooling/internal/provider/FileSystemWatchingBuildActionRunner.java`
 - `platforms/core-runtime/launcher/src/test/groovy/org/gradle/tooling/internal/provider/FileSystemWatchingBuildActionRunnerTest.groovy`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidComputationInConfigurationPhase-avoid/kotlin/build.gradle.kts`
+- `platforms/documentation/docs/src/snippets/best-practices/avoidComputationInConfigurationPhase-do/kotlin/build.gradle.kts`
 - `subprojects/core/src/integTest/groovy/org/gradle/execution/taskgraph/ParallelTaskExecutionIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/DefaultRealizableTaskCollection.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/DefaultTaskContainer.java`

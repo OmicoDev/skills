@@ -65,6 +65,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - User-facing tasks should have stable names, groups, and descriptions.
 - Internal tasks can remain ungrouped.
 - Use lifecycle tasks for orchestration and concrete tasks for work.
+- Avoid hardcoded task names when a strongly typed model is available. Prefer the plugin DSL or extension first, then a documented task type; if a plugin exposes a task-name constant as public API, use it instead of repeating the string. Configure generated publication tasks by type so publication changes do not break name-based matching.
 - Use [task-execution-and-options.md](task-execution-and-options.md) before adding task-specific CLI options or task graph relationships.
 - Use `tasks`, `tasks --all`, and `help --task <task>` to inspect public surface.
 - Prefer task providers and output wiring over eager task instances.
