@@ -1,6 +1,6 @@
 # Gradle Providers And Properties
 
-Read this when: Provider API, managed properties, conventions, lazy value transformations, `ObjectFactory`, domain object containers, service injection, or extension model design owns the work.
+Read this when: Provider API, managed properties, conventions, lazy value transformations, project or Gradle property lookup, extra properties, `ObjectFactory`, domain object containers, service injection, or extension model design owns the work.
 
 ## Providers And Properties
 
@@ -16,7 +16,9 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Expose `Property` and `Provider` objects directly through getters; wrapper getters/setters that call `.get()` or `.set(...)` hide lazy wiring.
 - Avoid `.get()`, `getOrNull`, `getOrElse`, and `isPresent` branching during configuration unless the value is needed to create Gradle model objects and no provider-aware API exists; provider chains preserve late value resolution and implicit task dependency wiring.
 - Use provider-backed process, environment, system-property, Gradle-property, file-content, and credential reads when configuration cache should track the value.
-- `providers.gradleProperty(...)` reads build-level sources such as `-P`, `org.gradle.project.*`, `ORG_GRADLE_PROJECT_*`, and user/root/installation `gradle.properties`; it does not read subproject `gradle.properties` files or dynamic extra properties.
+- `providers.gradleProperty(...)` reads lazy build-level values in descending precedence from `-P`, `org.gradle.project.*` system properties, `ORG_GRADLE_PROJECT_*` environment variables, and user-home, build-root, then Gradle-installation `gradle.properties`; it does not read subproject `gradle.properties` files, dynamic extra properties, extensions, tasks, or ancestor projects.
+- When diagnosing a name collision, `project.findProperty(...)`, `project.property(...)`, and `project.hasProperty(...)` search the current `Project` bean, current extra properties including unmapped project-scoped Gradle properties, an extension, a task, then ancestor extra properties and extensions; a missing value returns `null`, throws, or returns `false`, respectively. Use the order diagnostically, and remove reliance on the ancestor leg as described in [scripts-and-conventions.md](scripts-and-conventions.md).
+- The Kotlin DSL `project.extra` accessor, Groovy `project.ext`, and `project.extensions.extraProperties` expose only the current project's extra properties; an explicit extra assignment shadows an unmapped loaded Gradle property of the same name inside that scope, but it cannot override a value already mapped to the `Project` bean because dynamic lookup checks the bean first. Extra-property access does not search bean properties, extensions, tasks, or ancestors; prefer providers for build-environment inputs and keep extra properties for intentional script-local or legacy state.
 - Use `ProviderFactory.provider(Callable)` only when no typed provider or existing provider can model the value; for environment, system properties, files, processes, credentials, and other external state, prefer typed `ProviderFactory` APIs or `ValueSource` so configuration-cache inputs are intentional.
 
 ## External Value Providers
