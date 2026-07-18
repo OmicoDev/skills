@@ -29,4 +29,3 @@
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/support/KotlinDslOptions.kt`
 - `platforms/core-runtime/base-services/src/main/java/org/gradle/util/internal/KotlinDslVersion.java`
 - `platforms/core-runtime/gradle-cli/src/test/groovy/org/gradle/launcher/cli/DefaultCommandLineActionFactoryTest.groovy`
-- `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_major_version_9.adoc`
