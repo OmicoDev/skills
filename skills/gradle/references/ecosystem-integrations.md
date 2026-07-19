@@ -36,33 +36,10 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - Use `ExecOperations`, `JavaExec`, or typed task wrappers instead of ad hoc shell strings.
 - Make package installs and networked update steps explicit tasks, not hidden configuration work.
 
-## IDE And Tooling API
+## IDE Metadata
 
-- IDE import/sync consumes Gradle models; task execution behavior may differ from sync behavior.
-- Tools that use Gradle should usually be modeled by plugins and tasks; tools that execute Gradle should usually use the Tooling API.
-- Tooling API clients are version-independent, wrapper-aware, daemon-backed external clients with their own JVM and compatibility surface.
-- The Tooling API always uses a Gradle daemon. IDE or embedded-client failures should inspect daemon selection and daemon logs even when ordinary CLI reproduction uses different daemon flags.
-- Separate Tooling API compatibility into four axes: Tooling API library/client JVM, target Gradle distribution, daemon JVM, and serialized `BuildAction` or custom-model bytecode.
-- Let Tooling API connections use the target build distribution by default; overriding the Gradle version or distribution makes the client own that compatibility risk.
-- If the target build has no wrapper or configured distribution, the Tooling API falls back to the client library's Gradle version; embedded tools should make that choice visible instead of treating it as project-owned.
-- Treat Tooling API library upgrades as integration compatibility work: the client supports running target builds from the last five Gradle major releases plus current/next-major forward compatibility, and individual launcher/model/test methods can still require newer target Gradle versions.
-- Use Tooling API launchers, stdout/stderr capture, progress listeners, cancellation tokens, and public models before scraping command-line output from an embedded Gradle invocation.
-- On Gradle 9.3+, use incubating resilient `BuildController.fetch(...)` when a Tooling API build action should continue after model-fetch failures; always inspect `FetchModelResult.getFailures()` and the nullable model before treating missing data as an unsupported or absent model.
-- `withArguments(...)` supports build-execution options modeled by `StartParameter`; do not pass CLI-only commands such as `-?`, `-v`, or daemon toggles through Tooling API launchers.
-- `setEnvironmentVariables(...)` replaces the operation environment; copy the current environment first when adding overrides, especially on Windows.
-- Close `ProjectConnection` instances when finished. `ProjectConnection` is thread-safe and long-lived, while `GradleConnector` instances are not thread-safe.
-- Treat `BuildLauncher`, `ModelBuilder`, and `TestLauncher` as per-operation builders; they are not thread-safe even when the `ProjectConnection` is.
-- Progress notifications from one `ProjectConnection` are serialized, but the delivery thread may change; keep listeners thread-safe and marshal UI updates explicitly.
-- Recreate a Tooling API connection after connector inputs such as `gradle.properties`, daemon JVM policy, distribution choice, or Gradle user home change.
-- Treat Tooling API `BuildAction` classes as serialized code sent into the build; compile them to the lowest Java level supported by the target Gradle range.
-- Kotlin DSL script editor models are Tooling API root-project models, not project-source Kotlin compilation: request `KotlinDslScriptsModel` with `prepareKotlinBuildScriptModel` and classpath or strict-classpath provider mode, use `org.gradle.tooling.model.kotlin.dsl.scripts` only for explicit script files, and when Isolated Projects is enabled diagnose discovery through the isolated model builder because explicit script lists are rejected.
-- In composite builds, Tooling API task paths and prior test descriptors can target included builds, but class/method selectors without task targets apply only to the root build; use task-scoped test selectors for included-build tests.
-- Use `org.gradle.tooling.parallel` when IDE/model-building parallelism needs a different risk profile from task execution parallelism.
-- Notify Gradle daemons about files changed by the external tool itself with absolute canonical paths; for renames send both old and new paths, and do not replay changes discovered by another watcher because Gradle already watches the file system.
+- Read [tooling-api.md](tooling-api.md) when IDE import or sync, an external Gradle client, `ProjectConnection`, build actions, custom tooling models, or model-building parallelism owns the behavior.
 - Do not depend on IDE-only files for Gradle build correctness.
-- Use public models or custom tooling models when external consumers need structured information.
-- Register custom tooling model builders through the injectable `ToolingModelBuilderRegistry` in a plugin; do not scrape task output or CLI text to fabricate IDE models.
-- Custom tooling models belong in plugins and should be versioned like public integration contracts.
 - IDE metadata plugins are integration aids, not the source of build truth.
 - Modern IDEA and Eclipse should usually import the Gradle build directly; apply `idea` or `eclipse` only when the build intentionally contributes IDE model customization or generated project files.
 - IDEA/Eclipse generated-file tasks are deprecated for removal in Gradle 10, but their DSL customization can still be consumed by IDE import. Keep generated-file hooks separate from build model fixes.

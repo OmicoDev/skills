@@ -11,6 +11,7 @@ Read this when: build speed, task avoidance, configuration cache, build cache, i
 - Read [task-types-and-validation.md](task-types-and-validation.md) when a task's inputs, outputs, validation, or cacheability is the suspected owner.
 - Read [dependency-repositories.md](dependency-repositories.md) when slow resolution, dynamic/changing versions, repository order, or network access dominates.
 - Read [continuous-builds.md](continuous-builds.md) when repeat execution is an interactive file-change loop rather than a build-speed or cache-reuse problem.
+- Read [tooling-api.md](tooling-api.md) when the parallel or slow work is IDE sync, custom tooling models, or an embedded Gradle client rather than task execution.
 
 ## Evidence First
 
@@ -23,9 +24,7 @@ Read this when: build speed, task avoidance, configuration cache, build cache, i
 ./gradlew <task> --parallel
 ```
 
-Compare repeated runs and avoid broad optimization changes before identifying the dominant cost.
-For broad best-practice audits, baseline representative workflows first; a fast `help` run mainly proves initialization/configuration behavior, not compile, test, publication, or cache reuse behavior.
-Treat `--profile` task, project, dependency-resolution, and artifact-transform times as coarse event-duration evidence, not a critical-path timeline; parallel task or transform durations can add up beyond wall-clock time, so use a Build Scan timeline when the question is parallel speedup, idle time, or critical-path ownership.
+Compare repeated runs and avoid broad optimization changes before identifying the dominant cost. For broad best-practice audits, baseline representative workflows first; a fast `help` run mainly proves initialization/configuration behavior, not compile, test, publication, or cache reuse behavior. Treat `--profile` task, project, dependency-resolution, and artifact-transform times as coarse event-duration evidence, not a critical-path timeline; parallel task or transform durations can add up beyond wall-clock time, so use a Build Scan timeline when the question is parallel speedup, idle time, or critical-path ownership.
 
 ## Diagnosis Matrix
 
@@ -49,7 +48,7 @@ Treat `--profile` task, project, dependency-resolution, and artifact-transform t
 - Incremental tasks process changed inputs during execution.
 - A task can be incremental without being safely cacheable.
 - Isolated Projects builds on configuration-cache discipline and cross-project ownership boundaries; route details to [isolated-projects.md](isolated-projects.md).
-- Treat parallelism as separate owner surfaces: `--parallel` targets task execution across projects, Configuration Cache can enable task execution parallelism within a project, Isolated Projects targets configuration/model parallelism, `org.gradle.tooling.parallel` targets Tooling API model builders, and `org.gradle.workers.max` caps parallel work across phases.
+- Treat parallelism as separate owner surfaces: `--parallel` targets task execution across projects, Configuration Cache can enable task execution parallelism within a project, Isolated Projects targets configuration/model parallelism, [tooling-api.md](tooling-api.md) owns Tooling API model-builder parallelism, and `org.gradle.workers.max` caps parallel work across phases.
 - Use Gradle Profiler scenarios or method profilers when category evidence points to plugin/custom task algorithms or constrained resources rather than Gradle model structure.
 
 ## Common Performance Owners
@@ -77,8 +76,7 @@ Treat `--profile` task, project, dependency-resolution, and artifact-transform t
 4. Add CI coverage for selected workflows.
 5. Roll out remote cache, default configuration cache, or Isolated Projects only after representative workflows are stable.
 
-Treat cache, configuration-cache, parallelism, and UTF-8 flags in `gradle.properties` as shared build policy; trial with CLI flags first, then commit only after representative workflows pass.
-Treat Gradle and major plugin upgrades as their own measured lane before deep tuning; old versions can hide fixed performance problems, but upgrade churn should not be mixed with cache, parallelism, or topology changes.
+Treat cache, configuration-cache, parallelism, and UTF-8 flags in `gradle.properties` as shared build policy; trial with CLI flags first, then commit only after representative workflows pass. Treat Gradle and major plugin upgrades as their own measured lane before deep tuning; old versions can hide fixed performance problems, but upgrade churn should not be mixed with cache, parallelism, or topology changes.
 
 ## Avoid
 
