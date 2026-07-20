@@ -32,8 +32,8 @@ Use the wrapper and the smallest useful command.
 - Add `--include-build <path>` only to reproduce a composite substitution or local replacement; route durable topology changes to [project-topology-and-build-logic.md](project-topology-and-build-logic.md).
 - Add `--project-dir <path>` only to reproduce a start-directory difference; otherwise record and run from the repository root.
 - Use `--warning-mode=all` before Gradle upgrades or deprecation cleanup.
-- Use `--console=plain` when CI logs or copied output should not contain rich-console control sequences.
-- Use `--non-interactive` for CI, scripts, and agent runs where Gradle must not prompt.
+- Use `--console=plain` when CI logs or copied output should contain no rich-console control sequences. On Gradle 9.6+, a non-empty `NO_COLOR` suppresses only color regardless of console mode while preserving emphasis, progress bars, and animations; do not treat it as a plain-console alias.
+- On Gradle 9.6+, use `--non-interactive` for one CI, script, or agent invocation, or set `org.gradle.console.interactive=false` as persistent build policy. Non-interactive mode selects prompt defaults instead of failing on every attempted prompt, so still pass explicit task choices when a default is unsafe or ambiguous.
 - Use `--task-graph` on Gradle 9.1+ when `--dry-run` is too weak and task dependency shape matters.
 - Leave the default Problems API HTML report enabled unless the artifact is unsafe for the environment; record the printed report path when problems appear.
 - Put task-specific options immediately after the task that owns them. If a task option conflicts with a Gradle built-in option, use the `--` delimiter before the task path.

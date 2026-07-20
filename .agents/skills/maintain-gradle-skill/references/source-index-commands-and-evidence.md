@@ -5,6 +5,7 @@
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Build Scan](https://docs.gradle.org/current/userguide/inspect.html)
 - [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
+- [Gradle 9.6.1 Release Notes](https://docs.gradle.org/9.6.1/release-notes.html)
 - [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
 - [Logging and Output](https://docs.gradle.org/current/userguide/logging.html)
 - [The Build Dashboard Plugin](https://docs.gradle.org/current/userguide/build_dashboard_plugin.html)
@@ -22,5 +23,10 @@
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/TaskReportRenderer.java`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/configuration/TaskDetailPrinter.java`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/configuration/TaskDetailsModel.java`
+- `platforms/core-runtime/daemon-services/src/main/java/org/gradle/api/internal/tasks/userinput/NonInteractiveUserInputHandler.java`
+- `platforms/core-runtime/logging/src/integTest/groovy/org/gradle/internal/logging/console/ConsoleNoColorIntegrationTest.groovy`
+- `platforms/core-runtime/logging/src/main/java/org/gradle/internal/logging/LoggingConfigurationBuildOptions.java`
+- `platforms/core-runtime/logging/src/main/java/org/gradle/internal/logging/sink/OutputEventRenderer.java`
 - `platforms/core-runtime/start-parameter/src/main/java/org/gradle/initialization/StartParameterBuildOptions.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/internal/tasks/userinput/UserInputHandlingIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/internal/execution/TaskGraphBuildExecutionAction.java`
