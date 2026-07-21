@@ -1,6 +1,6 @@
 # Gradle External Processes
 
-Read this when: `ExecOperations`, `JavaExec`, `providers.exec/javaexec`, external-process inputs/outputs, process cancellation, or subprocess cleanup owns the work.
+Read this when: `ExecOperations`, `JavaExec`, `providers.exec/javaexec`, Java/Groovy process APIs, external-process inputs/outputs, process cancellation, or subprocess cleanup owns the work.
 
 ## Scope Boundary
 
@@ -14,8 +14,10 @@ Read this when: `ExecOperations`, `JavaExec`, `providers.exec/javaexec`, externa
 - Use `ExecOperations.exec/javaexec`, `JavaExec`, `JavaLauncher`, or tool providers when the process is task or work-action behavior; do not use `Project.exec`, `Project.javaexec`, or script-level `exec/javaexec` in Gradle 9+.
 - Declare the executable, arguments, working directory, environment, inputs, and outputs on the owning task; process output that affects later work must be a modeled output or provider value, not a hidden side effect.
 - Capture standard output, error output, exit handling, and environment deliberately; do not infer success solely from process startup.
+- Do not invoke `ExecOperations`, `ProcessBuilder`, `Runtime.exec`, or Groovy `execute()` directly from configuration logic, including build, settings, init scripts, `buildSrc`, and plugin application. On Gradle 9.6.1 with the configuration cache enabled, detected calls are reported as `external process started` problems; move the work into a task, `providers.exec/javaexec`, or a custom `ValueSource` rather than disabling the cache. A missing problem is not proof that an untracked custom code path is cache-safe.
 - Use `providers.exec/javaexec` only for a simple provider-backed process output needed by configuration logic. If queried during configuration, the output becomes a configuration-cache input and the process runs on later builds to check cache freshness, so keep it fast.
 - Use a custom `ValueSource` with injected `ExecOperations` when configuration-time process work needs parameters, exit handling, custom input streams, streaming output, or non-trivial parsing.
+- When configuration logic genuinely needs a standard Java/Kotlin/Groovy process API, invoke it inside `ValueSource.obtain()` rather than directly during configuration. Gradle tracks the returned value instead of the individual process access, so keep that value deterministic and effectively immutable; task-action process execution remains the preferred boundary for non-model work.
 - Do not hide slow, networked, or mutating external tools inside `providers.exec` or `ValueSource`; model them as tasks unless the build model genuinely needs the value before task graph calculation.
 - `ExecOutput` captures result, standard output, and standard error lazily and runs the process once on first provider query; handle startup failures at the provider consumer instead of assuming the command already ran.
 - `providers.exec/javaexec` cannot customize process input/output streams; use `ValueSource` or a task-owned `ExecOperations` call when stdin, separated streams, or streaming output is part of the contract.
@@ -32,6 +34,7 @@ Read this when: `ExecOperations`, `JavaExec`, `providers.exec/javaexec`, externa
 ## Failure Map
 
 - Process starts during configuration or on every configuration-cache reuse check: find the provider query and move non-model work into a task.
+- Configuration-cache report says `external process started`: distinguish a direct configuration-time launcher from the same launcher inside `ValueSource.obtain()` before replacing the API or disabling the cache; if no problem is reported, still verify that configuration does not depend on untracked process output.
 - Process exit is ignored but later work consumes missing or partial output: model the output and validate the exit/result before exposing it to consumers.
 - Cancellation leaves descendants alive: confirm the process was launched through Gradle's managed process APIs, then inspect detachment and subprocess-tree escape behavior.
 - Repeated configuration-cache invalidation names process output: keep the command fast and deterministic or replace configuration-time process output with task-owned generated state.
