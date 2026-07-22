@@ -84,6 +84,8 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 
 ## Diagnostics
 
+- For remote dependency resolution in Gradle 9.6.1, transient socket and connection failures plus HTTP 408, 429, and 5xx responses are retried by default for up to three total attempts with exponential backoff. Terminal HTTP 401 and 403 failures, HTTP 404, unknown-host, and unrelated failures are not dependency-resolution retry candidates; repair credentials, coordinates, DNS, or repository health instead of adding a broad fallback.
+- After transient retries are exhausted or a critical connectivity failure occurs, Gradle can disable that repository for the rest of the build tree. Treat a later `Repository ... is disabled due to earlier error below` message as secondary evidence, find the first failure, and remember that an artifact stays bound to the repository that supplied its metadata.
 - If a module is missing, check repository ownership, content filters, coordinates, credentials, and metadata sources before adding a repository.
 - If an Ivy module is missing or artifacts are missing after metadata resolves, compare the configured Ivy layout and patterns with the repository's real descriptor and artifact paths.
 - If CI resolves a different artifact, compare repository order, mirrors, credentials, Gradle user home cache, and init scripts.
