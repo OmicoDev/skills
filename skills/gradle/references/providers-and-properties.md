@@ -5,9 +5,9 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 ## Providers And Properties
 
 - Treat `Provider<T>` as a read-only lazy recipe and `Property<T>` as configurable lazy state.
-- Use `DirectoryProperty` and `RegularFileProperty` for filesystem values.
+- Use `DirectoryProperty` and `RegularFileProperty` for filesystem values. In Gradle 9.6+ Groovy DSL, assigning a string path to either property resolves it against the owning project's directory; treat this as a Groovy compatibility bridge, while Java and Kotlin callers should keep using typed file-location values or providers.
 - Derive child paths with `DirectoryProperty.dir(...)` and `DirectoryProperty.file(...)` so later changes to the base directory still flow through.
-- Use `ListProperty<T>`, `SetProperty<T>`, and `MapProperty<K, V>` for scalar collections; use `ConfigurableFileCollection` or `ConfigurableFileTree` when users need to add file inputs lazily.
+- Use `ListProperty<T>`, `SetProperty<T>`, and `MapProperty<K, V>` for scalar collections; use `ConfigurableFileCollection` or `ConfigurableFileTree` when users need to add file inputs lazily. In Gradle 9.6+ Groovy DSL, assigning one matching element or a compatible object array to a list/set property replaces it with the corresponding one- or many-element collection; use `add`/`addAll` for additive wiring instead of inferring `+=` support.
 - Use `map` when a transformation returns a plain value and `flatMap` when it returns another `Provider`; use `zip`, `filter`, and `orElse` to combine, filter, or fall back without realizing values. Absent inputs skip transforms, `null` transform results become absent, and `zip` is absent when either side is absent.
 - Use `convention(...)` for defaults and `set(...)` for explicit values.
 - Wire a task output provider directly into the consumer so Gradle preserves the producer relationship and can infer the task dependency. For a `TaskProvider`, use `map` for a plain output such as `File` and `flatMap` for a provider-backed output; a standalone `providers.provider { taskProvider.get()... }` or an early conversion to raw `File`, `String`, or collection values loses that relationship.

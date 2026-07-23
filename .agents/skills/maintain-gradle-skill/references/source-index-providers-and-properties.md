@@ -10,6 +10,7 @@
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Configuring Tasks Lazily](https://docs.gradle.org/current/userguide/lazy_configuration.html)
 - [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
+- [Gradle 9.6.1 Release Notes](https://docs.gradle.org/9.6.1/release-notes.html)
 - [Gradle Managed Types](https://docs.gradle.org/current/userguide/gradle_managed_types_intermediate.html)
 - [Project (Gradle API 6.9.4)](https://docs.gradle.org/6.9.4/javadoc/org/gradle/api/Project.html)
 - [Project (Gradle API 8.14.3)](https://docs.gradle.org/8.14.3/javadoc/org/gradle/api/Project.html)
@@ -22,7 +23,10 @@
 
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsAccessFromGroovyDslIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/ProblemReportingCrossProjectModelAccess.kt`
+- `platforms/core-configuration/file-collections/src/main/java/org/gradle/api/internal/file/DefaultFilePropertyFactory.java`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ExtraPropertiesExtensions.kt`
+- `platforms/core-configuration/model-core/src/integTest/groovy/org/gradle/api/provider/GroovyPropertyAssignmentIntegrationTest.groovy`
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/AbstractCollectionProperty.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/AbstractProperty.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/DefaultProviderFactory.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/FlatMapProvider.java`
@@ -32,6 +36,7 @@
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/extensibility/ExtensibleDynamicObject.java`
 - `platforms/core-configuration/model-core/src/test/groovy/org/gradle/internal/extensibility/ExtensibleDynamicObjectTest.java`
 - `platforms/core-configuration/model-core/src/testFixtures/groovy/org/gradle/api/internal/provider/PropertySpec.groovy`
+- `platforms/documentation/docs/src/docs/release/notes.md`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
 - `platforms/documentation/docs/src/docs/userguide/reference/runtime-configuration/build_environment.adoc`
 - `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_major_version_9.adoc`
