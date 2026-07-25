@@ -8,7 +8,7 @@ Read this when: changing Gradle versions, handling deprecations, checking compat
 - Read [migration-execution.md](migration-execution.md) for wrapper upgrade flow, compatibility checks, deprecation cleanup, Maven/Ant migration, Groovy-to-Kotlin DSL migration, and legacy modernization.
 - Read [wrapper-and-distributions.md](wrapper-and-distributions.md) for wrapper upgrade mechanics.
 - Read [runtime-and-structure.md](runtime-and-structure.md) for client, daemon, Daemon JVM, Gradle user home, or init-script boundaries.
-- Read [jvm-and-tests.md](jvm-and-tests.md) for runtime JVM, toolchain, class file, and test failures.
+- Read [jvm-compilation-and-toolchains.md](jvm-compilation-and-toolchains.md) for runtime JVM, toolchain, and class-file failures; read [jvm-testing-and-quality.md](jvm-testing-and-quality.md) for test and quality-plugin migrations.
 - Read [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md) for plugin compatibility, TestKit, custom task validation, or plugin bytecode issues.
 
 ## Baseline Commands

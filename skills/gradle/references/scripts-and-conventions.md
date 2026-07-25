@@ -6,7 +6,7 @@ Read this when: editing `build.gradle(.kts)`, `settings.gradle(.kts)`, conventio
 
 - Read [providers-and-properties.md](providers-and-properties.md) for Provider API, managed properties, `ObjectFactory`, domain object containers, and lazy value wiring.
 - Read [file-operations-and-archives.md](file-operations-and-archives.md) for file paths, copy/sync/delete tasks, `CopySpec`, archives, permissions, and reproducible archive output.
-- Read [jvm-and-tests.md](jvm-and-tests.md) for Java/Kotlin/Groovy/Scala plugins, Java toolchains, JVM tests, fixtures, report aggregation, and source sets.
+- Read [jvm-compilation-and-toolchains.md](jvm-compilation-and-toolchains.md) for JVM plugins, source sets, compilation, toolchains, and API documentation; read [jvm-testing-and-quality.md](jvm-testing-and-quality.md) for JVM tests, fixtures, report aggregation, and quality checks.
 - Read [dependency-policy.md](dependency-policy.md) for dependency declarations, versions, catalogs, platforms, repositories, locks, or verification.
 - Read [task-types-and-validation.md](task-types-and-validation.md) when task logic is more than a tiny script-local action.
 - Read [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md) when repeated script logic should become a convention or binary plugin.

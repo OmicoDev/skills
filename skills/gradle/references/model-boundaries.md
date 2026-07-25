@@ -63,7 +63,7 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Isolated Projects violation: read [isolated-projects.md](isolated-projects.md) and identify whether it is project-to-project, project-to-build, cross-build, or build-to-project callback access before replacing APIs.
 - Dependency version changed in the wrong place: route to [dependency-policy.md](dependency-policy.md).
 - Task ordering was added to paper over missing outputs: route to [task-types-and-validation.md](task-types-and-validation.md).
-- Runtime JDK and compile target are confused: route to [jvm-and-tests.md](jvm-and-tests.md).
+- Runtime JDK and compile target are confused: route to [jvm-compilation-and-toolchains.md](jvm-compilation-and-toolchains.md).
 
 ## Review Heuristics
 

@@ -61,7 +61,7 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 
 ### Performance
 
-- Enable UTF-8 consistently ([jvm-and-tests.md](jvm-and-tests.md)): set compile and test encodings through shared JVM conventions.
+- Enable UTF-8 consistently ([jvm-compilation-and-toolchains.md](jvm-compilation-and-toolchains.md), [jvm-testing-and-quality.md](jvm-testing-and-quality.md)): set compile and test encodings through shared JVM conventions.
 - Use the build cache ([build-cache-and-incremental.md](build-cache-and-incremental.md)): verify cacheable inputs, outputs, normalization, and reproducibility.
 - Use the configuration cache ([configuration-cache.md](configuration-cache.md)): fix configuration-time work before treating cache misses as infrastructure problems.
 - Avoid expensive configuration-phase computation ([performance-strategy.md](performance-strategy.md)): defer filesystem, process, network, and dependency work into task actions or value sources.
@@ -75,6 +75,6 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 ### Testing
 
 - Test custom tasks and plugins with TestKit ([plugin-testing.md](plugin-testing.md)): cover build logic behavior through functional builds, not only unit tests.
-- Separate test purposes ([jvm-and-tests.md](jvm-and-tests.md)): use JVM Test Suite or explicit `Test` tasks/source sets when dependencies, runtime environment, duration, or CI policy differs.
-- Wire non-default test suites deliberately ([jvm-and-tests.md](jvm-and-tests.md), [plugin-testing.md](plugin-testing.md)): `shouldRunAfter` only orders work, and included `build-logic` tests do not run just because the root build uses build-logic artifacts.
+- Separate test purposes ([jvm-testing-and-quality.md](jvm-testing-and-quality.md)): use JVM Test Suite or explicit `Test` tasks/source sets when dependencies, runtime environment, duration, or CI policy differs.
+- Wire non-default test suites deliberately ([jvm-testing-and-quality.md](jvm-testing-and-quality.md), [plugin-testing.md](plugin-testing.md)): `shouldRunAfter` only orders work, and included `build-logic` tests do not run just because the root build uses build-logic artifacts.
 - Prove cacheable TestKit behavior ([plugin-testing.md](plugin-testing.md), [build-cache-and-incremental.md](build-cache-and-incremental.md)): verify deterministic inputs, warm cache reuse, input changes, and relocatability when advertised.

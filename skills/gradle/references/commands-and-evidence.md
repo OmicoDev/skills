@@ -71,7 +71,7 @@ Use the wrapper and the smallest useful command.
 - Configuration cache report names build logic: read [configuration-cache.md](configuration-cache.md).
 - Slow configuration or many realized tasks: read [performance-strategy.md](performance-strategy.md).
 - Checked-in Wrapper or distribution mismatch: read [wrapper-and-distributions.md](wrapper-and-distributions.md).
-- Client, daemon, or task JVM mismatch: read [runtime-and-structure.md](runtime-and-structure.md) and [jvm-and-tests.md](jvm-and-tests.md).
+- Client, daemon, or task JVM mismatch: read [runtime-and-structure.md](runtime-and-structure.md) and [jvm-compilation-and-toolchains.md](jvm-compilation-and-toolchains.md).
 - New project scaffold or Maven conversion: read [project-topology-and-build-logic.md](project-topology-and-build-logic.md) before accepting generated files.
 
 ## Command Safety
