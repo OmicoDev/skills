@@ -19,7 +19,7 @@ Read [jvm-testing-and-quality.md](jvm-testing-and-quality.md) when test executio
 
 - Read [compatibility-java.md](compatibility-java.md) when deciding whether a Java version can run Gradle or is only safe as a toolchain target for the selected Gradle version; read [runtime-and-structure.md](runtime-and-structure.md) when Daemon JVM criteria, `org.gradle.java.home`, `JAVA_HOME`, or client startup owns the issue.
 - The Gradle runtime JVM runs Gradle and plugins; Java toolchains select JVMs for compile, test, javadoc, and custom Java tool tasks.
-- Toolchain coverage differs by JVM plugin: Java covers compile, test, and Javadoc; on the final Gradle 9.6.1 baseline, Groovy compilation is covered but Groovydoc is not; Scala covers compilation and Scaladoc.
+- Toolchain coverage differs by JVM plugin: Java covers compile, test, and Javadoc; in Gradle 9.6.1, Groovy compilation is covered but Groovydoc is not; Scala covers compilation and Scaladoc.
 - Prefer toolchains over `JAVA_HOME`, IDE Gradle JVM settings, or `sourceCompatibility`/`targetCompatibility` alone; IDE settings choose how Gradle is launched inside the IDE, not the project compile/test toolchain.
 - Toolchains choose the JDK; they do not prevent accidental use of newer Java APIs. Use `--release` for Java API targeting when compiling Java sources for older platforms.
 - `ScalaCompile` derives target or release flags from the configured toolchain, or defaults to Java 8 bytecode without toolchains; explicit Scala compiler output flags override Gradle's selection, and older Scala versions may require a lower toolchain or explicit target.
@@ -33,10 +33,10 @@ Read [jvm-testing-and-quality.md](jvm-testing-and-quality.md) when test executio
 
 ## API Documentation
 
-- The Java plugin registers a `Javadoc` task for each source set, using that source set's `allJava` sources and its output plus compile classpath; module-path inference follows the Java extension unless the task overrides it.
+- The Java plugin registers `Javadoc` through the main JVM feature, and additional registered JVM features own Javadoc tasks for their backing source sets; a bare custom source set has no automatic Javadoc task. Task names, `allJava` sources, output-plus-compile classpaths, and module-path inference follow the backing source set and Java extension rather than the feature name alone.
 - Prefer the `javadocTool` provider from `JavaToolchainService`; Gradle validates a legacy `executable` override against the selected toolchain, so do not combine paths from different JDKs.
 - `failOnError = false` ignores Javadoc tool failures; keep the default failure behavior for published or verified documentation so a failed tool invocation cannot silently leave incomplete output.
-- On the final Gradle 9.6.1 baseline, `Groovydoc` is not Java-toolchain-aware: it loads the Groovydoc implementation from `groovyClasspath` in a classloader-isolated worker. Keep the Gradle runtime JVM compatible with that Groovy version, and do not assume the Java extension toolchain selects the documentation JVM.
+- In Gradle 9.6.1, `Groovydoc` is not Java-toolchain-aware: it loads the Groovydoc implementation from `groovyClasspath` in a classloader-isolated worker. Keep the Gradle runtime JVM compatible with that Groovy version, and do not assume the Java extension toolchain selects the documentation JVM.
 - `Groovydoc.classpath` resolves types referenced by documented sources, while `groovyClasspath` loads the Groovy and Groovydoc implementation. If inference fails, declare the Groovy dependency and repository or configure `groovyClasspath` deliberately instead of adding Gradle's bundled Groovy by accident.
 - Both `Javadoc` and `Groovydoc` are cacheable output-producing tasks. Keep destinations under `build/`; retain Groovydoc's reproducible `noTimestamp` and `noVersionStamp` defaults unless release policy explicitly requires stamps.
 

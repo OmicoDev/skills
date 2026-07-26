@@ -23,5 +23,7 @@
 - `platforms/jvm/language-java/src/integTest/groovy/org/gradle/api/tasks/javadoc/JavadocModularizedJavaIntegrationTest.groovy`
 - `platforms/jvm/language-java/src/integTest/groovy/org/gradle/api/tasks/javadoc/JavadocToolchainIntegrationTest.groovy`
 - `platforms/jvm/plugins-groovy/src/main/java/org/gradle/api/plugins/GroovyBasePlugin.java`
+- `platforms/jvm/plugins-java-base/src/integTest/groovy/org/gradle/api/plugins/jvm/internal/DefaultJvmFeatureTest.groovy`
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/JavaBasePlugin.java`
 - `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/internal/JvmPluginsHelper.java`
+- `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/jvm/internal/DefaultJvmFeature.java`
