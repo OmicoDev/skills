@@ -5,7 +5,8 @@ Read this when: `--continuous`/`-t`, watch-loop triggering, quiet-period tuning,
 ## Execution Model
 
 - Use `./gradlew <task> --continuous` for an interactive development loop, not as a general CI retry mechanism.
-- Gradle runs the requested task graph, records file inputs observed by scheduled work, and reruns after a relevant watched input changes. Unrelated files and build logic that is not part of those inputs do not trigger model recomputation; restart the session after settings, build scripts, convention plugins, or other model-shaping changes.
+- Gradle runs the requested task graph, records file inputs observed by scheduled work, and reruns after a relevant watched input changes. Direct settings or build-script edits do not trigger model recomputation; restart the session after changing task configuration or other model-shaping script logic.
+- Do not generalize the script limitation to every build-logic source file. Since Gradle 4.1, reached inputs from `buildSrc`, nested `GradleBuild` work, and included/composite builds can join the watch set; changing consumed build-logic source can rebuild and reload its produced classes, while changing the owning settings or build scripts still requires a restart.
 - The loop remains one Gradle build session even though it executes multiple builds. Session-scoped services and the configured model can therefore outlive one execution; do not assume each rebuild starts a fresh daemon or reloads build logic.
 - Changes detected during execution are retained and can trigger the next build after the current one finishes. If execution fails early, inputs belonging only to tasks that were never reached may not have been observed and may not trigger a retry.
 - Continuous build exits when Gradle detects no file-system inputs or cannot watch any file-system location. Treat either message as task-model or runtime evidence before changing polling or retry policy.
@@ -28,12 +29,12 @@ Read this when: `--continuous`/`-t`, watch-loop triggering, quiet-period tuning,
 
 - In an interactive terminal, end the loop with end-of-input: `Ctrl-D`, followed by Enter on Windows. Other typed input does not stop the build.
 - In a non-interactive script, terminate the process explicitly. Through the Tooling API, use its cancellation mechanism rather than relying on terminal input.
-- Cancellation ends the continuous session; a normal failing build does not. Fix-or-change workflows can therefore continue after a task failure as long as a watched input for reached work changes.
+- Cancellation ends the continuous session. An execution failure can remain in the loop when reached work supplied watched inputs, but a script/configuration failure before input collection, or any build with no detected file inputs, returns that result and exits continuous mode.
 
 ## Evidence And Triage
 
 1. Record the exact task paths, wrapper version, whether the first build succeeded, and every `new`, `modified`, or `deleted` path Gradle displayed.
-2. Confirm the changed file is an input of a task Gradle reached in the last build, lies inside a watched project hierarchy, and is not accessed only through a symlink or unsupported file system.
+2. Confirm the changed file is an input of work Gradle reached in the last build, lies inside the owning root, nested, or included build's watched project hierarchy, and is not accessed only through a symlink or unsupported file system.
 3. Run once with `-Dorg.gradle.vfs.verbose=true`; if Gradle retains no watched locations or drops VFS state, route to runtime diagnosis.
 4. For a missing input directory or empty filtered tree, stop the loop, create the directory or first matching file, then restart. Keep the precise filter unless the task genuinely consumes a broader root.
 5. For a build cycle, identify which task changed the reported input and move its generated files to a distinct task-owned output directory.
@@ -41,5 +42,5 @@ Read this when: `--continuous`/`-t`, watch-loop triggering, quiet-period tuning,
 ## Avoid
 
 - Using continuous build as a substitute for declared inputs/outputs, incremental tasks, or the build cache.
-- Expecting build-script, settings, plugin-classpath, or included-build logic changes to be reloaded without restarting the loop.
+- Expecting settings/build-script or build-logic configuration changes to be reloaded merely because source inputs from `buildSrc`, a nested build, or an included build are watchable.
 - Persisting verbose VFS logging or a large quiet period without evidence from a representative edit workflow.
