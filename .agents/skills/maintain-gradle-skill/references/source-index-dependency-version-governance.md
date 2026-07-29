@@ -22,11 +22,14 @@
 - `platforms/documentation/docs/src/snippets/best-practices/useVersionCatalogs-avoid/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/useVersionCatalogs-do/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/versionCatalogNaming-do/common/gradle/libs.versions.toml`
+- `platforms/documentation/docs/src/snippets/reference/dependency-management/centralizing-dependencies/catalogs-classifiers/groovy/build.gradle`
+- `platforms/documentation/docs/src/snippets/reference/dependency-management/centralizing-dependencies/catalogs-classifiers/kotlin/build.gradle.kts`
 - `platforms/jvm/language-jvm/src/integTest/groovy/org/gradle/integtests/resolve/consistency/JavaProjectResolutionConsistencyIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/catalog/KotlinDslVersionCatalogExtensionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/catalog/VersionCatalogExtensionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/strict/StrictVersionConstraintsFeatureInteractionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/configurations/DefaultConfiguration.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dependencies/DefaultMinimalDependencyVariant.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/AbstractExternalDependencyFactory.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/AliasNormalizer.java`
@@ -38,6 +41,7 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalog.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalogsExtension.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyHandler.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/ExternalModuleDependencyVariantSpec.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/initialization/dsl/VersionCatalogBuilder.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/catalog/parser/StrictVersionParser.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/catalog/parser/TomlCatalogFileParser.java`
