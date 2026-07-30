@@ -12,10 +12,15 @@
 - [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
 - [Gradle 9.6.1 Release Notes](https://docs.gradle.org/9.6.1/release-notes.html)
 - [Gradle Managed Types](https://docs.gradle.org/current/userguide/gradle_managed_types_intermediate.html)
+- [HasMultipleValues (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/provider/HasMultipleValues.html)
+- [ListProperty (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/provider/ListProperty.html)
+- [MapProperty (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/provider/MapProperty.html)
+- [ObjectFactory (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/model/ObjectFactory.html)
 - [Project (Gradle API 6.9.4)](https://docs.gradle.org/6.9.4/javadoc/org/gradle/api/Project.html)
 - [Project (Gradle API 8.14.3)](https://docs.gradle.org/8.14.3/javadoc/org/gradle/api/Project.html)
 - [Properties and Providers](https://docs.gradle.org/current/userguide/properties_providers.html)
 - [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
+- [SetProperty (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/provider/SetProperty.html)
 - [Upgrading to Gradle 9.0.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
@@ -28,12 +33,16 @@
 - `platforms/core-configuration/model-core/src/integTest/groovy/org/gradle/api/provider/GroovyPropertyAssignmentIntegrationTest.groovy`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/AbstractCollectionProperty.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/AbstractProperty.java`
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/DefaultMapProperty.java`
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/DefaultPropertyFactory.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/DefaultProviderFactory.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/FlatMapProvider.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/TransformBackedProvider.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/tasks/DefaultTaskDependency.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/extensibility/DefaultExtraPropertiesExtension.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/extensibility/ExtensibleDynamicObject.java`
+- `platforms/core-configuration/model-core/src/test/groovy/org/gradle/api/internal/provider/CollectionPropertySpec.groovy`
+- `platforms/core-configuration/model-core/src/test/groovy/org/gradle/api/internal/provider/MapPropertySpec.groovy`
 - `platforms/core-configuration/model-core/src/test/groovy/org/gradle/internal/extensibility/ExtensibleDynamicObjectTest.java`
 - `platforms/core-configuration/model-core/src/testFixtures/groovy/org/gradle/api/internal/provider/PropertySpec.groovy`
 - `platforms/documentation/docs/src/docs/release/notes.md`
@@ -49,12 +58,17 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/file/BuildLayout.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/FileSystemLocationProperty.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/ProjectLayout.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/model/ObjectFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/plugins/ExtensionContainer.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/plugins/ExtraPropertiesExtension.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/HasConfigurableValue.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/provider/HasMultipleValues.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/provider/ListProperty.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/provider/MapProperty.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/Property.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/Provider.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ProviderFactory.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/provider/SetProperty.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSource.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSourceParameters.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSourceSpec.java`
