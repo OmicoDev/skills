@@ -56,7 +56,7 @@ Read this when: plugin implementation, plugin form, task public surface, plugin-
 - Use `java-gradle-plugin` for plugin projects instead of hand-maintaining descriptors, `gradleApi()`/`compileOnlyApi` wiring, validation, marker publications, and TestKit classpath metadata.
 - Treat `validatePlugins` failures as plugin API contract work, not publication plumbing: `java-gradle-plugin` wires validation into `check`, warnings fail by default, and applying `maven-publish`, `ivy-publish`, or `com.gradle.plugin-publish` enables stricter cacheable-task validation.
 - Register every public plugin in `gradlePlugin { plugins { ... } }`; treat plugin ID and `implementationClass` as release-facing API.
-- Treat plugin descriptor, `implementation-class`, and task property validation warnings as blockers for publishable plugin code.
+- Treat packaging and API validation as separate gates: `jar` checks that generated or declared plugin descriptors, their `implementation-class` entries, and the corresponding implementation bytecode are present and emits warnings that should block release, while Gradle 6.0+ `validatePlugins` checks task and artifact-transform property contracts. Run both before publishing instead of expecting `validatePlugins` alone to catch packaging defects.
 - Keep plugin classes as model coordinators: create extensions, set conventions, register tasks lazily, and wire extension properties to task properties without reading them during `apply`.
 - For reporting plugins or tasks, derive report locations from `ReportingExtension.getBaseDirectory().dir(...)` or `.file(...)`; do not use deprecated `ReportingExtension.file(String)`, and replace `getApiDocTitle()` with plugin-owned title conventions because Gradle provides no direct replacement.
 

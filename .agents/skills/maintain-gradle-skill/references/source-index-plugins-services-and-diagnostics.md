@@ -35,7 +35,9 @@
 - `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_version_9.adoc`
 - `platforms/documentation/docs/src/snippets/best-practices/dontAssumePluginOrder-avoid/kotlin/buildSrc/src/main/kotlin/MyPlugin.kt`
 - `platforms/documentation/docs/src/snippets/best-practices/dontAssumePluginOrder-do/kotlin/buildSrc/src/main/kotlin/MyPlugin.kt`
+- `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/plugins/JavaGradlePluginPluginIntegrationTest.groovy`
 - `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/tasks/PublishedPluginsStricterValidationIntegrationSpec.groovy`
+- `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/tasks/ValidatePluginsPart1IntegrationTest.groovy`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/plugins/JavaGradlePluginPlugin.java`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/tasks/ValidatePlugins.java`
 - `platforms/jvm/plugins-java/src/main/java/org/gradle/api/plugins/JavaPlugin.java`
