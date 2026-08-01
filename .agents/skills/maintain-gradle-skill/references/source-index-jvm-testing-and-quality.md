@@ -9,7 +9,7 @@
 - [Testing in Java & JVM projects (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/java_testing.html)
 - [The Checkstyle Plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
 - [The CodeNarc Plugin](https://docs.gradle.org/current/userguide/codenarc_plugin.html)
-- [The JaCoCo Plugin](https://docs.gradle.org/current/userguide/jacoco_plugin.html)
+- [The JaCoCo Plugin (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/jacoco_plugin.html)
 - [The JaCoCo Report Aggregation Plugin](https://docs.gradle.org/current/userguide/jacoco_report_aggregation_plugin.html)
 - [The JVM Test Suite Plugin](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html)
 - [The PMD Plugin](https://docs.gradle.org/current/userguide/pmd_plugin.html)
@@ -25,8 +25,15 @@
 - `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/java_testing.adoc`
 - `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/jvm_test_suite_plugin.adoc`
 - `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/test_report_aggregation_plugin.adoc`
+- `platforms/jvm/jacoco-workers/src/main/java/org/gradle/internal/jacoco/AntJacocoCheck.java`
+- `platforms/jvm/jacoco/src/integTest/groovy/org/gradle/testing/jacoco/plugins/JacocoCachingIntegrationTest.groovy`
+- `platforms/jvm/jacoco/src/integTest/groovy/org/gradle/testing/jacoco/plugins/JacocoPluginMultiVersionIntegrationTest.groovy`
+- `platforms/jvm/jacoco/src/integTest/groovy/org/gradle/testing/jacoco/plugins/rules/JacocoPluginCoverageVerificationIntegrationTest.groovy`
+- `platforms/jvm/jacoco/src/main/java/org/gradle/internal/jacoco/rules/JacocoViolationRulesContainerImpl.java`
 - `platforms/jvm/jacoco/src/main/java/org/gradle/testing/jacoco/plugins/JacocoPlugin.java`
 - `platforms/jvm/jacoco/src/main/java/org/gradle/testing/jacoco/plugins/JacocoReportAggregationPlugin.java`
+- `platforms/jvm/jacoco/src/main/java/org/gradle/testing/jacoco/tasks/JacocoCoverageVerification.java`
+- `platforms/jvm/jacoco/src/main/java/org/gradle/testing/jacoco/tasks/JacocoReportBase.java`
 - `platforms/jvm/language-java/src/integTest/groovy/org/gradle/api/tasks/JavaExecIntegrationTest.groovy`
 - `platforms/jvm/language-java/src/main/java/org/gradle/api/tasks/JavaExec.java`
 - `platforms/jvm/plugins-jvm-test-suite/src/main/java/org/gradle/api/plugins/JvmTestSuitePlugin.java`
