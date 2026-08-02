@@ -50,12 +50,14 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 ## Incremental Work
 
 - Use incremental inputs when processing changed files is materially cheaper.
-- A task may have only one incremental `@TaskAction`, and that action takes a single `InputChanges` parameter.
-- Incremental task actions require declared outputs or an `outputs.upToDateWhen(...)` predicate; otherwise Gradle has no execution history boundary for `InputChanges`.
+- On Gradle 5.4+, a task may have only one incremental `@TaskAction`; that action takes a single `InputChanges` parameter, and at least one file input must use `@Incremental` or `@SkipWhenEmpty`.
+- On Gradle 6.0+, incremental task actions require declared outputs or an `outputs.upToDateWhen(...)` predicate; otherwise Gradle rejects the task because it lacks an execution-history boundary for `InputChanges`. Declare every produced file or directory so Gradle owns cleanup, up-to-date checks, and cache behavior.
+- `@SkipWhenEmpty` implies `@Incremental` and additionally makes the annotated properties source inputs. When all such inputs are empty, Gradle skips the task actions and cleans previous owned outputs; no cleanup work reports `NO-SOURCE`, while deleting stale outputs can count as non-incremental execution. Use plain `@Incremental` when emptiness alone must not skip the action.
 - Query changes from stable file property instances such as `RegularFileProperty`, `DirectoryProperty`, or `ConfigurableFileCollection`.
-- Keep incremental logic correct for added, modified, and removed files.
-- Fall back to full processing when `InputChanges.isIncremental()` is false; Gradle reports all input files as added in that mode.
-- Expect non-incremental execution when history is missing, Gradle version changes, `upToDateWhen` returns false, non-incremental inputs change, output locations change, or outputs are edited or removed externally.
+- Query only the exact properties marked `@Incremental` or `@SkipWhenEmpty`; asking `getFileChanges(...)` about another file input fails instead of producing a full change set.
+- Keep incremental logic correct for added, modified, and removed files. A removed `FileChange.file` may no longer exist, so delete the corresponding output through `normalizedPath` and use `fileType` when file-versus-directory behavior differs.
+- When `InputChanges.isIncremental()` is false, Gradle removes previous outputs owned by the task before the action and reports every current incremental input as `ADDED`; rebuild from the current inputs rather than expecting `REMOVED` events from the prior snapshot.
+- Expect non-incremental execution when history is missing, the task implementation or Gradle version changes, `--rerun-tasks` is used, `upToDateWhen` returns false, non-incremental inputs change, output locations change, or outputs are edited or removed externally.
 - Do not confuse incremental execution with build-cache correctness.
 - Test clean, up-to-date, cache-hit, and changed-input paths separately.
 

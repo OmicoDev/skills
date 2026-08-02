@@ -9,14 +9,20 @@
 - [Dealing with validation problems](https://docs.gradle.org/current/userguide/validation_problems.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [Incremental Build](https://docs.gradle.org/current/userguide/incremental_build.html)
+- [InputChanges API (Gradle 5.4.1)](https://docs.gradle.org/5.4.1/javadoc/org/gradle/work/InputChanges.html)
 
 ## Source Code
 
 - `platforms/core-configuration/model-reflect/src/test/groovy/org/gradle/internal/reflect/validation/ValidationMessageCheckerTest.groovy`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/WorkValidationUtils.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/history/changes/DefaultIncrementalInputProperties.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/history/changes/NonIncrementalInputChanges.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/AbstractInputFilePropertyAnnotationHandler.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/InputDirectoryPropertyAnnotationHandler.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/ServiceReferencePropertyAnnotationHandler.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/RemovePreviousOutputsStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/SkipEmptyMutableWorkStep.java`
+- `platforms/core-execution/execution/src/test/groovy/org/gradle/internal/execution/steps/SkipEmptyMutableWorkStepTest.groovy`
 - `platforms/documentation/docs/src/snippets/best-practices/preferPathSensitivityNone-avoid/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/preferPathSensitivityNone-do/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/uniqueOutputs-avoid/kotlin/build.gradle.kts`
@@ -49,14 +55,20 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/UntrackedTask.java`
 - `subprojects/core-api/src/main/java/org/gradle/work/DisableCachingByDefault.java`
+- `subprojects/core-api/src/main/java/org/gradle/work/FileChange.java`
 - `subprojects/core-api/src/main/java/org/gradle/work/Incremental.java`
 - `subprojects/core-api/src/main/java/org/gradle/work/InputChanges.java`
 - `subprojects/core-api/src/main/java/org/gradle/work/NormalizeLineEndings.java`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/internal/changedetection/state/TaskTypeUpToDateIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/tasks/TaskCacheabilityReasonIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/services/BuildServiceIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/AbstractDirectorySensitivityIntegrationSpec.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/IncrementalInputsIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/SkipWhenEmptyIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/TaskValidationFailureRenderingIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolver.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/project/taskfactory/DefaultTaskClassInfoStore.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/DefaultTaskCacheabilityResolver.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/TaskExecution.java`
 - `subprojects/core/src/main/java/org/gradle/execution/DefaultWorkValidationWarningRecorder.java`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/project/taskfactory/AnnotationProcessingTaskFactoryTest.groovy`
