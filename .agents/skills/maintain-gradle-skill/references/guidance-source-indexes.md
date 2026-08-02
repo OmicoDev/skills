@@ -9,6 +9,7 @@ Read this when: documentation or Gradle source materially calibrates runtime gui
 - Put documentation links under `## Documentation` and code-source links under `## Source Code`.
 - Use one bullet per durable documentation entry: `- [Official title](public URL)`.
 - Use one bullet per durable code-source entry with the Gradle checkout's repository-relative path.
+- Default `docs.gradle.org` entries to `current`. Pin a documentation URL to a Gradle version only when that exact release materially establishes an API or behavior boundary or supports legacy-version diagnosis; do not pin documentation merely to match the code-source calibration baseline, and make the reason recoverable from the link title or owning runtime guidance.
 - When reading `https://docs.gradle.org/**` and changing a runtime file because of it, update the owning source-index file in the same change with each materially used page title and URL.
 - Trace behavior claims through delegating facades to the nearest direct implementation owner. When a direct owner exists, index it and the representative test when both materially establish the rule; a facade plus a test does not replace the source that performs the behavior.
 - Sort documentation entries by normalized title and source-code entries lexicographically by repository-relative path. Use `node scripts/sort-reference-sections.mjs --check` from this skill directory to verify sorting, reference naming, and the runtime target for every source-index file.
