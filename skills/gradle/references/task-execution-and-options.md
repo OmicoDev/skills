@@ -29,8 +29,9 @@ Read this when: task dependencies, ordering, finalizers, skipping, timeouts, com
 
 ## Finalizers, Skips, And Timeouts
 
-- `finalizedBy` adds the finalizer task to the graph when the finalized task is scheduled.
-- Finalizers run even when the finalized task fails or is up-to-date; use them for cleanup that must happen after selected work.
+- `finalizedBy` adds the finalizer task to the graph when the finalized task is scheduled. Finalizers run after a finalized task that starts, including when its actions fail or its outcome is `UP-TO-DATE`.
+- Do not treat a finalizer as unconditional whole-build cleanup: a finalizer reachable only through one finalized task does not run when that task never starts because earlier work fails without `--continue`, and excluding that task removes the sole path to the finalizer. An explicitly requested or shared finalizer can still run. A failed explicit `dependsOn` dependency prevents the finalizer from running. On Gradle 7.4+, a finalizer wired only to a producer's declared outputs does not consume that producer's verification outcome; once the finalized task has started, the finalizer may still run after a controlled `VerificationException` without `--continue`, provided the outputs remain valid.
+- Gradle usually delays dependencies needed only by a finalizer until the finalized task completes and the finalizer is ready. On Gradle 7.5+, it may run such a dependency earlier to honor `mustRunAfter` constraints; a dependency also reachable from requested work may run earlier through that independent path. Keep finalizer dependency graphs small and make critical external cleanup independently recoverable.
 - Use `onlyIf("reason") { ... }` for ordinary conditional execution. The predicate runs just before task execution and `--info` can show the skip reason.
 - Use `StopExecutionException` only when a predicate cannot express the condition, often when adding conditional behavior around built-in task actions.
 - `StopExecutionException` skips the current task action and any following actions on that task; it does not abort the whole build.
