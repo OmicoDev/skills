@@ -28,9 +28,9 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Mutate parameters only inside the registration action so configuration cache and Isolated Projects see one stable service definition.
 - Gradle snapshots service parameters when it first creates the service instance; values changed after the first service query do not reconfigure that instance, so put mutable runtime coordination inside the service implementation.
 - Do not inspect `gradle.sharedServices.registrations` under Isolated Projects; register by stable name and keep later lookups to the returned provider.
-- Prefer `@ServiceReference` for task properties that consume a service. Matching is by service type and optional service name.
+- On Gradle 8.0+, prefer `@ServiceReference` for task properties that consume a service; it became stable in Gradle 8.12. Matching is by service type and optional service name.
 - When multiple services of the same type are registered and no `@ServiceReference` name disambiguates them, assign the provider manually.
-- If the task property is `@Internal`, assign the service provider to the property and call `usesService(...)`; otherwise concurrency limits and service usage tracking can be missed.
+- For plugins that support Gradle 6.1 through 7.x, or when a task property must remain `@Internal`, assign the service provider to the property and call `usesService(...)`; otherwise Gradle does not see the service as a task requirement and cannot honor its concurrency limit for that task.
 - Do not model a build service as task input, output, local state, or destroyable state. Services may be referenced only through `@ServiceReference`, `@Internal` plus `usesService(...)`, or supported action parameters.
 - Avoid calling `Provider.get()` for a service during configuration unless the service truly models configuration-time state.
 - Do not derive configuration-cache fingerprints or `ValueSource` parameters from build service providers; a build service is safe as a task reference, but it cannot invalidate the configuration cache.
@@ -51,7 +51,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - When a task uses multiple build services, the effective parallelism is constrained by every visible service usage. The narrowest shared service limit can serialize or cap tasks even when other services allow more concurrency.
 - A concurrency limit coordinates only tasks associated with that service registration; separate service names for the same external resource, or indirect service use without `@ServiceReference`/`usesService(...)`, can split or bypass the limit.
 - Gradle cannot infer indirect service usage through another service. Declare indirect usage explicitly through `@ServiceReference` or `usesService(...)`.
-- A service passed into [artifact transforms](dependency-artifact-transforms.md), another service, or no-isolation Worker API actions must still be registered and tracked from the consuming owner.
+- Passing a service provider into a Worker API action, [artifact transform](dependency-artifact-transforms.md), another service, configuration-time action, or listener makes the service available but does not independently acquire a task service lease. Make the originating task declare Worker API usage; non-task consumers have no equivalent `usesService(...)` lease, so keep the service thread-safe and protect scarce resources inside it instead of treating `maxParallelUsages` as a general semaphore.
 - Build services are not supported with classloader- or process-isolated worker actions.
 
 ## Task Execution Events
@@ -86,7 +86,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 ## Failure Map
 
 - Service concurrency limit ignored: check that competing tasks use the same service registration and that usage is visible through `@ServiceReference` or explicit `usesService(...)`, especially for `@Internal` service properties.
-- Undeclared build-service usage warning: declare the exact consuming task property with `@ServiceReference` or call `usesService(...)` for the provider; do not rely on task-action `provider.get()` because Gradle cannot honor usage tracking or `maxParallelUsages` from that indirect access.
+- Undeclared build-service usage warning absent: inspect the consuming task anyway. Gradle 8.11 can emit this warning under `STABLE_CONFIGURATION_CACHE`, but Gradle 8.12 through 9.7 move the incomplete detector behind an internal test-only feature, so `STABLE_CONFIGURATION_CACHE` and ordinary builds do not activate that warning even when `provider.get()` bypasses task usage tracking and `maxParallelUsages`.
 - Service provider type loaded by a different plugin classloader: prefer by-type `@ServiceReference`, or put the plugin on the root buildscript classpath with `apply false` so sibling projects share the service type.
 - Service unexpectedly created during configuration: look for `provider.get()` or eager work in plugin application.
 - Task action hits Gradle 9 deprecations or configuration-cache problems: search `@TaskAction`, `doFirst`, and `doLast` for `Task.getProject()`, injected `Project`/`Gradle`, `taskDependencies`, `dependsOn`, `mustRunAfter`, `finalizedBy`, `shouldRunAfter`, or `extensions`; move those reads to configuration-time wiring and expose plain properties or file collections to the action.
