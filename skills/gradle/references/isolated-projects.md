@@ -4,7 +4,7 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 
 ## Model
 
-- Isolated Projects is experimental; APIs, behavior, and IDE/tooling support can change between Gradle releases.
+- Isolated Projects is incubating in Gradle 9.7+. It is an early-adopter feature whose APIs, behavior, and IDE/tooling support can still change; it is not enabled by default or recommended for production use yet.
 - The feature isolates project configuration so one project cannot observe or mutate another project's mutable state.
 - It builds on Configuration Cache infrastructure and enables safe parallel project configuration; tooling model caching is local and version/status sensitive.
 - Do not equate Isolated Projects enablement with IDE model cache reuse. Tooling model caching is status-gated and has been disabled in some Gradle 9.x lines for correctness.
@@ -44,16 +44,17 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 ## Migration Commands
 
 ```bash
-./gradlew help -Dorg.gradle.unsafe.isolated-projects=true -Dorg.gradle.unsafe.isolated-projects.diagnostics=true
-./gradlew <task> -Dorg.gradle.unsafe.isolated-projects=true
+./gradlew help --isolated-projects -Dorg.gradle.isolated-projects.diagnostics=true
+./gradlew <task> --isolated-projects
 ```
 
+- On Gradle 9.7+, prefer `--isolated-projects` or `org.gradle.isolated-projects=true` plus the stable `.diagnostics` and `.dangerously-ignore-problems` property names. The legacy `org.gradle.unsafe.isolated-projects*` names remain deprecated aliases; if both names are set, an explicit `false` from either disables that option.
 - Use `help` with diagnostics mode first because it exercises broad configuration with minimal task execution noise.
 - Diagnostics mode runs project configuration and Configuration Cache store sequentially, disables per-project model reuse, and configures all projects. Configuration Cache reuse can still skip configuration after a violation-free run; change a build input when re-exercising diagnostics.
 - Do not commit diagnostics mode as steady-state policy. Disable it after migration because it deliberately turns off Isolated Projects optimizations and can hide the real performance shape.
 - A clean diagnostics `help` run is a baseline, not a proof of full compatibility; lazy task configuration, IDE model builders, and representative workflows can still surface violations.
 - Isolated Projects violations appear in the Configuration Cache HTML report; keep the report path and owning script/plugin/class.
-- Warning mode (`--configuration-cache-problems=warn` or `org.gradle.configuration-cache.problems=warn`) is only a temporary migration aid to estimate benefits while violations remain; it can still fail on concurrency errors and will not prevent new incompatibilities.
+- Configuration Cache warning mode does not suppress Isolated Projects violations. Only `org.gradle.isolated-projects.dangerously-ignore-problems=true` temporarily treats them as warnings; when a run reports violations, Gradle stores and then discards that cache entry, while a violation-free run can still store and reuse normally. The flag must not become release policy.
 - IDE sync migration needs the properties in `gradle.properties`; command-line `-D` flags will not affect IDE sync started outside that invocation.
 
 ## Repair Order

@@ -11,6 +11,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Up-to-date and cache reuse require declared outputs; a pure side-effect task should be explicitly untracked instead of faking outputs only to satisfy the model.
 - Cacheability requires declared inputs/outputs plus deterministic and relocatable outputs for the intended cache.
 - Build cache keys include task type/classpath, task action implementations, output property names, input names/values, relevant build script content, Gradle distribution classpath, `buildSrc`, and plugin classpaths.
+- Gradle 9.7+ regenerates Kotlin DSL type-safe accessors locally instead of storing or loading their generated sources through the Build Cache by default; Kotlin DSL script compilation remains cached, so the missing accessor cache transfer is intentional rather than a cacheability regression.
 - Task names and project paths do not by themselves make outputs different; equivalent tasks can reuse outputs across paths.
 
 ## Adoption

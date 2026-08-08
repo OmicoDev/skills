@@ -10,7 +10,6 @@
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Configuring Tasks Lazily](https://docs.gradle.org/current/userguide/lazy_configuration.html)
 - [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
-- [Gradle 9.6.1 Release Notes](https://docs.gradle.org/9.6.1/release-notes.html)
 - [Gradle Managed Types](https://docs.gradle.org/current/userguide/gradle_managed_types_intermediate.html)
 - [HasMultipleValues (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/provider/HasMultipleValues.html)
 - [ListProperty (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/provider/ListProperty.html)
@@ -23,11 +22,14 @@
 - [SetProperty (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/provider/SetProperty.html)
 - [Upgrading to Gradle 9.0.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
+- [Working With Files](https://docs.gradle.org/current/userguide/working_with_files.html)
 
 ## Source Code
 
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsAccessFromGroovyDslIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/ProblemReportingCrossProjectModelAccess.kt`
+- `platforms/core-configuration/domain-object-collections/src/main/java/org/gradle/api/internal/DefaultDomainObjectCollection.java`
+- `platforms/core-configuration/domain-object-collections/src/testFixtures/groovy/org/gradle/api/internal/AbstractDomainObjectCollectionSpec.groovy`
 - `platforms/core-configuration/file-collections/src/main/java/org/gradle/api/internal/file/DefaultFilePropertyFactory.java`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ExtraPropertiesExtensions.kt`
 - `platforms/core-configuration/model-core/src/integTest/groovy/org/gradle/api/provider/GroovyPropertyAssignmentIntegrationTest.groovy`
@@ -45,14 +47,16 @@
 - `platforms/core-configuration/model-core/src/test/groovy/org/gradle/api/internal/provider/MapPropertySpec.groovy`
 - `platforms/core-configuration/model-core/src/test/groovy/org/gradle/internal/extensibility/ExtensibleDynamicObjectTest.java`
 - `platforms/core-configuration/model-core/src/testFixtures/groovy/org/gradle/api/internal/provider/PropertySpec.groovy`
-- `platforms/documentation/docs/src/docs/release/notes.md`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
+- `platforms/documentation/docs/src/docs/userguide/reference/gradle-types/working_with_files.adoc`
 - `platforms/documentation/docs/src/docs/userguide/reference/runtime-configuration/build_environment.adoc`
 - `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_major_version_9.adoc`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidAfterEvaluate-avoid/kotlin/buildSrc/src/main/kotlin/AppInfoPlugin.kt`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidAfterEvaluate-do/kotlin/buildSrc/src/main/kotlin/AppInfoPlugin.kt`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidProviderGetOutsideTaskAction-avoid/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidProviderGetOutsideTaskAction-do/kotlin/build.gradle.kts`
+- `platforms/jvm/war/src/main/java/org/gradle/api/tasks/bundling/War.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/DomainObjectCollection.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/Project.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/BuildLayout.java`

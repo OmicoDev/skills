@@ -71,6 +71,7 @@ Bootstrap or update only after reviewing the dependency change:
 - Expired signing keys do not automatically invalidate signatures; if the artifact was signed before key expiry and the signature verifies, keep triage focused on key ownership and artifact bytes.
 - Wrong artifact from internal/public repository order: use the report's repository evidence, then repair repository content filters before adding trust exceptions.
 - Repeated missing keys: retry with `--refresh-keys`, then add public keys to a committed keyring if the owner is verified.
+- On Gradle 9.7+, a missing-key failure reports counts of other keys trusted for the same module and group. Treat a nonzero count as a key-rotation hint, not proof; verify the new fingerprint through an official project-controlled source before changing trust.
 - Signature mismatch with safe artifact: use an artifact-level key exclusion paired with a checksum, not a broad group trust exception.
 - Ignored unavailable keys are not trust evidence. If no other trusted key verifies the signature, provide a reviewed checksum.
 - Name squatting or repository shadowing suspicion: verify coordinates and repository ownership before adding generated trust.
@@ -85,6 +86,7 @@ Bootstrap or update only after reviewing the dependency change:
 - Use `also-trust` only after verifying alternate checksums for the same artifact from mirrors or separately produced repository metadata; it is a checksum alternative, not a blanket mismatch escape hatch, and other declared algorithms must still pass.
 - Prefer artifact-level exceptions over broad component or group exceptions.
 - Record reasons for ignored keys, trusted artifacts, and additional checksums.
+- Gradle 9.7+ schema 1.4 also accepts `origin` and `reason` on `<trusted-key>` and `<pgp>` entries and preserves them across rewrites. They are informational provenance only and never affect verification decisions.
 - Use full 40-character fingerprints for `pgp` and `trusted-key` entries; `ignored-key` can use a long ID, but full fingerprints reduce collision risk.
 - If a signature is wrong but the artifact is verified safe, pair the key exclusion with a checksum for that artifact.
 - If CI disables key servers with `<key-servers enabled="false"/>`, keep committed keyrings fresh enough that missing keys fail early; `--write-verification-metadata` ignores that flag and may still contact key servers to fetch missing keys.

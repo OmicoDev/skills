@@ -5,7 +5,6 @@
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Build Scan](https://docs.gradle.org/current/userguide/inspect.html)
 - [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
-- [Gradle 9.6.1 Release Notes](https://docs.gradle.org/9.6.1/release-notes.html)
 - [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
 - [Logging and Output](https://docs.gradle.org/current/userguide/logging.html)
 - [The Build Dashboard Plugin](https://docs.gradle.org/current/userguide/build_dashboard_plugin.html)

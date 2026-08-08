@@ -39,6 +39,7 @@ Read this when: embedded Kotlin, Kotlin DSL compilation, Kotlin language level, 
 | 2.3.0 | 9.4.0 | 2.2 |
 | 2.3.20 | 9.5.0 | 2.2 |
 | 2.3.21 | 9.6.0 | 2.2 |
+| 2.4.0 | 9.7.0 | 2.2 |
 
 ## Diagnostic Rules
 
@@ -49,7 +50,9 @@ Read this when: embedded Kotlin, Kotlin DSL compilation, Kotlin language level, 
 - On Gradle 9+, `kotlinDslPluginOptions.jvmTarget` is removed; configure the Java toolchain or JVM target for `kotlin-dsl` build logic through toolchain APIs instead of Kotlin DSL plugin options.
 - Kotlin DSL script bytecode targets the build JVM up to the maximum JVM target supported by the embedded Kotlin compiler; precompiled script plugins can use a Java toolchain, but publishing higher-target bytecode means consumers must run a compatible Gradle JVM.
 - Plugins built and published with the `kotlin-dsl` plugin on Gradle 9 target Kotlin 2.2 by default; treat Gradle 9.0 as the tested consumer floor for that default output, and do not infer a lower floor solely from Kotlin metadata major version 2.
-- For older consumers, make the producer's `languageVersion` and `apiVersion` part of the published compatibility contract and test the exact matrix with TestKit. Gradle 9.6.1 cross-version coverage pairs Kotlin 2.1 with Gradle 8.11+ consumers and Kotlin 1.9/2.0 with Gradle 6.8+ consumers; use only targets accepted by the producer's embedded compiler, and do not generalize those rows to later compilers or arbitrary plugin code.
+- For older consumers, make the producer's `languageVersion` and `apiVersion` part of the published compatibility contract and test the exact matrix with TestKit. Gradle 9.7 cross-version coverage pairs Kotlin 2.2 with Gradle 9.0+, Kotlin 2.1 with Gradle 8.11+, and Kotlin 2.0 with Gradle 6.8+; embedded Kotlin 2.4 no longer accepts language level 1.9 and treats 2.0 as a deprecated minimum.
+- Gradle 9.7's oldest supported `kotlin-dsl` plugin is 6.2.0 and its oldest supported Kotlin Gradle Plugin is 1.9.22; let Gradle align Kotlin build-logic plugins unless an explicit, tested compatibility lane requires otherwise.
+- Gradle 9.7+ compiles Kotlin DSL scripts against the prebuilt public Gradle API JAR, so imports from `org.gradle.internal.impldep.*` no longer compile. Add the original library as a build-logic dependency and import its public coordinate; plugin projects using `gradleApi()` or `gradleKotlinDsl()` retain the generated API JAR behavior.
 - When Gradle 9.4+ detects an incompatible Kotlin dependency while compiling a Kotlin DSL script and `org.gradle.kotlin.dsl.skipMetadataVersionCheck` is unset, it warns but skips the metadata check by default. Setting the property to `true` merely accepts undefined behavior, while `false` lets compilation reject the dependency; do not treat a passing skipped check as compatibility evidence, especially because Gradle 10 is scheduled to default to rejection.
 - On Gradle 9+, public Gradle APIs use JSpecify nullability; Kotlin build-logic errors around `Provider<T>`, `Property<T>`, or Gradle API maps often need non-null generic bounds or non-null value types, not suppression or looser casts.
 - Kotlin DSL failures after a Gradle upgrade can come from embedded Kotlin, script accessors, third-party plugins, or build logic classpaths.

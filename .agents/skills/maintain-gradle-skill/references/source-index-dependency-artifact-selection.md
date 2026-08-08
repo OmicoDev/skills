@@ -6,8 +6,10 @@
 - [Artifact Views](https://docs.gradle.org/current/userguide/artifact_views.html)
 - [ArtifactView.ViewConfiguration API (Gradle 7.5)](https://docs.gradle.org/7.5/javadoc/org/gradle/api/artifacts/ArtifactView.ViewConfiguration.html)
 - [How to Share Artifacts Between Projects with Gradle](https://docs.gradle.org/current/userguide/how_to_share_outputs_between_projects.html)
+- [ResolvedArtifactResult API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/result/ResolvedArtifactResult.html)
 - [Resolving Specific Artifacts](https://docs.gradle.org/current/userguide/resolving_specific_artifacts.html)
 - [Upgrading from 8 to 9](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code
 
@@ -23,6 +25,7 @@
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewAttributesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/compatibility/ArtifactAndClassifierCompatibilityIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/maven/ClassifierToVariantResolveIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/DefaultConfigurationResolver.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/dependencysubstitution/ArtifactSelectionDetailsInternal.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/dependencysubstitution/DefaultArtifactSelectionDetails.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolveengine/artifact/VariantResolvingArtifactSet.java`

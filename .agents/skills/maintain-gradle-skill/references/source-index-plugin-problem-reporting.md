@@ -4,16 +4,16 @@
 
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
-- [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html#sec:generated_html_report)
-- [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html#sec:receiving_problem_reports)
 - [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html)
 - [Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code
 
-- `platforms/core-execution/worker-process-services/src/main/java/org/gradle/process/internal/worker/DefaultWorkerProblemProtocol.java`
+- `platforms/core-execution/worker-main/src/main/java/org/gradle/process/internal/worker/problem/WorkerProblemProtocol.java`
+- `platforms/core-execution/worker-process-services/src/main/java/org/gradle/process/internal/worker/WorkerProblemDispatcher.java`
 - `platforms/core-execution/workers/src/integTest/groovy/org/gradle/workers/internal/WorkerExecutorProblemsApiIntegrationTest.groovy`
+- `platforms/ide/problems-api/src/integTest/groovy/org/gradle/api/problems/ProblemLocationPastCapIntegrationTest.groovy`
 - `platforms/ide/problems-api/src/integTest/groovy/org/gradle/api/problems/ProblemsServiceIntegrationTest.groovy`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/AdditionalData.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemGroup.java`
@@ -23,6 +23,7 @@
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/Problems.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/internal/AdditionalDataBuilderFactory.java`
 - `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/internal/DefaultProblemBuilder.java`
+- `platforms/ide/problems-api/src/main/java/org/gradle/internal/problems/DefaultProblemDiagnosticsFactory.java`
 - `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/AdditionalDataBuilderFactoryTest.groovy`
 - `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/DefaultProblemBuilderTest.groovy`
 - `platforms/ide/problems-api/src/test/groovy/org/gradle/api/problems/internal/ProblemIdAndProblemGroupTest.groovy`

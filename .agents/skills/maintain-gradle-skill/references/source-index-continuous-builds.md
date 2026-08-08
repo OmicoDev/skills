@@ -4,7 +4,6 @@
 
 - [Continuous Builds](https://docs.gradle.org/current/userguide/continuous_builds.html)
 - [File System Watching](https://docs.gradle.org/current/userguide/file_system_watching.html)
-- [Gradle 4.1 Release Notes](https://docs.gradle.org/4.1/release-notes.html)
 - [Gradle 7.5 Build Environment Configuration](https://docs.gradle.org/7.5/userguide/build_environment.html)
 
 ## Source Code

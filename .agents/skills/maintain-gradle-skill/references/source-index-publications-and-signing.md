@@ -13,11 +13,13 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/repositories/resolver/ExternalResourceResolver.java`
 - `platforms/software/ivy/src/integTest/groovy/org/gradle/api/publish/ivy/IvyPublishJavaIntegTest.groovy`
 - `platforms/software/maven/src/integTest/groovy/org/gradle/api/publish/maven/AbstractMavenPublishJavaIntegTest.groovy`
 - `platforms/software/maven/src/integTest/groovy/org/gradle/api/publish/maven/MavenPublishArtifactCustomizationIntegTest.groovy`
 - `platforms/software/maven/src/integTest/groovy/org/gradle/api/publish/maven/MavenPublishJavaIntegTest.groovy`
 - `platforms/software/maven/src/main/java/org/gradle/api/publish/maven/internal/publication/DefaultMavenPublication.java`
+- `platforms/software/maven/src/main/java/org/gradle/api/publish/maven/internal/publisher/AbstractMavenPublisher.java`
 - `platforms/software/maven/src/main/java/org/gradle/api/publish/maven/internal/validation/MavenPublicationErrorChecker.java`
 - `platforms/software/maven/src/main/java/org/gradle/api/publish/maven/plugins/MavenPublishPlugin.java`
 - `platforms/software/publish/src/main/java/org/gradle/api/publish/internal/DefaultPublishingExtension.java`
@@ -29,6 +31,7 @@
 - `platforms/software/publish/src/main/java/org/gradle/api/publish/internal/versionmapping/DefaultVersionMappingStrategy.java`
 - `platforms/software/publish/src/main/java/org/gradle/api/publish/plugins/PublishingPlugin.java`
 - `platforms/software/publish/src/main/java/org/gradle/api/publish/tasks/GenerateModuleMetadata.java`
+- `platforms/software/signing/src/integTest/groovy/org/gradle/plugins/signing/SigningPublicationsIntegrationSpec.groovy`
 - `platforms/software/signing/src/main/java/org/gradle/plugins/signing/Sign.java`
 - `platforms/software/signing/src/main/java/org/gradle/plugins/signing/SigningExtension.java`
 - `platforms/software/signing/src/main/java/org/gradle/plugins/signing/SigningPlugin.java`

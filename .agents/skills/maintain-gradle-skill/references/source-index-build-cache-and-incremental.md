@@ -14,6 +14,9 @@
 
 ## Source Code
 
+- `platforms/core-configuration/kotlin-dsl/src/integTest/groovy/org/gradle/kotlin/dsl/KotlinDslBuildCacheIntegrationTest.groovy`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/accessors/AccessorsClassPath.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/provider/KotlinDslInternalOptions.kt`
 - `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/internal/services/BuildCacheControllerFactory.java`
 - `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/internal/services/DefaultBuildCacheControllerFactory.java`
 - `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/local/internal/DirectoryBuildCacheServiceFactory.java`

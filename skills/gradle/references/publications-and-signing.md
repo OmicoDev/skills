@@ -62,6 +62,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 
 - Gradle's Signing plugin produces OpenPGP signatures.
 - On Gradle 9+, generated OpenPGP signature version follows the signing key version; if a repository or downstream verifier rejects signatures, inspect key version support before assuming Gradle emits v4 signatures.
+- On Gradle 9.7+, Maven and Ivy publishing continue to upload `.asc` and `.sig` signature files but no longer create checksum sidecars such as `.sha1` or `.md5` for those signatures; update repository fixtures that asserted the redundant sidecars.
 - Sign release publications when the target repository requires it; avoid signing ordinary PR builds unless CI intentionally exercises release publishing.
 - Source signing keys and passwords from CI secrets or user-local properties.
 - Prefer in-memory ASCII-armored keys in CI; in-memory subkeys also need `signingKeyId`, while `GnupgSignatory` delegates local signing to installed GnuPG or gpg-agent.

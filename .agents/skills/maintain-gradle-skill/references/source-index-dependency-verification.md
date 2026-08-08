@@ -2,7 +2,7 @@
 
 ## Documentation
 
-- [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html#sec:dependency_verification_options)
+- [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
 - [Securing Gradle Builds](https://docs.gradle.org/current/userguide/security.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Verifying Dependencies](https://docs.gradle.org/current/userguide/dependency_verification.html)

@@ -6,14 +6,14 @@ Read this when: comparing specific Gradle releases against Java runtime, tested 
 
 - Latest final Gradle: query `https://services.gradle.org/versions/current`.
 - Latest stable per major: query `https://services.gradle.org/versions/all` and ignore entries where `snapshot`, `nightly`, `releaseNightly`, `broken`, or `rcFor` are set.
-- Current compatibility snapshot uses Gradle docs version `9.6.1`. When citing published docs, still verify that the versioned compatibility page exists.
+- Current compatibility snapshot uses Gradle docs version `9.7.0`. When citing published docs, still verify that the versioned compatibility page exists.
 
-## Gradle 9.6.1
+## Gradle 9.7.0
 
 - Java: Gradle runtime JVM 17 through 26; JVM 27+ is not yet supported.
-- Kotlin: tested Kotlin 2.0.0 through 2.4.0-RC; embedded Kotlin 2.3.21; Kotlin language version 2.2. The embedded Kotlin table lists 2.3.21 with minimum Gradle `9.6.0`, so treat this as the 9.6.x compatibility row unless a later compatibility page changes it.
+- Kotlin: tested Kotlin 2.0.0 through 2.4.20-Beta1; embedded Kotlin 2.4.0; Kotlin language version 2.2.
 - Groovy: tested Groovy 1.5.8 through 5.0.2; Groovy-based Gradle plugins must use Groovy 4.x.
-- Android Gradle Plugin: tested AGP 9.0 through 9.3.0-alpha06.
+- Android Gradle Plugin: tested AGP 9.0 through 9.4.0-alpha03.
 
 ## Gradle 8.14.5
 

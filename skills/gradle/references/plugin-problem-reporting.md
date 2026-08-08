@@ -51,6 +51,7 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 ## Verification
 
 - Use `--warning-mode=all` when verifying console rendering for recoverable plugin-reported problems.
+- On Gradle 9.7+, the first 50 problems in a Vintage build receive full stack traces and up to 2000 more receive cheaper inferred source locations; `--warning-mode=all` removes the location-count limit but not the full-stack cap. Do not assert exact stack depth or total located-problem counts across modes such as Isolated Projects, whose internal caps differ.
 - Preserve the console problem text, problem ID/group when visible, and the exact HTML report path Gradle prints when diagnosing.
 - The HTML problems report is generated only when problems are reported; generation is enabled by default and can be disabled with `--no-problems-report` or `org.gradle.problems.report=false`.
 - `--warning-mode=none` can hide the console problem text and the printed problems-report path while the HTML report and problem events still exist; verify with report files or `OperationType.PROBLEMS` before treating a recoverable problem as unreported.

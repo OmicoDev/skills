@@ -8,6 +8,8 @@
 - [Declaring Versions and Ranges](https://docs.gradle.org/current/userguide/dependency_versions.html)
 - [Dependency Configurations](https://docs.gradle.org/current/userguide/dependency_configurations.html)
 - [Dependency Resolution Consistency](https://docs.gradle.org/current/userguide/dependency_resolution_consistency.html)
+- [DependencyFactory API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/dsl/DependencyFactory.html)
+- [DependencyHandler API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/dsl/DependencyHandler.html)
 - [JVM Test Suite Plugin](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html)
 - [Platforms](https://docs.gradle.org/current/userguide/platforms.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
@@ -39,4 +41,5 @@
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/notations/DependencyProjectNotationConverter.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/Dependencies.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyFactory.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyHandler.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/NameValidationIntegrationTest.groovy`

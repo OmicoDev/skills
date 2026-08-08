@@ -11,7 +11,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - IDE task execution support and IDE sync/import behavior are separate boundaries.
 - Isolated Projects builds on configuration-cache infrastructure, but project isolation violations and cache reuse failures are different symptoms; read [isolated-projects.md](isolated-projects.md) when cross-project mutable access or IDE model caching owns the issue.
 - Cache entries are local project state under `.gradle/configuration-cache`, reusable by local hot and cold daemons but not shared across developers or CI machines; deleting the directory removes evidence and is not a durable repair.
-- Report silence is not proof that reuse should happen; check the status page for not-yet-implemented features such as source dependencies or TestKit builds with Java agents.
+- Report silence is not proof that reuse should happen; check the status page for current not-yet-implemented features such as source dependencies.
 - Configuration-cache store can precompute task state and force dependency graph/artifact resolution that would normally happen during execution; apparent resolution timing changes usually belong to task input wiring or resolved dependency-result modeling, not repository policy.
 
 ## Enablement
@@ -60,14 +60,14 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 
 - Task fields and task actions, including `doFirst` and `doLast`, must not reference live JVM state such as threads, sockets, classloaders, streams, or synchronization primitives.
 - If Gradle 9.6+ reports a `java.util.concurrent` or `java.util.concurrent.locks` type such as `ReentrantLock`, `CountDownLatch`, or `SynchronousQueue` during configuration-cache storage, remove it from task state; use a shared build service for cross-task coordination instead of serializing synchronization primitives.
-- Task actions must not use Gradle model objects such as `Project`, `Settings`, `Gradle`, `SourceSet`, `Configuration`, publications, or dependency results; Gradle 9.6+ also flags task dependency relationship getters, `Task.getExtensions()`, and injected `Project` or `Gradle` services at execution time.
+- Task actions must not reach live Gradle model objects such as `Project`, `Settings`, `Gradle`, `SourceSet`, `Configuration`, publications, or unsupported dependency objects; Gradle 9.6+ also flags task dependency relationship getters, `Task.getExtensions()`, and injected `Project` or `Gradle` services at execution time.
 - Replace `Configuration` task inputs with `FileCollection` or provider-backed resolution results that defer dependency resolution to the owning consumer.
 - Replace `SourceDirectorySet` task inputs with `FileTree` or file properties when only files are needed.
-- Replace resolved dependency result objects with provider-backed results such as `ResolutionResult.getRootComponent()` or `ArtifactCollection.getResolvedArtifacts()` when the task truly needs resolution metadata.
+- On Gradle 9.7+, a task can declare `Property<ResolutionResult>` directly as an `@Input` and use its graph APIs during execution. Configuration Cache can also serialize the provider returned by `ArtifactCollection.getResolvedArtifacts()`, including external-only and mixed dependency graphs. `ResolvedArtifactResult` remains unsupported as an annotated task input: keep it as `@Internal` task state when execution needs the result, and separately declare required artifact files with `@InputFiles` and stable metadata with `@Input`.
 - Tasks must not inspect or mutate another task instance during execution; wire task outputs, inputs, or providers instead.
 - Do not rely on reference identity for shared mutable standard collections after cache reload. Use task properties or shared build services.
 - Do not store custom subclasses of the concrete collection or map types that configuration cache handles specially, such as a class extending `ArrayList`; Gradle restores them as a supported standard type, so subclass fields and overridden behavior disappear. Use `ListProperty`, `SetProperty`, `MapProperty`, or standard collections and model extra state separately.
-- Starting with Gradle 9.7.0-milestone-3, this unsafe collection round trip emits a deprecation scheduled to become an error in Gradle 10, but the entry is still stored and reused. Do not accept a successful cache summary as proof that the task state retained its type or behavior.
+- Gradle 9.7+ deprecates this unsafe collection round trip and schedules it to become an error in Gradle 10, but the entry is still stored and reused. Do not accept a successful cache summary as proof that the task state retained its type or behavior.
 - Task extensions, conventions, and extra properties must be read during configuration and copied into task properties, not accessed at execution time.
 - Do not call build-script top-level methods or variables from task actions; move reusable execution logic into typed task classes or static helpers and wire data through task properties.
 - Avoid custom Java serialization protocols in task state; configuration cache understands only some Java serialization hooks, they add cost, and broken protocols can surface later as misleading load failures.
@@ -88,6 +88,8 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 ## Testing
 
 - Add TestKit coverage for plugin behavior that should support configuration cache; pass `--configuration-cache`, run the same scenario twice, and assert both store and reuse behavior.
+- Gradle 9.7+ supports third-party agents attached at build-JVM startup in regular daemon builds. Read [plugin-testing.md](plugin-testing.md) for TestKit and debug-mode boundaries.
+- Gradle 9.7+ sets `idea.io.use.nio2` consistently at build startup, so IntelliJ IDEA and Android Studio builds should no longer alternate Configuration Cache entries because that system property changed. If the exact invalidation persists, verify the wrapper version and look for build logic or tooling that mutates the property.
 - Use warning mode and max-problems limits only to explore blockers; remove them from release workflows.
 - Use `-Dorg.gradle.configuration-cache.integrity-check=true` only for targeted serialization/cache-entry debugging; it can slow cache operations and cannot diagnose entries written before it was enabled.
 

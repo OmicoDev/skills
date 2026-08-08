@@ -24,10 +24,14 @@
 - `platforms/core-runtime/build-configuration/src/main/java/org/gradle/internal/buildconfiguration/DaemonJvmPropertiesConfigurator.java`
 - `platforms/core-runtime/build-configuration/src/main/java/org/gradle/internal/buildconfiguration/tasks/DaemonJvmPropertiesModifier.java`
 - `platforms/core-runtime/launcher/src/main/java/org/gradle/launcher/cli/converter/LayoutToPropertiesConverter.java`
+- `platforms/core-runtime/launcher/src/main/java/org/gradle/tooling/internal/provider/FileSystemWatchingBuildActionRunner.java`
+- `platforms/core-runtime/launcher/src/test/groovy/org/gradle/tooling/internal/provider/FileSystemWatchingBuildActionRunnerTest.groovy`
 - `platforms/core-runtime/wrapper-main/src/main/java/org/gradle/wrapper/GradleWrapperMain.java`
 - `platforms/core-runtime/wrapper-shared/src/main/java/org/gradle/wrapper/GradleUserHomeLookup.java`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_general.adoc`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidGradlePropertiesInSubProjects-avoid/common/app/gradle.properties`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidGradlePropertiesInSubProjects-do/common/gradle.properties`
-- `platforms/documentation/docs/src/snippets/best-practices/useTheGradlePropertiesFile-avoid/tests-kotlin/useTheGradlePropertiesFile-avoid.kotlin.sample.conf`
+- `platforms/documentation/docs/src/snippets/best-practices/useTheGradlePropertiesFile-avoid/tests/useTheGradlePropertiesFile-avoid.sample.conf`
 - `platforms/documentation/docs/src/snippets/best-practices/useTheGradlePropertiesFile-do/common/gradle.properties`
+- `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/services/VersionControlRepositoryCacheFactory.java`
+- `subprojects/core/src/main/java/org/gradle/internal/service/scopes/VirtualFileSystemServices.java`

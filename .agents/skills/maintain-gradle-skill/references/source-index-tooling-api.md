@@ -3,10 +3,9 @@
 ## Documentation
 
 - [Gradle & Third-party Tools](https://docs.gradle.org/current/userguide/third_party_integration.html)
-- [Gradle 9.4 Release Notes](https://docs.gradle.org/9.4.0/release-notes.html)
 - [Gradle Build Environment](https://docs.gradle.org/9.6.1/userguide/build_environment.html)
-- [Improve the Performance of Gradle Builds](https://docs.gradle.org/9.6.1/userguide/performance.html#sec:configure_tooling_api_actions_parallelism)
-- [Isolated Projects](https://docs.gradle.org/9.6.1/userguide/isolated_projects.html#sec:parallel_model_building)
+- [Improve the Performance of Gradle Builds](https://docs.gradle.org/9.6.1/userguide/performance.html)
+- [Isolated Projects](https://docs.gradle.org/9.6.1/userguide/isolated_projects.html)
 - [Tooling API](https://docs.gradle.org/current/userguide/tooling_api.html)
 
 ## Source Code

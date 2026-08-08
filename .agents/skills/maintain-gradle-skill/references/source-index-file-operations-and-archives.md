@@ -17,6 +17,7 @@
 
 ## Source Code
 
+- `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/CopyActionUtil.java`
 - `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/SyncCopyActionDecorator.java`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
 - `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/building_java_projects.adoc`

@@ -52,7 +52,7 @@ Read this when: the Gradle client or daemon, daemon JVM selection, Gradle user h
 - `Dropped VFS state due to lost state` means the daemon lost reliable watch state after unknown or excessive file events; the build can continue, but repeat-build performance evidence is no longer comparable.
 - On Linux, large builds can hit inotify watch limits or memory pressure because each watched directory consumes a watch; raise limits deliberately or disable watching in constrained agents.
 - Continuous build and running deployments require active watching; route their trigger, miss, cancellation, and cycle behavior to [continuous-builds.md](continuous-builds.md).
-- `--project-cache-dir` disables default file watching and is incompatible with explicitly enabled `--watch-fs`/`org.gradle.vfs.watch=true`.
+- On Gradle 9.7+, custom project cache directories no longer disable file watching and can be combined with `--watch-fs`; Gradle excludes the project cache directory itself from watching while continuing to watch source-dependency checkouts beneath it. On earlier Gradle versions, a custom project cache directory remains incompatible with explicit watching.
 
 ## Init Scripts And Lifecycle Hooks
 

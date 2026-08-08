@@ -19,6 +19,8 @@
 
 ## Source Code
 
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/isolated/IsolationScheme.java`
+- `platforms/core-configuration/model-core/src/test/groovy/org/gradle/internal/isolated/IsolationSchemeTest.groovy`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_general.adoc`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_structuring_builds.adoc`
 - `platforms/documentation/docs/src/docs/userguide/fundamentals/developing-plugins/developing_binary_plugin_advanced.adoc`
@@ -45,5 +47,6 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/DomainObjectCollection.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/Project.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeatures.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/internal/parameters/NoneParameters.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/plugins/PluginContainer.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/plugins/PluginManager.java`

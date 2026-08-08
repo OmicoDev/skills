@@ -14,7 +14,7 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 
 ## Native
 
-- Prefer the modern `cpp-application`, `cpp-library`, `cpp-unit-test`, `swift-application`, `swift-library`, and `xctest` plugins for new native work. Treat older software-model plugins, `model { components { ... } }`, `NativeLibrarySpec`, CUnit, and legacy GoogleTest plugin surfaces as legacy migration owners.
+- Prefer the modern `cpp-application`, `cpp-library`, `cpp-unit-test`, `swift-application`, `swift-library`, and `xctest` plugins for new native work. Gradle 9.7 deprecates the old software model for removal in Gradle 10, including `model {}`, `RuleSource`, rule-based component/native/test plugins, `componentReport`, and `dependentComponents`; treat those surfaces as migration owners rather than extending them.
 - Native plugins own components, binaries, target machines, build types, toolchains, native test tasks, and Xcode/Visual Studio metadata.
 - Identify whether Gradle owns native compilation or delegates to an external native build; check components, binaries, target machines, and toolchains before task wiring.
 - Treat native variants as build type plus target machine, and for libraries also linkage. Inspect variant-derived tasks/configurations such as `compileDebugCpp`, `linkDebug`, `createRelease`, `installDebug`, `runTest`, or `xcTest` instead of assuming one binary.

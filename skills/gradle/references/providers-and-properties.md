@@ -6,6 +6,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 
 - Treat `Provider<T>` as a read-only lazy recipe and `Property<T>` as configurable lazy state.
 - Use `DirectoryProperty` and `RegularFileProperty` for filesystem values. In Gradle 9.6+ Groovy DSL, assigning a string path to either property resolves it against the owning project's directory; treat this as a Groovy compatibility bridge, while Java and Kotlin callers should keep using typed file-location values or providers.
+- Gradle 9.7+ adds incubating lazy file/directory siblings to several built-in tasks and extensions while retaining the old eager getters as bridges over the same state. Prefer the lazy property when available, but version-gate it in plugins that support older Gradle releases.
 - Derive child paths with `DirectoryProperty.dir(...)` and `DirectoryProperty.file(...)` so later changes to the base directory still flow through.
 - Prefer dedicated collection properties over `Property<Collection<T>>`, `Property<Iterable<T>>`, arrays, or plain mutable collection fields. `ListProperty<T>` exists since Gradle 4.3 but gains additive `HasMultipleValues` methods in 4.5; `SetProperty<T>` exists since 4.5 and `MapProperty<K, V>` since 5.1. On Gradle 5.1+, all three accept independent lazy contributions without configuration-time read-copy-write; `ListProperty` and `SetProperty` retain producer task dependencies from provider-backed elements and collections on 5.1+, while `MapProperty` does so for provider-backed entries and maps on 6.0+. Use `ConfigurableFileCollection` or `ConfigurableFileTree` when the values are files.
 - On Gradle 5.1+, treat `set(...)` and `empty()` as whole-value replacement, and `add`/`addAll` or `put`/`putAll` as additive contribution. A collection convention is fallback rather than a baseline: the first additive contribution starts an explicit value from empty and discards the convention, while a convention added after an explicit contribution is ignored.
@@ -90,6 +91,7 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Use named containers when users need multiple configured elements, and polymorphic containers when element types carry different behavior.
 - Prefer stable element names because they become DSL and diagnostics surface; treat element names as immutable identity, not provider-derived state.
 - Configure container elements lazily with `named`, `register`, and `configureEach`.
+- On Gradle 9.7+, the incubating `DomainObjectCollection.getElements()` exposes Gradle-owned collections as a provider and carries dependencies from additions made with `addLater` or `addAllLater`; use it to wire task inputs because realizing it before those producers run is undefined behavior. Custom collection implementations may inherit the compatibility default that throws until they implement the new method.
 - Avoid reading all container elements just to create one aggregate task; wire providers or outgoing variants instead.
 
 ## Common Mistakes

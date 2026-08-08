@@ -4,6 +4,7 @@
 
 - [Best Practices for Testing](https://docs.gradle.org/current/userguide/best_practices_testing.html)
 - [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html)
+- [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Gradle Plugin Development Plugin](https://docs.gradle.org/current/userguide/java_gradle_plugin.html)
 - [Initialization Scripts and Init Plugins](https://docs.gradle.org/current/userguide/init_scripts.html)
 - [Testing Build Logic with TestKit](https://docs.gradle.org/current/userguide/test_kit.html)
@@ -14,6 +15,7 @@
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheTestKitIntegrationTest.groovy`
 - `platforms/documentation/docs/src/snippets/best-practices/useTestKit-avoid/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/useTestKit-do/common/build-logic/src/functionalTest/java/org/example/MyPluginFunctionalTest.java`
 - `platforms/documentation/docs/src/snippets/best-practices/useTestKit-do/kotlin/build-logic/build.gradle.kts`

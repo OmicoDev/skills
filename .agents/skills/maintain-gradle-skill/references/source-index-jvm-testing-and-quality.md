@@ -3,10 +3,11 @@
 ## Documentation
 
 - [Best Practices for Testing](https://docs.gradle.org/current/userguide/best_practices_testing.html)
-- [Gradle 9.4.1 Release Notes](https://docs.gradle.org/9.4.1/release-notes.html)
-- [Java Test Fixtures](https://docs.gradle.org/current/userguide/java_testing.html#sec:java_test_fixtures)
 - [JUnit 5.12 TestReporter API](https://docs.junit.org/5.12.0/api/org.junit.jupiter.api/org/junit/jupiter/api/TestReporter.html)
+- [TestFailureDetails API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/TestFailureDetails.html)
+- [Testing in Java & JVM projects](https://docs.gradle.org/current/userguide/java_testing.html)
 - [Testing in Java & JVM projects (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/java_testing.html)
+- [TestNGOptions API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html)
 - [The Checkstyle Plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
 - [The CodeNarc Plugin](https://docs.gradle.org/current/userguide/codenarc_plugin.html)
 - [The JaCoCo Plugin (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/jacoco_plugin.html)
@@ -45,20 +46,27 @@
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/AbstractTestOutputListenerIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/fixture/TestNGCoverage.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/junit/junit4/AbstractJUnit4TestListenerIntegrationTest.groovy`
+- `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/junit/junit4/JUnit4InitFailureConsoleLoggingIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/junit/jupiter/JUnitJupiterTestMetadataListenerIntegrationTest.groovy`
+- `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/junit/platform/JUnitPlatformInitFailureConsoleLoggingIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/junit/platform/JUnitPlatformReportEntryIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/nonclassbased/IncorrectSetupNonClassBasedTestingIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/nonclassbased/NonClassBasedTestingIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/nonclassbased/ParallelNonClassBasedTestExecutionIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/testng/TestNGDryRunFilteringIntegrationTest.groovy`
+- `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/testng/TestNGInitFailureConsoleLoggingIntegrationTest.groovy`
+- `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/testng/TestNGThreadPoolFactoryIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/testsuites/JUnitOptionsIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/main/java/org/gradle/api/internal/tasks/testing/detection/DefaultTestExecuter.java`
 - `platforms/jvm/testing-jvm/src/main/java/org/gradle/api/internal/tasks/testing/junitplatform/JUnitPlatformTestFramework.java`
 - `platforms/jvm/testing-jvm/src/main/java/org/gradle/api/internal/tasks/testing/testng/TestNGTestFramework.java`
 - `platforms/jvm/testing-jvm/src/main/java/org/gradle/api/tasks/testing/Test.java`
+- `platforms/jvm/testing-jvm/src/main/java/org/gradle/api/tasks/testing/testng/TestNGOptions.java`
+- `platforms/software/testing-base-infrastructure/src/main/java/org/gradle/api/tasks/testing/TestFailureDetails.java`
 - `platforms/software/testing-base-infrastructure/src/main/java/org/gradle/api/tasks/testing/TestFileAttachmentDataEvent.java`
 - `platforms/software/testing-base-infrastructure/src/main/java/org/gradle/api/tasks/testing/TestKeyValueDataEvent.java`
 - `platforms/software/testing-base/src/main/java/org/gradle/api/internal/tasks/testing/junit/result/JUnitXmlResultWriter.java`
+- `platforms/software/testing-base/src/main/java/org/gradle/api/internal/tasks/testing/logging/TestEventLogger.java`
 - `platforms/software/testing-base/src/main/java/org/gradle/api/internal/tasks/testing/report/generic/GenericPageRenderer.java`
 - `platforms/software/testing-base/src/main/java/org/gradle/api/internal/tasks/testing/report/generic/PerRootTabRenderer.java`
 - `platforms/software/testing-base/src/main/java/org/gradle/api/tasks/testing/AbstractTestTask.java`

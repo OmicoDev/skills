@@ -3,7 +3,6 @@
 ## Documentation
 
 - [Best Practices for Security](https://docs.gradle.org/current/userguide/best_practices_security.html)
-- [Gradle 9.4.0 Release Notes](https://docs.gradle.org/9.4.0/release-notes.html)
 - [Gradle Wrapper (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/gradle_wrapper.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 

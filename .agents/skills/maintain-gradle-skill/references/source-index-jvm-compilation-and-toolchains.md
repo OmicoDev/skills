@@ -4,6 +4,7 @@
 
 - [Best Practices for Dependencies](https://docs.gradle.org/current/userguide/best_practices_dependencies.html)
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
+- [Groovydoc API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/javadoc/Groovydoc.html)
 - [The Application Plugin](https://docs.gradle.org/current/userguide/application_plugin.html)
 - [The Groovy Plugin (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/groovy_plugin.html)
 - [The Java Library Plugin](https://docs.gradle.org/current/userguide/java_library_plugin.html)
@@ -19,6 +20,7 @@
 - `platforms/jvm/javadoc/src/main/java/org/gradle/api/tasks/javadoc/Javadoc.java`
 - `platforms/jvm/language-groovy/src/integTest/groovy/org/gradle/groovy/GroovyDocIntegrationTest.groovy`
 - `platforms/jvm/language-groovy/src/integTest/groovy/org/gradle/groovy/GroovyDocStampsIntegrationTest.groovy`
+- `platforms/jvm/language-groovy/src/integTest/groovy/org/gradle/groovy/GroovyDocToolchainIntegrationTest.groovy`
 - `platforms/jvm/language-groovy/src/main/java/org/gradle/api/tasks/javadoc/Groovydoc.java`
 - `platforms/jvm/language-java/src/integTest/groovy/org/gradle/api/tasks/javadoc/JavadocModularizedJavaIntegrationTest.groovy`
 - `platforms/jvm/language-java/src/integTest/groovy/org/gradle/api/tasks/javadoc/JavadocToolchainIntegrationTest.groovy`

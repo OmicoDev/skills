@@ -13,8 +13,11 @@
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslJvmDefaultIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslJvmTargetIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslPluginCustomKotlinOptionsIntegrationTest.kt`
+- `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslScriptCompilationIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/PrecompiledScriptPluginErrorsIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/SkipMetadataVersionCheckTest.kt`
+- `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/plugins/KotlinPluginAppliedWithOlderGradleVersionsIntegrationTest.kt`
+- `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/plugins/dsl/KotlinDslPluginCrossVersionSmokeTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/plugins/dsl/KotlinDslPluginForOldestKotlinVersionTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/plugins/dsl/KotlinDslPluginTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/plugins/dsl/KotlinDslPluginWithExplicitKGPVersionTest.kt`
@@ -24,6 +27,7 @@
 - `platforms/core-configuration/kotlin-dsl-plugins/src/main/kotlin/org/gradle/kotlin/dsl/plugins/embedded/EmbeddedKotlinPlugin.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/execution/DefaultKotlinMetadataCompatibilityChecker.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/execution/metadataCompatibilityCheck.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/provider/KotlinScriptClassPathProvider.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/support/KotlinCompiler.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/support/KotlinCompilerOptions.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/support/KotlinDslOptions.kt`

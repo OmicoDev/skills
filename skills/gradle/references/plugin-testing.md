@@ -61,7 +61,7 @@ Read this when: Gradle plugin tests, TestKit, `GradleRunner`, `ProjectBuilder`, 
 - To debug build logic exercised by TestKit, enable `org.gradle.testkit.debug=true` for the test JVM or call `GradleRunner.withDebug(true)`. Debugging the test JVM alone does not debug the build process.
 - Do not combine `withEnvironment(...)` with TestKit debug; debug mode runs the build in-process, while custom environment variables require a forked build process.
 - For configuration-cache functional tests, run the same fixture at least twice with `--configuration-cache`; one successful invocation proves storage, not reuse.
-- When TestKit fixtures also apply Java agents such as JaCoCo, verify the configuration-cache lane separately because agent instrumentation can interfere with TestKit-run builds.
+- On Gradle 9.7+, Configuration Cache supports Java agents attached at build-JVM startup in TestKit's default daemon mode. TestKit's embedded debug mode (`org.gradle.testkit.debug=true` or `withDebug(true)`) remains unsupported with agents; use `-Dorg.gradle.debug=true` and attach manually when the agent-enabled build under test also needs debugging.
 - For build-cache functional tests, pass `--build-cache`, assert `FROM_CACHE` where relevant, and isolate or clean the local build cache because TestKit can reuse TestKit-controlled Gradle User Home state between tests.
 - A cacheability claim needs more than a warm `FROM_CACHE` assertion: vary inputs, verify re-execution, and include relocatability when outputs should move across directories or machines.
 - Execute `assemble` when IDE-run TestKit tests need freshly generated plugin classpath metadata.
