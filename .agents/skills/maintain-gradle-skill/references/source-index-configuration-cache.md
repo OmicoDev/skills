@@ -7,6 +7,7 @@
 - [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Configuration Cache Status](https://docs.gradle.org/current/userguide/configuration_cache_status.html)
+- [Configuration Cache Status (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/configuration_cache_status.html)
 - [Debugging and Troubleshooting the Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_debugging.html)
 - [Enabling and Configuring the Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_enabling.html)
 - [Implementing Binary Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_binary.html)
@@ -23,8 +24,10 @@
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheUnsupportedTypesIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/inputs/process/ProcessInInitScriptIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsToolingApiGracefulDegradationIntegrationTest.groovy`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/ConfigurationCacheState.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/ConfigurationTimeBarrierBasedExecutionAccessChecker.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/DefaultConfigurationCacheDegradationController.kt`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/DefaultConfigurationCacheHost.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/DeprecatedFeaturesListener.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/InstrumentedExecutionAccessListener.kt`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/TaskExecutionAccessCheckers.kt`

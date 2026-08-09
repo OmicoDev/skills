@@ -11,7 +11,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - IDE task execution support and IDE sync/import behavior are separate boundaries.
 - Isolated Projects builds on configuration-cache infrastructure, but project isolation violations and cache reuse failures are different symptoms; read [isolated-projects.md](isolated-projects.md) when cross-project mutable access or IDE model caching owns the issue.
 - Cache entries are local project state under `.gradle/configuration-cache`, reusable by local hot and cold daemons but not shared across developers or CI machines; deleting the directory removes evidence and is not a durable repair.
-- Report silence is not proof that reuse should happen; check the status page for current not-yet-implemented features such as source dependencies.
+- Report silence is not proof that reuse should happen; check the status page for current not-yet-implemented features. Source dependencies are version-sensitive: through Gradle 9.6.1, a VCS mapping silently disables configuration-cache storage, while Gradle 9.7+ supports source dependencies; read [source-control-dependencies.md](source-control-dependencies.md) for selector-specific reuse behavior.
 - Configuration-cache store can precompute task state and force dependency graph/artifact resolution that would normally happen during execution; apparent resolution timing changes usually belong to task input wiring or resolved dependency-result modeling, not repository policy.
 
 ## Enablement

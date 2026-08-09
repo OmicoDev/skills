@@ -2,6 +2,7 @@
 
 ## Documentation
 
+- [Configuration Cache Status (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/configuration_cache_status.html)
 - [Locking Versions](https://docs.gradle.org/current/userguide/dependency_locking.html)
 
 ## Source Code
@@ -12,6 +13,7 @@
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/GitVersionSelectionIntegrationTest.groovy`
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/OfflineSourceDependencyIntegrationTest.groovy`
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/SourceDependencyBuildLookupIntegrationTest.groovy`
+- `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/SourceDependencyConfigurationCacheIntegrationTest.groovy`
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/SourceDependencyIncludedBuildIntegrationTest.groovy`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/git/GitVersionControlSpec.java`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/git/internal/GitVersionControlSystem.java`

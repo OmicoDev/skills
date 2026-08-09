@@ -33,6 +33,12 @@ Read this when: `sourceControl`, `gitRepository`, `vcsMappings`, `GitVersionCont
 - `--offline` can use a previously resolved checkout, but it fails when the requested source dependency has no cached working tree.
 - Unused VCS checkouts are garbage-collected by the VCS checkout cache; removing `sourceControl` mappings does not make old checkouts part of normal dependency cache retention.
 
+## Configuration Cache
+
+- Through Gradle 9.6.1, source-control mappings silently disable configuration-cache storage. Gradle 9.7+ can store source dependency builds as implicit included builds and restore them from the configuration cache.
+- On Gradle 9.7+, a static source dependency selector can reuse the configuration-cache entry. Changes to settings-owned `vcsMappings` still invalidate the entry as ordinary configuration inputs.
+- On Gradle 9.7+, branch selectors, version ranges, other dynamic selectors, and `latest.integration` are floating source dependency inputs: Gradle re-resolves them and invalidates the configuration-cache entry on every invocation, even when the selected commit has not moved. `ResolutionStrategy.cacheDynamicVersionsFor(...)` controls external module metadata, not this zero-TTL source dependency check.
+
 ## Diagnostics
 
 ```bash
