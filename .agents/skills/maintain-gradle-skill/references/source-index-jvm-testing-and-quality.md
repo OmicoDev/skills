@@ -7,7 +7,8 @@
 - [TestFailureDetails API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/TestFailureDetails.html)
 - [Testing in Java & JVM projects](https://docs.gradle.org/current/userguide/java_testing.html)
 - [Testing in Java & JVM projects (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/java_testing.html)
-- [TestNGOptions API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html)
+- [TestNGOptions API (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html)
+- [TestNGOptions API (Gradle 9.7.0)](https://docs.gradle.org/9.7.0/javadoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html)
 - [The Checkstyle Plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
 - [The CodeNarc Plugin](https://docs.gradle.org/current/userguide/codenarc_plugin.html)
 - [The JaCoCo Plugin (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/jacoco_plugin.html)
@@ -42,6 +43,7 @@
 - `platforms/jvm/plugins-test-report-aggregation/src/main/java/org/gradle/api/plugins/TestReportAggregationPlugin.java`
 - `platforms/jvm/testing-jvm-infrastructure/src/main/java/org/gradle/api/internal/tasks/testing/junitplatform/JUnitPlatformTestDefinitionProcessor.java`
 - `platforms/jvm/testing-jvm-infrastructure/src/main/java/org/gradle/api/internal/tasks/testing/junitplatform/JUnitPlatformTestExecutionListener.java`
+- `platforms/jvm/testing-jvm-infrastructure/src/main/java/org/gradle/api/internal/tasks/testing/testng/TestNGTestRunner.java`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/AbstractTestFilteringIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/AbstractTestOutputListenerIntegrationTest.groovy`
 - `platforms/jvm/testing-jvm/src/integTest/groovy/org/gradle/testing/fixture/TestNGCoverage.groovy`
