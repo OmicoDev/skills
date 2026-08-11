@@ -9,6 +9,7 @@
 - [Collections](https://docs.gradle.org/current/userguide/collections.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Configuring Tasks Lazily](https://docs.gradle.org/current/userguide/lazy_configuration.html)
+- [DomainObjectCollection (Gradle API 9.5.0)](https://docs.gradle.org/9.5.0/javadoc/org/gradle/api/DomainObjectCollection.html)
 - [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
 - [Gradle Managed Types](https://docs.gradle.org/current/userguide/gradle_managed_types_intermediate.html)
 - [HasMultipleValues (Gradle API 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/provider/HasMultipleValues.html)
@@ -28,7 +29,9 @@
 
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/isolated/IsolatedProjectsAccessFromGroovyDslIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/ProblemReportingCrossProjectModelAccess.kt`
+- `platforms/core-configuration/domain-object-collections/src/integTest/groovy/org/gradle/api/MutationFailureFromDisallowChangesNamedDomainObjectContainerIntegrationTest.groovy`
 - `platforms/core-configuration/domain-object-collections/src/main/java/org/gradle/api/internal/DefaultDomainObjectCollection.java`
+- `platforms/core-configuration/domain-object-collections/src/test/groovy/org/gradle/api/internal/DefaultDomainObjectCollectionTest.groovy`
 - `platforms/core-configuration/domain-object-collections/src/testFixtures/groovy/org/gradle/api/internal/AbstractDomainObjectCollectionSpec.groovy`
 - `platforms/core-configuration/file-collections/src/main/java/org/gradle/api/internal/file/DefaultFilePropertyFactory.java`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ExtraPropertiesExtensions.kt`

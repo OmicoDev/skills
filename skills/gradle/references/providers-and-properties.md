@@ -91,11 +91,11 @@ Read this when: Provider API, managed properties, conventions, lazy value transf
 - Use named containers when users need multiple configured elements, and polymorphic containers when element types carry different behavior.
 - Prefer stable element names because they become DSL and diagnostics surface; treat element names as immutable identity, not provider-derived state.
 - Configure container elements lazily with `named`, `register`, and `configureEach`.
+- On Gradle 9.5+, the incubating `DomainObjectCollection.disallowChanges()` closes structural mutation on Gradle-owned collections; call it outside lazy actions after all intended plugin contributions. It rejects later add, register, remove, and clear operations without realizing pending elements, but does not freeze element properties; custom implementations may inherit the unsupported compatibility default.
 - On Gradle 9.7+, the incubating `DomainObjectCollection.getElements()` exposes Gradle-owned collections as a provider and carries dependencies from additions made with `addLater` or `addAllLater`; use it to wire task inputs because realizing it before those producers run is undefined behavior. Custom collection implementations may inherit the compatibility default that throws until they implement the new method.
 - Avoid reading all container elements just to create one aggregate task; wire providers or outgoing variants instead.
 
 ## Common Mistakes
 
 - Modeling extension values as plain `var` fields or passing mutable extension objects into task actions.
-- Eagerly iterating containers with `all`, `getByName`, `findByName`, or action-style `withType(...)`.
-- Creating ad hoc mutable collections where a Gradle container would preserve lazy DSL ownership, or converting file providers to raw `File` too early.
+- Eagerly iterating containers with `all`, `getByName`, `findByName`, or action-style `withType(...)`; creating ad hoc mutable collections where a Gradle container would preserve lazy DSL ownership; or converting file providers to raw `File` too early.
