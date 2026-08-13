@@ -15,12 +15,16 @@ const sectionSpecs = [
     heading: "Documentation",
     pattern: /^- \[([^\]]+)\]\((https?:\/\/[^)]+)\)$/,
     key: ([, title]) => normalizeKey(title),
+    identity: ([, , url]) => new URL(url).href,
+    validate: ([, , url]) => validateDocumentationUrl(url),
     expected: "- [Official title](public URL)",
   },
   {
     heading: "Source Code",
     pattern: /^- `([^`]+)`$/,
     key: ([, sourcePath]) => sourcePath,
+    identity: ([, sourcePath]) => sourcePath,
+    validate: ([, sourcePath]) => validateSourcePath(sourcePath),
     expected: "- `repository-relative/path`",
   },
 ];
@@ -102,7 +106,7 @@ async function validateSourceIndexWorkspace(workspace) {
     ...findMissingRuntimeTargets(workspace),
     ...findMissingSourceIndexes(workspace),
     ...(await findGuidanceShapeFailures(workspace)),
-    ...(await findSourceIndexH1Mismatches(workspace)),
+    ...(await findSourceIndexShapeFailures(workspace)),
   ];
 
   if (errors.length > 0) {
@@ -199,11 +203,11 @@ async function findGuidanceShapeFailures({ guidanceFiles }) {
   return [`- Guidance reference shape is invalid: ${failures.join(", ")}`];
 }
 
-async function findSourceIndexH1Mismatches({
+async function findSourceIndexShapeFailures({
   runtimeReferences,
   sourceIndexes,
 }) {
-  const mismatches = [];
+  const failures = [];
 
   for (const sourceIndex of sourceIndexes) {
     const runtimeReference = runtimeReferences.get(sourceIndex.targetName);
@@ -212,25 +216,65 @@ async function findSourceIndexH1Mismatches({
       continue;
     }
 
-    const sourceIndexH1 = await readFirstH1(sourceIndex.file);
+    const content = await readFile(sourceIndex.file, "utf8");
+    const lines = content.split(/\r?\n/);
+    const sourceIndexH1s = lines.filter((line) => line.startsWith("# "));
     const targetH1 = await readFirstH1(runtimeReference.file);
+    const h2s = lines.filter((line) => line.startsWith("## "));
+    const documentationIndex = h2s.indexOf("## Documentation");
+    const sourceCodeIndex = h2s.indexOf("## Source Code");
+    const unsupportedH2s = h2s.filter(
+      (heading) =>
+        heading !== "## Documentation" && heading !== "## Source Code",
+    );
 
-    if (sourceIndexH1 !== targetH1) {
-      mismatches.push(
-        `${relativePath(sourceIndex.file)} (${sourceIndexH1 || "<missing H1>"}) -> ${relativePath(runtimeReference.file)} (${targetH1 || "<missing H1>"})`,
+    if (sourceIndexH1s.length !== 1) {
+      failures.push(
+        `${relativePath(sourceIndex.file)} must contain exactly one H1`,
+      );
+    } else if (sourceIndexH1s[0] !== targetH1) {
+      failures.push(
+        `${relativePath(sourceIndex.file)} (${sourceIndexH1s[0]}) must match ${relativePath(runtimeReference.file)} (${targetH1 || "<missing H1>"})`,
+      );
+    }
+
+    if (
+      countOccurrences(h2s, "## Documentation") > 1 ||
+      countOccurrences(h2s, "## Source Code") > 1
+    ) {
+      failures.push(
+        `${relativePath(sourceIndex.file)} must contain at most one Documentation and one Source Code section`,
+      );
+    }
+
+    if (documentationIndex === -1 && sourceCodeIndex === -1) {
+      failures.push(
+        `${relativePath(sourceIndex.file)} must contain a Documentation or Source Code section`,
+      );
+    }
+
+    if (
+      documentationIndex !== -1 &&
+      sourceCodeIndex !== -1 &&
+      documentationIndex > sourceCodeIndex
+    ) {
+      failures.push(
+        `${relativePath(sourceIndex.file)} must place Documentation before Source Code`,
+      );
+    }
+
+    if (unsupportedH2s.length > 0) {
+      failures.push(
+        `${relativePath(sourceIndex.file)} contains unsupported H2 sections: ${unsupportedH2s.join(", ")}`,
       );
     }
   }
 
-  if (mismatches.length === 0) {
+  if (failures.length === 0) {
     return [];
   }
 
-  return [
-    `- Source-index H1s must match owning runtime reference H1s: ${mismatches.join(
-      ", ",
-    )}`,
-  ];
+  return [`- Source-index shape is invalid: ${failures.join(", ")}`];
 }
 
 async function readFirstH1(file) {
@@ -301,7 +345,7 @@ function sortSection(lines, section, file) {
   const firstEntryIndex = body.findIndex((line) => line.startsWith("- "));
 
   if (firstEntryIndex === -1) {
-    return lines;
+    throw new Error(`${file}: ${headingLine} must contain at least one entry.`);
   }
 
   const lastEntryIndex = body.findLastIndex((line) => line.startsWith("- "));
@@ -327,7 +371,7 @@ function sortSection(lines, section, file) {
 }
 
 function parseSectionEntries(lines, section, file, headingLine) {
-  return lines.map((line) => {
+  const entries = lines.map((line) => {
     const match = line.match(section.pattern);
 
     if (match === null) {
@@ -336,11 +380,34 @@ function parseSectionEntries(lines, section, file, headingLine) {
       );
     }
 
+    const validationFailure = section.validate(match);
+
+    if (validationFailure !== undefined) {
+      throw new Error(
+        `${file}: ${headingLine} contains invalid entry: ${line}. ${validationFailure}.`,
+      );
+    }
+
     return {
+      identity: section.identity(match),
       line,
       sortKey: section.key(match),
     };
   });
+
+  const seen = new Set();
+
+  for (const entry of entries) {
+    if (seen.has(entry.identity)) {
+      throw new Error(
+        `${file}: ${headingLine} contains duplicate entry: ${entry.identity}`,
+      );
+    }
+
+    seen.add(entry.identity);
+  }
+
+  return entries;
 }
 
 function findNextH2(lines, startIndex) {
@@ -419,6 +486,35 @@ function normalizeKey(value) {
   return value.toLowerCase();
 }
 
+function countOccurrences(values, expected) {
+  return values.filter((value) => value === expected).length;
+}
+
+function validateSourcePath(sourcePath) {
+  if (
+    sourcePath.includes("\\") ||
+    path.posix.isAbsolute(sourcePath) ||
+    path.win32.parse(sourcePath).root !== "" ||
+    sourcePath === "." ||
+    sourcePath === ".." ||
+    sourcePath.startsWith("../") ||
+    sourcePath !== path.posix.normalize(sourcePath)
+  ) {
+    return "Source paths must be normalized repository-relative paths";
+  }
+
+  return undefined;
+}
+
+function validateDocumentationUrl(url) {
+  try {
+    new URL(url);
+    return url.includes("#") ? "URL fragments are not allowed" : undefined;
+  } catch {
+    return "Documentation links must be valid HTTP(S) URLs";
+  }
+}
+
 function parseArgs(args) {
   const parsed = {
     check: false,
@@ -446,9 +542,21 @@ function parseArgs(args) {
 function printUsage() {
   console.log(`Usage: node ${relativePath(scriptFile)} [--check]
 
-Validates Gradle maintenance-reference and source-index topology, then sorts single-line Markdown entries under "## Documentation" and "## Source Code".
+Validates Gradle maintenance-reference topology and source-index entry invariants, then sorts single-line Markdown entries under "## Documentation" and "## Source Code".
 
 Options:
   --check              Report files that would change without writing them.
+  -h, --help           Show this help text.
+
+Output:
+  Reports each sorted or out-of-order source-index file, or confirms that all sections are sorted.
+
+Exit codes:
+  0  Validation passed; sorting completed or no files would change.
+  1  --check found source-index files that require sorting.
+  2  Arguments, topology, or source-index entries are invalid.
+
+Example:
+  node ${relativePath(scriptFile)} --check
 `);
 }

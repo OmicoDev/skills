@@ -4,13 +4,14 @@ Read this when: current documentation or source behavior may differ across Gradl
 
 ## Version-Boundary Calibration
 
-- Treat current Gradle documentation and source as evidence for current behavior, not evidence that the behavior exists in every supported release.
+- Treat documentation and source from a final release as evidence for that observed release, not every supported release.
+- Identify the component that carries the behavior before naming a version: wrapper scripts or JAR, downloaded Gradle distribution, client or daemon, Tooling API client, plugin, CI action, IDE, or external integration. Changing `distributionUrl` does not upgrade a checked-in Wrapper JAR or another caller-side component.
+- Apply the Release Gate in `SKILL.md` before promoting the claim.
 - For each new runtime claim about an API, property, CLI option or output, task, default, deprecation, failure message, cache behavior, or model boundary, determine whether it was introduced, renamed, changed, deprecated, or removed. Put a material version qualifier beside the owning runtime guidance instead of relying on a distant compatibility note.
-- Identify the component that actually carries the behavior before naming a version: wrapper scripts or JAR, downloaded Gradle distribution, client or daemon, Tooling API client, plugin, CI action, IDE, or external integration. Do not assume changing `distributionUrl` upgrades the checked-in Wrapper JAR or another caller-side component.
 - Prefer versioned manuals and API docs, upgrade or release notes, compatibility tables, tagged source, and cross-version tests. For source-only boundaries, compare release tags and use history searches such as `git log -S` plus `git tag --contains`; verify against a release tag rather than inferring support from a commit date alone.
-- When current behavior looks new, renamed, surprising, or absent from public documentation, compare at least one relevant older release before promoting it as universal runtime guidance.
+- When observed final-release behavior looks new, renamed, surprising, or absent from public documentation, compare at least one relevant older release before promoting it as universal runtime guidance.
 - A source-index path at the current calibration baseline proves that code exists in that baseline only; it does not establish the first supported version. Keep provenance in the source index and the actionable version boundary in the owning runtime reference.
-- If the exact boundary remains uncertain, scope the rule to the verified release or describe it as current behavior; do not invent an earliest version or silently generalize it across legacy wrappers and builds.
+- If the exact boundary remains uncertain, scope the rule to the verified final release. Never invent an earliest version or generalize across legacy wrappers and builds.
 - Keep owner-specific version qualifiers with the owner guidance. Reserve `compatibility-version-snapshots.md` for recurring release-level Java, Kotlin, Groovy, and Android Gradle Plugin ranges rather than moving every introduced API or flag into a central version catalog.
 
 ## Compatibility Calibration

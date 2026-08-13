@@ -4,24 +4,24 @@ Read this when: validating any Gradle runtime or maintenance content batch, rena
 
 ## Validation Gate
 
-Report inventory and every failure after each batch:
+Report inventory and every failure for the completed batch:
 
 - Inventory: reference count, total words, total lines, maximum reference length in lines, the longest references by line count, and every reference at or above 100 lines.
 - Shape failures: references that do not start with an H1, references with more than one H1, references missing the `Read this when: ...` scope sentence, and references over 120 lines.
 - Link and topology failures: broken internal Markdown links and orphaned references, where an orphan is any `skills/gradle/references/*.md` file not reachable from `skills/gradle/SKILL.md` through Markdown links.
 - Rename/delete failures: residual mentions of renamed or deleted filenames.
 - Source-index failures: missing source-index entries for documentation URLs or source paths that materially calibrated runtime changes in the batch.
-- Version-boundary failures: current-only evidence promoted as universal behavior, version-sensitive rules missing an owning-component or release qualifier, or introduction/change/removal claims inferred without tagged or versioned evidence.
+- Version-boundary failures: a Release Gate violation; final-release evidence generalized beyond its verified versions; a version-sensitive rule missing its carrying component or material qualifier; or an introduction, change, or removal claim without tagged or versioned final-release evidence from that component.
 - Surface failures: runtime files that contain maintenance provenance, raw calibration notes, machine-local paths, upstream reading logs, or artifact-history phrasing instead of portable Gradle task guidance.
 - Markdown policy failures for the edited surface.
 
 ## Fresh Review Gate
 
-- After mechanical validation passes, reinspect every changed runtime and maintenance artifact in the batch as a fresh reviewer without assuming the intended conclusion is correct, including runtime guidance, source indexes, maintenance guidance, and scripts.
-- For every source-derived rule, verify the exact claim against the nearest direct implementation owner when one exists, plus a representative test or documented contract; apply the source-index rules before treating provenance as complete.
+- After mechanical validation passes, reinspect every changed runtime and maintenance artifact without assuming the draft is correct.
+- For each source-derived rule, verify the exact claim against the nearest direct implementation owner when one exists and against a representative test or documented contract. Apply the source-index rules before accepting provenance.
 - Pressure-test scope with the counter-case that would most change user action, such as the release immediately before the boundary, cache hit versus miss, managed versus unmanaged execution, enabled versus disabled behavior, success versus cancellation, or root process versus descendant.
 - Narrow wording to what the evidence proves. Do not turn “this cancelled result is not reusable” into “no prior result can be reused,” or current-source behavior into an unqualified cross-version rule.
-- Complete one clean final review before committing or reporting completion. If the first fresh review finds issues, fix every confirmed finding, rerun the affected validation gates, and make the clean final review a fresh post-fix pass; if it finds no issues, that clean first review satisfies the gate. If a fresh review cannot be completed, report that limitation instead of presenting the batch as finished.
+- Commit or report completion only after one clean review of the final state. A finding invalidates affected checks: fix it, rerun those checks, and review the resulting state again. If the final review is blocked, report the limitation instead of presenting the batch as finished.
 
 Run the source-index check from this skill directory before reporting completion:
 

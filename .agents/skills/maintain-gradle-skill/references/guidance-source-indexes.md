@@ -4,17 +4,11 @@ Read this when: documentation or Gradle source materially calibrates runtime gui
 
 ## Source Index Rules
 
-- Keep source provenance under `references/source-index-<runtime-reference-file>.md`.
-- Name each source-index file after the runtime reference it calibrates with the `source-index-` prefix, and start it with the same H1 as the owning runtime reference.
-- Put documentation links under `## Documentation` and code-source links under `## Source Code`.
-- Use one bullet per durable documentation entry: `- [Official title](public URL)`.
-- Treat release notes as discovery inputs, not durable source-index entries. After adopting a change, index the durable current User Manual or API contract when one exists, plus the direct implementation and representative test when they materially establish the distilled runtime rule.
-- Omit URL fragments from documentation entries and index each canonical page only once; page sections help discovery but do not constitute separate provenance sources.
-- Default `docs.gradle.org` entries to `current`. Pin a documentation URL to a Gradle version only when that exact release materially establishes an API or behavior boundary or supports legacy-version diagnosis; do not pin documentation merely to match the code-source calibration baseline, and make the reason recoverable from the link title or owning runtime guidance.
-- Use one bullet per durable code-source entry with the Gradle checkout's repository-relative path.
-- When reading `https://docs.gradle.org/**` and changing a runtime file because of it, update the owning source-index file in the same change with each materially used page title and URL.
-- Trace behavior claims through delegating facades to the nearest direct implementation owner. When a direct owner exists, index it and the representative test when both materially establish the rule; a facade plus a test does not replace the source that performs the behavior.
-- Sort documentation entries by normalized title and source-code entries lexicographically by repository-relative path. Use `node scripts/sort-reference-sections.mjs --check` from this skill directory to verify sorting, reference naming, and the runtime target for every source-index file.
-- Omit `## Source Code` when no code source file materially calibrates the runtime reference.
-- Do not create a source-index entry for every page skimmed; include only sources that materially calibrate the runtime reference.
-- Current Gradle code-source path calibration baseline is the final Gradle release `9.7.0`. Advance this baseline only to a newer final release; do not use milestone, release candidate, snapshot, or untagged source paths as the baseline. Unreleased evidence may still calibrate explicitly revision-qualified runtime guidance under [guidance-version-calibration.md](guidance-version-calibration.md), but revalidate it against a final release before promoting it to unqualified guidance or regenerating baseline paths.
+- Keep provenance in `references/source-index-<runtime-reference-file>.md`; match the owning runtime filename and H1.
+- Put unique `- [Official title](public URL)` entries without URL fragments under `## Documentation`. Under `## Source Code`, put each unique Gradle-checkout-relative path in an inline-code bullet; omit the section when no source path materially calibrated the owner.
+- Index only evidence that materially calibrated the runtime owner. When documentation or source evidence changes a runtime rule, update its source index in the same batch.
+- Treat release notes as discovery inputs. After accepting a change, index the durable current User Manual or API contract when available, plus the direct implementation and representative test when they establish the rule.
+- Default `docs.gradle.org` links to `current`. Pin a version only when that release establishes a material boundary or supports legacy diagnosis; make the reason visible in the link title or runtime guidance.
+- Trace delegating facades to the nearest implementation owner. When both implementation and representative test establish the rule, index both; a facade and test do not replace the code that performs the behavior.
+- The Gradle source-path baseline is final Gradle release `9.7.0`. Advance it only to a newer final release. Unreleased source paths may identify candidates but cannot enter runtime guidance, become durable entries, or replace the baseline until revalidated against a final Gradle release.
+- Run `node scripts/sort-reference-sections.mjs --check` from this skill directory to validate topology and entry shape, reject duplicates, and verify normalized-title and source-path ordering.

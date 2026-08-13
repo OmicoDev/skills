@@ -1,34 +1,37 @@
 ---
 name: maintain-gradle-skill
-description: Maintain the repository's Gradle agent skill artifact. Use when updating, calibrating, auditing, reorganizing, validating, or source-indexing `skills/gradle/**`, including Gradle skill runtime guidance, Gradle source/documentation calibration, compatibility snapshots, reference topology, validation gates, or maintenance scripts. Do not use for ordinary Gradle build troubleshooting in user projects.
+description: Maintain or review the repository's Gradle skill package under `skills/gradle/**` and `.agents/skills/maintain-gradle-skill/**`, including runtime guidance, source calibration, compatibility snapshots, reference topology, source indexes, validation, and maintenance scripts. Do not use for ordinary Gradle troubleshooting in user projects.
 ---
 
 # Maintain Gradle Skill
 
-Use this skill only when maintaining the Gradle skill artifact in this repository. For ordinary user-project Gradle troubleshooting, use the runtime `gradle` skill instead.
+Maintain the canonical Gradle runtime skill and its maintenance package. Use the runtime `gradle` skill for ordinary user-project troubleshooting.
 
 ## Surfaces
 
 - Runtime surface: `skills/gradle/**`. This is what future agents load while solving Gradle tasks.
 - Maintenance surface: this skill directory. It owns curation rules, source indexes, maintenance scripts, calibration policy, and validation gates.
-- Current-turn surface: conversation notes, temporary source-reading logs, one-off preferences, audit breadcrumbs, local paths, and edit rationale that are not durable skill behavior.
+- Discovery surface: conversation notes, temporary source-reading logs, audit breadcrumbs, local paths, and edit rationale that must not become runtime guidance.
+
+## Release Gate
+
+Promote behavior only after the component that carries it has a final release; Gradle-owned behavior requires a final Gradle release. Keep milestone, release-candidate, snapshot, nightly, untagged, and otherwise unreleased evidence out of runtime guidance and durable source indexes even when qualified. Use that evidence only to identify candidates, then re-evaluate them from final-release evidence.
 
 ## Maintenance References
 
 - Read [references/guidance-runtime-curation.md](references/guidance-runtime-curation.md) before editing, reorganizing, or reviewing runtime Gradle skill content and topology.
 - Read [references/guidance-source-indexes.md](references/guidance-source-indexes.md) whenever documentation or Gradle source materially calibrates runtime guidance.
-- Read [references/guidance-version-calibration.md](references/guidance-version-calibration.md) before promoting current behavior, compatibility facts, or source-derived claims that may differ across releases or carrying components.
-- Read [references/guidance-validation.md](references/guidance-validation.md) after every content, rename, merge, split, or delete batch and before reporting completion.
+- Read [references/guidance-version-calibration.md](references/guidance-version-calibration.md) before promoting version-sensitive behavior, compatibility facts, or source-derived claims.
+- Read [references/guidance-validation.md](references/guidance-validation.md) after every edit batch and before committing or reporting completion.
 
 ## Operating Loop
 
-1. Audit `skills/gradle/SKILL.md` and `skills/gradle/references/*.md` for topology, owner boundaries, naming, length pressure, repeated content, orphan references, stale filenames, and runtime/maintenance leakage.
-2. Read the runtime-curation reference before changing runtime guidance; when calibration is needed, also read the source-index and version-calibration references, choose one coherent upstream batch, and identify version boundaries before generalizing current evidence.
-3. Read deeply enough to extract model boundaries, symptom maps, command recipes, safe APIs, version boundaries, and validation choices.
-4. Re-evaluate the skill architecture after the batch; rename, merge, split, or delete references when routing becomes clearer.
-5. Update the owning source-index files for every documentation URL or source path that materially calibrates changed runtime guidance.
-6. Rewrite affected runtime files as concise owner guides, not pasted upstream notes or edit-history summaries.
-7. Read the validation reference, run its mechanical gates, then perform its fresh evidence review without assuming the draft is correct.
-8. Fix confirmed review findings and rerun affected gates; complete one clean final review, making it a fresh post-fix pass when fixes occurred, and only then report upstream topics read, files reshaped, durable rules added, version decisions, and remaining risks.
+1. Audit the runtime entry and references for owner boundaries, topology, naming, length pressure, duplication, orphans, stale routes, and maintenance leakage. When distilling upstream changes, inspect the requested upstream source and select one coherent candidate batch before deciding that no change qualifies.
+2. For every candidate, read the routed maintenance references and enough upstream evidence to identify the action-changing rule, runtime owner, carrying component, final-release boundary, and validation oracle.
+3. Classify each evidenced candidate as accepted, rejected with a reason, or blocked by named missing evidence or a required decision.
+4. Patch the smallest runtime owner for each accepted candidate. Update its source index in the same batch with only the evidence that materially calibrated the change.
+5. Reassess affected topology after the content change; rename, merge, split, or delete only when the resulting load boundary is clearer.
+6. Run the validation gate, perform a fresh whole-batch review, fix every confirmed finding, and rerun invalidated checks until one clean review remains.
+7. Report candidates read, accepted changes or the reason none qualified, files reshaped, version decisions, validation evidence, and residual risks.
 
-Complete at least one read -> refactor -> validate -> review -> report loop before stopping, unless missing context, missing source docs, or a required user decision blocks the work.
+Do not stop an upstream-distillation run before inspecting one coherent upstream batch, and do not leave a discovered candidate unclassified. A no-change run is valid only when every discovered candidate was rejected or blocked with explicit evidence.
