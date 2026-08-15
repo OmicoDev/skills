@@ -8,7 +8,12 @@ const scriptFile = fileURLToPath(import.meta.url);
 const scriptDir = path.dirname(scriptFile);
 const sourceIndexPrefix = "source-index-";
 const guidancePrefix = "guidance-";
-const allowedReferencePrefixes = [guidancePrefix, sourceIndexPrefix];
+const protocolPrefix = "protocol-";
+const allowedReferencePrefixes = [
+  guidancePrefix,
+  protocolPrefix,
+  sourceIndexPrefix,
+];
 
 const sectionSpecs = [
   {
@@ -129,7 +134,7 @@ function findInvalidReferenceNames({ referenceFiles }) {
   }
 
   return [
-    `- Maintenance references must use the ${guidancePrefix} or ${sourceIndexPrefix} prefix: ${formatFileList(invalidFiles)}`,
+    `- Maintenance references must use the ${guidancePrefix}, ${protocolPrefix}, or ${sourceIndexPrefix} prefix: ${formatFileList(invalidFiles)}`,
   ];
 }
 
