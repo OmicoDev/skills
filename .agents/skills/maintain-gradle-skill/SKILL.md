@@ -17,6 +17,10 @@ Maintain the canonical Gradle runtime skill and its maintenance package. Use the
 
 Promote behavior only after the component that carries it has a final release; Gradle-owned behavior requires a final Gradle release. Keep milestone, release-candidate, snapshot, nightly, untagged, and otherwise unreleased evidence out of runtime guidance and durable source indexes even when qualified. Use that evidence only to identify candidates, then re-evaluate them from final-release evidence.
 
+## Distillation Coverage
+
+Recurring upstream distillation must complete independent delta and published-owner lanes. Read [references/protocol-distillation-coverage.md](references/protocol-distillation-coverage.md) before selecting their coverage, declaring no change, advancing the owner cursor, or claiming whole-owner semantic freshness.
+
 ## Maintenance References
 
 - Read [references/guidance-runtime-curation.md](references/guidance-runtime-curation.md) before editing, reorganizing, or reviewing runtime Gradle skill content and topology.
@@ -26,12 +30,12 @@ Promote behavior only after the component that carries it has a final release; G
 
 ## Operating Loop
 
-1. Audit the runtime entry and references for owner boundaries, topology, naming, length pressure, duplication, orphans, stale routes, and maintenance leakage. When distilling upstream changes, inspect the requested upstream source and select one coherent candidate batch before deciding that no change qualifies.
+1. Audit the runtime entry and references for owner boundaries, topology, naming, length pressure, duplication, orphans, stale routes, and maintenance leakage. For recurring upstream distillation, complete both coverage lanes before deciding that no change qualifies.
 2. For every candidate, read the routed maintenance references and enough upstream evidence to identify the action-changing rule, runtime owner, carrying component, final-release boundary, and validation oracle.
 3. Classify each evidenced candidate as accepted, rejected with a reason, or blocked by named missing evidence or a required decision.
 4. Patch the smallest runtime owner for each accepted candidate. Update its source index in the same batch with only the evidence that materially calibrated the change.
 5. Reassess affected topology after the content change; rename, merge, split, or delete only when the resulting load boundary is clearer.
 6. Run the validation gate, perform a fresh whole-batch review, fix every confirmed finding, and rerun invalidated checks until one clean review remains.
-7. Report candidates read, accepted changes or the reason none qualified, files reshaped, version decisions, validation evidence, and residual risks.
+7. Report candidates read, accepted changes or the reason none qualified, files reshaped, version decisions, validation evidence, and residual risks. When the published-owner lane ran, also report its owner, claim dispositions, and next-owner cursor.
 
-Do not stop an upstream-distillation run before inspecting one coherent upstream batch, and do not leave a discovered candidate unclassified. A no-change run is valid only when every discovered candidate was rejected or blocked with explicit evidence.
+Do not leave a discovered candidate unclassified. A no-change run is valid only when its required coverage lanes are complete and every discovered candidate was rejected or blocked with explicit evidence.
