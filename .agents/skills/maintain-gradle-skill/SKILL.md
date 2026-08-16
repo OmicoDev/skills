@@ -15,7 +15,7 @@ Maintain the canonical Gradle runtime skill and its maintenance package. Use the
 
 ## Release Gate
 
-Promote behavior only after the component that carries it has a final release; Gradle-owned behavior requires a final Gradle release. Keep milestone, release-candidate, snapshot, nightly, untagged, and otherwise unreleased evidence out of runtime guidance and durable source indexes even when qualified. Use that evidence only to identify candidates, then re-evaluate them from final-release evidence.
+Promote behavior only after the component that carries it has a final release; Gradle-owned behavior requires a final Gradle release. Keep milestone, release-candidate, snapshot, nightly, untagged, and otherwise unreleased evidence out of runtime guidance and durable source indexes even when qualified. A final release's deprecation contract may retain a planned future failure or removal when it changes current migration action: bind the plan to the released warning, label the future behavior as planned rather than observed, and re-evaluate it when the target release becomes final. This exception does not admit evidence from an unreleased target. Use all other unreleased evidence only to identify candidates, then re-evaluate them from final-release evidence.
 
 ## Distillation Coverage
 

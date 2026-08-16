@@ -12,7 +12,7 @@ Report inventory and every failure for the completed batch:
 - Link and topology failures: broken internal Markdown links and orphaned references, where an orphan is any `skills/gradle/references/*.md` file not reachable from `skills/gradle/SKILL.md` through Markdown links.
 - Rename/delete failures: residual mentions of renamed or deleted filenames.
 - Source-index failures: missing source-index entries for documentation URLs or source paths that materially calibrated runtime changes in the batch.
-- Version-boundary failures: a Release Gate violation; final-release evidence generalized beyond its verified versions; a version-sensitive rule missing its carrying component or material qualifier; or an introduction, change, or removal claim without tagged or versioned final-release evidence from that component.
+- Version-boundary failures: a Release Gate violation; final-release evidence generalized beyond its verified versions; a version-sensitive rule missing its carrying component or material qualifier; a planned deprecation target presented as observed behavior or detached from its final-release contract; or an introduction, change, or removal claim without tagged or versioned final-release evidence from that component.
 - Surface failures: runtime files that contain maintenance provenance, raw calibration notes, machine-local paths, upstream reading logs, or artifact-history phrasing instead of portable Gradle task guidance.
 - Markdown policy failures for the edited surface.
 
