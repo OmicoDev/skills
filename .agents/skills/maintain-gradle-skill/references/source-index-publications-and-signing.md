@@ -13,6 +13,7 @@
 
 ## Source Code
 
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/projectmodule/DefaultProjectDependencyPublicationResolver.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/repositories/resolver/ExternalResourceResolver.java`
 - `platforms/software/ivy/src/integTest/groovy/org/gradle/api/publish/ivy/IvyPublishJavaIntegTest.groovy`
 - `platforms/software/maven/src/integTest/groovy/org/gradle/api/publish/maven/AbstractMavenPublishJavaIntegTest.groovy`

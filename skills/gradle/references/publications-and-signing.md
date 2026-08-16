@@ -17,7 +17,7 @@ Read this when: Maven/Ivy publishing, Gradle Module Metadata, signing, publicati
 ## Metadata Checks
 
 - Verify `group`, artifact ID, version, packaging, dependencies, variants, and capabilities before release.
-- If a published project depends on another project, ensure the target project also has a publication; Gradle 10 no longer silently publishes dependency coordinates inferred from an unpublished project's `group`, name, and `version`.
+- If a published project depends on another project, ensure the target project also has a publication. Gradle 9.3+ warns when it must infer dependency coordinates from an unpublished project's `group`, name, and `version`; its published deprecation contract plans to make this a build failure in Gradle 10. Treat the warning as broken-publication evidence now, and verify the final Gradle 10 behavior before relying on the exact failure.
 - Verify source/javadoc artifacts and Gradle Module Metadata when the target repository or consumers rely on them.
 - Treat Gradle Module Metadata publication warnings as consumer-compatibility evidence; suppress them only after naming the lost semantics and deciding Maven/Ivy degraded metadata is acceptable.
 - Gradle Module Metadata validates unique variant names, at least one attribute per variant, no duplicate attribute/capability sets, and dependency version information across dependency-bearing variants.
