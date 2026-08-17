@@ -8,6 +8,8 @@
 - [Build cache performance](https://docs.gradle.org/current/userguide/build_cache_performance.html)
 - [BuildCacheEntryWriter API](https://docs.gradle.org/current/javadoc/org/gradle/caching/BuildCacheEntryWriter.html)
 - [HTTP Build Cache DSL](https://docs.gradle.org/current/dsl/org.gradle.caching.http.HttpBuildCache.html)
+- [Upgrading from Gradle 4.x to 5.0](https://docs.gradle.org/current/userguide/upgrading_version_4.html)
+- [Upgrading from Gradle 5.x to 6.0](https://docs.gradle.org/current/userguide/upgrading_version_5.html)
 - [Use cases for the build cache](https://docs.gradle.org/current/userguide/build_cache_use_cases.html)
 
 ## Source Code
@@ -15,6 +17,7 @@
 - `platforms/core-execution/build-cache-core/src/integTest/groovy/org/gradle/caching/configuration/internal/BuildCacheCompositeConfigurationIntegrationTest.groovy`
 - `platforms/core-execution/build-cache-core/src/integTest/groovy/org/gradle/caching/configuration/internal/BuildCacheConfigurationIntegrationTest.groovy`
 - `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/configuration/internal/DefaultBuildCacheConfiguration.java`
+- `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/internal/controller/impl/LifecycleAwareBuildCacheControllerFactory.java`
 - `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/internal/services/AbstractBuildCacheControllerFactory.java`
 - `platforms/core-execution/build-cache-core/src/main/java/org/gradle/caching/internal/services/DefaultBuildCacheControllerFactory.java`
 - `platforms/core-execution/build-cache-http/src/integTest/groovy/org/gradle/caching/http/internal/HttpBuildCacheServiceErrorHandlingIntegrationTest.groovy`
@@ -41,3 +44,4 @@
 - `platforms/core-execution/build-cache/src/test/groovy/org/gradle/caching/internal/controller/service/StoreTargetTest.groovy`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/BuildCacheStep.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CacheTaskArchiveErrorIntegrationTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/initialization/RootBuildCacheControllerSettingsProcessor.java`
