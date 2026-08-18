@@ -20,17 +20,17 @@ Read this when: the Gradle client or daemon, daemon JVM selection, Gradle user h
 ## Runtime Boundaries
 
 - CLI clients, wrapper scripts, and Tooling API clients locate or start a compatible daemon, send one build request, and stream logs, events, models, and results; the daemon hosts build logic, creates task graphs, and starts worker processes for daemon-owned work.
-- Gradle reuses an existing daemon only when Gradle version, Java home/version, JVM arguments, JVM attributes, and immutable JVM properties match exactly. Changing `org.gradle.jvmargs`, `org.gradle.java.home`, Daemon JVM criteria, locale, file encoding, temporary directory, or SSL store system properties can intentionally create another daemon.
+- Gradle reuses an existing daemon only when Gradle version, Java home/version, JVM arguments, JVM attributes, immutable JVM properties, and process priority match exactly. Changing `org.gradle.jvmargs`, `org.gradle.java.home`, `org.gradle.priority`, Daemon JVM criteria, locale, file encoding, temporary directory, or SSL store system properties can intentionally create another daemon.
 - Worker processes do not own settings, project topology, dependency policy, or task graph construction.
 - Debug daemon trouble by naming the failing runtime first: client launch, wrapper distribution download, Tooling API connection, daemon execution, or worker process work.
 - `gradle --status` only reports daemons for the same Gradle version as the command, and `gradle --stop` only stops daemons started with that Gradle version. Use JDK tools such as `jps` when investigating daemons across Gradle versions.
 - Idle timeout and low-memory daemon exits are normal lifecycle events; confirm daemon logs before treating a disappeared daemon as a crash.
 - The client JVM comes from the launcher environment such as `JAVA_HOME`, `java` on `PATH`, or the IDE; Gradle distributions do not embed Java, and Daemon JVM toolchains do not remove the prerequisite needed to start the wrapper or client.
-- The daemon JVM comes from checked-in Daemon JVM criteria, Tooling API requests, `org.gradle.java.home`, or the launcher fallback. `gradle/gradle-daemon-jvm.properties` takes precedence over `JAVA_HOME` and `org.gradle.java.home` for the build it belongs to.
-- Treat `./gradlew updateDaemonJvm --jvm-version <version>` as a mutating runtime-policy command like `wrapper`. Pass explicit version, vendor, native-image, and platform/URL choices when committing shared policy; running without arguments can seed criteria from the current daemon JVM when no criteria file exists.
+- The daemon JVM comes from Tooling API requests, `org.gradle.java.home`, or the launcher fallback. On Gradle 8.8+, checked-in `gradle/gradle-daemon-jvm.properties` criteria can select it and take precedence over `JAVA_HOME` and `org.gradle.java.home` for the build they belong to.
+- On Gradle 8.8+, treat `./gradlew updateDaemonJvm --jvm-version <version>` as a mutating runtime-policy command like `wrapper`. Pin the version and explicitly configure each vendor, native-image, or platform/URL dimension the shared policy relies on; running without arguments can seed criteria from the current daemon JVM when no criteria file exists.
 - `updateDaemonJvm --jvm-version` can write any Java 8+ language version accepted as daemon toolchain criteria, including future versions; before committing it, cross-check [compatibility-java.md](compatibility-java.md) for the wrapper's runtime column and prove daemon startup with the generated file.
 - Run and inspect `updateDaemonJvm` from the root project; it writes root-scoped `gradle/gradle-daemon-jvm.properties`, so `:sub:updateDaemonJvm` being absent is expected rather than a subproject task registration bug.
-- Daemon JVM criteria can include version, recognized or exact-match vendor, native-image capability, and platform download URLs. Use `./gradlew help --task updateDaemonJvm` to inspect accepted vendor aliases before committing a vendor-specific policy.
+- `updateDaemonJvm` supports vendor criteria on Gradle 8.10+, platform download URLs on 8.13+, and native-image capability on 8.14+. Unrecognized vendor strings use exact matching; run `./gradlew help --task updateDaemonJvm` to inspect recognized aliases before committing vendor-specific policy.
 - Generating Daemon JVM platform URLs requires configured toolchain download repositories unless `toolchainPlatforms` is cleared or explicit `toolchainDownloadUrls` are configured. Disabling `org.gradle.java.installations.auto-detect` or `auto-download` affects Daemon JVM resolution as well as project Java toolchains.
 - Daemon JVM criteria select the JVM that runs Gradle; Java toolchains select JVMs used by project tasks. Do not fix compile/test toolchain failures by changing only daemon memory, and do not fix daemon startup failures by changing only `java.toolchain`.
 - `JAVA_HOME` is an environment default, not a reproducible project contract.
@@ -39,7 +39,7 @@ Read this when: the Gradle client or daemon, daemon JVM selection, Gradle user h
 - Treat `org.gradle.*` properties as Gradle runtime configuration, not build-logic feature flags; use project properties, provider-backed extension values, or typed conventions for build behavior users should control.
 - `org.gradle.jvmargs` configures the daemon JVM, not the lightweight client JVM; use `GRADLE_OPTS` only for client options or to pass `-Dorg.gradle.jvmargs=...`.
 - `--no-daemon` can still create a single-use daemon when the client JVM does not match the build's required daemon JVM or JVM args. To fully avoid a daemon, the client process must match those requirements.
-- User-home cache and daemon-log cleanup normally runs in the background when daemons stop or shut down; with `--no-daemon`, cleanup can run in the foreground after the build and explain extra post-build work.
+- User-home cache and daemon-log cleanup normally runs in the background between builds when using the daemon; with `--no-daemon`, it can run in the foreground after the build and explain extra post-build work.
 - Init scripts can mutate any build; check them when behavior differs by user, CI image, or machine.
 
 ## VFS And File Watching
@@ -62,17 +62,17 @@ Read this when: the Gradle client or daemon, daemon JVM selection, Gradle user h
 - Discovery order is repeated command-line `--init-script`/`-I`, `GRADLE_USER_HOME/init.gradle(.kts)`, alphabetical `GRADLE_USER_HOME/init.d/*.init.gradle(.kts)`, then alphabetical `GRADLE_HOME/init.d/*.init.gradle(.kts)`.
 - All discovered init scripts run; do not assume a later script replaces an earlier one.
 - Do not hide repository-specific build behavior in init scripts when a checked-in convention plugin can own it.
-- Configure Gradle user home cache cleanup and `CACHEDIR.TAG` cache marking only from `GRADLE_USER_HOME/init.d`; this intentionally couples the policy to that user home.
+- On Gradle 8.0+, configure Gradle user home cache cleanup only from `GRADLE_USER_HOME/init.d`; cache marking through `CACHEDIR.TAG` requires 8.1+. This intentionally couples both policies to that user home.
 - Treat init scripts as separate script classpaths: implementation classes must come from Gradle APIs or `initscript {}` repositories and `classpath` dependencies; target build `buildSrc`, plugin/dependency repositories, and project dependencies do not supply init script classes.
 - Init plugins target `Plugin<Gradle>`, not `Plugin<Project>` or `Plugin<Settings>`, and should interact with settings/projects through lifecycle callbacks.
 - `gradle.properties` values are available to settings/projects, not as direct properties on the `Gradle` receiver of an init script.
 - TestKit builds use isolated Gradle user homes, so machine/user init scripts may not explain TestKit behavior unless the test explicitly wires them.
-- Choose lifecycle hooks by phase: `beforeSettings` is init-script-only pre-settings wiring and has already fired inside `settings.gradle(.kts)`; `settingsEvaluated` and `projectsLoaded` own settings/topology follow-up; `gradle.lifecycle.beforeProject` and `afterProject` own isolated project defaults/checks; `projectsEvaluated` runs before task graph finalization. Review all global callbacks for configuration-cache and isolated-project impact.
+- Choose lifecycle hooks by phase: on Gradle 6.0+, `beforeSettings` is init-script-only pre-settings wiring and has already fired inside `settings.gradle(.kts)`; `settingsEvaluated` and `projectsLoaded` own settings/topology follow-up; on Gradle 8.8+, `gradle.lifecycle.beforeProject` and `afterProject` own isolated project defaults/checks; `projectsEvaluated` runs before task graph finalization. Review all global callbacks for configuration-cache and isolated-project impact.
 
 ## Runtime Review
 
 - Check whether CI and developers use the same daemon JVM criteria and Gradle user home policy.
-- When Gradle warns that multiple daemons may spawn because the Gradle JDK and `JAVA_HOME` differ, compare `JAVA_HOME`, IDE Gradle JDK, Daemon JVM criteria, `org.gradle.java.home`, and Java toolchain requests before changing memory or daemon flags.
+- When Gradle warns that multiple daemons may spawn because the Gradle JDK and `JAVA_HOME` differ, compare `JAVA_HOME`, IDE Gradle JDK, Daemon JVM criteria, `org.gradle.java.home`, `org.gradle.jvmargs`, and launcher JVM arguments before changing memory or daemon flags; project Java toolchains select task JVMs and do not repair this runtime mismatch.
 - Check whether Gradle user home, init scripts, CI-injected properties, or cache cleanup policy can explain behavior that is not reproducible from repository files alone.
 - Check daemon logs under `GRADLE_USER_HOME/daemon/<gradle-version>/` when client output hides startup, crash, or connection details.
 - Check whether the failure happens before settings are loaded, during daemon startup, during dependency resolution, or inside worker JVM work.
