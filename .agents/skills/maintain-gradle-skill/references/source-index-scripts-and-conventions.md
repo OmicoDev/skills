@@ -11,6 +11,7 @@
 - [Gradle Managed Types](https://docs.gradle.org/current/userguide/gradle_managed_types_intermediate.html)
 - [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html)
 - [Pre-compiled Script Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_precompiled.html)
+- [Pre-compiled Script Plugins](https://docs.gradle.org/current/userguide/pre_compiled_script_plugin_advanced.html)
 - [Properties and Providers](https://docs.gradle.org/current/userguide/properties_providers.html)
 - [Public Gradle APIs](https://docs.gradle.org/current/userguide/public_apis.html)
 - [Upgrading within Gradle 8.x.y](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
