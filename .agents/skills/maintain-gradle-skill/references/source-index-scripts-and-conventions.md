@@ -13,6 +13,7 @@
 - [Pre-compiled Script Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_precompiled.html)
 - [Properties and Providers](https://docs.gradle.org/current/userguide/properties_providers.html)
 - [Public Gradle APIs](https://docs.gradle.org/current/userguide/public_apis.html)
+- [Upgrading within Gradle 8.x.y](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Version Catalogs](https://docs.gradle.org/current/userguide/version_catalogs.html)
 - [Working with Plugins](https://docs.gradle.org/current/userguide/plugins_intermediate.html)
@@ -25,8 +26,21 @@
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/plugins/precompiled/PrecompiledScriptPluginAccessorsTest.kt`
 - `platforms/core-configuration/kotlin-dsl-provider-plugins/src/main/kotlin/org/gradle/kotlin/dsl/provider/plugins/precompiled/tasks/GeneratePrecompiledScriptPluginAccessors.kt`
 - `platforms/core-configuration/kotlin-dsl/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslDelegatedPropertiesDeprecationIntegrationTest.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ConfigurableFileCollectionExtensions.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ExtensionContainerExtensions.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ExtraPropertiesExtensions.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/NamedDomainObjectCollectionExtensions.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/NamedDomainObjectContainerExtensions.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ProjectExtensions.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/PropertyStateExtensions.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/SettingsExtensions.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/TaskContainerExtensions.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/precompile/v1/PrecompiledScriptTemplates.kt`
+- `platforms/core-configuration/model-core/src/integTest/groovy/org/gradle/internal/extensibility/DeprecatedBooleanPropertyIntegrationTest.groovy`
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/extensibility/ExtensibleDynamicObject.java`
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/instantiation/generator/AbstractClassGenerator.java`
+- `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/metaobject/BeanDynamicObject.java`
+- `platforms/core-configuration/model-reflect/src/main/java/org/gradle/internal/reflect/annotations/impl/DefaultTypeAnnotationMetadataStore.java`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidInternal-avoid/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidInternal-do/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/useConventionPlugins-avoid/kotlin/project-a/build.gradle.kts`
