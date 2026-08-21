@@ -7,6 +7,7 @@
 - [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
 - [Controlling Task Execution](https://docs.gradle.org/current/userguide/controlling_task_execution.html)
 - [Organizing Tasks](https://docs.gradle.org/current/userguide/organizing_tasks.html)
+- [Understanding Tasks](https://docs.gradle.org/current/userguide/more_about_tasks.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code
@@ -45,8 +46,11 @@
 - `subprojects/core/src/integTest/groovy/org/gradle/execution/taskgraph/ParallelTaskExecutionIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/TaskOptionsGenerator.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/TaskProvenanceUtil.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/AbstractOptionElement.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/BooleanOptionElement.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/MethodOptionElement.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/OptionReader.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/OptionValueNotationParserFactory.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/GradleBuild.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/StopActionException.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/VerificationException.java`
