@@ -14,7 +14,7 @@ Read this when: `sourceControl`, `gitRepository`, `vcsMappings`, `GitVersionCont
 - Declare source control in `settings.gradle(.kts)`, because it changes dependency resolution for the build tree.
 - Use `sourceControl { gitRepository(uri).producesModule("group:module") }` for a direct repository-to-module mapping.
 - Use `sourceControl.vcsMappings.withModule("group:module") { from(GitVersionControlSpec) { url = uri(...) } }` for exact-module mapping and `vcsMappings.all { details -> ... }` when the rule derives a repository from requested group or module data.
-- `producesModule` names only `group:name`; the requested version is matched against Git refs and the checked-out build's own `group`, `name`, version, and outgoing variants.
+- `producesModule` names only `group:name`. The requested version or branch first selects a Git ref; Gradle then locates a checked-out project with matching `group` and name and resolves that project's declared version and outgoing variants. The project version does not need to equal the tag or branch name.
 - Set the repository `rootDir` only when the Gradle build root is below the Git repository root.
 - Root-build source-control mappings can disambiguate conflicting mappings contributed by nested source dependency builds.
 
@@ -27,7 +27,7 @@ Read this when: `sourceControl`, `gitRepository`, `vcsMappings`, `GitVersionCont
 
 ## Checkout Cache
 
-- Gradle stores source dependency working trees under the build tree's `.gradle/vcs-1` cache, keyed by repository identity and selected revision.
+- Gradle stores source dependency working trees under the project cache directory, keyed by repository identity and selected revision. The default location is the root build's `.gradle/vcs-1`; `--project-cache-dir` relocates it.
 - Existing source dependency working trees are reused but hard-reset to the selected revision; do not edit them as workspaces.
 - Git submodules are cloned, fetched, updated, and reset recursively when the source dependency is populated or reused.
 - `--offline` can use a previously resolved checkout, but it fails when the requested source dependency has no cached working tree.
@@ -47,7 +47,7 @@ Read this when: `sourceControl`, `gitRepository`, `vcsMappings`, `GitVersionCont
 ./gradlew <task> --offline
 ```
 
-- If resolution cannot find a version, compare requested selector, tags, branch selectors, and the source build's declared version before changing repositories.
+- If resolution cannot find a version, compare the requested selector with Git tags and branch refs. If checkout succeeds but Gradle says the repository did not publish the dependency, compare the mapped `group:name` with the checked-out projects; inspect the project version separately when the resolved graph reports an unexpected version.
 - If the checked-out source build is invisible through `gradle.includedBuilds`, that is expected; diagnose it as a source dependency build, not a composite include.
 - If a source dependency build tries to define included builds, route to source dependency limitations before refactoring ordinary composite build topology.
-- If an external edit inside `.gradle/vcs-1` disappears on the next build, treat that as checkout reset behavior rather than a task or file-watching bug.
+- If an external edit inside the VCS checkout cache (by default `.gradle/vcs-1`) disappears on the next build, treat that as checkout reset behavior rather than a task or file-watching bug.
