@@ -19,6 +19,7 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 - Apply plugins with the `plugins {}` block ([scripts-and-conventions.md](scripts-and-conventions.md)): replace imperative plugin application only when classpath and ordering stay valid.
 - Do not rely on plugin application order ([plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md)): apply mandatory plugins explicitly and use plugin callbacks for optional integrations.
 - Avoid Gradle internal APIs ([scripts-and-conventions.md](scripts-and-conventions.md), [plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md)): move to public APIs before changing behavior.
+- Evaluate incubating APIs deliberately ([plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md), [upgrade-strategy.md](upgrade-strategy.md)): identify the introducing Gradle version, assess maturity, and budget for minor-release changes before adoption.
 - Put build flags in `gradle.properties` ([runtime-and-structure.md](runtime-and-structure.md)): centralize flags instead of scattering command-line or script defaults.
 - Name the root project ([project-topology-and-build-logic.md](project-topology-and-build-logic.md)): set stable project identity in settings.
 - Keep `gradle.properties` out of subprojects ([runtime-and-structure.md](runtime-and-structure.md)): move shared properties to the root, settings, convention plugins, or typed extensions.
@@ -71,6 +72,8 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 
 - Validate the Gradle distribution checksum ([ci-and-security.md](ci-and-security.md)): keep wrapper downloads pinned and verified.
 - Validate the wrapper on every upgrade ([ci-and-security.md](ci-and-security.md)): review wrapper scripts and JAR changes with the wrapper version bump.
+- Do not run untrusted wrappers or build logic directly ([ci-and-security.md](ci-and-security.md), [wrapper-and-distributions.md](wrapper-and-distributions.md)): review wrapper and build scripts before CLI or IDE execution, validate the wrapper, or isolate the checkout.
+- Require byte-for-byte reproducible release outputs ([ci-and-security.md](ci-and-security.md), [file-operations-and-archives.md](file-operations-and-archives.md), [jvm-compilation-and-toolchains.md](jvm-compilation-and-toolchains.md)): pin toolchains, retain Gradle 9.0+ reproducible archive defaults or configure equivalent archive settings explicitly on older versions, and compare clean-build hashes across environments.
 
 ### Testing
 

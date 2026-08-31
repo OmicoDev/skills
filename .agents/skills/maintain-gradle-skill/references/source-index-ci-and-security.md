@@ -11,6 +11,8 @@
 - [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
 - [Publishing Plugins to the Gradle Plugin Portal](https://docs.gradle.org/current/userguide/publishing_gradle_plugins.html)
 - [Securing Gradle Builds](https://docs.gradle.org/current/userguide/security.html)
+- [Setup Gradle Action (v6.1.0)](https://github.com/gradle/actions/blob/v6.1.0/docs/setup-gradle.md)
+- [Setup Gradle Action (v6.3.0)](https://github.com/gradle/actions/blob/v6.3.0/docs/setup-gradle.md)
 - [Supported Repository Protocols](https://docs.gradle.org/current/userguide/supported_repository_protocols.html)
 - [The Maven Publish Plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
 - [Use cases for the build cache](https://docs.gradle.org/current/userguide/build_cache_use_cases.html)
@@ -32,3 +34,4 @@
 - `platforms/core-runtime/wrapper-shared/src/test/groovy/org/gradle/util/internal/WrapperCredentialsTest.groovy`
 - `platforms/core-runtime/wrapper-shared/src/test/groovy/org/gradle/wrapper/InstallTest.groovy`
 - `platforms/core-runtime/wrapper-shared/src/test/groovy/org/gradle/wrapper/WrapperExecutorTest.groovy`
+- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_security.adoc`

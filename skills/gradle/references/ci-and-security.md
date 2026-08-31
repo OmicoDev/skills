@@ -34,7 +34,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Invalidate caches when wrapper, verification metadata, repository policy, or major plugin versions change.
 - Avoid sharing Gradle user home caches between unrelated repositories.
 - Let only trusted branches, jobs, or one primary matrix leg write shared Gradle user home caches; feature branches and secondary matrix legs should usually read existing cache entries without updating them.
-- On GitHub Actions, model that policy with `setup-gradle` cache modes: read-only for feature branches or non-primary matrix legs, write-only only for deliberate cache seeding, and disabled when cache contents are not trusted.
+- On GitHub Actions, model that policy with `setup-gradle` cache modes: read-only for feature branches or non-primary matrix legs, write-only only for deliberate cache seeding, and disabled when cache contents are not trusted. In `setup-gradle` v6, write-only mode requires the enhanced cache provider; the basic provider does not support it.
 - Prefer dependency-cache seeding or read-only dependency caches for ephemeral containers instead of sharing one mutable Gradle user home concurrently.
 - On archive-upload cache systems, prefer wrapper-only or read-only dependency caches on shared ephemeral runners; reserve full Gradle User Home caches for dedicated/self-hosted runners or persistent volumes where upload/download cost is lower than reuse.
 - When a CI cache can only save workspace paths, relocate `GRADLE_USER_HOME` under the checked-out workspace deliberately and exclude secrets, project `build/` outputs, and mutable publications from that cache.
@@ -75,6 +75,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 
 - Treat supply-chain hardening as three separate checks: dependency artifacts/plugins, repository source policy, and the Gradle runtime/wrapper.
 - Treat Gradle plugins as executable dependencies: pin versions, resolve them from scoped plugin repositories, and review plugin upgrades with the same care as library or wrapper upgrades.
+- Treat an untrusted checkout as executable code. Before running its wrapper or triggering IDE sync, review wrapper and build scripts, validate the wrapper JAR and distribution URL, or use an isolated environment that cannot reach host files and secrets.
 - Wrapper verification protects the Gradle runtime distribution and wrapper JAR.
 - `distributionSha256Sum` protects the downloaded distribution ZIP; wrapper JAR validation protects the checked-in launcher JAR. Run both checks when wrapper files change.
 - Dependency verification protects downloaded dependencies.
@@ -82,6 +83,7 @@ Read this when: CI execution, credentials, repository hardening, dependency trus
 - Lockfiles improve reproducibility but do not prove artifact trust.
 - Configuration cache may serialize configuration state; keep secrets modeled according to Gradle guidance.
 - Remote build-cache outputs are reusable build products, not dependency artifacts; decide push trust, pull trust, and provenance before release or audit builds.
+- Require release outputs to be byte-for-byte reproducible where consumers rely on hashes or provenance: pin toolchains and other output-affecting inputs, retain deterministic archive settings, and compare clean builds across representative environments.
 
 ## Release Gate Checks
 
