@@ -24,7 +24,6 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 - Declare every behavior-affecting input and output.
 - Use path sensitivity and normalization for file inputs. If file location is not part of task behavior, use `@PathSensitive(NONE)` for individual file inputs and `@PathSensitive(RELATIVE)` for directory/tree inputs; missing path sensitivity defaults toward absolute paths and hurts relocatability.
-- Use `@Classpath` or runtime classpath normalization for classpaths where appropriate.
 - Use `@Internal` only when the value truly does not affect outputs.
 - Mark tasks cacheable only after outputs are deterministic and relocatable enough for the intended cache.
 - Use `@UntrackedTask(because = "...")` or `Task.doNotTrackState(...)` only when Gradle cannot safely snapshot task state, such as remote state, unreadable files, or an external tool that owns up-to-date checks; untracked tasks are never up-to-date, never cached, and cannot use `InputChanges`.
@@ -36,8 +35,8 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 - Use `@Input` for scalar values affecting work, `@InputFile`/`@InputDirectory`/`@InputFiles` for file inputs, and `@OutputFile`/`@OutputDirectory` for produced files.
 - Use `@OutputFiles` or `@OutputDirectories` only when the task really owns a collection of outputs; avoid `FileTree` outputs because they disable caching, and prefer one file/directory property for a single product.
-- Use `@Classpath` for JVM classpaths where order and ABI matter.
-- Use `@CompileClasspath` for Java compilation classpaths when appropriate.
+- Use `@Classpath` for runtime classpaths: classpath entry order and semantic content, including resources, affect the fingerprint, while archive timestamps and entry order do not.
+- Use `@CompileClasspath` for Java compile classpaths when only ABI-relevant class changes should invalidate work; resources and implementation-only changes are ignored.
 - Use `@LocalState` for task-owned state that should not be cached, `@Destroys` for destructive tasks, and `@Nested` for nested beans that expose their own annotated properties.
 - Use `@SkipWhenEmpty` or `@Incremental` on file inputs whose changes will be queried through `InputChanges`.
 - `@InputDirectory` already ignores empty directories; add `@IgnoreEmptyDirectories` to `@InputFiles`, `@SkipWhenEmpty`, or transform inputs when directory entries themselves do not affect the output.
@@ -51,7 +50,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 
 - Use incremental inputs when processing changed files is materially cheaper.
 - On Gradle 5.4+, a task may have only one incremental `@TaskAction`; that action takes a single `InputChanges` parameter, and at least one file input must use `@Incremental` or `@SkipWhenEmpty`.
-- On Gradle 6.0+, incremental task actions require declared outputs or an `outputs.upToDateWhen(...)` predicate; otherwise Gradle rejects the task because it lacks an execution-history boundary for `InputChanges`. Declare every produced file or directory so Gradle owns cleanup, up-to-date checks, and cache behavior.
+- Declare every produced file or directory so Gradle owns cleanup, up-to-date checks, and cache behavior. Gradle 5.4 through 5.6 permits `InputChanges` without outputs, although Gradle 5.6 deprecates that shape; Gradle 6.0 through 7.6 rejects it unless the task declares outputs or an `outputs.upToDateWhen(...)` predicate. Gradle 8.0+ permits it again and can still provide incremental changes from execution history, but a task without outputs is not up-to-date by default.
 - `@SkipWhenEmpty` implies `@Incremental` and additionally makes the annotated properties source inputs. When all such inputs are empty, Gradle skips the task actions and cleans previous owned outputs; no cleanup work reports `NO-SOURCE`, while deleting stale outputs can count as non-incremental execution. Use plain `@Incremental` when emptiness alone must not skip the action.
 - Query changes from stable file property instances such as `RegularFileProperty`, `DirectoryProperty`, or `ConfigurableFileCollection`.
 - Query only the exact properties marked `@Incremental` or `@SkipWhenEmpty`; asking `getFileChanges(...)` about another file input fails instead of producing a full change set.
@@ -77,7 +76,7 @@ Read this when: custom task implementation, inputs/outputs, cacheability, valida
 - `@ServiceReference` on a non-build-service property: make the referenced type implement `BuildService`, or replace the annotation with `@Internal` and assign the value explicitly when it is not a shared build service.
 - Implicit dependency validation usually means a consumer used a raw file path such as `archivePath` instead of a provider-backed producer output such as `archiveFile`, a task provider, or the producing task itself.
 - Missing reason for not caching: use `@CacheableTask` only when safe, otherwise add `@DisableCachingByDefault(because = "...")`.
-- Unsupported value type: map Gradle resolution results, `java.net.URL`, nested maps, lambdas, classloader-owned implementation objects, and nested objects to stable supported input types before exposing them to tasks. Prefer `URI` over `URL`; keep nested map keys to `String`, `Integer`, or enum values.
+- Unsupported value or implementation type: split `ResolvedArtifactResult` into supported metadata inputs and input files, prefer `URI` over `URL`, and replace non-serializable lambdas or implementations loaded by classloaders unknown to Gradle. For `@Nested`, use a custom type whose behavior-affecting properties are annotated; Java SE types, Kotlin standard-library types, and Groovy `GString` are not nested models. Keep nested map keys to `String`, `Integer`, or enum values.
 - Disallowed Gradle model object in task action: extract the needed scalar, file collection, provider, or service during configuration and expose it as a task property.
 - Direct access to another task instance: replace it with declared inputs, outputs, `TaskProvider`, or provider values.
 

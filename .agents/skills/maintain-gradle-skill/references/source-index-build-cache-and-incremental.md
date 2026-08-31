@@ -7,6 +7,7 @@
 - [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html)
 - [Build cache performance](https://docs.gradle.org/current/userguide/build_cache_performance.html)
 - [Debugging and diagnosing Build Cache misses](https://docs.gradle.org/current/userguide/build_cache_debugging.html)
+- [DisableCachingByDefault](https://docs.gradle.org/current/javadoc/org/gradle/work/DisableCachingByDefault.html)
 - [Important concepts](https://docs.gradle.org/current/userguide/build_cache_concepts.html)
 - [Incremental Build](https://docs.gradle.org/current/userguide/incremental_build.html)
 - [Solving common problems](https://docs.gradle.org/current/userguide/common_caching_problems.html)
@@ -46,6 +47,7 @@
 - `platforms/documentation/docs/src/snippets/best-practices/useCacheabilityAnnotations-do/kotlin/build.gradle.kts`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/LocalState.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
+- `subprojects/core-api/src/main/java/org/gradle/work/DisableCachingByDefault.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/changedetection/rules/OverlappingOutputsIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CachedCustomTaskExecutionIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CachedTaskExecutionIntegrationTest.groovy`

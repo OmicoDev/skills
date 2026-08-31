@@ -20,14 +20,14 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Read [remote-build-cache.md](remote-build-cache.md) for local/remote ordering, composite-build ownership, trusted push policy, HTTP transport, and remote failure isolation.
 - Combine local and remote caches intentionally: developer local cache helps branch switching and `git bisect`, while CI local cache can mirror remote entries and reduce network transfer.
 - Keep CI cache of Gradle user home separate from Gradle build cache policy.
-- Do not mark custom task types cacheable by default. Add `@CacheableTask` only when outputs are worth reusing and correctness is tested; use `@DisableCachingByDefault` with a reason otherwise.
+- Do not mark custom task types cacheable by default. Add `@CacheableTask` only when outputs are worth reusing and correctness is tested; on Gradle 7+, use `@DisableCachingByDefault` with a reason otherwise.
 
 ## Miss Triage
 
 - First ask whether the task is cacheable at all.
 - Locate the first executed cacheable task in a miss chain; later misses may be consequences of that earlier task.
 - Then compare task input fingerprints, output property names, Gradle version, Java/tool versions, environment inputs, and normalized paths.
-- When Gradle says caching is disabled, route by reason: no `cacheIf` or `@DisableCachingByDefault` is task-type policy; no outputs, file-tree outputs, untracked state, validation failures, non-cacheable inputs, and overlap are task modeling defects; unmet `cacheIf`/`doNotCacheIf` is instance policy.
+- On Gradle 7+, when Gradle says caching is disabled, route by reason: no `@CacheableTask` or `cacheIf` means caching was not enabled; `@DisableCachingByDefault` supplies an explicit task-type reason but an instance-level `cacheIf` can override it; no outputs, file-tree outputs, untracked state, validation failures, non-cacheable inputs, and overlap are task modeling defects; unmet `cacheIf`/`doNotCacheIf` is instance policy.
 - Cross-machine misses often come from absolute paths, generated metadata, timestamps, locale/time zone, line endings, or tool installation paths.
 - Overlapping outputs disable reliable cache/up-to-date reasoning. Give each task a distinct output location unless a built-in task type models sharing.
 - Pre-existing unmanaged files inside a declared output location count as output overlap evidence; move the task output to an empty task-owned location or model the external producer before expecting cache storage.
@@ -47,7 +47,7 @@ Read this when: task output caching, up-to-date checks, build-cache reuse, artif
 - Untracked tasks are always out of date, cannot use incremental `InputChanges`, and are not stored in or loaded from the build cache.
 - Untracked tasks also do not clean stale files from declared output locations; if output cleanup matters, model the state instead of opting out of tracking.
 - Use `@LocalState` for non-relocatable analysis or task-local caches only; Gradle removes local state when loading task outputs from the build cache, so required outputs must be declared as outputs.
-- Prefer `@CacheableTask` or `@DisableCachingByDefault` when cacheability is stable for a task type; use `outputs.cacheIf("...", spec)` or `outputs.doNotCacheIf("...", spec)` only when cacheability genuinely varies by task instance or execution context.
+- Prefer type-level cacheability annotations when policy is stable: `@CacheableTask`, plus `@DisableCachingByDefault` on Gradle 7+; use `outputs.cacheIf("...", spec)` or `outputs.doNotCacheIf("...", spec)` only when cacheability genuinely varies by task instance or execution context.
 - Prefer no cache for cheap copy/archive tasks unless their work is expensive enough and their inputs/outputs are modeled carefully.
 - Prefer artifact transforms for cacheable dependency artifact conversions; read [dependency-artifact-transforms.md](dependency-artifact-transforms.md) before modeling one as a task.
 
