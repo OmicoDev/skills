@@ -26,6 +26,7 @@
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r68/CompositeBuildTestLauncherCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r930/ResilientGradleBuildBuilderCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r940/ParallelActionExecutionCrossVersionSpec.groovy`
+- `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r970/FetchBuildActionCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/BuildController.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/BuildLauncher.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/FetchModelResult.java`
@@ -39,3 +40,6 @@
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/model/kotlin/dsl/KotlinDslModelsParameters.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/model/kotlin/dsl/KotlinDslScriptsModel.java`
 - `subprojects/core-api/src/main/java/org/gradle/tooling/provider/model/ToolingModelBuilderRegistry.java`
+- `subprojects/core/src/main/java/org/gradle/internal/build/ResilientBuildToolingModelController.java`
+- `subprojects/core/src/main/java/org/gradle/internal/buildtree/DefaultBuildTreeLifecycleController.java`
+- `subprojects/core/src/main/java/org/gradle/internal/buildtree/ResilientBuildTreeFailureCollector.java`
