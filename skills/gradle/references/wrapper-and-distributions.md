@@ -14,8 +14,8 @@ Read this when: wrapper files, wrapper generation or upgrades, distribution sele
 
 - The wrapper is the Gradle version of record. Prefer wrapper commands over globally installed `gradle`.
 - Treat wrapper scripts and `gradle-wrapper.jar` as pre-build executable trust roots; dependency verification, repository policy, and build logic safeguards do not run before them.
-- If wrapper files are missing, generate them with a trusted installed Gradle or trusted Gradle distribution by running the `wrapper` task in the project; do not download or copy unaudited wrapper scripts or JARs into the repository.
-- Upgrade with the `wrapper` task, not only by editing `distributionUrl`; run it once for properties and again when scripts/JAR should be refreshed.
+- If wrapper files are missing, generate them with a trusted installed Gradle or trusted Gradle distribution by running `gradle :wrapper`; do not download or copy unaudited wrapper scripts or JARs into the repository.
+- Upgrade with the checked-in wrapper's root-qualified `:wrapper` task, for example `./gradlew :wrapper`, not only by editing `distributionUrl`; run it once for properties and again when scripts/JAR should be refreshed. Gradle 9.7+ explicitly recommends the `:` qualification because the wrapper task is relevant only to the root project and direct root addressing avoids unnecessary project configuration under Configure on Demand and Isolated Projects.
 - Since Gradle 9, `gradle-wrapper.properties` requires `X.Y.Z` versions even when the `wrapper` task can resolve labels or major/minor selectors.
 - Use `-bin` distributions by default; choose `-all` only for offline or air-gapped source/docs needs, or when policy explicitly requires the larger distribution.
 - When build logic or help text needs the supported wrapper distribution types, read `Wrapper.DistributionType.values()` directly instead of deprecated `Wrapper.getAvailableDistributionTypes()`.
@@ -38,7 +38,7 @@ Read this when: wrapper files, wrapper generation or upgrades, distribution sele
 
 ## Wrapper Review
 
-- Treat `./gradlew wrapper --gradle-version <version>` as a mutating upgrade command. Review scripts, JAR, properties, URL validation, retry/timeout policy, checksums, and CI entrypoints together; a Wrapper JAR checksum matching a different Gradle version usually means properties changed without regenerating the JAR.
+- Treat `./gradlew :wrapper --gradle-version <version>` as a mutating upgrade command. Review scripts, JAR, properties, URL validation, retry/timeout policy, checksums, and CI entrypoints together; a Wrapper JAR checksum matching a different Gradle version usually means properties changed without regenerating the JAR.
 - Check whether the command uses the checked-in wrapper or a globally installed Gradle.
 - Check whether CI and developers use the same wrapper scripts, JAR, properties, and distribution checksum policy.
 - Check whether private wrapper credentials are host-scoped and kept in user/CI properties.

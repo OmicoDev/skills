@@ -14,8 +14,8 @@ Read this when: choosing Gradle commands, flags, log levels, reports, or evidenc
 Use the wrapper and the smallest useful command.
 
 - Runtime and topology: `./gradlew --version`, `./gradlew -q projects`; buildscript classpath: `./gradlew buildEnvironment`.
-- Task surface: `./gradlew tasks --all`, `./gradlew tasks --types`, `./gradlew tasks --provenance`, `./gradlew tasks --group <group>`, `./gradlew help --task <task>`, `./gradlew <task> --dry-run`, Gradle 9.1+: `./gradlew <task> --task-graph`.
-- Dependency evidence: `./gradlew dependencies --configuration <configuration>`, `./gradlew dependencyInsight --dependency <module> --configuration <configuration>`, `./gradlew outgoingVariants`, `./gradlew resolvableConfigurations`.
+- Task surface: `./gradlew tasks --all`, Gradle 5.1+: `./gradlew tasks --group <group>`, Gradle 7.4+: `./gradlew tasks --types`, Gradle 9.5+: `./gradlew tasks --provenance`, `./gradlew help --task <task>`, `./gradlew <task> --dry-run`, Gradle 9.1+: `./gradlew <task> --task-graph`.
+- Dependency evidence: `./gradlew dependencies --configuration <configuration>`, `./gradlew dependencyInsight --dependency <module> --configuration <configuration>`, Gradle 6.0+: `./gradlew outgoingVariants`, Gradle 7.5+: `./gradlew resolvableConfigurations`.
 - File-backed project reports: `dependencyReport`, `htmlDependencyReport`, `propertyReport`, `taskReport`, and `projectReport` require the `project-report` plugin and mirror command-line report content into files.
 - Migration and performance: `./gradlew help --warning-mode=all`, `./gradlew <task> --configuration-cache --configuration-cache-problems=warn`, `./gradlew <task> --scan`, `./gradlew <task> --profile`. Use `--scan` only when project policy permits uploading build metadata; otherwise use local reports.
 
@@ -26,7 +26,7 @@ Use the wrapper and the smallest useful command.
 - Add `--configuration-cache` to reproduce configuration-cache behavior.
 - Add `--configuration-cache-problems=warn` only to inventory blockers during migration; remove it from release gates.
 - Add `--continuous` only for an interactive command-line watch loop; read [continuous-builds.md](continuous-builds.md) for runtime requirements, triggering, cancellation, and miss/cycle diagnosis.
-- Add `--rerun` after one task when only that task should ignore up-to-date checks; add `--rerun-tasks` when the selected tasks and their dependencies should all rerun without deleting outputs like `clean` would.
+- On Gradle 7.6+, add `--rerun` after one task when only that task should ignore up-to-date checks; add `--rerun-tasks` when the selected tasks and their dependencies should all rerun without deleting outputs like `clean` would.
 - Add `--refresh-dependencies` only to test cache/repository hypotheses and `--offline` only to prove whether the cache already contains required modules; do not leave either as a fix.
 - Add `--write-locks`, `--update-locks`, or dependency verification flags only for deliberate lock/verification workflows; `--update-locks` implies `--write-locks`, and durable verification policy belongs in [dependency-verification.md](dependency-verification.md).
 - Add `--include-build <path>` only to reproduce a composite substitution or local replacement; route durable topology changes to [project-topology-and-build-logic.md](project-topology-and-build-logic.md).
@@ -35,23 +35,23 @@ Use the wrapper and the smallest useful command.
 - Use `--console=plain` when CI logs or copied output should contain no rich-console control sequences. On Gradle 9.6+, a non-empty `NO_COLOR` suppresses only color regardless of console mode while preserving emphasis, progress bars, and animations; do not treat it as a plain-console alias.
 - On Gradle 9.6+, use `--non-interactive` for one CI, script, or agent invocation, or set `org.gradle.console.interactive=false` as persistent build policy. Non-interactive mode selects prompt defaults instead of failing on every attempted prompt, so still pass explicit task choices when a default is unsafe or ambiguous.
 - Use `--task-graph` on Gradle 9.1+ when `--dry-run` is too weak and task dependency shape matters.
-- Leave the default Problems API HTML report enabled unless the artifact is unsafe for the environment; record the printed report path when problems appear.
+- On Gradle 8.11+, leave the default Problems API HTML report enabled unless the artifact is unsafe for the environment; record the printed report path when problems appear.
 - Put task-specific options immediately after the task that owns them. If a task option conflicts with a Gradle built-in option, use the `--` delimiter before the task path.
 
 ## Evidence Patterns
 
-- For task failures, keep task outcome, task provenance, full task path, and task type from `help --task`, `tasks --provenance`, or the failure message; verification failures such as tests can omit provenance from the failure text.
-- For task public-surface surprises, use `tasks --types --provenance --all` to separate task type from registration owner, then `help --task <path-or-selector>` to inspect matching paths, task options, available option values, descriptions, and groups.
+- For task failures, keep task outcome, full task path, and task type. On Gradle 9.5+, also keep task provenance from `help --task`, `tasks --provenance`, or the failure message; verification failures such as tests can omit provenance from the failure text.
+- For task public-surface surprises, use `tasks --types --all` on Gradle 7.4-9.4 to identify task types, then inspect applied plugins and build logic for the registration owner. On Gradle 9.5+, use `tasks --types --provenance --all` to separate task type from registration owner. Follow with `help --task <path-or-selector>` to inspect matching paths, task options, available option values, descriptions, and groups.
 - For task selection surprises, keep the start directory, exact task token, whether it was a full path or selector, and any name-abbreviation expansion shown with `--info`.
 - For task graph surprises, prefer Gradle 9.1+ `--task-graph` when included-build edges, repeated subtrees, task types, or exact dependency parents matter more than the flat `--dry-run` execution list.
 - For dependency selection, keep the configuration name. `runtimeClasspath` and `compileClasspath` can explain different selected versions.
 - Use `dependencies` for software configurations in the selected project and `buildEnvironment` for buildscript/plugin classpath dependencies.
 - In dependency reports, `(*)` marks a repeated transitive subtree, `(c)` marks a dependency constraint, and `(n)` marks a non-resolvable dependency or configuration.
-- `dependencyInsight` explains one dependency in one configuration; preserve selection reasons such as `By conflict resolution`, `By constraint`, `By ancestor`, `Selected by rule`, `Forced`, or variant `Rejection` before choosing declaration, platform/constraint, rule, enforced platform, or variant owners. Use `--all-variants` when variant data matters and `--single-path` when path noise hides the selection owner.
+- `dependencyInsight` explains one dependency in one configuration; preserve selection reasons such as `By conflict resolution`, `By constraint`, `By ancestor`, `Selected by rule`, `Forced`, or variant `Rejection` before choosing declaration, platform/constraint, rule, enforced platform, or variant owners. On Gradle 7.5+, use `--all-variants` when variant data matters and `--single-path` when path noise hides the selection owner.
 - For variant failures, capture the requested attributes and every candidate variant Gradle prints before changing attributes.
 - For plugin resolution, capture plugin ID, version, plugin repositories, and whether the ID is applied in settings, build scripts, or convention plugins.
 - For configuration-cache failures, keep the report path, grouped-message/task owner, detected configuration inputs, and the first local build logic class or script named by the object graph.
-- For Problems API output, keep the console problem text, problem ID/group when visible, and the problems report path printed by Gradle.
+- For Problems API output, keep the console problem text and problem ID/group when visible; on Gradle 8.11+, also keep the problems report path printed by Gradle.
 - When build logic or external tools seem noisy or silent, identify the logging channel before changing task behavior: `println`/stdout enters Gradle at `QUIET`, stderr at `ERROR`, Gradle `Logger` honors its level, and `LoggingManager` can remap task stdout/stderr.
 - For warning cleanup, capture `--warning-mode=all` output; use `--warning-mode=fail` only as a gate after the owning warnings are understood.
 - For performance work, record at least two comparable runs before and after a change. Avoid comparing a warm daemon run with a cold daemon run.
@@ -59,7 +59,7 @@ Use the wrapper and the smallest useful command.
 - For continuous-build misses or cycles, preserve the reported changed paths and route the evidence through [continuous-builds.md](continuous-builds.md).
 - `buildDashboard` indexes reports from reporting tasks selected in the same invocation; it does not depend on report producers and applying the plugin disables configuration cache.
 - For CI-only failures, record Gradle user home cache settings, CI JDK, wrapper version, working directory, and any init scripts injected by CI.
-- Command-line flags outrank properties and environment. When reproducing a CI issue, compare flags, `gradle.properties`, system properties, and environment in that order.
+- Command-line flags outrank properties and environment. When reproducing a CI issue, compare flags, system properties, `gradle.properties`, and environment in that precedence order.
 
 ## Symptom Routing
 
@@ -82,7 +82,7 @@ Use the wrapper and the smallest useful command.
 - Use `--dry-run` or Gradle 9.1+ `--task-graph` to inspect task graph shape, not task action correctness; both disable task actions.
 - Use `--continue` only to collect multiple independent failures; Gradle still skips tasks whose dependencies failed, and test failures can prevent downstream coverage or reporting tasks from running.
 - Treat `--exclude-task` as a local diagnostic or workflow choice, not a model fix for bad dependencies.
-- Treat `--no-rebuild` as a narrow `buildSrc`/included-build diagnostic; it can produce wrong results when project dependencies need rebuilding.
+- Gradle 8.0.0 does not provide `--no-rebuild`; the option is restored in Gradle 8.0.1. When available, treat it only as a narrow `buildSrc` or project-dependency scheduling diagnostic; it skips rebuilding project dependencies and can produce wrong results.
 - Use task and project name abbreviations only in local diagnosis; keep committed scripts, docs, and reproduced commands explicit.
 - Do not rely on command-line task order as the build model; order safety depends on tasks declaring what they consume, produce, or destroy.
 - Treat `init` and `wrapper --gradle-version` as mutating owner commands; read runtime or upgrade guidance before running them.

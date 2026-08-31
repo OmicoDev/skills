@@ -19,26 +19,26 @@ Read this when: changing Gradle versions, handling deprecations, checking compat
 ./gradlew buildEnvironment
 ```
 
-Then run representative tasks. `help` alone proves startup, not build correctness.
+`--warning-mode=all` is available from Gradle 4.5; on older wrappers capture ordinary `help` and representative-task output, then use the smallest intermediate upgrade that exposes warning modes. In every version, run representative tasks because `help` alone proves startup, not build correctness.
 
 ## Upgrade Evidence Gate
 
 - Prefer the latest minor or patch in the current major before jumping majors; if a direct latest-minor upgrade fails, bisect by minor versions to isolate Gradle or plugin incompatibility.
 - Treat Gradle release support as a moving line: older minors in the latest major become EOL after a newer minor, the previous major receives only critical/security fixes after a new major, and two-majors-back lines should not be upgrade targets.
 - For cross-major upgrades, clear the previous major's within-line upgrade guide and deprecations before reading the target-major guide; removals often correspond to warnings from the older line.
-- Capture deprecation evidence before changing the wrapper. Prefer Build Scan deprecation views when upload policy permits; otherwise capture `--warning-mode=all` output.
-- Use `--warning-mode=fail` as a post-cleanup regression gate, not the first discovery command; keep `--warning-mode=all` or Build Scan evidence for owner attribution.
+- On Gradle 4.5+, capture deprecation evidence before changing the wrapper. Prefer Build Scan deprecation views when upload policy permits; otherwise capture `--warning-mode=all` output.
+- On Gradle 5.6+, use `--warning-mode=fail` as a post-cleanup regression gate, not the first discovery command; keep `--warning-mode=all` or Build Scan evidence for owner attribution.
 - If `--warning-mode=all` still leaves ownership unclear, rerun the same representative task with `--stacktrace` or `-Dorg.gradle.deprecation.trace=true` before editing; Gradle may otherwise print only the first Gradle script frame and suppress repeated warning messages by message or location.
-- Keep the generated Problems report enabled during deprecation cleanup unless artifact policy forbids local HTML reports; deprecations are reported through the Problems API with type, documentation, solutions, and diagnostic locations, so the report complements `--warning-mode=all` when console output is grouped, deduplicated, or too noisy.
+- On Gradle 8.11+, keep the generated Problems report enabled during deprecation cleanup unless artifact policy forbids local HTML reports; deprecations are reported through the Problems API with type, documentation, solutions, and diagnostic locations, so the report complements `--warning-mode=all` when console output is grouped, deduplicated, or too noisy.
 - Audit `enableFeaturePreview(...)` entries and incubating API usage during wrapper upgrades; preview flags live in settings, become obsolete when a feature is promoted or removed, and should not be treated as durable compatibility policy.
 - Classify broken usage by feature lifecycle: public API removals should have prior deprecations, incubating APIs may change with release notes, and internal APIs have no compatibility promise.
 - Update third-party plugins before a major wrapper jump when compatibility says they support both the current and target Gradle versions. If a plugin requires the target Gradle first, isolate that plugin change as its own phase.
 - Keep plugins on latest compatible versions, but phase risky plugin updates from wrapper upgrades unless compatibility requires coupling; use shadow or parallel CI lanes when the compatibility signal is incomplete.
 - Isolate expected one-time generated-file churn from behavioral upgrade work, such as wrapper script rewrites, lockfile line-ending normalization, or dependency-verification keyring encoding updates, so review does not mistake upgrade housekeeping for dependency or build logic changes.
 - When `gradle-wrapper.properties` contains `distributionSha256Sum`, pair every wrapper version or distribution URL change with the matching new checksum; a stale or missing checksum is a wrapper-security failure to fix before dependency or task debugging.
-- If the wrapper task fails because an existing `distributionSha256Sum` has no replacement, provide `--gradle-distribution-sha256-sum` or task configuration for the target distribution instead of deleting checksum enforcement.
-- Treat `--no-validate-url` as only bypassing wrapper generation-time URL HEAD/file existence validation; it does not prove the distribution can be downloaded later or that the checksum is correct.
-- Treat wrapper `networkTimeout`, `retries`, `retryBackOffMs`, and URL validation as wrapper runtime policy; review them with `gradle-wrapper.properties` instead of scattering retry workarounds through CI scripts.
+- On Gradle 8.0+, if the wrapper task fails because an existing `distributionSha256Sum` has no replacement, provide `--gradle-distribution-sha256-sum` or task configuration for the target distribution instead of deleting checksum enforcement.
+- On Gradle 8.2+, treat `--no-validate-url` as only bypassing wrapper generation-time URL HEAD/file existence validation; it does not prove the distribution can be downloaded later or that the checksum is correct.
+- Treat `networkTimeout` as runtime policy carried by a checked-in Wrapper JAR generated by Gradle 7.6+, and `retries` plus `retryBackOffMs` as runtime policy carried by a JAR generated by Gradle 9.5+; URL validation is instead generation-time policy carried by the Gradle distribution running the `wrapper` task. Review these controls with `gradle-wrapper.properties` instead of scattering retry workarounds through CI scripts.
 - Review wrapper upgrades as a four-file artifact set: `gradlew`, `gradlew.bat`, `gradle/wrapper/gradle-wrapper.jar`, and `gradle/wrapper/gradle-wrapper.properties`; the wrapper task can rewrite all of them even when the visible version change is only in properties.
 - After wrapper upgrade, repeat deprecation capture and representative tasks before treating the target version as promoted.
 
