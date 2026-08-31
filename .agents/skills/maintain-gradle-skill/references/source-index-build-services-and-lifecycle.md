@@ -12,6 +12,7 @@
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheBuildServiceIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheFlowScopeIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheUnsupportedTypesIntegrationTest.groovy`
 - `platforms/core-configuration/core-flow-services-api/src/main/java/org/gradle/api/flow/BuildWorkResult.java`

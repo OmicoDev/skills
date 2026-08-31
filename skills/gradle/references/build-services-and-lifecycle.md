@@ -17,6 +17,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - Build service implementations must be thread-safe because multiple tasks may use the same service concurrently.
 - Implement `AutoCloseable` only when there is real cleanup; Gradle calls `close()` after the last user completes and before the build ends.
 - `close()` only runs for a service instance that was actually created. Do not use build-service cleanup as a general `buildFinished` replacement when no task, action, transform, listener, or configuration-time owner may use the service.
+- On Gradle 9.7 with the configuration cache, a non-listener service created during configuration is closed at the end of configuration and recreated on first execution-time use, so its constructor and `close()` may each run twice in one build. An `OperationCompletionListener` service registered through `BuildEventsListenerRegistry.onTaskCompletion(...)` and created during configuration is retained across those phases; make other service setup and cleanup safe to repeat.
 - Do not implement `getParameters()`; Gradle supplies it.
 - Do not coordinate tasks through task fields, static state, `synchronized` objects, or JDK concurrency primitives such as locks, latches, semaphores, or queues; configuration cache isolates task instances, so shared state and synchronization belong in a build service.
 
@@ -33,7 +34,7 @@ Read this when: shared build services, `BuildService`, `BuildServiceParameters`,
 - For plugins that support Gradle 6.1 through 7.x, or when a task property must remain `@Internal`, assign the service provider to the property and call `usesService(...)`; otherwise Gradle does not see the service as a task requirement and cannot honor its concurrency limit for that task.
 - Do not model a build service as task input, output, local state, or destroyable state. Services may be referenced only through `@ServiceReference`, `@Internal` plus `usesService(...)`, or supported action parameters.
 - Avoid calling `Provider.get()` for a service during configuration unless the service truly models configuration-time state.
-- Do not derive configuration-cache fingerprints or `ValueSource` parameters from build service providers; a build service is safe as a task reference, but it cannot invalidate the configuration cache.
+- On Gradle 9.7 with the configuration cache, a `ValueSource` parameter may carry a build-service provider only when the value source is not queried during configuration. If configuration needs the service-derived value, wrap the eager service read in an ordinary `provider { ... }` so the computed value, rather than the service instance, becomes the fingerprint; avoid this workaround for transient values that would churn cache entries.
 
 ## Service Injection
 

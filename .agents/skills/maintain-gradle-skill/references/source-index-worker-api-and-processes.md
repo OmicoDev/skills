@@ -7,9 +7,11 @@
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Dealing with validation problems](https://docs.gradle.org/current/userguide/validation_problems.html)
 - [Developing Parallel Tasks](https://docs.gradle.org/current/userguide/worker_api.html)
+- [Gradle 5.6 Worker API migration](https://docs.gradle.org/5.6/userguide/upgrading_version_5.html)
+- [Gradle 8.0 WorkerExecutor API cleanup](https://docs.gradle.org/8.0/userguide/upgrading_version_7.html)
+- [Gradle 9.7 parameterless action behavior](https://docs.gradle.org/9.7.0/userguide/upgrading_version_9.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
-- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Using Shared Build Services](https://docs.gradle.org/current/userguide/build_services.html)
 
 ## Source Code
