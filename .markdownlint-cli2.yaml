@@ -1,3 +1,5 @@
 gitignore: true
+globs:
+  - "**/*.md"
 config:
   line-length: false

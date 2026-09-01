@@ -1,0 +1,5 @@
+catalog:
+  markdownlint-cli2: 0.23.2
+
+catalogMode: strict
+cleanupUnusedCatalogs: true

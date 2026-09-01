@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "markdown:lint": "markdownlint-cli2",
+    "markdown:format": "markdownlint-cli2 --fix"
+  },
+  "devDependencies": {
+    "markdownlint-cli2": "catalog:"
+  }
+}
