@@ -26,11 +26,15 @@
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/configuration/TaskDetailPrinter.java`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/configuration/TaskDetailsModel.java`
 - `platforms/core-runtime/daemon-services/src/main/java/org/gradle/api/internal/tasks/userinput/NonInteractiveUserInputHandler.java`
+- `platforms/core-runtime/logging/src/integTest/groovy/org/gradle/DeprecationHandlingIntegrationTest.groovy`
 - `platforms/core-runtime/logging/src/integTest/groovy/org/gradle/internal/logging/console/ConsoleNoColorIntegrationTest.groovy`
+- `platforms/core-runtime/logging/src/main/java/org/gradle/internal/featurelifecycle/LoggingDeprecatedFeatureHandler.java`
 - `platforms/core-runtime/logging/src/main/java/org/gradle/internal/logging/LoggingConfigurationBuildOptions.java`
 - `platforms/core-runtime/logging/src/main/java/org/gradle/internal/logging/sink/OutputEventRenderer.java`
 - `platforms/core-runtime/start-parameter/src/main/java/org/gradle/initialization/StartParameterBuildOptions.java`
 - `platforms/ide/problems-api/src/integTest/groovy/org/gradle/api/problems/ProblemsServiceIntegrationTest.groovy`
+- `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/ProblemReporter.java`
+- `platforms/ide/problems-api/src/main/java/org/gradle/api/problems/internal/DefaultProblemReporter.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolveengine/artifact/ResolvedArtifactsGraphVisitor.java`
 - `platforms/software/software-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/DependencyInsightReportTaskIntegrationTest.groovy`
 - `platforms/software/software-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/OutgoingVariantsReportTaskIntegrationTest.groovy`
@@ -42,4 +46,5 @@
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/tasks/userinput/UserInputHandlingIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CachedTaskExecutionIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/TaskOptionsGenerator.java`
+- `subprojects/core/src/main/java/org/gradle/internal/buildtree/DeprecationsReporter.java`
 - `subprojects/core/src/main/java/org/gradle/internal/execution/TaskGraphBuildExecutionAction.java`

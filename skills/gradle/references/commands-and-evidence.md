@@ -53,7 +53,7 @@ Use the wrapper and the smallest useful command.
 - For configuration-cache failures, keep the report path, grouped-message/task owner, detected configuration inputs, and the first local build logic class or script named by the object graph.
 - For Problems API output, keep the console problem text and problem ID/group when visible; on Gradle 8.11+, also keep the problems report path printed by Gradle.
 - When build logic or external tools seem noisy or silent, identify the logging channel before changing task behavior: `println`/stdout enters Gradle at `QUIET`, stderr at `ERROR`, Gradle `Logger` honors its level, and `LoggingManager` can remap task stdout/stderr.
-- For warning cleanup, capture `--warning-mode=all` output; use `--warning-mode=fail` only as a gate after the owning warnings are understood.
+- For Gradle deprecation cleanup, capture `--warning-mode=all` output; on Gradle 5.6+, use `--warning-mode=fail` as a gate after ownership is understood. It does not turn ordinary log warnings, compiler warnings, or recoverable plugin Problems into build failures; use their owning compiler or plugin policy.
 - For performance work, record at least two comparable runs before and after a change. Avoid comparing a warm daemon run with a cold daemon run.
 - Build Scan performance data is richer; `--profile` is local but less detailed. Use the local profile report when upload policy blocks scans.
 - For continuous-build misses or cycles, preserve the reported changed paths and route the evidence through [continuous-builds.md](continuous-builds.md).
