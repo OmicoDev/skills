@@ -61,7 +61,7 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, or can
 - Worker daemon reuse depends on compatibility: Java executable, classpath, heap settings, JVM args, system properties, environment variables, bootstrap classpath, debug flag, assertions, and default encoding.
 - Worker daemon reuse can also be broken by keep-alive scope, classloader structure changes, log-level changes, failed clients, or memory pressure; treat extra worker starts as compatibility evidence before tuning `org.gradle.workers.max`.
 - Keep process-isolated worker requirements stable across submitted items when reuse matters; changing classpaths or fork options can intentionally split worker daemon pools.
-- For classloader- or process-isolated classpath issues, compare the declared task input classpath with Gradle's copied/transformed worker classpath in the project cache before blaming daemon reuse.
+- For classloader- or process-isolated classpath issues, compare the declared task input classpath with the effective worker classpath, including copied cache entries, before blaming daemon reuse; do not assume those copies are under the project cache.
 - Worker daemon default max heap is limited, and reuse matching is stricter for executable, exact classpath, debug, assertions, and encoding than for superset-like JVM args, system properties, environment, bootstrap classpath, or higher heap.
 - Process isolation has startup cost. Prefer classloader isolation when classpath isolation is enough.
 - Gradle may stop worker daemons when system memory is low; do not use them as durable state stores.
@@ -69,9 +69,10 @@ Read this when: Worker API, `WorkAction`, work isolation, worker daemons, or can
 
 ## Cancellation And Timeouts
 
-- Custom tasks and work actions should respond to thread interruption. User cancellation and task timeouts rely on cooperative interruption.
-- If a task or work item does not respond to interruption promptly, Gradle may shut down the daemon to free resources.
-- Daemon shutdown after cancellation or timeout is often evidence of ignored interrupts in task or work-action code, not a reason to start by changing daemon JVM policy.
+- Custom tasks and work actions should respond to thread interruption. In-process work relies on cooperative interruption for user cancellation and task timeouts; process-isolated work can instead be terminated with its worker JVM.
+- For work running inside the main daemon, ignored interrupts can force daemon shutdown; inspect the task or work action before changing daemon JVM policy.
+- For process-isolated work on Gradle 9.8+, a worker request that fails before a response marks that client abandoned and prevents its reuse. During worker shutdown, Gradle kills busy or abandoned workers rather than waiting for their work to finish; a task timeout should not hang teardown until that work completes. On older releases, distinguish this teardown hang from an in-process action that ignores interrupts.
+- User cancellation can kill process-isolated worker daemons, so do not depend on worker `finally` blocks to finish cleanup; keep partial outputs recoverable through the owning task contract.
 
 ## Failure Map
 
