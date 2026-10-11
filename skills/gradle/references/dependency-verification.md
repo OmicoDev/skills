@@ -6,8 +6,8 @@ Read this when: `verification-metadata.xml`, checksums, signatures, trusted keys
 
 - Dependency verification checks artifacts resolved through Gradle dependency management against expected checksums or signatures.
 - Checksums prove byte integrity; signatures prove provenance. Use both for strongest release trust when maintainable because signatures can use weak hashes, unsigned artifacts still need checksum fallback, and configured checksums are checked even after a signature passes.
-- When multiple checksum algorithms or signatures are declared for one artifact, Gradle verifies all of them; a stale weak checksum or one bad signature can fail an otherwise valid artifact.
-- Verification metadata is security policy, not a cache artifact.
+- Every declared checksum algorithm must pass. On Gradle 9.7.1, signature verification checks every non-ignored signature found in the signature file; an untrusted or invalid extra signature can fail even when another is trusted. Multiple trusted-key entries allow alternative signers; they do not require the artifact to carry every listed signature.
+- Verification metadata is security policy, not a cache artifact. On Gradle 9.7.1, enable signatures explicitly with `<verify-signatures>true</verify-signatures>`; trusted-key or `<pgp>` entries alone do not enable them. A missing signature can fall back to a declared checksum, so this switch does not enforce signed-only dependencies.
 - Dependency verification is enabled when `gradle/verification-metadata.xml` exists; this XML file is currently Gradle's only dependency verification metadata source.
 - Do not commit only a minimal `<configuration>` skeleton as a staged rollout; once the file exists, external dependencies and plugins without recorded metadata will fail in strict mode.
 - The verification file is global for the current build and affects all subprojects and `buildSrc`; included builds use the current build's verification metadata, ignoring their own for this invocation.
@@ -32,7 +32,7 @@ Bootstrap or update only after reviewing the dependency change:
 - Bootstrapping trusts the repositories and artifacts currently reachable by the build; review generated diffs manually.
 - Metadata generation can resolve root, subproject, `buildSrc`, included-build, and plugin configurations; expect broad diffs after topology or plugin changes, and add entries manually for dependencies resolved only during task execution or custom resolution logic.
 - Metadata generation writes external artifacts from resolvable configurations; expect project dependencies, file dependencies, changing dependencies, and consumable-only buckets to be absent rather than "missing" from generated metadata.
-- Bootstrapping signatures is optimistic; bootstrap checksums first when integrity evidence matters, then add PGP trust.
+- Bootstrapping signatures is optimistic; bootstrap checksums first when integrity evidence matters, then add PGP trust. On Gradle 9.7.1, `--write-verification-metadata pgp` alone is rejected; include `sha256` or `sha512` for fallback.
 - Treat auto-added trusted keys, ignored keys, and group-level key trust from PGP bootstrap as review items; narrow trusted keys with `group`, `name`, `version`, or `file` scopes after verifying the signer.
 - Keep generation parameters consistent after the project chooses checksum-only or checksum-plus-signature policy.
 - `--export-keys` can run without updating metadata, but it exports keys only and does not report verification errors.
@@ -40,7 +40,7 @@ Bootstrap or update only after reviewing the dependency change:
 ## Verification Modes
 
 - `strict` is the default and should own CI/release gates.
-- `lenient` records and reports verification failures while allowing the build to continue; use it for migration and review only, and pair it with verbose console output when CI cannot archive the HTML report.
+- `lenient` records and reports verification failures while allowing the build to continue; use it for migration and review only, on Gradle 9.7.1, set `org.gradle.dependency.verification.console=verbose` in `gradle.properties` when CI cannot archive the HTML report.
 - `off` disables verification and should be limited to explicit local escape hatches.
 - If `verification-metadata.xml` exists but verification appears inactive, inspect `--dependency-verification`, `org.gradle.dependency.verification`, and configuration `resolutionStrategy.disableDependencyVerification()` before trusting coverage.
 - Dependency verification reports include repository evidence and affected cached files; inspect the HTML report before changing trust policy, especially when console output is grouped or truncated.
@@ -67,7 +67,7 @@ Bootstrap or update only after reviewing the dependency change:
 - Incorrect checksum: treat as high risk; test local cache corruption, then compare official upstream bytes and repository order.
 - Untrusted signature: verify the signing key owner before trusting it.
 - Do not trust a PGP key only because the key name, email, or error message looks plausible; verify the full fingerprint from an official project-controlled source.
-- Failed signature: compare upstream-published signatures and downloaded signatures before adding exceptions.
+- Failed signature: compare upstream-published signatures and downloaded signatures before adding exceptions. On Gradle 9.7.1, an `.asc` with no signature list can fall back to checksums, while a parser exception reported as `signature file is corrupt` fails strict verification; distinguish these from an actual signature mismatch.
 - Expired signing keys do not automatically invalidate signatures; if the artifact was signed before key expiry and the signature verifies, keep triage focused on key ownership and artifact bytes.
 - Wrong artifact from internal/public repository order: use the report's repository evidence, then repair repository content filters before adding trust exceptions.
 - Repeated missing keys: retry with `--refresh-keys`, then add public keys to a committed keyring if the owner is verified.
@@ -86,12 +86,12 @@ Bootstrap or update only after reviewing the dependency change:
 - Use `also-trust` only after verifying alternate checksums for the same artifact from mirrors or separately produced repository metadata; it is a checksum alternative, not a blanket mismatch escape hatch, and other declared algorithms must still pass.
 - Prefer artifact-level exceptions over broad component or group exceptions.
 - Record reasons for ignored keys, trusted artifacts, and additional checksums.
-- Gradle 9.7+ schema 1.4 also accepts `origin` and `reason` on `<trusted-key>` and `<pgp>` entries and preserves them across rewrites. They are informational provenance only and never affect verification decisions.
+- Gradle 9.7+ schema 1.4 accepts informational `origin` and `reason` on `<trusted-key>` and `<pgp>` entries. Keep one entry per trust identity: duplicates differing only in provenance retain the first entry and lose later provenance on rewrite. Gradle 9.7 warns during verification and schedules these conflicting duplicates to become errors in Gradle 10; consolidate the reason you intend to retain before regenerating metadata.
 - Use full 40-character fingerprints for `pgp` and `trusted-key` entries; `ignored-key` can use a long ID, but full fingerprints reduce collision risk.
 - If a signature is wrong but the artifact is verified safe, pair the key exclusion with a checksum for that artifact.
-- If CI disables key servers with `<key-servers enabled="false"/>`, keep committed keyrings fresh enough that missing keys fail early; `--write-verification-metadata` ignores that flag and may still contact key servers to fetch missing keys.
+- If CI disables key servers with `<key-servers enabled="false"/>`, keep committed keyrings fresh enough that missing keys fail early; `--write-verification-metadata` ignores that flag and may still contact key servers to fetch missing keys. On Gradle 9.7.1, add `--offline` to prevent those lookups during generation; required dependencies must already be available locally and required public keys must be in the selected local keyring.
 - Gradle caches missing keys for a period; use `--refresh-keys` when retrying a keyserver or keyring repair immediately.
 - When using committed keyrings, choose either ASCII-armored `.keys` for readable diffs or binary `.gpg` for compact storage; do not commit both formats unless the policy explicitly requires it.
 - Treat ASCII keyring export diffs as normalized trust material: Gradle strips unnecessary public-key data, sorts keyrings by key ID, and deduplicates repeated keys.
 - Gradle 9.5+ may rewrite armored keyring headers that contain non-ASCII metadata correctly; treat that one-time export diff as keyring normalization before suspecting trust-policy drift.
-- If both keyring formats are present and no format is configured, Gradle prefers the binary `.gpg` keyring.
+- If both keyring formats are present and no format is configured, Gradle prefers the binary `.gpg` keyring. On Gradle 9.7.1, `<keyring-format>armored</keyring-format>` or `binary` selects that format for both reading and export; the other format is ignored even when the selected file is missing. Without a format setting, export generates both, so choose the format explicitly when maintaining one committed keyring.

@@ -10,7 +10,7 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Dependency constraints express requirements for modules that may appear in the graph; they do not add those modules.
 - Rich versions describe acceptable versions; locks freeze the selected result after resolution.
 - Gradle conflict resolution can select a newer transitive version than the build script declared. Decide whether the owner is detection, policy, reproducibility, or classpath alignment before adding rules.
-- Consistent resolution aligns selected versions across related resolvable configurations after their normal owner rules apply.
+- Consistent resolution derives strict constraints from a source configuration for another resolvable configuration; diagnose conflicts and resolution rules instead of assuming a final version rewrite.
 
 ## Version Catalogs
 
@@ -27,7 +27,8 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - When build logic reads catalogs through `VersionCatalogsExtension` or `VersionCatalog`, treat catalog and alias lookups as optional API boundaries, pass library providers with `addProvider(...)` when adding dependencies, and remember `find*`/alias-list APIs normalize `-`, `_`, and `.` separators.
 - Prefer one `libs.versions.toml` with naming conventions. Split catalogs only for real boundaries such as shipped artifacts, independent build-logic dependencies, organization-wide published catalogs, or unavoidable JVM accessor-size limits.
 - Keep aliases descriptive and stable: prefer dash-separated segments, derive the first segment from group/artifact identity without the top-level domain, omit generic or repeated words, convert artifact-internal dashes to camel case for accessors, and suffix plugin libraries with `-plugin` when the plugin is used as a library dependency.
-- Catalog TOML files are self-contained; there is no cross-file `include` or `version.ref`, and `from(...)` may be called once per catalog. Layer programmatic `version(...)`, `library(...)`, `bundle(...)`, or `plugin(...)` calls after `from(...)` when intentionally injecting shared versions or overriding imported catalogs; this changes requested notation, not conflict resolution results.
+- Catalog TOML files are self-contained; there is no cross-file `include` or `version.ref`, and `from(...)` may be called once per catalog. Use programmatic `version(...)` to inject or override imported version aliases; this changes requested notation, not conflict resolution results.
+- On Gradle 9.7.1, catalog imports are applied when the model is built: the first programmatic `version(...)` for an alias wins over its imported value, but imported library, bundle, and plugin aliases replace same-name programmatic entries even when their calls follow `from(...)`. Add distinct aliases or change the catalog source instead of relying on call order to replace those entries.
 - Treat published base catalogs as versioned artifacts with their own release lifecycle. They centralize requested coordinates but still do not enforce selected versions like platforms or locks.
 - When an imported catalog artifact is locked, lockfile entries can reference `incomingCatalogFor<Name>0`; that configuration records the external catalog artifact resolution, not dependency versions named inside the catalog.
 - Catalog library accessors return providers. When a Gradle API accepts dependency notation, prefer passing the provider instead of unwrapping with `.get()`, especially in substitution, constraints, or selector APIs that may require a different selector type.
@@ -53,12 +54,14 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 - Constraints are not strict by default; they usually act like version requirements that can still be upgraded by conflict resolution.
 - A constraint is a no-op until a hard dependency path brings the constrained module into the graph; it is a version opinion, not a dependency edge.
 - Constraints are transitive and are preserved for Gradle consumers through Gradle Module Metadata; Maven or Ivy consumers may lose them.
-- `require` is the normal floor and may be upgraded; shorthand dependency versions are required versions.
+- `require` is the normal floor and may be upgraded beyond a range's upper bound during conflict resolution; use `strictly` when that bound must hold. Shorthand dependency versions are required versions.
 - `strictly` is the strongest opinion, can downgrade, and can fail resolution when no acceptable version satisfies all requirements; for published libraries, prefer a strict compatible range plus `prefer` over a single strict version when consumers may safely choose another version in the range.
 - Strict version control depends on graph coverage. If another path reaches the module without inheriting the strict opinion, inspect dependency paths before assuming `strictly` was ignored.
 - `prefer` is soft, applies only when no stronger non-dynamic opinion exists, and does not support dynamic versions.
-- `reject` blocks candidates and can fail resolution if Gradle would otherwise select a rejected version.
+- `reject` blocks candidates and can fail resolution if Gradle would otherwise select a rejected version. On Gradle 9.7.1, `require(...)`, `strictly(...)`, and `prefer(...)` each clear previous rejects on the same mutable constraint. `require` clears `strictly`, `strictly` replaces `require`, and either preserves `prefer`. Set the complete `reject(...)` list last because repeated calls replace it; `rejectAll()` clears the positive version opinions and rejects every version.
 - When a range, dynamic selector, or reject behaves surprisingly, inspect Gradle version ordering before adding policy; separators normalize, numeric parts outrank non-numeric parts, extra numeric parts raise a version, extra non-numeric parts lower it, and special qualifiers such as `dev`, `rc`, `snapshot`, `final`, `ga`, `release`, and `sp` have Gradle-defined order.
+- On verified Gradle 9.7.x, when a dynamic Maven range or prefix selector must exclude snapshots, request the string attribute `org.gradle.status` with value `release` on that dependency. Gradle matches candidate component attributes before selecting the version; repair incorrect producer status or status schemes in [dependency-metadata-rules.md](dependency-metadata-rules.md).
+- Apply a status attribute to a resolvable configuration only when every direct and transitive dependency should match it exactly. Configuration attributes do not propagate through `extendsFrom`, so set the status on each affected classpath and use dependency-resolution consistency when compile and runtime graphs must stay aligned.
 - Gradle Module Metadata preserves rich versions. Maven/Ivy metadata conversion keeps only the strongest `strictly`/`require`/`prefer` opinion and ignores `reject`; publish resolved versions or document degraded semantics when Maven/Ivy consumers matter.
 - Treat dynamic versions and changing modules as freshness policy, not reproducibility policy; pair them with dependency locking and repository cache rules when selected versions must be repeatable.
 - Use `resolutionStrategy.failOnVersionConflict()` as a detection tripwire for accidental upgrades, not as lasting version policy. Once the conflict is understood, encode intent with constraints, platforms, rich versions, metadata repair, or locks.
@@ -70,10 +73,11 @@ Read this when: version catalogs, platforms, BOMs, constraints, rich versions, c
 ## Consistency Decisions
 
 - Use dependency resolution consistency for real compile/runtime or test/runtime drift across related configurations, not as a global replacement for platforms, constraints, or locks.
-- `shouldResolveConsistentlyWith(...)` makes one resolvable configuration align shared dependency versions with another chosen source configuration.
+- On Gradle 9.7.1, `shouldResolveConsistentlyWith(...)` adds strict constraints for external modules resolved in the source; it does not add source-only dependencies or constrain target-only modules. A higher directly required target version can fail against the source version, while a preferred target version can be downgraded; inspect the conflict before changing the source.
+- On Gradle 9.7.1, `eachDependency` rules can override versions imposed by consistency. If classpaths still differ and `dependencyInsight` reports rule selection, inspect the rule before assuming consistency enforces equality unconditionally.
 - The consistency source must also be resolvable, and consistency sources must not form cycles; when setup fails, choose a classpath configuration as the source instead of a declarable bucket.
 - In Java projects, prefer the Java ecosystem consistency convention when all source-set runtime classpaths should align with their compile classpaths.
-- `java { consistentResolution { useCompileClasspathVersions() } }` applies the Java convention; avoid it when a source set intentionally tests or runs against a different runtime graph.
+- The Java convention `java { consistentResolution { useCompileClasspathVersions() } }` is available since Gradle 6.8. On Gradle 9.7.1 it also aligns each JVM test suite's compile classpath with the main feature's compile classpath; avoid the blanket convention when tests intentionally need different dependency versions and wire only the intended configurations.
 - Treat consistent resolution as an incubating feature; keep the scope narrow and document which configuration is the version source of truth.
 - In `dependencyInsight`, consistent resolution appears as a selection reason such as `By constraint: version resolved in configuration ':compileClasspath' by consistent resolution`; use that reason to identify the source configuration before changing constraints or rules.
 

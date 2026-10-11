@@ -24,8 +24,15 @@
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolutionstrategy/DefaultResolutionStrategy.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/model/Checksum.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/serializer/DependencyVerificationsXmlReader.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/serializer/DependencyVerificationsXmlWriter.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/signatures/BuildTreeDefinedKeys.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/signatures/DefaultSignatureVerificationServiceFactory.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/verifier/DependencyVerificationConfiguration.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/verifier/DependencyVerifier.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/verifier/DependencyVerifierBuilder.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/verifier/InvalidSignature.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/verification/verifier/InvalidSignatureFile.java`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/ivyservice/resolutionstrategy/DefaultResolutionStrategySpec.groovy`
+- `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/verification/serializer/DependencyVerificationsXmlReaderTest.groovy`
+- `platforms/software/security/src/main/java/org/gradle/security/internal/SecuritySupport.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ResolutionStrategy.java`

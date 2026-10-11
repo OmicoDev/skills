@@ -4,6 +4,7 @@
 
 - [Artifact Resolution](https://docs.gradle.org/current/userguide/artifact_resolution.html)
 - [Artifact Views](https://docs.gradle.org/current/userguide/artifact_views.html)
+- [ArtifactCollection API (Gradle 7.4 provider introduction)](https://docs.gradle.org/7.4/javadoc/org/gradle/api/artifacts/ArtifactCollection.html)
 - [ArtifactView.ViewConfiguration API (Gradle 7.5)](https://docs.gradle.org/7.5/javadoc/org/gradle/api/artifacts/ArtifactView.ViewConfiguration.html)
 - [How to Share Artifacts Between Projects with Gradle](https://docs.gradle.org/current/userguide/how_to_share_outputs_between_projects.html)
 - [ResolvedArtifactResult API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/result/ResolvedArtifactResult.html)
@@ -25,11 +26,17 @@
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/attributes/ArtifactViewAttributesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/compatibility/ArtifactAndClassifierCompatibilityIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/maven/ClassifierToVariantResolveIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/configurations/DefaultArtifactCollection.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/DefaultConfigurationResolver.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/dependencysubstitution/ArtifactSelectionDetailsInternal.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/dependencysubstitution/DefaultArtifactSelectionDetails.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolveengine/artifact/VariantResolvingArtifactSet.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/resolver/DefaultResolutionOutputs.java`
+- `platforms/software/software-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/OutgoingVariantsReportTaskIntegrationTest.groovy`
+- `platforms/software/software-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/ResolvableConfigurationsReportTaskIntegrationTest.groovy`
+- `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/configurations/renderer/ConsoleConfigurationReportRenderer.java`
+- `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/configurations/spec/AbstractConfigurationReportSpec.java`
+- `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/configurations/spec/ResolvableConfigurationsSpec.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactCollection.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactView.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/LenientConfiguration.java`

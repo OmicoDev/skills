@@ -5,13 +5,13 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 ## Repository Ownership
 
 - Plugin repositories belong in `pluginManagement { repositories { ... } }`.
-- Dependency repositories usually belong in `dependencyResolutionManagement { repositories { ... } }` when central governance is desired.
+- On Gradle 6.8+, dependency repositories usually belong in `dependencyResolutionManagement { repositories { ... } }` when central governance is desired.
 - Project-level repositories should be intentional exceptions, not hidden fallbacks.
 - Repository mode is owner policy: default `PREFER_PROJECT` lets project repositories override settings repositories, `PREFER_SETTINGS` ignores project repositories after a warning, and `FAIL_ON_PROJECT_REPOS` turns project repositories into build errors.
 - Use content filters or `exclusiveContent` when an internal repository owns a coordinate namespace.
 - Avoid `mavenLocal()` in normal resolution unless local publication is part of the workflow.
 - Avoid `flatDir` for real dependencies because it has no transitive metadata.
-- Configure repositories with typed action blocks; map overloads such as `flatDir(Map)` and `mavenCentral(Map)` are deprecated in Gradle 9.6+.
+- Configure repositories with typed action blocks; map overloads such as `flatDir(Map)` and `mavenCentral(Map)` are deprecated in Gradle 9.6+, with removal planned for Gradle 10.
 - Gradle ignores repositories declared inside consumed Maven POM metadata; repository trust remains owned by the build's declared repositories.
 - On Gradle 9+, `jcenter()` is removed; replace it deliberately with `mavenCentral()` or an internal mirror plus content filters instead of adding broad fallback repositories.
 
@@ -23,10 +23,10 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - A normal include filter does not make a coordinate exclusive. Other repositories can still provide it unless every repository is filtered.
 - Content filters affect dynamic version listing as well as metadata and artifact lookup; if a dynamic selector cannot see a version, check the repository filter before changing metadata sources.
 - Configure repository content filters before any dependency resolution; once a repository has been used, Gradle rejects content-filter mutation.
-- Use `exclusiveContent` when exactly one repository owns a group, module, or version range.
+- On Gradle 6.2+, use `exclusiveContent` when one repository or a designated set owns a group, module, or version range; `forRepositories(repoA, repoB)` permits lookup within that set and excludes matching coordinates from other repositories.
 - When using exclusive content in `pluginManagement`, declare all plugin and buildscript repositories in that layer; later `buildscript.repositories` additions can become illegal.
 - For Maven repositories that physically or politically split release and snapshot artifacts, use `mavenContent { releasesOnly() }` or `mavenContent { snapshotsOnly() }`.
-- Avoid Maven `artifactUrls`; it splits POM and artifact lookup across URLs, has no Maven equivalent, and is deprecated without a direct replacement.
+- Avoid Maven `artifactUrls`; it splits POM and artifact lookup across URLs, has no Maven equivalent, and is deprecated in Gradle 9.6+ with removal planned for Gradle 10 and no direct replacement.
 - Treat unfiltered fallback repositories as a security decision, not a convenience default; they can silently satisfy coordinates that were intended for filtered repositories.
 - When setting exclusive content, also decide where transitive dependencies of those modules are allowed to resolve.
 - Use context filters by configuration or attributes only when the repository really differs by resolution context; otherwise simple group/module filters are easier to audit.
@@ -38,14 +38,14 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - Artifact-only metadata is a last-resort interop mode for legacy repositories without descriptors.
 - `metadataSources` selects which metadata formats are allowed; Gradle still probes enabled sources in its predefined order, so changing sources changes the graph Gradle can see, not just download performance or DSL precedence.
 - `artifact()` metadata sources can find files without descriptors, but they cannot recover dependencies, variants, capabilities, or status; do not use them to mask missing publication metadata.
-- Add `artifact()` as a fallback after descriptor sources only when descriptorless modules are expected; artifact-first policies make transitive dependencies invisible.
+- Enable `artifact()` alongside descriptor sources only when descriptorless modules are expected; calling it first does not give it priority. An artifact-only policy discards published transitive dependencies.
 - `flatDir` synthesizes ad hoc metadata from files and cannot override a module that another declared repository provides with real metadata.
 - Do not fix metadata-source problems by adding broad repositories.
 - For Ivy repositories, verify `layout`, descriptor patterns, artifact patterns, and `m2compatible` before treating a coordinate as absent.
 - If all modules in a repository are published with Gradle Module Metadata, a metadata-source policy can reduce network probes.
 - Maven POM or Ivy descriptors can contain a marker that redirects Gradle to matching Gradle Module Metadata; use `ignoreGradleMetadataRedirection()` only for a known broken repository or producer because it can force legacy metadata and lose variant semantics.
 - Enable Ivy dynamic resolve mode only for Ivy repositories where `revConstraint` should override `rev`; it is not a Maven or custom resolver feature.
-- Repository-level `ComponentMetadataSupplier` provides initial component metadata instead of parsing a remote descriptor; its builder can set status, status scheme, and attributes, then component metadata rules still run for dependency, variant, capability, and file repairs.
+- In Gradle 9.7.1, repository-level `ComponentMetadataSupplier` can provide status, status scheme, and string/boolean attributes for candidate selection without fetching rejected candidates' descriptors; the selected component still needs full metadata. Use component metadata rules for dependency, variant, capability, and file repairs.
 - Repository-level `ComponentMetadataVersionLister` is dynamic-selector infrastructure: it lists available module versions and can use repository resources, but fixed versions do not call it and version policy still belongs in constraints, platforms, locks, or status rules.
 - If `1.+`, version ranges, or `latest.*` fail before fixed-version metadata lookup, inspect content filters, Maven/Ivy version-listing metadata, artifact-directory fallback, or a custom version lister before changing constraints or metadata rules.
 
@@ -57,14 +57,14 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - If `mavenLocal()` is unavoidable, restrict it with content filters and place it only where local artifacts should genuinely override remote artifacts.
 - Document any committed `mavenLocal()` or file repository use with the workflow that requires it.
 - Gradle can reuse matching artifacts from the local Maven cache when a remote checksum verifies them; that reuse does not require declaring `mavenLocal()`.
-- When debugging `mavenLocal()` misses, confirm the actual local Maven path; user `~/.m2/settings.xml` can override the default `~/.m2/repository`.
+- When debugging `mavenLocal()` misses on Gradle 9.7.1, check `-Dmaven.repo.local` first, then `<localRepository>` in user `~/.m2/settings.xml`, then `$M2_HOME/conf/settings.xml`, before assuming the default `~/.m2/repository`.
 
 ## Credentials And Protocols
 
 - Keep repository credentials out of build scripts; declare the credential type on the repository and supply values through Gradle properties, command-line properties, or environment-backed properties.
 - Credential lookup property names are derived from the repository name. Treat repository renames as credential key changes and update CI secrets at the same time.
 - Gradle normally waits for an HTTP authentication challenge before sending credentials. If a private repository returns 404 or another non-401 response for unauthenticated requests, explicitly configure the authentication scheme such as `BasicAuthentication`.
-- Use header credentials for token/OAuth-style repositories instead of encoding tokens as usernames or passwords.
+- Match the server's authentication contract: use `HttpHeaderCredentials` with `HttpHeaderAuthentication` for header-based tokens/OAuth; a server that expects a token through Basic authentication still needs password credentials.
 
 ## Cache Behavior
 
@@ -78,8 +78,8 @@ Read this when: repository declarations, plugin repositories, metadata sources, 
 - Use `--offline` only to verify whether the local cache already contains required artifacts; it does not refresh expired dynamic/changing decisions and fails on missing modules.
 - Gradle dependency-cache locking assumes cooperating Gradle processes. Containerized builds usually should not share one mutable Gradle user home concurrently.
 - For ephemeral CI, prefer deliberate dependency-cache seeding or a `GRADLE_RO_DEP_CACHE` read-only dependency cache over sharing mutable Gradle user homes across unrelated builds.
-- A `GRADLE_RO_DEP_CACHE` cache supplements the build's writable Gradle user home; seed it from a copied dependency cache and do not point it at a live cache that another build may mutate.
-- When copying dependency caches, preserve the `modules-2` structure and avoid copying lock or garbage-collection files.
+- A `GRADLE_RO_DEP_CACHE` cache supplements the build's writable Gradle user home; point it at the directory containing `modules-2`, seeded from a copied dependency cache, and never at a live cache another build may mutate.
+- When copying dependency caches, preserve the `modules-2` structure, omit `*.lock` and `gc.properties`, and seed with compatible Gradle versions; incompatible metadata-cache formats can require remote lookups even when artifact files are present.
 - Treat dependency cache retention as an optimization, not artifact storage; Gradle can clean unused cached files, so hermetic CI still needs declared repositories, verification, locks, or an explicit seed step.
 
 ## Diagnostics

@@ -5,7 +5,7 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 ## Locking Model
 
 - Locking records selected versions, not declared preferences.
-- Locks behave like strict constraints during resolution.
+- With existing lock state, default and strict modes enforce locked versions as strict constraints during ordinary resolution; lenient mode and targeted updates relax this enforcement.
 - Locking is most useful with dynamic selectors because it lets declarations stay flexible while selected versions and task inputs stay reproducible.
 - Do not use locking as the safety mechanism for changing modules such as `-SNAPSHOT`; their bytes can change under the same coordinates, and Gradle warning while persisting lock state is a modeling signal rather than something to ignore.
 - Lockfiles are source policy and should be reviewed like dependency changes.
@@ -56,21 +56,21 @@ Read this when: dependency lockfiles, `--write-locks`, `--update-locks`, dynamic
 - `--update-locks` implies `--write-locks`; treat it as a lock-state update command, not as read-only dependency selection.
 - In strict mode, bootstrap missing lock state with `--write-locks` before targeted `--update-locks`; update commands still fail when a locked configuration has no lock state.
 - `--update-locks` accepts comma-separated module notations; wildcards may stand alone or appear at the end of the group or module name.
-- `--update-locks` still loads existing lock state, but filters out the targeted modules for that resolution; non-targeted locked modules continue to constrain selection.
+- `--update-locks` still loads existing lock state, but filters out the targeted modules for that resolution. In Gradle 9.7.1, remaining lock entries become ordinary version constraints rather than strict constraints, so a higher requirement can upgrade even a non-targeted module.
 - Targeted lock updates still run normal resolution, so aligned platforms, constraints, conflicts, or transitive edges can update related modules too.
 - If a root `dependencies` run misses subprojects or variants, use a purpose-built lock task that filters resolvable configurations, mark that task incompatible with configuration cache, and avoid blindly resolving every platform-specific graph.
 
 ## Resolution Behavior
 
 - If the declared version is lower than the lock, Gradle can select the locked version.
-- If the declared version is higher than the lock, resolution can fail because the lock is strict.
-- Update lock state when selected versions intentionally change; do not expect declarations to override existing locks.
-- Default mode requires every existing lock entry to match the resolved graph and rejects extra resolved dependencies; new or removed dependencies are lock out-of-date evidence.
+- In ordinary default or strict mode, a declared version higher than the lock can fail resolution because the lock is strict.
+- Update lock state when selected versions intentionally change; ordinary default or strict mode does not let declarations override existing locks.
+- With existing lock state, default mode requires every lock entry to match the resolved graph and rejects extra resolved dependencies; new or removed dependencies are lock out-of-date evidence. In Gradle 9.7.1, a missing lock state instead permits ordinary resolution and does not create a lockfile without a write/update flag; use strict mode when absence must fail.
 - Strict mode also fails when a locked configuration has no associated lock state.
-- Lenient mode pins dynamic versions but can allow version shifts and graph additions/removals; use it for controlled exploration, not release defaults.
+- Lenient mode anchors dynamic selectors to locked versions but permits version shifts and graph additions/removals. In Gradle 9.7.1, an explicit higher version or strict declaration can override that anchor even when a dynamic selector is also present; use it for controlled exploration, not release defaults.
 - Locking constrains modules that remain in the resolved graph; it does not resurrect excluded modules, and it skips versionless dependencies and included-build substitutions when producing or loading lock state.
 - Diagnose lock failures by category: missing locked module means the graph path disappeared, extra module means a new graph edge appeared, and forced/substituted version means a resolution rule conflicts with the lock.
-- If a force, dependency substitution, or `eachDependency` rule selects a different version from the lock, treat the failure as a lock-policy conflict and update the rule or lock together.
+- When ordinary default or strict mode reports that a force, dependency substitution, or `eachDependency` rule selected a different version from the lock, update the rule or lock together; lenient mode and targeted updates do not perform this same lock-state validation.
 - Locking does not apply to source dependencies.
 - Do not combine dependency locking with `failOnDynamicVersions()` or `failOnChangingVersions()` on the same configuration; choose locking to preserve selected dynamic/changing results, or choose fail-fast resolution to reject those selectors before lock state is relevant.
 

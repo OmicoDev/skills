@@ -17,7 +17,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Artifact selection is per graph node. Gradle selects one artifact set from the selected variant, then looks for a transform chain only when no artifact set matches the requested attributes.
 - Gradle runs transforms only when no existing variant or artifact set can satisfy the requested attributes.
 - Requested artifact attributes are the resolved configuration attributes plus artifact view attributes plus dependency-declared artifact attributes; inspect all three when a transform does not select.
-- Transform selection works backward from requested attributes to existing variants, may build transform chains, prefers the shortest suitable chain, and fails when equally short chains produce different suitable results. If equally short chains produce the same result attributes, Gradle may choose either chain; do not rely on registration order.
+- Transform selection works backward from requested attributes to existing variants, prefers the shortest suitable chains, then applies attribute disambiguation. Since Gradle 9.0, multiple distinct remaining chains fail even when their final attributes are identical. In Gradle 9.7.1, only chains with the same source variant and same set of transformation steps are treated as equivalent regardless of step order; do not rely on registration order.
 - Treat transform attributes as a published contract. Add every requested artifact attribute to the consumable or resolvable side that needs it instead of relying on task code to discover formats later.
 - Register custom artifact attributes in the attributes schema and put the default value on every produced artifact set that may be transformed; missing defaults can make a transform path unreachable.
 
@@ -25,7 +25,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 
 - Implement transforms as `TransformAction<P>` classes with exactly one `@InputArtifact` `Provider<FileSystemLocation>` and optional `TransformParameters`.
 - Define transform action classes in ordinary build logic or plugin classpaths; dynamically generated or custom-classloader action types can fail isolation before artifact resolution.
-- Do not implement `getParameters()` or custom constructors on a `TransformAction`; Gradle supplies parameters and transform actions may only have a default constructor.
+- Let Gradle implement `getParameters()` and prefer abstract getters for injection with a default constructor. This follows the public `TransformAction` contract; do not diagnose a constructor as the cause of an instantiation failure without checking the actual injection error.
 - Use `TransformParameters.None` when no parameters are needed.
 - Define transform parameters as a managed interface or abstract class implementing `TransformParameters`; use managed properties with input annotations for every behavior-affecting parameter.
 - Treat transform parameters as isolated inputs, not shared state; do not rely on mutating build-script objects or parameter-held collections after registration to communicate between transforms or tasks.
@@ -38,7 +38,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Do not write transform outputs to arbitrary external paths. Use relative `TransformOutputs` locations for new outputs, or absolute paths only when returning the input artifact or files already inside an input directory.
 - Do not declare transform outputs with task-style `@OutputFile` or `@OutputDirectory` properties, including on `TransformParameters`; artifact transforms own outputs only through the `TransformOutputs` parameter.
 - A transform may produce zero, one, or many output artifacts; registered outputs replace the input artifacts in registration order.
-- Add `@CacheableTransform` only when outputs are deterministic and relocatable. Cacheable transforms need normalization such as `@PathSensitive`, `@Classpath`, or `@CompileClasspath` on `@InputArtifact`, `@InputArtifactDependencies`, and file-valued parameters, but absolute path sensitivity is invalid for artifact transforms.
+- Add `@CacheableTransform` only when outputs are deterministic and relocatable. Cacheable transforms need normalization such as `@PathSensitive`, `@Classpath`, or `@CompileClasspath` on `@InputArtifact`, `@InputArtifactDependencies`, and file-valued parameters, but absolute path sensitivity is invalid for cacheable transforms. In Gradle 9.7.1, that validation does not reject absolute sensitivity on non-cacheable transforms; prefer relocatable normalization whenever possible.
 - Add `@NormalizeLineEndings` when text inputs or parameter files should be line-ending agnostic; cacheable transforms are line-ending-sensitive by default.
 - Use `@DisableCachingByDefault(because = "...")` when a transform is intentionally not cacheable; missing cacheability intent is a validation signal for transform actions just like task types.
 - Declare `@InputArtifactDependencies` as an abstract `FileCollection` getter only when transitive dependency files genuinely affect the conversion; it can force extra resolution/downloads, and cacheable transforms must normalize those injected dependency files.
@@ -62,6 +62,8 @@ Read this when: artifact transform implementation, registration, chaining, sched
 
 ## Diagnostics
 
+The `artifactTransforms` task and its `--type` option require Gradle 8.13 or newer. With an older wrapper, inspect registrations and resolve the consuming configuration or artifact view instead.
+
 ```bash
 ./gradlew artifactTransforms
 ./gradlew :subproject:artifactTransforms
@@ -77,7 +79,7 @@ Read this when: artifact transform implementation, registration, chaining, sched
 - Confirm requested artifact attributes from the resolvable configuration or artifact view before changing transform registration.
 - Transform never runs: an existing artifact set already matches, the transform is registered in the wrong project, attributes do not connect, or the input variant has no artifacts.
 - Chain stops after an earlier transform: confirm the previous transform produced at least one registered output artifact; empty output skips downstream transforms.
-- Ambiguous transform chain: read the reported source variants and candidate chains, then reduce overlapping registrations, make requested attributes more specific, or remove unrequested extra output attributes that let equally short chains produce different suitable results.
+- Ambiguous transform chain: compare the reported source variants and transformation steps, then remove overlapping registrations or add attributes that select one chain. Making final output attributes identical does not resolve distinct-chain ambiguity on Gradle 9.0+; Gradle 8.14.5 instead warns when those remaining chains are mutually compatible, while incompatible results already fail.
 - Parallel transform failure: inspect every reported "Failed to transform ..." cause; Gradle may collect multiple artifact failures from the same resolution instead of stopping at the first one.
 - Transform runs for external modules but not project dependencies: compare project outgoing artifact attributes with module metadata and check whether an existing project variant already satisfies the request.
 - Transform resolves or downloads more artifacts than expected: check `@InputArtifactDependencies` and broad artifact view attributes before changing the dependency graph.

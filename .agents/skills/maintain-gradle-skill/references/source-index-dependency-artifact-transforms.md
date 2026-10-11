@@ -4,9 +4,12 @@
 
 - [Artifact Transforms](https://docs.gradle.org/current/userguide/artifact_transforms.html)
 - [Artifact Views](https://docs.gradle.org/current/userguide/artifact_views.html)
+- [ArtifactTransformsReportTask (introduced in Gradle 8.13)](https://docs.gradle.org/8.13/javadoc/org/gradle/api/tasks/diagnostics/ArtifactTransformsReportTask.html)
 - [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html)
 - [Dealing with validation problems](https://docs.gradle.org/current/userguide/validation_problems.html)
 - [Debugging and diagnosing Build Cache misses](https://docs.gradle.org/current/userguide/build_cache_debugging.html)
+- [TransformAction](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/transform/TransformAction.html)
+- [Upgrading from Gradle 8.x (ambiguous transformation chains)](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
 - [Using Shared Build Services](https://docs.gradle.org/current/userguide/build_services.html)
 
 ## Source Code
@@ -20,13 +23,17 @@
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformValuesInjectionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/ArtifactTransformWithDependenciesIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/CrashingBuildsArtifactTransformIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/transform/DisambiguateArtifactTransformIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/DefaultTransform.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/DefaultTransformOutputs.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/MutableTransformExecution.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/transform/TransformationChainsDisambiguator.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/internal/component/resolution/failure/describer/AmbiguousArtifactTransformsFailureDescriber.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/internal/component/resolution/failure/transform/TransformationChainData.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/internal/component/resolution/failure/transform/TransformedVariantConverter.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/internal/component/resolution/failure/type/AmbiguousArtifactTransformsFailure.java`
 - `platforms/software/software-diagnostics/src/integTest/groovy/org/gradle/api/tasks/diagnostics/ArtifactTransformsReportTaskIntegrationTest.groovy`
+- `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/ArtifactTransformsReportTask.java`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/artifact/transforms/ArtifactTransformReports.java`
 - `platforms/software/software-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/artifact/transforms/model/ArtifactTransformReportModelFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/ArtifactCollection.java`

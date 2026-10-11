@@ -11,6 +11,8 @@
 - [How to Prevent Accidental or Eager Dependency Upgrades in Gradle](https://docs.gradle.org/current/userguide/how_to_prevent_accidental_dependency_upgrades.html)
 - [How to Troubleshoot Version Catalog Problems in Gradle](https://docs.gradle.org/current/userguide/how_to_fix_version_catalog_problems.html)
 - [How to Upgrade Transitive Dependencies in Gradle](https://docs.gradle.org/current/userguide/how_to_upgrade_transitive_dependencies.html)
+- [JavaResolutionConsistency API](https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/JavaResolutionConsistency.html)
+- [MutableVersionConstraint API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/MutableVersionConstraint.html)
 - [Platforms](https://docs.gradle.org/current/userguide/platforms.html)
 - [Upgrading within Gradle 8.x](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
@@ -25,19 +27,31 @@
 - `platforms/documentation/docs/src/snippets/reference/dependency-management/centralizing-dependencies/catalogs-classifiers/groovy/build.gradle`
 - `platforms/documentation/docs/src/snippets/reference/dependency-management/centralizing-dependencies/catalogs-classifiers/kotlin/build.gradle.kts`
 - `platforms/jvm/language-jvm/src/integTest/groovy/org/gradle/integtests/resolve/consistency/JavaProjectResolutionConsistencyIntegrationTest.groovy`
+- `platforms/jvm/language-jvm/src/main/java/org/gradle/api/plugins/JavaResolutionConsistency.java`
+- `platforms/jvm/plugins-java-base/src/main/java/org/gradle/api/plugins/internal/DefaultJavaPluginExtension.java`
+- `platforms/jvm/plugins-java/src/main/java/org/gradle/jvm/component/internal/DefaultJvmSoftwareComponent.java`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/catalog/KotlinDslVersionCatalogExtensionIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/catalog/VersionCatalogExtensionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/consistency/ProjectLocalDependencyResolutionConsistencyIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/strict/StrictVersionConstraintsFeatureInteractionIntegrationTest.groovy`
+- `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/suppliers/CustomVersionListerWithSupplierIntegrationTest.groovy`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/configurations/DefaultConfiguration.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dependencies/DefaultMinimalDependencyVariant.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dependencies/DefaultMutableVersionConstraint.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ResolutionExecutor.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ivyresolve/DefaultVersionedComponentChooser.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ivyresolve/DynamicVersionResolver.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolveengine/graph/builder/NodeState.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/AbstractExternalDependencyFactory.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/AliasNormalizer.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/DefaultVersionCatalog.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/DefaultVersionCatalogBuilder.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/catalog/LibrariesSourceGenerator.java`
+- `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/dependencies/DefaultMutableVersionConstraintTest.groovy`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/catalog/DefaultVersionCatalogBuilderTest.groovy`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/catalog/LibrariesSourceGeneratorTest.groovy`
+- `subprojects/core-api/src/main/java/org/gradle/api/artifacts/MutableVersionConstraint.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalog.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/VersionCatalogsExtension.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/artifacts/dsl/DependencyHandler.java`

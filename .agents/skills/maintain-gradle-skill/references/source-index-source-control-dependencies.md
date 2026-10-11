@@ -15,7 +15,9 @@
 
 - `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/ConfigurationCacheState.kt`
 - `platforms/documentation/docs/src/docs/userguide/reference/dependency-management/dependency-management/dependency_locking.adoc`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/ivyresolve/strategy/LatestVersionSelector.java`
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/git/internal/SourceDependencyCleanupIntegrationTest.groovy`
+- `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/AbstractSourceDependencyMultiprojectIntegrationTest.groovy`
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/GitVcsIntegrationTest.groovy`
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/GitVersionSelectionIntegrationTest.groovy`
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/NestedSourceDependencyIntegrationTest.groovy`
@@ -24,8 +26,11 @@
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/SourceDependencyConfigurationCacheIntegrationTest.groovy`
 - `platforms/software/version-control/src/integTest/groovy/org/gradle/vcs/internal/SourceDependencyIncludedBuildIntegrationTest.groovy`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/git/GitVersionControlSpec.java`
+- `platforms/software/version-control/src/main/java/org/gradle/vcs/git/internal/DefaultGitVersionControlSpec.java`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/git/internal/GitVersionControlSystem.java`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/DefaultSourceControl.java`
+- `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/DefaultVcsMapping.java`
+- `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/DefaultVcsMappings.java`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/DefaultVcsMappingsStore.java`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/DefaultVersionControlRepository.java`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/resolver/DefaultVcsVersionWorkingDirResolver.java`
@@ -36,12 +41,16 @@
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/resolver/VcsVersionSelectionCache.java`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/services/DefaultVersionControlRepositoryFactory.java`
 - `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/services/VersionControlRepositoryCacheFactory.java`
+- `platforms/software/version-control/src/main/java/org/gradle/vcs/internal/services/VersionControlServices.java`
 - `platforms/software/version-control/src/test/groovy/org/gradle/vcs/fixtures/GitFileRepositoryTest.groovy`
 - `platforms/software/version-control/src/test/groovy/org/gradle/vcs/git/internal/GitVersionControlSystemSpec.groovy`
+- `platforms/software/version-control/src/test/groovy/org/gradle/vcs/internal/DefaultVcsMappingStoreTest.groovy`
 - `platforms/software/version-control/src/testFixtures/java/org/gradle/vcs/fixtures/GitFileRepository.java`
+- `subprojects/composite-builds/src/main/java/org/gradle/composite/internal/DefaultIncludedBuild.java`
 - `subprojects/composite-builds/src/main/java/org/gradle/composite/internal/DefaultIncludedBuildRegistry.java`
 - `subprojects/core-api/src/main/java/org/gradle/vcs/SourceControl.java`
 - `subprojects/core-api/src/main/java/org/gradle/vcs/VcsMappings.java`
 - `subprojects/core-api/src/main/java/org/gradle/vcs/VersionControlRepository.java`
 - `subprojects/core-api/src/main/java/org/gradle/vcs/VersionControlSpec.java`
 - `subprojects/core/src/main/java/org/gradle/cache/internal/BuildScopeCacheDir.java`
+- `subprojects/core/src/main/java/org/gradle/internal/build/AbstractBuildState.java`

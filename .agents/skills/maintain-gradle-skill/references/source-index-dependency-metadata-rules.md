@@ -25,6 +25,8 @@
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/ivyservice/resolutionstrategy/DefaultComponentSelectionRules.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/repositories/AbstractArtifactRepository.java`
 - `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/repositories/DefaultFlatDirArtifactRepository.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/api/internal/artifacts/repositories/resolver/DefaultMutableVariantFilesMetadata.java`
+- `platforms/software/dependency-management/src/main/java/org/gradle/internal/component/model/VariantFilesRules.java`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/api/internal/artifacts/dsl/DefaultComponentMetadataHandlerTest.groovy`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/internal/component/external/model/AbstractDependencyMetadataRulesTest.groovy`
 - `platforms/software/dependency-management/src/test/groovy/org/gradle/internal/component/external/model/VariantFilesMetadataRulesTest.groovy`
