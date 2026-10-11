@@ -5,6 +5,7 @@
 - [A Groovy Build Script Primer](https://docs.gradle.org/current/userguide/groovy_build_script_primer.html)
 - [ADR-0010 - Gradle properties naming](https://github.com/gradle/gradle/blob/master/architecture/standards/0010-gradle-properties-naming.md)
 - [Best Practices for Structuring Builds](https://docs.gradle.org/current/userguide/best_practices_structuring_builds.html)
+- [Configuration Cache Requirements](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Creating and Registering Tasks](https://docs.gradle.org/current/userguide/writing_tasks_intermediate.html)
 - [General Gradle Best Practices](https://docs.gradle.org/current/userguide/best_practices_general.html)
 - [Gradle Kotlin DSL Primer](https://docs.gradle.org/current/userguide/kotlin_dsl.html)
@@ -22,10 +23,18 @@
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheProblemReportingIntegrationTest.groovy`
 - `platforms/core-configuration/domain-object-collections/src/main/java/org/gradle/api/internal/DefaultDomainObjectCollection.java`
+- `platforms/core-configuration/domain-object-collections/src/main/java/org/gradle/api/internal/collections/FilteredElementSource.java`
 - `platforms/core-configuration/domain-object-collections/src/test/groovy/org/gradle/api/internal/DefaultDomainObjectCollectionTest.groovy`
+- `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/PrecompiledScriptPluginIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/plugins/precompiled/PrecompiledScriptPluginAccessorsTest.kt`
+- `platforms/core-configuration/kotlin-dsl-provider-plugins/src/main/kotlin/org/gradle/kotlin/dsl/provider/plugins/DefaultProjectSchemaProvider.kt`
+- `platforms/core-configuration/kotlin-dsl-provider-plugins/src/main/kotlin/org/gradle/kotlin/dsl/provider/plugins/precompiled/DefaultPrecompiledScriptPluginsSupport.kt`
+- `platforms/core-configuration/kotlin-dsl-provider-plugins/src/main/kotlin/org/gradle/kotlin/dsl/provider/plugins/precompiled/PrecompiledScriptPlugin.kt`
 - `platforms/core-configuration/kotlin-dsl-provider-plugins/src/main/kotlin/org/gradle/kotlin/dsl/provider/plugins/precompiled/tasks/GeneratePrecompiledScriptPluginAccessors.kt`
+- `platforms/core-configuration/kotlin-dsl/src/integTest/kotlin/org/gradle/kotlin/dsl/compile/BuildScriptCompileAvoidanceIntegrationTest.kt`
+- `platforms/core-configuration/kotlin-dsl/src/integTest/kotlin/org/gradle/kotlin/dsl/compile/BuildSrcScriptCompileAvoidanceIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslDelegatedPropertiesDeprecationIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ConfigurableFileCollectionExtensions.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/ExtensionContainerExtensions.kt`
@@ -36,7 +45,12 @@
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/PropertyStateExtensions.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/SettingsExtensions.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/TaskContainerExtensions.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/accessors/AccessorsClassPath.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/execution/Interpreter.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/normalization/KotlinCompileClasspathFingerprinter.kt`
 - `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/precompile/v1/PrecompiledScriptTemplates.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/provider/BuildServices.kt`
+- `platforms/core-configuration/kotlin-dsl/src/main/kotlin/org/gradle/kotlin/dsl/provider/KotlinScriptEvaluator.kt`
 - `platforms/core-configuration/model-core/src/integTest/groovy/org/gradle/internal/extensibility/DeprecatedBooleanPropertyIntegrationTest.groovy`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/extensibility/ExtensibleDynamicObject.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/internal/instantiation/generator/AbstractClassGenerator.java`
@@ -50,6 +64,7 @@
 - `platforms/documentation/docs/src/snippets/best-practices/usePluginsBlock-do/kotlin/build.gradle.kts`
 - `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/plugins/PrecompiledGroovyPluginsIntegrationTest.groovy`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/GeneratePluginAdaptersTask.java`
+- `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/PrecompiledGroovyPluginsPlugin.java`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/PrecompiledGroovyScript.java`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/internal/precompiled/PrecompiledScriptTarget.java`
 - `platforms/extensibility/plugin-development/src/test/groovy/org/gradle/plugin/devel/internal/precompiled/PrecompiledGroovyScriptTest.groovy`
@@ -58,6 +73,9 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ProviderFactory.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/project/GetPropertiesDeprecationIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/project/ParentProjectPropertyLookupIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/configuration/project/LifecycleProjectEvaluatorIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/FeaturePreviews.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/project/DefaultProject.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/DefaultTaskContainer.java`
+- `subprojects/core/src/main/java/org/gradle/configuration/project/LifecycleProjectEvaluator.java`
 - `subprojects/core/src/main/java/org/gradle/groovy/scripts/BasicScript.java`

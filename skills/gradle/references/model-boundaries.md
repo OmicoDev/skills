@@ -17,12 +17,12 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 ## Model Boundaries
 
 - Initialization reads settings and discovers builds, projects, plugin management, dependency repository policy, version catalogs, and included builds.
-- Configuration creates and configures project models and task graphs for the requested entrypoints.
+- Configuration creates and configures project models and task graphs for the requested entrypoints. With Gradle 9.8 Configuration Cache reuse, init, settings, and project scripts are not re-evaluated; put work that must happen on every execution in tasks or the appropriate execution-lifecycle API, not configuration callbacks.
 - Execution runs selected tasks and should do the actual filesystem, network, process, and compiler work.
 - Do not use task execution, task graph callbacks, or resolved dependency/artifact files to decide project topology, plugin application, or shared conventions; those decisions belong before the graph is calculated, usually in settings, plugins, or lazy task/configuration wiring.
 - Gradle state is scoped as process, session, build tree, build, then project. A value tied to one scope should not be cached or mutated as if it lived in another.
 - Settings scripts own topology. Project scripts own project plugins, dependencies, tasks, extensions, and outgoing publications.
-- Providers are lazy value recipes. Keep values as providers until a Gradle-owned consumer or task action needs them.
+- Providers are lazy value recipes. Keep values as providers until a Gradle-owned consumer or task action needs them. In Gradle 9.8, Configuration Cache may store a provider by value or by computation; laziness does not promise that its computation first runs in a task action.
 - Provider laziness is still a model boundary: calling `get()`, querying presence to branch, resolving a configuration, or using eager task collection APIs during configuration realizes values early and can change graph shape, cache inputs, or dependency resolution timing.
 - Configurations are dependency buckets with declarable, resolvable, or consumable roles. Do not use one role to fake another.
 - Components expose variants. Variants carry attributes, capabilities, artifacts, dependencies, and metadata.
@@ -30,7 +30,9 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Init scripts and init plugins run before repository build logic and can affect every build attached to that Gradle user home or CI image.
 - Flow actions and build services model lifecycle-adjacent work. Ordinary tasks still own source, output, process, and filesystem work.
 - Isolated Projects forbids cross-project mutable model access during configuration. Read immutable project identity sparingly; move shared policy to convention plugins, variants, or state-isolating lifecycle callbacks. Route migration details to [isolated-projects.md](isolated-projects.md).
-- Register `gradle.lifecycle.beforeProject/afterProject` from the owning build before projects are loaded; late registration after settings evaluation fails instead of attaching to already-loaded projects. Its isolated actions are configuration-cache-serialized per target and cannot share mutable state or make an included build's build logic access another build's Gradle model.
+- `gradle.lifecycle.beforeProject/afterProject` and `project.isolated` require Gradle 8.8+. Register lifecycle actions from the owning build's init/settings logic. In Gradle 9.8, registration inside `settingsEvaluated` still works, but `projectsLoaded` callbacks and project scripts are too late; the failure message says “after settings have been evaluated.”
+- In Gradle 9.8, lifecycle actions are serialized into a separate state graph for each target project even when Configuration Cache is disabled. Captured mutable state can be shared by before/after actions for the same project, but not across projects or back to the original captured object. These configuration callbacks do not rerun on a Configuration Cache hit.
+- In Gradle 9.8, `lifecycle.beforeProject` can run before another project's mutable-state access, earlier than the target's build script evaluation; immutable identity reads alone do not trigger it. Do not use callback timing to coordinate cross-project mutation. Under Isolated Projects, an included build cannot use another build's `Gradle` model to register these actions.
 - Treat legacy `gradle.rootProject {}` and `allprojects {}` hooks as cross-project mutable configuration, not delayed execution: actions registered before projects load are queued for project loading, while later registrations run immediately against mutable project state and still need an eager, non-isolated owner.
 
 ## State Scope
@@ -42,7 +44,7 @@ Read this when: the owner surface, lifecycle phase, or Gradle model boundary is 
 - Project state belongs to one project inside one build execution. Cross-project reads must be immutable identity reads or modeled through dependencies, variants, publications, or convention plugins.
 - Same-build project-state coordination does not generalize to included builds; pass build-tree identity or modeled artifacts across composite boundaries instead of retaining `Project` objects or mutable model-derived state.
 - Project paths such as `:lib` are build-local; build-tree identity paths are the global identity across included builds. In composite-build triage, keep the owning build identity attached to project paths before diagnosing task selection, dependency substitution, or cross-build model access.
-- When Gradle exposes both `path` and `buildTreePath`, use `buildTreePath` or identity path for tooling, composite, and external references; use `path`, `project(...)`, or relative project names only for lookup inside the owning build.
+- Use `Project.buildTreePath` (Gradle 8.3+) or `IsolatedProject.buildTreePath` (8.9+) for tooling, composite, and external identity; use `path`, `project(...)`, or relative project names for lookup inside the owning build. In Gradle 9.8 an included root can have `path == ":"` and `buildTreePath == ":included"`; a build-tree path is not a cross-build `project(...)` lookup key.
 
 ## Ownership Questions
 
