@@ -2,10 +2,15 @@
 
 ## Documentation
 
+- [BuildController API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/BuildController.html)
+- [Failure API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/Failure.html)
 - [Gradle & Third-party Tools](https://docs.gradle.org/current/userguide/third_party_integration.html)
 - [Gradle Build Environment](https://docs.gradle.org/9.6.1/userguide/build_environment.html)
+- [GradleConnector API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/GradleConnector.html)
 - [Improve the Performance of Gradle Builds](https://docs.gradle.org/9.6.1/userguide/performance.html)
 - [Isolated Projects](https://docs.gradle.org/9.6.1/userguide/isolated_projects.html)
+- [LongRunningOperation API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/LongRunningOperation.html)
+- [ProjectConnection API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/ProjectConnection.html)
 - [Tooling API](https://docs.gradle.org/current/userguide/tooling_api.html)
 
 ## Source Code
@@ -24,21 +29,30 @@
 - `platforms/ide/tooling-api-builders/src/main/java/org/gradle/tooling/internal/provider/runner/DefaultInternalFetchModelResult.java`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r61/InvalidateVirtualFileSystemAfterChangeCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r68/CompositeBuildTestLauncherCrossVersionSpec.groovy`
+- `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r930/FetchBuildActionCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r930/ResilientGradleBuildBuilderCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r940/ParallelActionExecutionCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/crossVersionTest/groovy/org/gradle/integtests/tooling/r970/FetchBuildActionCrossVersionSpec.groovy`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/BuildController.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/BuildLauncher.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/Failure.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/FetchModelResult.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/GradleConnector.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/LongRunningOperation.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/ModelBuilder.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/ProjectConnection.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/TestLauncher.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/DefaultFailure.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/DefaultFetchModelResult.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/DefaultGradleConnector.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/DistributionFactory.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/connection/FetchAwareBuildControllerAdapter.java`
+- `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/internal/consumer/parameters/BuildProgressListenerAdapter.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/model/kotlin/dsl/KotlinDslModelsParameters.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/model/kotlin/dsl/KotlinDslScriptsModel.java`
+- `platforms/ide/tooling-api/src/test/groovy/org/gradle/tooling/internal/consumer/DefaultGradleConnectorTest.groovy`
+- `platforms/ide/tooling-api/src/test/groovy/org/gradle/tooling/internal/consumer/DistributionFactoryTest.groovy`
+- `platforms/ide/tooling-api/src/test/groovy/org/gradle/tooling/internal/consumer/parameters/FailureReconstructionTest.groovy`
 - `subprojects/core-api/src/main/java/org/gradle/tooling/provider/model/ToolingModelBuilderRegistry.java`
 - `subprojects/core/src/main/java/org/gradle/internal/build/ResilientBuildToolingModelController.java`
 - `subprojects/core/src/main/java/org/gradle/internal/buildtree/DefaultBuildTreeLifecycleController.java`
