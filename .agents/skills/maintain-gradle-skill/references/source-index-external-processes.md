@@ -4,7 +4,9 @@
 
 - [Compatibility Matrix](https://docs.gradle.org/current/userguide/compatibility.html)
 - [Configuration Cache Requirements for your Build Logic (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/configuration_cache_requirements.html)
+- [ExecOutput](https://docs.gradle.org/current/javadoc/org/gradle/process/ExecOutput.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
+- [ProviderFactory](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/ProviderFactory.html)
 - [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
@@ -22,12 +24,14 @@
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/sources/process/DefaultExecOutput.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/sources/process/ProcessOutputProviderFactory.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/provider/sources/process/ProcessOutputValueSource.java`
+- `platforms/core-configuration/model-core/src/test/groovy/org/gradle/api/internal/provider/sources/process/ProcessOutputValueSourceTest.groovy`
 - `platforms/core-runtime/classpath/src/main/java/org/gradle/internal/classpath/Instrumented.java`
 - `platforms/core-runtime/process-services-base/src/main/java/org/gradle/process/internal/DefaultExecHandle.java`
 - `platforms/core-runtime/process-services-base/src/main/java/org/gradle/process/internal/ExecHandleRunner.java`
 - `platforms/core-runtime/process-services-base/src/main/java/org/gradle/process/internal/ExecHandleShutdownHookAction.java`
 - `platforms/core-runtime/process-services/src/integTest/groovy/org/gradle/process/internal/CancellationIntegrationTest.groovy`
 - `platforms/core-runtime/process-services/src/integTest/groovy/org/gradle/process/internal/DestroyForkedProcessesIntegrationTest.groovy`
+- `platforms/core-runtime/process-services/src/main/java/org/gradle/process/internal/DefaultExecAction.java`
 - `platforms/core-runtime/process-services/src/main/java/org/gradle/process/internal/DefaultExecActionFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ProviderFactory.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/provider/ValueSource.java`

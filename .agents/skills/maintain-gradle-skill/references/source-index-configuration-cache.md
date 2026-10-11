@@ -19,6 +19,7 @@
 - `platforms/core-configuration/configuration-cache/readme.md`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheGracefulDegradationIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheInitScriptsIntegrationTest.groovy`
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheParallelTaskIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheSupportedTypesIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheThirdPartyAgentInstrumentationIntegrationTest.groovy`
 - `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheUnsupportedTypesIntegrationTest.groovy`
@@ -57,7 +58,10 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeature.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/configuration/BuildFeatures.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/configuration/BuildFeaturesIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/services/BuildServiceIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/ConfigurationCacheDegradation.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/ConfigurationCacheDegradationController.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/FeaturePreviews.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/configuration/DefaultBuildFeature.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/configuration/DefaultBuildFeatures.java`
+- `subprojects/core/src/main/java/org/gradle/internal/service/scopes/BuildScopeServices.java`

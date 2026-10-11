@@ -6,10 +6,10 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 
 - Prefer task outputs, task properties, and layout providers over hard-coded paths.
 - Use `layout.projectDirectory` for project-owned input paths and `layout.buildDirectory` for generated outputs.
-- Use `layout.settingsDirectory` when a path must be relative to the settings directory rather than the current project.
+- On Gradle 8.13+, use `layout.settingsDirectory` when a path must be relative to the settings directory rather than the current project.
 - Avoid `new File("relative")` in build logic; it is relative to the process current working directory, not Gradle's project model.
 - Use `ProjectLayout.files(...)` or file properties to normalize accepted file notations and preserve provider wiring.
-- `FileCollection` is a flat set of files; `FileTree` is a hierarchy with a shared root and relative paths.
+- `FileCollection` is a flat set of files; `FileTree` adds hierarchy and relative paths; a composite tree can combine multiple roots.
 - Do not use `FileTree` when file order is part of task behavior; it has no guaranteed stable order, so sort deliberately before order-sensitive processing.
 - Combined and filtered file collections are live. Do not iterate, call `files`, `asPath`, `isEmpty`, or `size` during configuration when the collection may resolve dependencies or task outputs.
 - Implicit conversion to file collections is task/API-specific. When unsure, pass an explicit `files(...)`, `fileTree(...)`, `DirectoryProperty`, or `RegularFileProperty`.
@@ -31,8 +31,8 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 - `filesMatching(...)` and `filesNotMatching(...)` act on file entries, not directories, and match the original source path rather than the destination path after `into(...)`, `rename(...)`, or an earlier `eachFile`/matching action changed `path`; use them for per-entry duplicate or permission overrides only when broad spec-level policy is too coarse.
 - Treat `filter(...)` and `expand(...)` sources as text and set `filteringCharset`; otherwise the JVM default charset can make transformed outputs host-dependent.
 - Use `expand(...)` only when Groovy template semantics are intended. It evaluates `${...}` expressions, so choose a narrower token filter when the input should be literal text with simple placeholders.
-- `Copy` does not remove stale files already in the destination. Use `Sync` when the destination must be an exact mirror, and keep that destination task-owned or intentionally managed.
-- `Sync` is a destructive copy: it removes files in the destination that were not copied. Restrict its destination to task-owned build output or an intentionally managed install directory.
+- `Copy` leaves stale destination files. Use `Sync` for mirroring: when its copy action runs, it removes destination entries not copied or preserved. Restrict its destination to task-owned build output or an intentionally managed install directory.
+- In Gradle 9.7.1, a `Sync` task skips its copy action when all sources are empty. Without previous output history it leaves existing destination files untouched; with history, Gradle may clean recorded outputs in build-owned locations, independently of `preserve`, while newly added destination files can remain. If empty input must actively empty the destination, use injected `FileSystemOperations.sync` in a typed task with declared inputs/outputs and no empty-input skip; its deletion pass still runs for an empty source.
 - `Sync.preserve {}` filters deletion of existing destination entries that were not visited by the copy; it does not add sources, stop copied files from overwriting destinations, or make an unmanaged destination safe by itself.
 - When a `Copy` task deploys a single file into an unmanaged system or application-server directory that may contain unrelated, unreadable, or pipe-like files, mark that dedicated task with `doNotTrackState("reason")` instead of letting Gradle snapshot the whole destination.
 - Treat `doNotTrackState` as an explicit untracked-task tradeoff: the task is always out of date, cannot use incremental `InputChanges`, and is not stored in or loaded from the build cache.
@@ -64,27 +64,27 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 
 ## Plugin-Owned Packages
 
-- Use the Distribution plugin for application-style ZIP/TAR/install layouts instead of hand-rolled archive tasks. `distribution-base` owns the `distributions` container; `distribution` adds the conventional `main` distribution and its archive/install tasks.
+- Use the Distribution plugin for application-style ZIP/TAR/install layouts instead of hand-rolled archive tasks. On Gradle 8.13+, `distribution-base` owns the `distributions` container; `distribution` adds the conventional `main` distribution and its archive/install tasks.
 - Distribution contents are `CopySpec`s rooted by convention at `src/<distributionName>/dist`. Use `distributionBaseName`, `distributionClassifier`, and child specs to change archive identity or layout deliberately.
 - Treat `installDist` and named install tasks as `Sync` tasks under `build/install`; do not point them at unmanaged directories unless destructive replacement is intended.
 - For JVM applications, use the Application plugin before hand-wiring `JavaExec`, scripts, and archives: `application.mainClass` owns the entry point, `applicationDefaultJvmArgs` feeds both `run` and generated start scripts, and `applicationDistribution` is the CopySpec for extra distribution content.
 - Application distributions conventionally place runtime jars under `lib` and generated start scripts under `application.executableDir`; change those through the extension or distribution contents instead of editing generated scripts or archive paths after the fact.
-- On Gradle 9.5+, remove `exitEnvironmentVar`/`setExitEnvironmentVar` usage and any custom Windows start-script template dependency on `exitEnvironmentVar`; it no longer affects generated scripts and has no replacement.
+- Gradle 9.5+ deprecates `exitEnvironmentVar`/`setExitEnvironmentVar`, with removal planned for Gradle 10; default Windows start scripts no longer use it. In Gradle 9.7.1 custom templates still receive the binding, so remove their dependency on it during migration rather than assuming it is already inert; there is no replacement API.
 - Use `java-library-distribution` only for legacy/simple library ZIPs that package the library jar plus runtime dependencies; prefer published variants or normal Maven/Ivy publications when consumers need dependency metadata.
-- Use the War plugin when the artifact is a web application archive. It disables Java's default JAR, maps `src/main/webapp` to the archive root, and publishes the WAR through `components.web`.
+- Use the War plugin when the artifact is a web application archive. It maps `src/main/webapp` to the archive root and publishes the WAR through `components.web`. On Gradle 9+, `assemble` also builds Java's JAR; applying War does not disable that task.
 - War `providedCompile` and `providedRuntime` are transitive and remove provided libraries from the WAR even when another dependency path declares them; use artifact-only notation only when the provided dependency must be non-transitive.
 - Use the Ear plugin when the artifact is an enterprise application archive. `deploy` dependencies go to the EAR root and are not transitive; `earlib` dependencies go under `lib` and are transitive.
 - For skinny WAR layouts, keep shared libraries in the EAR `lib` directory and model WAR-side shared dependencies as compile-only/provided rather than copying jars out of one archive into another.
 
 ## Permissions And Reproducibility
 
-- Set `filePermissions {}` and `dirPermissions {}` on the relevant `CopySpec` or child spec when permissions are part of the artifact contract.
+- On Gradle 8.3+, set `filePermissions {}` and `dirPermissions {}` on the relevant `CopySpec` or child spec when permissions are part of the artifact contract.
 - On Gradle 9+, raw Unix mode APIs such as `fileMode`, `dirMode`, `FileTreeElement.getMode()`, and `FileCopyDetails.setMode(...)` are removed; use `filePermissions {}` and `dirPermissions {}` instead.
 - Empty archive permission blocks still set explicit defaults: files `0644`, directories `0755`; ordinary `Copy` preserves source permissions when no explicit permission policy is set.
 - Archive permissions are per entry type: `filePermissions {}` does not change directory entries and `dirPermissions {}` does not change file entries; set both when the archive contract requires both.
-- Per-file permission overrides can disable up-to-date checks for that task; prefer broad spec-level permissions when possible.
+- In Gradle 9.7.1, per-file `eachFile { permissions { ... } }` overrides can still be `UP-TO-DATE`; custom copy actions disable build-cache reuse, not up-to-date checking. Prefer spec-level permissions when possible, and declare any external values captured by per-file actions as task inputs.
 - Gradle 9 archive tasks are reproducible by default: deterministic order, fixed timestamps, and fixed file/directory permissions.
-- On Gradle 9.7+, set the incubating provider-backed `reproducibleFileTimestamp` in milliseconds since the epoch when every archive entry needs a meaningful reproducible time such as `SOURCE_DATE_EPOCH`; it requires `preserveFileTimestamps=false`, and configuring it while `preserveFileTimestamps=true` fails the archive task.
+- On Gradle 9.7+, set the incubating provider-backed `reproducibleFileTimestamp` in milliseconds since the epoch when archive entries need a meaningful reproducible time such as `SOURCE_DATE_EPOCH` (convert seconds to milliseconds). It requires `preserveFileTimestamps=false`; smaller values are raised to the format minimum, and values above the ZIP maximum fail.
 - Preserve filesystem timestamps, order, or permissions only when the filesystem or VCS metadata is intentionally part of the output contract.
 - Reproducibility escape hatches are per concern: `preserveFileTimestamps`, `reproducibleFileOrder = false`, `useFileSystemPermissions()`, or `org.gradle.archives.use-file-system-permissions=true` for all archives. Explicit `filePermissions` or `dirPermissions` override filesystem-permission preservation only for that entry type; `useFileSystemPermissions()` resets both entry types to source filesystem modes for that task, `*.unset()` restores Gradle's fixed archive defaults, and a provider that returns `null` preserves filesystem permissions for that entry type.
 - For executable scripts in archives, prefer explicit file permissions over global filesystem-permission preservation.
@@ -93,7 +93,7 @@ Read this when: file paths, `FileCollection`, `FileTree`, `CopySpec`, `Copy`, `S
 
 - Destination contains too much or too little directory structure: inspect whether the path was part of `from(...)`, a child `into(...)`, or an include pattern.
 - Files unexpectedly missing from a `FileTree` or copy: inspect Ant default excludes, include/exclude scope, and whether a `from(...)` path does not exist.
-- Copy task always runs: check `Project.copy` in task actions, per-entry permission overrides, undeclared inputs/outputs, behavior-affecting copy options, and volatile filters.
+- Copy task always runs: check undeclared or changing inputs/outputs, behavior-affecting copy options, volatile filters, and explicit up-to-date predicates; per-entry permission actions alone do not explain this on Gradle 9.7.1.
 - Copy task deliberately always runs: check for `doNotTrackState` and confirm the destination is unmanaged or unreadable enough to justify disabling state tracking.
 - Missing task dependency for copied generated files: pass the producing task/output provider to `from(...)` or declare the source as an input.
 - Reproducible archive mismatch: inspect timestamps, file order, permissions, generated metadata, duplicate entries, and host-specific content.

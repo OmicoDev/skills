@@ -37,7 +37,7 @@ Read this when: `--continuous`/`-t`, watch-loop triggering, quiet-period tuning,
 2. Confirm the changed file is an input of work Gradle reached in the last build, lies inside the owning root, nested, or included build's watched project hierarchy, and is not accessed only through a symlink or unsupported file system.
 3. Run once with `-Dorg.gradle.vfs.verbose=true`; if Gradle retains no watched locations or drops VFS state, route to runtime diagnosis.
 4. For a missing input directory or empty filtered tree, stop the loop, create the directory or first matching file, then restart. Keep the precise filter unless the task genuinely consumes a broader root.
-5. For a build cycle, identify which task changed the reported input and move its generated files to a distinct task-owned output directory.
+5. For a build cycle, identify which task changed the reported input and move its generated files to a distinct task-owned output directory. If the file does not reveal the task, use `--info` to find tasks whose out-of-date reasons name that input, then inspect their actions for the mutation.
 
 ## Avoid
 

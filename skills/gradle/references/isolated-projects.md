@@ -4,10 +4,10 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 
 ## Model
 
-- Isolated Projects is incubating in Gradle 9.7+. It is an early-adopter feature whose APIs, behavior, and IDE/tooling support can still change; it is not enabled by default or recommended for production use yet.
+- Isolated Projects is incubating in Gradle 9.7+. It is opt-in, and its APIs, behavior, and IDE/tooling support can still change; evaluate representative workflows before adoption.
 - The feature isolates project configuration so one project cannot observe or mutate another project's mutable state.
 - It builds on Configuration Cache infrastructure and enables safe parallel project configuration; tooling model caching is local and version/status sensitive.
-- Do not equate Isolated Projects enablement with IDE model cache reuse. Tooling model caching is status-gated and has been disabled in some Gradle 9.x lines for correctness.
+- Do not equate Isolated Projects enablement with IDE model cache reuse. In Gradle 9.7.1, tooling model caching is disabled by default for correctness; parallel project configuration does not imply a cached IDE sync.
 - It targets configuration and model-building performance, especially large multi-project builds and IDE sync. It does not speed up task execution directly.
 - If Configuration Cache hits, initialization and configuration are skipped; Isolated Projects only matters when configuration or model building runs.
 - Enabling Isolated Projects also enables Configuration Cache. It is an error to enable Isolated Projects while explicitly disabling Configuration Cache.
@@ -30,7 +30,7 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 ## Constraint Owners
 
 - Cross-project access: project configuration logic must not read or mutate another project's mutable state.
-- Project-to-build access: project logic touching build-scoped mutable state is risky and not fully enforced yet.
+- Project-to-build access: in Gradle 9.7+, project logic calling `Gradle.beforeProject`, `afterProject`, listener-registration APIs such as `addListener`, or build-scoped plugin/extension APIs produces isolation violations; immutable build identity and directories remain readable.
 - Cross-build access: build logic should avoid `gradle.parent` and mutable state from other included builds.
 - Build-to-project callback access: settings/init callbacks that later configure projects must avoid shared mutable captured state.
 - Treat ordinary `Gradle` callback registration from project configuration as project-to-build access: after settings evaluation some registrations are no-ops or errors, and successful callbacks can run in different orders under parallel project configuration.
@@ -49,7 +49,7 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 ```
 
 - On Gradle 9.7+, prefer `--isolated-projects` or `org.gradle.isolated-projects=true` plus the stable `.diagnostics` and `.dangerously-ignore-problems` property names. The legacy `org.gradle.unsafe.isolated-projects*` names remain deprecated aliases; if both names are set, an explicit `false` from either disables that option.
-- Use `help` with diagnostics mode first because it exercises broad configuration with minimal task execution noise.
+- In Gradle 9.7+, normal mode fails immediately on an isolation violation. Use `help` with diagnostics mode first to collect more violations through sequential configuration with minimal task execution noise; diagnostics does not make violations acceptable.
 - Diagnostics mode runs project configuration and Configuration Cache store sequentially, disables per-project model reuse, and configures all projects. Configuration Cache reuse can still skip configuration after a violation-free run; change a build input when re-exercising diagnostics.
 - Do not commit diagnostics mode as steady-state policy. Disable it after migration because it deliberately turns off Isolated Projects optimizations and can hide the real performance shape.
 - A clean diagnostics `help` run is a baseline, not a proof of full compatibility; lazy task configuration, IDE model builders, and representative workflows can still surface violations.
@@ -61,7 +61,7 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 
 1. Upgrade Gradle, IDEs, and third-party plugins so known isolation fixes are available.
 2. Make representative workflows Configuration Cache compatible first.
-3. Address parent property/method lookup deprecations before broad rollout; consider `enableFeaturePreview("NO_IMPLICIT_LOOKUP_IN_PARENT_PROJECTS")` in settings to align Isolated Projects and non-Isolated behavior.
+3. On Gradle 9.6+, address parent property/method lookup deprecations before broad rollout; consider `enableFeaturePreview("NO_IMPLICIT_LOOKUP_IN_PARENT_PROJECTS")` in settings to align Isolated Projects and non-Isolated behavior.
 4. Run `help` in diagnostics mode and fix local build-logic violations before chasing workflow-specific lazy violations.
 5. Report third-party plugin violations with owner evidence.
 6. Exercise IDE sync and representative task workflows separately because they can touch different lazy build logic.
@@ -71,10 +71,11 @@ Read this when: Isolated Projects adoption, cross-project mutable access, parall
 - Replace `allprojects` and `subprojects` cross-project mutation with convention plugins applied by each project that needs the behavior.
 - Share artifacts through project dependencies, consumable variants, reports, or publications rather than another project's task, extension, or configuration state.
 - For pure task ordering, a `dependsOn(":other:task")` task path can stay isolated-projects-compatible; do not dereference another project's task object such as `rootProject.tasks.foo`, and use variants or providers when files or artifacts are the real contract.
-- Use `gradle.lifecycle.beforeProject` or `afterProject` state-isolating callbacks only when settings/init/settings-plugin lifecycle wiring is the real owner; `beforeProject` can add extensions before build scripts evaluate, while `afterProject` is for post-evaluation checks.
+- On Gradle 8.8+, use `gradle.lifecycle.beforeProject` or `afterProject` state-isolating callbacks only when settings/init/settings-plugin lifecycle wiring is the real owner; `beforeProject` can add extensions before build scripts evaluate, while `afterProject` is for post-evaluation checks.
 - Gradle recreates each `IsolatedAction` through Configuration Cache serialization per target project; captured values must be isolatable, and build services or shared mutable state are not supported inside the action.
-- Use `project.isolated` or `rootProject.isolated` when another project's safe identity data is genuinely needed; the view is limited to identity/root/directory data, not a back door to `group`, `version`, `layout`, tasks, extensions, or configurations.
-- Register shared build services with `registerIfAbsent` and mutate parameters only inside the registration action. Do not inspect `gradle.sharedServices.registrations`.
+- In Gradle 9.7.1, lifecycle callbacks do not resolve plugins. For an included-build convention plugin, register the callback from a settings convention plugin in that build, or request the project plugin with `apply false` in the settings `plugins {}` block; for repository plugins, also supply a version. A root build script declaration alone is insufficient. Core and eagerly available `buildSrc` plugins need no such pre-resolution.
+- On Gradle 8.8+, use `project.isolated` or `rootProject.isolated` when another project's safe identity data is genuinely needed; the view is limited to identity/root/directory data (`buildTreePath` requires 8.9+), not a back door to `group`, `version`, `layout`, tasks, extensions, or configurations.
+- Register shared build services with `registerIfAbsent` and mutate parameters only inside the registration action. In Gradle 9.7.1, the registrations set only permits `findByName(String)`; iteration and other queries are violations. Prefer `registerIfAbsent` to obtain the provider.
 - Treat custom Tooling API model builders as isolated build logic too; do not aggregate by reading subproject extensions, tasks, configurations, or plugins from a root-project builder.
 - Keep included builds as separate build owners; communicate through plugin management, coordinates, substitutions, or duplicated settings policy.
 

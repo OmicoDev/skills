@@ -4,23 +4,40 @@
 
 - [Best Practices for Tasks](https://docs.gradle.org/current/userguide/best_practices_tasks.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
+- [CopyProcessingSpec](https://docs.gradle.org/current/javadoc/org/gradle/api/file/CopyProcessingSpec.html)
+- [DistributionBasePlugin](https://docs.gradle.org/current/javadoc/org/gradle/api/distribution/plugins/DistributionBasePlugin.html)
+- [FileTree](https://docs.gradle.org/current/javadoc/org/gradle/api/file/FileTree.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [Important concepts](https://docs.gradle.org/current/userguide/build_cache_concepts.html)
+- [ProjectLayout](https://docs.gradle.org/current/javadoc/org/gradle/api/file/ProjectLayout.html)
 - [The Application Plugin](https://docs.gradle.org/current/userguide/application_plugin.html)
 - [The Base Plugin](https://docs.gradle.org/current/userguide/base_plugin.html)
 - [The Distribution Plugin](https://docs.gradle.org/current/userguide/distribution_plugin.html)
 - [The Ear Plugin](https://docs.gradle.org/current/userguide/ear_plugin.html)
 - [The Java Library Distribution Plugin](https://docs.gradle.org/current/userguide/java_library_distribution_plugin.html)
 - [The War Plugin](https://docs.gradle.org/current/userguide/war_plugin.html)
+- [Upgrading to Gradle 9.0.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Working With Files](https://docs.gradle.org/current/userguide/working_with_files.html)
 
 ## Source Code
 
+- `platforms/core-configuration/file-collections/src/main/java/org/gradle/api/internal/file/UnionFileTree.java`
+- `platforms/core-configuration/file-collections/src/test/groovy/org/gradle/api/internal/file/UnionFileTreeTest.groovy`
+- `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/DefaultProjectLayout.java`
+- `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/archive/TarCopyAction.java`
+- `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/archive/ZipCopyAction.java`
 - `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/CopyActionUtil.java`
+- `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/DefaultCopySpec.java`
+- `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/FileCopier.java`
 - `platforms/core-configuration/file-operations/src/main/java/org/gradle/api/internal/file/copy/SyncCopyActionDecorator.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/history/OutputsCleaner.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/SkipEmptyMutableWorkStep.java`
+- `platforms/core-execution/execution/src/test/groovy/org/gradle/internal/execution/steps/SkipEmptyMutableWorkStepTest.groovy`
 - `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
+- `platforms/documentation/docs/src/docs/userguide/reference/gradle-types/working_with_files.adoc`
 - `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/building_java_projects.adoc`
+- `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_major_version_9.adoc`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidJdkCollectionApiOnFileCollections-avoid/kotlin/lib/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidJdkCollectionApiOnFileCollections-do/kotlin/lib/build.gradle.kts`
 - `platforms/jvm/platform-jvm/src/main/java/org/gradle/api/java/archives/internal/DefaultManifest.java`
@@ -31,14 +48,28 @@
 - `platforms/jvm/plugins-application/src/main/java/org/gradle/jvm/application/tasks/CreateStartScripts.java`
 - `platforms/jvm/plugins-application/src/test/groovy/org/gradle/api/internal/plugins/StartScriptGeneratorTest.groovy`
 - `platforms/jvm/plugins-application/src/test/groovy/org/gradle/api/tasks/application/CreateStartScriptsTest.groovy`
+- `platforms/jvm/war/src/main/java/org/gradle/api/plugins/WarPlugin.java`
+- `platforms/jvm/war/src/test/groovy/org/gradle/api/plugins/WarPluginTest.groovy`
+- `platforms/software/platform-base/src/main/java/org/gradle/language/base/plugins/LifecycleBasePlugin.java`
+- `platforms/software/plugins-distribution/src/integTest/groovy/org/gradle/api/distribution/plugins/DistributionPluginTest.groovy`
+- `platforms/software/plugins-distribution/src/main/java/org/gradle/api/distribution/plugins/DistributionBasePlugin.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/file/CopyProcessingSpec.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/CopySpec.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/DuplicatesStrategy.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/FileCopyDetails.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/file/FileTree.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/file/ProjectLayout.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/file/SyncSpec.java`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/ArchiveTaskPermissionsIntegrationTest.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CopyPermissionsIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CopyTaskIntegrationSpec.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/ReproducibleArchivesIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/bundling/ArchiveIntegrationTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/api/tasks/AbstractCopyTask.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/Copy.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/Sync.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/bundling/AbstractArchiveTask.java`
+- `subprojects/core/src/main/java/org/gradle/internal/cleanup/DefaultBuildOutputCleanupRegistry.java`
+- `subprojects/core/src/main/java/org/gradle/internal/service/scopes/ExecutionBuildServices.java`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/file/DefaultProjectLayoutTest.groovy`
+- `testing/integ-test/src/integTest/groovy/org/gradle/integtests/SyncTaskIntegrationTest.groovy`

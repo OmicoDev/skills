@@ -8,7 +8,10 @@
 
 ## Source Code
 
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/SkipUpToDateStep.java`
+- `platforms/core-execution/execution/src/test/groovy/org/gradle/internal/execution/steps/SkipUpToDateStepTest.groovy`
 - `platforms/core-runtime/launcher/src/integTest/groovy/org/gradle/launcher/continuous/BuildScriptChangesContinuousBuildIntegrationTest.groovy`
+- `platforms/core-runtime/launcher/src/integTest/groovy/org/gradle/launcher/continuous/BuildSessionServiceReuseContinuousIntegrationTest.groovy`
 - `platforms/core-runtime/launcher/src/integTest/groovy/org/gradle/launcher/continuous/BuildSrcContinuousIntegrationTest.groovy`
 - `platforms/core-runtime/launcher/src/integTest/groovy/org/gradle/launcher/continuous/ChangesDuringBuildContinuousIntegrationTest.groovy`
 - `platforms/core-runtime/launcher/src/integTest/groovy/org/gradle/launcher/continuous/ContinuousBuildCancellationIntegrationTest.groovy`

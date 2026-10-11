@@ -7,7 +7,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Configuration cache stores the configured task graph and build-logic state for a requested task set.
 - Cache entries are invalidated by relevant build configuration inputs: scripts, settings, init scripts, system properties, environment, files read during configuration, Gradle version, and build logic.
 - With configuration cache enabled, Gradle stores and then loads an entry even on a miss before executing tasks; later compatible runs reuse the loaded task graph and skip project configuration.
-- The feature is not enabled by default; treat adoption as a compatibility rollout, not a formatting change.
+- In final Gradle 9.7.x, configuration cache is still opt-in, while the released manual plans to enable it by default in Gradle 10; treat adoption and Gradle 10 upgrades as compatibility rollouts.
 - IDE task execution support and IDE sync/import behavior are separate boundaries.
 - Isolated Projects builds on configuration-cache infrastructure, but project isolation violations and cache reuse failures are different symptoms; read [isolated-projects.md](isolated-projects.md) when cross-project mutable access or IDE model caching owns the issue.
 - Cache entries are local project state under `.gradle/configuration-cache`, reusable by local hot and cold daemons but not shared across developers or CI machines; deleting the directory removes evidence and is not a durable repair.
@@ -26,6 +26,7 @@ Read this when: enabling, diagnosing, repairing, or rolling out Gradle configura
 - Task-scoped incompatibility only matters when the task is in the requested graph; a task that is merely configured, hidden behind `-x`, or registered during execution should not by itself prevent storing a configuration-cache entry.
 - Use read-only configuration cache only for ephemeral CI or probe jobs where misses cannot be reused; disable read-only mode when the build must write entries.
 - Treat parallel configuration-cache load/store as incubating; `ConcurrentModificationException` during configuration is a compatibility signal, not a reason to ignore cache problems.
+- On verified Gradle 9.7.x, configuration cache enables intra-project task execution parallelism on cache hits and misses; neither `--no-parallel` nor `org.gradle.parallel=false` disables it. Declare ordering through task relationships and inputs/outputs, or use a shared build service for shared resources.
 - Treat `STABLE_CONFIGURATION_CACHE` as a version-sensitive early opt-in. Verify current Gradle behavior before using it as a rollout gate, and do not rely on it to surface undeclared build-service usage because that check moved behind internal test-only coverage.
 - Inject `BuildFeatures` when plugin code must react to configuration cache status; use `requested` for reporting and `active` for behavior changes instead of ad hoc command-line parsing.
 - `BuildFeature.requested` is tri-state: explicit true, explicit false, or absent. Do not treat absence as false; `active` can differ because another feature enables configuration cache or another option disables it, and neither value proves a cache hit or miss.

@@ -14,6 +14,10 @@
 
 ## Source Code
 
+- `platforms/core-execution/file-watching/src/main/java/org/gradle/internal/watch/registry/impl/WatchableHierarchies.java`
+- `platforms/core-execution/file-watching/src/main/java/org/gradle/internal/watch/vfs/impl/WatchingVirtualFileSystem.java`
+- `platforms/core-execution/file-watching/src/test/groovy/org/gradle/internal/watch/registry/impl/HierarchicalFileWatcherUpdaterTest.groovy`
+- `platforms/core-execution/file-watching/src/test/groovy/org/gradle/internal/watch/vfs/impl/WatchingVirtualFileSystemTest.groovy`
 - `platforms/core-runtime/base-services/src/main/java/org/gradle/internal/work/DefaultWorkerLimits.java`
 - `platforms/core-runtime/base-services/src/main/java/org/gradle/internal/work/WorkerLimits.java`
 - `platforms/core-runtime/build-profile/src/integTest/groovy/org/gradle/profile/ConfigurationCacheBuildProfileIntegrationTest.groovy`

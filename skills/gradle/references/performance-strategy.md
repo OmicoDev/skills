@@ -26,6 +26,8 @@ Read this when: build speed, task avoidance, configuration cache, build cache, i
 
 Compare repeated runs and avoid broad optimization changes before identifying the dominant cost. For broad best-practice audits, baseline representative workflows first; a fast `help` run mainly proves initialization/configuration behavior, not compile, test, publication, or cache reuse behavior. Treat `--profile` task, project, dependency-resolution, and artifact-transform times as coarse event-duration evidence, not a critical-path timeline; parallel task or transform durations can add up beyond wall-clock time, so use a Build Scan timeline when the question is parallel speedup, idle time, or critical-path ownership.
 
+In Gradle 9.8, `--profile` also produces a report on a Configuration Cache hit, but startup, settings, and project-loading durations fall back to zero when their configuration-time events were skipped. Compare cache-hit and cache-miss runs separately; those zeroes do not establish that cold startup or settings work is free. Use total elapsed time and an external benchmark for the end-to-end comparison.
+
 ## Diagnosis Matrix
 
 - Treat Build Scan and `--profile` categories as owner evidence before changing build logic: startup points to wrapper/daemon/init scripts, settings and `buildSrc` points to settings or build-logic bootstrap, loading projects points to project count, configuration points to plugin/task graph work, dependency resolution points to repository/metadata/version policy, and execution points to tasks.
@@ -48,7 +50,7 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 - Incremental tasks process changed inputs during execution.
 - A task can be incremental without being safely cacheable.
 - Isolated Projects builds on configuration-cache discipline and cross-project ownership boundaries; route details to [isolated-projects.md](isolated-projects.md).
-- Treat parallelism as separate owner surfaces: `--parallel` targets task execution across projects, Configuration Cache can enable task execution parallelism within a project, Isolated Projects targets configuration/model parallelism, [tooling-api.md](tooling-api.md) owns Tooling API model-builder parallelism, and `org.gradle.workers.max` caps parallel work across phases.
+- Treat parallelism as separate owner surfaces: `--parallel` targets task execution across projects, Configuration Cache can enable task execution parallelism within a project, Isolated Projects targets configuration/model parallelism, [tooling-api.md](tooling-api.md) owns Tooling API model-builder parallelism, and `org.gradle.workers.max` limits concurrent Gradle workers across phases. In Gradle 9.8 this is not a ceiling on every thread or subprocess: work outside worker-lease limits can use a separate concurrency limit.
 - Use Gradle Profiler scenarios or method profilers when category evidence points to plugin/custom task algorithms or constrained resources rather than Gradle model structure.
 
 ## Common Performance Owners
@@ -66,7 +68,8 @@ Compare repeated runs and avoid broad optimization changes before identifying th
 - Diagnose with `--watch-fs`/`--no-watch-fs` and `-Dorg.gradle.vfs.verbose=true`; keep verbose VFS logging out of default CI unless it is actively proving a watcher issue.
 - Read [runtime-and-structure.md](runtime-and-structure.md) for file-watching compatibility and daemon-owned VFS state; use this section to diagnose its performance effects.
 - On Linux, large builds can hit inotify watch limits; raising limits costs memory, so memory-constrained CI may be better served by disabling watching.
-- Symlink-heavy or unsupported file systems can reduce watcher value and cross-platform cache reuse. Route persistent cache misses to [build-cache-and-incremental.md](build-cache-and-incremental.md).
+- In Gradle 9.8, paths accessed through symlinks do not benefit from file-system watching. With default watching, Gradle discards retained information for unsupported file systems between builds; explicitly enabling watching changes that retention policy, so `--watch-fs` is not a neutral diagnostic toggle on those file systems.
+- In Gradle 9.8, disabling watching drops daemon-local VFS snapshots, not task output cache entries. Diagnose repeated filesystem scanning separately from `UP-TO-DATE` or `FROM-CACHE` outcomes; route output-cache misses to [build-cache-and-incremental.md](build-cache-and-incremental.md).
 
 ## Rollout Order
 

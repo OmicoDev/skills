@@ -1,6 +1,6 @@
 ---
 name: gradle
-description: Gradle development knowledge for agents maintaining builds, build logic, plugins, tasks, dependencies, JVM toolchains, caches, publishing, CI, security, and upgrades. Use when working with Gradle, gradlew, build.gradle(.kts), settings.gradle(.kts), gradle.properties, init.gradle(.kts), libs.versions.toml, dependencies/dependencyInsight reports, dependency locking or verification, Gradle plugins/tasks, TestKit, Java toolchains, Maven/Ant migration, or wrapper upgrades.
+description: Develop and troubleshoot Gradle builds, plugins, dependencies, toolchains, caches, publishing, CI, and upgrades; use for Gradle build logic and wrapper work.
 ---
 
 # Gradle
