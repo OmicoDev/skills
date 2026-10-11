@@ -40,6 +40,7 @@ Read this when: embedded Kotlin, Kotlin DSL compilation, Kotlin language level, 
 | 2.3.20 | 9.5.0 | 2.2 |
 | 2.3.21 | 9.6.0 | 2.2 |
 | 2.4.0 | 9.7.0 | 2.2 |
+| 2.4.10 | 9.8.0 | 2.2 |
 
 ## Diagnostic Rules
 

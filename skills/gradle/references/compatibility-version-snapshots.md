@@ -6,7 +6,15 @@ Read this when: comparing specific Gradle releases against Java runtime, tested 
 
 - Latest final Gradle: query `https://services.gradle.org/versions/current`.
 - Latest stable per major: query `https://services.gradle.org/versions/all` and ignore entries where `snapshot`, `nightly`, `releaseNightly`, `broken`, or `rcFor` are set.
-- Current compatibility snapshot uses Gradle docs version `9.7.0`. When citing published docs, still verify that the versioned compatibility page exists.
+- Current compatibility snapshot uses Gradle docs version `9.8.1`. When citing published docs, still verify that the versioned compatibility page exists.
+
+## Gradle 9.8.1
+
+- Java: Gradle runtime JVM 17 through 27; JVM 28+ is not yet supported. The published platform matrix excludes macOS `AMD64` with Java 27 or newer from tested coverage.
+- Kotlin: tested Kotlin 2.0.0 through 2.4.20-RC2; embedded Kotlin 2.4.10; Kotlin language version 2.2.
+- Groovy: tested Groovy 1.5.8 through 6.0.0-alpha-2; Groovy-based Gradle plugins must use Groovy 4.x.
+- Android Gradle Plugin: tested AGP 9.0 through 9.5.0-alpha02.
+- These prerelease integration bounds describe the final Gradle release's published test ranges; beta, RC, and alpha integration versions may or may not work.
 
 ## Gradle 9.7.0
 
@@ -15,7 +23,7 @@ Read this when: comparing specific Gradle releases against Java runtime, tested 
 - Groovy: tested Groovy 1.5.8 through 5.0.2; Groovy-based Gradle plugins must use Groovy 4.x.
 - Android Gradle Plugin: tested AGP 9.0 through 9.4.0-alpha03.
 
-## Gradle 8.14.5
+## Gradle 8.14.6
 
 - Java: Gradle runtime JVM 8 through 24; daemon execution with JVM 16 or earlier is deprecated and becomes an error in Gradle 9.
 - Kotlin: tested Kotlin 1.6.10 through 2.1.20-RC3; embedded Kotlin 2.0.21; Kotlin language version 1.8.

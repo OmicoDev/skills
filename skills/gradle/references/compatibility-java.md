@@ -25,6 +25,7 @@ Read this when: deciding whether a Java version can run Gradle, is only safe as 
 | 24 | 8.14+ | 8.14 |
 | 25 | 9.1.0+ | 9.1.0 |
 | 26 | 9.4.0+ | 9.4.0 |
+| 27 | 9.8.0+ | 9.8.0 |
 
 ## Diagnostic Rules
 
@@ -40,6 +41,7 @@ Read this when: deciding whether a Java version can run Gradle, is only safe as 
 - A manually registered `ValidatePlugins` task without the Java Toolchain plugin warns on Gradle 8.1 through 8.14.x and fails on Gradle 9.0+; apply the plugin instead of changing consumer source compatibility. On Gradle 9.2+, an explicitly selected validation launcher must also meet Gradle's minimum daemon Java, while the default convention falls back from an incompatible project toolchain to the daemon JVM.
 - Test task Java failures belong to the test launcher, not compilation by default: Gradle 8.0+ rejects different toolchains selected by `test.executable` and `test.javaLauncher`, and the selected launcher must satisfy that Gradle version's worker JVM minimum before any test framework code runs.
 - On Gradle 6.7+, pair toolchains with `JavaCompile.options.release` when targeting older APIs; toolchains choose a JDK but do not forbid newer APIs.
+- Gradle 9.8.0+ supports Java 27 for toolchains and running Gradle, but its published platform matrix excludes macOS `AMD64` with Java 27 or newer from tested coverage; verify that host separately instead of treating version compatibility as platform coverage.
 - For CI upgrades, pin and report both the Gradle runtime JVM and project toolchains.
 - On Gradle 8.2+, diagnose multiple Java toolchain failures in Alpine or other musl-based runtimes separately from ordinary version compatibility; musl JVMs can affect toolchain detection and forked Java processes through `LD_LIBRARY_PATH`, so prefer a glibc-based image or a single Gradle/runtime toolchain before broad toolchain rewrites.
 - If startup fails before task graph creation, inspect wrapper distribution, Gradle runtime JVM, init scripts, settings plugins, and plugin bytecode before changing project source compatibility.
