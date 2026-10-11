@@ -6,8 +6,8 @@
 - [Gradle Daemon](https://docs.gradle.org/current/userguide/gradle_daemon.html)
 - [Toolchains for JVM projects](https://docs.gradle.org/current/userguide/toolchains.html)
 - [Upgrading to Gradle 9.0.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
+- [Upgrading within Gradle 8.x](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
-- [ValidatePlugins toolchain deprecation in Gradle 8.1](https://docs.gradle.org/8.1/userguide/upgrading_version_8.html)
 
 ## Source Code
 

@@ -9,7 +9,7 @@
 - [How to Share Artifacts Between Projects with Gradle](https://docs.gradle.org/current/userguide/how_to_share_outputs_between_projects.html)
 - [ResolvedArtifactResult API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/result/ResolvedArtifactResult.html)
 - [Resolving Specific Artifacts](https://docs.gradle.org/current/userguide/resolving_specific_artifacts.html)
-- [Upgrading from 8 to 9](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
+- [Upgrading within Gradle 8.x](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code

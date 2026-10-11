@@ -3,6 +3,7 @@
 ## Documentation
 
 - [Best Practices for Performance](https://docs.gradle.org/current/userguide/best_practices_performance.html)
+- [Binary Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_binary.html)
 - [Build Lifecycle](https://docs.gradle.org/current/userguide/build_lifecycle.html)
 - [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
@@ -10,7 +11,6 @@
 - [Configuration Cache Status (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/configuration_cache_status.html)
 - [Debugging and Troubleshooting the Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_debugging.html)
 - [Enabling and Configuring the Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_enabling.html)
-- [Implementing Binary Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_binary.html)
 - [Isolated Projects](https://docs.gradle.org/current/userguide/isolated_projects.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
@@ -48,7 +48,6 @@
 - `platforms/core-configuration/stdlib-serialization-codecs/src/main/kotlin/org/gradle/internal/serialize/codecs/stdlib/CollectionCodecs.kt`
 - `platforms/core-configuration/stdlib-serialization-codecs/src/main/kotlin/org/gradle/internal/serialize/codecs/stdlib/HashSetCodec.kt`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/AbstractInputPropertyAnnotationHandler.java`
-- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_performance.adoc`
 - `platforms/documentation/docs/src/snippets/best-practices/useConfigurationCache-avoid/common/gradle.properties`
 - `platforms/documentation/docs/src/snippets/best-practices/useConfigurationCache-do/common/gradle.properties`
 - `platforms/software/dependency-management/src/integTest/groovy/org/gradle/integtests/resolve/ResolvedArtifactsWithConfigurationCacheIntegrationTest.groovy`

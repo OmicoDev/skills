@@ -5,14 +5,14 @@
 - [Apache HttpClient 4.5.14 default retry policy](https://raw.githubusercontent.com/apache/httpcomponents-client/rel/v4.5.14/httpclient/src/main/java/org/apache/http/impl/client/DefaultHttpRequestRetryHandler.java)
 - [Apache HttpClient 4.5.14 retry wiring](https://raw.githubusercontent.com/apache/httpcomponents-client/rel/v4.5.14/httpclient/src/main/java/org/apache/http/impl/client/HttpClientBuilder.java)
 - [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html)
-- [Build Cache (Gradle 7.1)](https://docs.gradle.org/7.1/userguide/build_cache.html)
-- [Build Cache (Gradle 7.2)](https://docs.gradle.org/7.2/userguide/build_cache.html)
+- [Build Cache (Gradle 7.1 before HTTP redirect support)](https://docs.gradle.org/7.1/userguide/build_cache.html)
+- [Build Cache (Gradle 7.2 HTTP redirect introduction)](https://docs.gradle.org/7.2/userguide/build_cache.html)
 - [Build cache performance](https://docs.gradle.org/current/userguide/build_cache_performance.html)
 - [BuildCacheEntryWriter API](https://docs.gradle.org/current/javadoc/org/gradle/caching/BuildCacheEntryWriter.html)
 - [HTTP Build Cache DSL](https://docs.gradle.org/current/dsl/org.gradle.caching.http.HttpBuildCache.html)
 - [Upgrading from Gradle 4.x to 5.0](https://docs.gradle.org/current/userguide/upgrading_version_4.html)
 - [Upgrading from Gradle 5.x to 6.0](https://docs.gradle.org/current/userguide/upgrading_version_5.html)
-- [Upgrading within Gradle 9.x](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
+- [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Use cases for the build cache](https://docs.gradle.org/current/userguide/build_cache_use_cases.html)
 
 ## Source Code

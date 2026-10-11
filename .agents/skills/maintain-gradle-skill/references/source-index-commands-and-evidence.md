@@ -5,7 +5,6 @@
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Build Scan](https://docs.gradle.org/current/userguide/inspect.html)
 - [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
-- [Gradle 7.5 dependencyInsight CLI option rename](https://docs.gradle.org/7.5/userguide/upgrading_version_7.html)
 - [Gradle 7.6 individual task rerun](https://docs.gradle.org/7.6/release-notes.html)
 - [Gradle 8.0.1 no-rebuild restoration](https://docs.gradle.org/8.0.1/release-notes.html)
 - [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html)
@@ -13,7 +12,8 @@
 - [The Build Dashboard Plugin](https://docs.gradle.org/current/userguide/build_dashboard_plugin.html)
 - [The Project Report Plugin](https://docs.gradle.org/current/userguide/project_report_plugin.html)
 - [Understanding Tasks](https://docs.gradle.org/current/userguide/more_about_tasks.html)
-- [Viewing and Debugging Dependencies](https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html)
+- [Upgrading from Gradle 7.x to 8.0](https://docs.gradle.org/current/userguide/upgrading_version_7.html)
+- [Viewing Dependencies](https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html)
 
 ## Source Code
 

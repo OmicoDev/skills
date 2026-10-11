@@ -3,7 +3,7 @@
 ## Documentation
 
 - [Best Practices for Dependencies](https://docs.gradle.org/current/userguide/best_practices_dependencies.html)
-- [Component Capabilities](https://docs.gradle.org/current/userguide/component_capabilities.html)
+- [Capabilities](https://docs.gradle.org/current/userguide/component_capabilities.html)
 - [Composite Builds (Included Builds)](https://docs.gradle.org/current/userguide/composite_builds.html)
 - [Dependency Resolve Details](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/DependencyResolveDetails.html)
 - [Dependency Substitutions](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/DependencySubstitutions.html)

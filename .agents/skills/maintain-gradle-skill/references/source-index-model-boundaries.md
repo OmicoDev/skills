@@ -2,6 +2,7 @@
 
 ## Documentation
 
+- [2. Dependency Configurations](https://docs.gradle.org/current/userguide/dependency_configurations.html)
 - [Avoiding Unnecessary Task Configuration](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Build Execution Model](https://github.com/gradle/gradle/blob/master/architecture/build-execution-model.md)
@@ -9,7 +10,6 @@
 - [Build State Model](https://github.com/gradle/gradle/blob/master/architecture/build-state-model.md)
 - [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache.html)
 - [Dataflow Actions](https://docs.gradle.org/current/userguide/dataflow_actions.html)
-- [Dependency Configurations](https://docs.gradle.org/current/userguide/dependency_configurations.html)
 - [Gradle Runtimes](https://github.com/gradle/gradle/blob/master/architecture/runtimes.md)
 - [GradleLifecycle API](https://docs.gradle.org/current/javadoc/org/gradle/api/invocation/GradleLifecycle.html)
 - [Initialization Scripts and Init Plugins](https://docs.gradle.org/current/userguide/init_scripts.html)

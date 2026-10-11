@@ -2,9 +2,9 @@
 
 ## Documentation
 
+- [Build Environment Configuration (Gradle 7.5 quiet-period introduction)](https://docs.gradle.org/7.5/userguide/build_environment.html)
 - [Continuous Builds](https://docs.gradle.org/current/userguide/continuous_builds.html)
 - [File System Watching](https://docs.gradle.org/current/userguide/file_system_watching.html)
-- [Gradle 7.5 Build Environment Configuration](https://docs.gradle.org/7.5/userguide/build_environment.html)
 
 ## Source Code
 

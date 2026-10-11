@@ -9,7 +9,7 @@
 - [Debugging and diagnosing Build Cache misses](https://docs.gradle.org/current/userguide/build_cache_debugging.html)
 - [DisableCachingByDefault](https://docs.gradle.org/current/javadoc/org/gradle/work/DisableCachingByDefault.html)
 - [Important concepts](https://docs.gradle.org/current/userguide/build_cache_concepts.html)
-- [Incremental Build](https://docs.gradle.org/current/userguide/incremental_build.html)
+- [Incremental build](https://docs.gradle.org/current/userguide/incremental_build.html)
 - [Solving common problems](https://docs.gradle.org/current/userguide/common_caching_problems.html)
 - [Use cases for the build cache](https://docs.gradle.org/current/userguide/build_cache_use_cases.html)
 
@@ -40,7 +40,6 @@
 - `platforms/core-execution/normalization-api/src/main/java/org/gradle/normalization/RuntimeClasspathNormalization.java`
 - `platforms/core-execution/normalization/src/integTest/groovy/org/gradle/normalization/ConfigureRuntimeClasspathNormalizationIntegrationTest.groovy`
 - `platforms/core-execution/normalization/src/test/groovy/org/gradle/normalization/internal/DefaultRuntimeClasspathNormalizationTest.groovy`
-- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
 - `platforms/documentation/docs/src/snippets/best-practices/useBuildCache-avoid/common/gradle.properties`
 - `platforms/documentation/docs/src/snippets/best-practices/useBuildCache-do/common/gradle.properties`
 - `platforms/documentation/docs/src/snippets/best-practices/useCacheabilityAnnotations-avoid/kotlin/build.gradle.kts`

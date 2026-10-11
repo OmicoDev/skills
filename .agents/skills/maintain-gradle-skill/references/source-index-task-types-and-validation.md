@@ -8,15 +8,15 @@
 - [Best Practices for Tasks](https://docs.gradle.org/current/userguide/best_practices_tasks.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Dealing with validation problems](https://docs.gradle.org/current/userguide/validation_problems.html)
-- [Gradle 6.0 incremental task output requirement](https://docs.gradle.org/6.0/userguide/upgrading_version_5.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
-- [Incremental Build](https://docs.gradle.org/current/userguide/incremental_build.html)
+- [Incremental build](https://docs.gradle.org/current/userguide/incremental_build.html)
 - [InputChanges API](https://docs.gradle.org/current/javadoc/org/gradle/work/InputChanges.html)
 - [NormalizeLineEndings API](https://docs.gradle.org/current/javadoc/org/gradle/work/NormalizeLineEndings.html)
 - [Optional API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/Optional.html)
 - [ServiceReference API](https://docs.gradle.org/current/javadoc/org/gradle/api/services/ServiceReference.html)
 - [TaskInputFilePropertyBuilder API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/TaskInputFilePropertyBuilder.html)
 - [TaskLocalState API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/TaskLocalState.html)
+- [Upgrading from Gradle 5.x to 6.0](https://docs.gradle.org/current/userguide/upgrading_version_5.html)
 - [Upgrading to Gradle 9.0.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
 
 ## Source Code

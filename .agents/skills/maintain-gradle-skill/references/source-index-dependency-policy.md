@@ -2,31 +2,27 @@
 
 ## Documentation
 
+- [1. Declaring dependencies](https://docs.gradle.org/current/userguide/declaring_dependencies.html)
+- [2. Dependency Configurations](https://docs.gradle.org/current/userguide/dependency_configurations.html)
 - [Best Practices for Dependencies](https://docs.gradle.org/current/userguide/best_practices_dependencies.html)
 - [Best Practices for Tasks](https://docs.gradle.org/current/userguide/best_practices_tasks.html)
 - [Configuration API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/Configuration.html)
 - [ConfigurationContainer API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/ConfigurationContainer.html)
 - [Creating Dependency Configurations](https://docs.gradle.org/current/userguide/declaring_configurations.html)
-- [Declaring dependencies](https://docs.gradle.org/current/userguide/declaring_dependencies.html)
 - [Declaring Versions and Ranges](https://docs.gradle.org/current/userguide/dependency_versions.html)
-- [Dependency Configurations](https://docs.gradle.org/current/userguide/dependency_configurations.html)
 - [Dependency Resolution Consistency](https://docs.gradle.org/current/userguide/dependency_resolution_consistency.html)
 - [DependencyFactory API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/dsl/DependencyFactory.html)
 - [DependencyHandler API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/dsl/DependencyHandler.html)
-- [JVM Test Suite Plugin](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html)
 - [Platforms](https://docs.gradle.org/current/userguide/platforms.html)
+- [The JVM Test Suite Plugin](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 - [Using Resolution Rules](https://docs.gradle.org/current/userguide/resolution_rules.html)
 - [Version Catalogs](https://docs.gradle.org/current/userguide/version_catalogs.html)
-- [Viewing and Debugging Dependencies](https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html)
+- [Viewing Dependencies](https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html)
 
 ## Source Code
 
 - `platforms/core-runtime/base-services/src/main/java/org/gradle/util/internal/NameValidator.java`
-- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_dependencies.adoc`
-- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/dependency-management/declaring-dependencies/declaring_configurations.adoc`
-- `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_version_9.adoc`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidDuplicateDependencies-avoid/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidDuplicateDependencies-do/kotlin/build.gradle.kts`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidResolvingConfigurationsManually-avoid/kotlin/app/build.gradle.kts`

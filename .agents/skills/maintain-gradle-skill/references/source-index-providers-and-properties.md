@@ -5,7 +5,7 @@
 - [ADR-0006 - Use of Provider APIs in Gradle](https://github.com/gradle/gradle/blob/master/architecture/standards/0006-use-of-provider-apis-in-gradle.md)
 - [Best Practices for Tasks](https://docs.gradle.org/current/userguide/best_practices_tasks.html)
 - [Binary Plugins](https://docs.gradle.org/current/userguide/implementing_gradle_plugins_binary.html)
-- [Build Environment](https://docs.gradle.org/current/userguide/build_environment.html)
+- [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Collections](https://docs.gradle.org/current/userguide/collections.html)
 - [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [Configuring Tasks Lazily](https://docs.gradle.org/current/userguide/lazy_configuration.html)
@@ -16,8 +16,8 @@
 - [ListProperty API](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/ListProperty.html)
 - [MapProperty API](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/MapProperty.html)
 - [ObjectFactory API](https://docs.gradle.org/current/javadoc/org/gradle/api/model/ObjectFactory.html)
-- [Project (Gradle API 6.9.4)](https://docs.gradle.org/6.9.4/javadoc/org/gradle/api/Project.html)
-- [Project (Gradle API 8.14.3)](https://docs.gradle.org/8.14.3/javadoc/org/gradle/api/Project.html)
+- [Project API (Gradle 6.9.4 legacy convention lookup)](https://docs.gradle.org/6.9.4/javadoc/org/gradle/api/Project.html)
+- [Project API (Gradle 8.14.3 legacy convention lookup)](https://docs.gradle.org/8.14.3/javadoc/org/gradle/api/Project.html)
 - [Properties and Providers](https://docs.gradle.org/current/userguide/properties_providers.html)
 - [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
 - [SetProperty API](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/SetProperty.html)
@@ -50,10 +50,6 @@
 - `platforms/core-configuration/model-core/src/test/groovy/org/gradle/api/internal/provider/MapPropertySpec.groovy`
 - `platforms/core-configuration/model-core/src/test/groovy/org/gradle/internal/extensibility/ExtensibleDynamicObjectTest.java`
 - `platforms/core-configuration/model-core/src/testFixtures/groovy/org/gradle/api/internal/provider/PropertySpec.groovy`
-- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_tasks.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/gradle-types/working_with_files.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/runtime-configuration/build_environment.adoc`
-- `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_major_version_9.adoc`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidAfterEvaluate-avoid/kotlin/buildSrc/src/main/kotlin/AppInfoPlugin.kt`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidAfterEvaluate-do/kotlin/buildSrc/src/main/kotlin/AppInfoPlugin.kt`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidProviderGetOutsideTaskAction-avoid/kotlin/build.gradle.kts`

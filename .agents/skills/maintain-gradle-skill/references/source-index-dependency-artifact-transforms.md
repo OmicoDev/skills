@@ -9,7 +9,7 @@
 - [Dealing with validation problems](https://docs.gradle.org/current/userguide/validation_problems.html)
 - [Debugging and diagnosing Build Cache misses](https://docs.gradle.org/current/userguide/build_cache_debugging.html)
 - [TransformAction](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/transform/TransformAction.html)
-- [Upgrading from Gradle 8.x (ambiguous transformation chains)](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
+- [Upgrading within Gradle 8.x](https://docs.gradle.org/current/userguide/upgrading_version_8.html)
 - [Using Shared Build Services](https://docs.gradle.org/current/userguide/build_services.html)
 
 ## Source Code

@@ -9,23 +9,17 @@
 - [JavaToolchainSpec API](https://docs.gradle.org/current/javadoc/org/gradle/jvm/toolchain/JavaToolchainSpec.html)
 - [ScalaPluginExtension API](https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/scala/ScalaPluginExtension.html)
 - [The Application Plugin](https://docs.gradle.org/current/userguide/application_plugin.html)
-- [The Groovy Plugin (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/groovy_plugin.html)
+- [The Groovy Plugin (Gradle 9.6.1 before Groovydoc toolchain support)](https://docs.gradle.org/9.6.1/userguide/groovy_plugin.html)
 - [The Java Library Plugin](https://docs.gradle.org/current/userguide/java_library_plugin.html)
-- [The Java Plugin (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/java_plugin.html)
+- [The Java Plugin](https://docs.gradle.org/current/userguide/java_plugin.html)
 - [The Scala Plugin](https://docs.gradle.org/current/userguide/scala_plugin.html)
 - [Toolchains for JVM projects](https://docs.gradle.org/current/userguide/toolchains.html)
-- [Toolchains for JVM projects (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/toolchains.html)
-- [Upgrading from Gradle 8.x to 9.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
+- [Upgrading to Gradle 9.0.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
 
 ## Source Code
 
 - `architecture/build-execution-model.md`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/HandleStaleOutputsStep.java`
-- `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/groovy_plugin.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/java_plugin.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/scala_plugin.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/toolchains.adoc`
-- `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_major_version_9.adoc`
 - `platforms/jvm/javadoc/src/main/java/org/gradle/api/tasks/javadoc/Javadoc.java`
 - `platforms/jvm/jvm-services/src/main/java/org/gradle/internal/jvm/inspection/DefaultJavaInstallationRegistry.java`
 - `platforms/jvm/jvm-services/src/main/java/org/gradle/internal/jvm/inspection/JvmInstallationMetadataComparator.java`

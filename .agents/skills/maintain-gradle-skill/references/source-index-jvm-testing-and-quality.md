@@ -7,12 +7,11 @@
 - [Test API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/Test.html)
 - [TestFailureDetails API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/TestFailureDetails.html)
 - [Testing in Java & JVM projects](https://docs.gradle.org/current/userguide/java_testing.html)
-- [Testing in Java & JVM projects (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/java_testing.html)
-- [TestNGOptions API (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html)
-- [TestNGOptions API (Gradle 9.7.0)](https://docs.gradle.org/9.7.0/javadoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html)
+- [TestNGOptions API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html)
+- [TestNGOptions API (Gradle 9.6.1 legacy thread-pool factory contract)](https://docs.gradle.org/9.6.1/javadoc/org/gradle/api/tasks/testing/testng/TestNGOptions.html)
 - [The Checkstyle Plugin](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
 - [The CodeNarc Plugin](https://docs.gradle.org/current/userguide/codenarc_plugin.html)
-- [The JaCoCo Plugin (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/jacoco_plugin.html)
+- [The JaCoCo Plugin](https://docs.gradle.org/current/userguide/jacoco_plugin.html)
 - [The JaCoCo Report Aggregation Plugin](https://docs.gradle.org/current/userguide/jacoco_report_aggregation_plugin.html)
 - [The JVM Test Suite Plugin](https://docs.gradle.org/current/userguide/jvm_test_suite_plugin.html)
 - [The PMD Plugin](https://docs.gradle.org/current/userguide/pmd_plugin.html)
@@ -24,13 +23,6 @@
 - `platforms/core-execution/Work Validation.md`
 - `platforms/core-runtime/process-services/src/main/java/org/gradle/process/internal/DefaultJavaForkOptions.java`
 - `platforms/core-runtime/process-services/src/main/java/org/gradle/process/internal/JvmOptions.java`
-- `platforms/documentation/docs/src/docs/userguide/best-practices/best_practices_testing.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/core-plugins/checkstyle_plugin.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/core-plugins/pmd_plugin.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/java_testing.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/jvm_test_suite_plugin.adoc`
-- `platforms/documentation/docs/src/docs/userguide/reference/platforms/jvm/test_report_aggregation_plugin.adoc`
-- `platforms/documentation/docs/src/docs/userguide/releases/upgrading/upgrading_version_9.adoc`
 - `platforms/jvm/code-quality/src/integTest/groovy/org/gradle/api/plugins/quality/checkstyle/CheckstylePluginToolchainsIntegrationTest.groovy`
 - `platforms/jvm/code-quality/src/integTest/groovy/org/gradle/api/plugins/quality/codenarc/CodeNarcPluginToolchainsIntegrationTest.groovy`
 - `platforms/jvm/code-quality/src/integTest/groovy/org/gradle/api/plugins/quality/pmd/PmdPluginToolchainsIntegrationTest.groovy`

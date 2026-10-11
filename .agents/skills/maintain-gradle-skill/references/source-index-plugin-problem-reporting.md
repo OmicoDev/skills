@@ -5,7 +5,7 @@
 - [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
 - [Reporting Plugin Problems with the Problems API](https://docs.gradle.org/current/userguide/reporting_problems.html)
-- [Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
+- [Services and Service Injection](https://docs.gradle.org/current/userguide/service_injection.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
 ## Source Code

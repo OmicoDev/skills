@@ -3,7 +3,7 @@
 ## Documentation
 
 - [Compatibility Matrix](https://docs.gradle.org/current/userguide/compatibility.html)
-- [Configuration Cache Requirements for your Build Logic (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/configuration_cache_requirements.html)
+- [Configuration Cache Requirements for your Build Logic](https://docs.gradle.org/current/userguide/configuration_cache_requirements.html)
 - [ExecOutput](https://docs.gradle.org/current/javadoc/org/gradle/process/ExecOutput.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [ProviderFactory](https://docs.gradle.org/current/javadoc/org/gradle/api/provider/ProviderFactory.html)

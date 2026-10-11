@@ -2,13 +2,13 @@
 
 ## Documentation
 
+- [Build Environment Configuration](https://docs.gradle.org/current/userguide/build_environment.html)
 - [BuildController API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/BuildController.html)
 - [Failure API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/Failure.html)
 - [Gradle & Third-party Tools](https://docs.gradle.org/current/userguide/third_party_integration.html)
-- [Gradle Build Environment](https://docs.gradle.org/9.6.1/userguide/build_environment.html)
 - [GradleConnector API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/GradleConnector.html)
-- [Improve the Performance of Gradle Builds](https://docs.gradle.org/9.6.1/userguide/performance.html)
-- [Isolated Projects](https://docs.gradle.org/9.6.1/userguide/isolated_projects.html)
+- [Improve the Performance of Gradle Builds](https://docs.gradle.org/current/userguide/performance.html)
+- [Isolated Projects (Gradle 9.6.1 parallel-model policy)](https://docs.gradle.org/9.6.1/userguide/isolated_projects.html)
 - [LongRunningOperation API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/LongRunningOperation.html)
 - [ProjectConnection API](https://docs.gradle.org/current/javadoc/org/gradle/tooling/ProjectConnection.html)
 - [Tooling API](https://docs.gradle.org/current/userguide/tooling_api.html)
