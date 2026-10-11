@@ -4,7 +4,7 @@
 
 - [Artifact Transforms](https://docs.gradle.org/current/userguide/artifact_transforms.html)
 - [Artifact Views](https://docs.gradle.org/current/userguide/artifact_views.html)
-- [ArtifactTransformsReportTask (introduced in Gradle 8.13)](https://docs.gradle.org/8.13/javadoc/org/gradle/api/tasks/diagnostics/ArtifactTransformsReportTask.html)
+- [ArtifactTransformsReportTask API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/diagnostics/ArtifactTransformsReportTask.html)
 - [Build Cache](https://docs.gradle.org/current/userguide/build_cache.html)
 - [Dealing with validation problems](https://docs.gradle.org/current/userguide/validation_problems.html)
 - [Debugging and diagnosing Build Cache misses](https://docs.gradle.org/current/userguide/build_cache_debugging.html)

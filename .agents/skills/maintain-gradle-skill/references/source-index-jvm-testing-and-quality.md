@@ -5,7 +5,6 @@
 - [Best Practices for Testing](https://docs.gradle.org/current/userguide/best_practices_testing.html)
 - [JUnit 5.12 TestReporter API](https://docs.junit.org/5.12.0/api/org.junit.jupiter.api/org/junit/jupiter/api/TestReporter.html)
 - [Test API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/Test.html)
-- [Test API (Gradle 8.3 dry-run contract)](https://docs.gradle.org/8.3/javadoc/org/gradle/api/tasks/testing/Test.html)
 - [TestFailureDetails API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/TestFailureDetails.html)
 - [Testing in Java & JVM projects](https://docs.gradle.org/current/userguide/java_testing.html)
 - [Testing in Java & JVM projects (Gradle 9.6.1)](https://docs.gradle.org/9.6.1/userguide/java_testing.html)

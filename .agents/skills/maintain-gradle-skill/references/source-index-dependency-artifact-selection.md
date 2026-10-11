@@ -4,8 +4,8 @@
 
 - [Artifact Resolution](https://docs.gradle.org/current/userguide/artifact_resolution.html)
 - [Artifact Views](https://docs.gradle.org/current/userguide/artifact_views.html)
-- [ArtifactCollection API (Gradle 7.4 provider introduction)](https://docs.gradle.org/7.4/javadoc/org/gradle/api/artifacts/ArtifactCollection.html)
-- [ArtifactView.ViewConfiguration API (Gradle 7.5)](https://docs.gradle.org/7.5/javadoc/org/gradle/api/artifacts/ArtifactView.ViewConfiguration.html)
+- [ArtifactCollection API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/ArtifactCollection.html)
+- [ArtifactView.ViewConfiguration API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/ArtifactView.ViewConfiguration.html)
 - [How to Share Artifacts Between Projects with Gradle](https://docs.gradle.org/current/userguide/how_to_share_outputs_between_projects.html)
 - [ResolvedArtifactResult API](https://docs.gradle.org/current/javadoc/org/gradle/api/artifacts/result/ResolvedArtifactResult.html)
 - [Resolving Specific Artifacts](https://docs.gradle.org/current/userguide/resolving_specific_artifacts.html)

@@ -12,7 +12,6 @@
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [Incremental Build](https://docs.gradle.org/current/userguide/incremental_build.html)
 - [InputChanges API](https://docs.gradle.org/current/javadoc/org/gradle/work/InputChanges.html)
-- [InputChanges API (Gradle 5.4.1)](https://docs.gradle.org/5.4.1/javadoc/org/gradle/work/InputChanges.html)
 - [NormalizeLineEndings API](https://docs.gradle.org/current/javadoc/org/gradle/work/NormalizeLineEndings.html)
 - [Optional API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/Optional.html)
 - [ServiceReference API](https://docs.gradle.org/current/javadoc/org/gradle/api/services/ServiceReference.html)
