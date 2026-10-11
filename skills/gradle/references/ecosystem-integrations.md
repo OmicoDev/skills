@@ -53,7 +53,7 @@ Gradle should model external build tools as tasks with declared inputs, outputs,
 
 - For Maven migration, map lifecycle, modules, dependency management, profiles, resources, plugins, and publishing separately.
 - Read [migration-execution.md](migration-execution.md) for stepwise Maven/Ant replacement; this file owns the interop boundary while legacy build pieces still participate in a Gradle build.
-- `ant.importBuild(...)` turns Ant targets into Gradle tasks and can rename targets to avoid collisions, but importing an Ant build disables configuration cache; use it only as a phased migration bridge.
+- `ant.importBuild(...)` turns Ant targets into Gradle tasks and can rename targets to avoid collisions. In Gradle 9.8.1, an imported `AntTarget` in the requested task graph disables Configuration Cache; merely importing targets outside that graph does not trigger that task-based degradation. Import still executes Ant's top-level implicit target during configuration, so remove its side effects before relying on `help` or `--dry-run`. Use this only as a phased migration bridge.
 - Ant tasks invoked through `AntBuilder` should run inside Gradle task actions with declared Gradle inputs and outputs. Do not execute Ant work during configuration, and replace permanent Ant work with typed Gradle tasks when cacheability or incrementality matters.
 - Keep Ant properties/references separate from Gradle project properties and typed task properties. Copy values into `ant.properties` explicitly only at the boundary; prefer Gradle properties/providers for new build logic.
 - When an Ant task requires paths or filesets, bridge Gradle `FileCollection` or `FileTree` values through `addToAntBuilder(...)`, preferably as resource collections when the Ant task supports them.

@@ -14,7 +14,7 @@ Use this as a grouped checklist of audit items. Do not use tables. Keep each ite
 
 ### General
 
-- Use Kotlin DSL ([scripts-and-conventions.md](scripts-and-conventions.md)): keep new examples and build logic in Kotlin DSL unless a Groovy migration is the task.
+- Use Kotlin DSL ([scripts-and-conventions.md](scripts-and-conventions.md)): match the existing build's DSL and style; prefer Kotlin DSL for new builds and subprojects without an established DSL.
 - Use the latest Gradle minor ([upgrade-strategy.md](upgrade-strategy.md)): check compatibility, then update the wrapper deliberately.
 - Apply plugins with the `plugins {}` block ([scripts-and-conventions.md](scripts-and-conventions.md)): replace imperative plugin application only when classpath and ordering stay valid.
 - Do not rely on plugin application order ([plugins-services-and-diagnostics.md](plugins-services-and-diagnostics.md)): apply mandatory plugins explicitly and use plugin callbacks for optional integrations.

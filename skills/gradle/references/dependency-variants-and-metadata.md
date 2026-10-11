@@ -58,6 +58,8 @@ Read this when: variant-aware resolution, attributes, capabilities, or published
 
 Use `resolvableConfigurations` on Gradle 7.5+; use reports to compare requested attributes with producer attributes before editing rules. `outgoingVariants` shows the producer's consumable variants, capabilities, artifacts, and secondary variants; `resolvableConfigurations` shows the consumer's attributes, extended configurations, compatibility rules, disambiguation rules, and attribute precedence. Add `--all` for hidden legacy entries or attribute-less outgoing configurations. Use `--recursive` to include transitively extended configurations; `extendsFrom` does not inherit attributes, so set the contract on the actual resolvable or consumable configuration. `dependencyInsight` can show when dynamic-version candidates were rejected because their variants did not match requested attributes.
 
+When a custom dependency report must preserve separate main and test-fixture graphs, use `ResolvedComponentResult.getDependenciesForVariant(...)` on Gradle 5.6+ instead of the component-wide `getDependencies()` union. Pass a selected variant from that same component, such as the `ResolvedDependencyResult.resolvedVariant` paired with its `selected` component; a matching display name from another component or resolution is insufficient. Handle unresolved edges separately instead of casting every `DependencyResult` to `ResolvedDependencyResult`.
+
 ## Capabilities
 
 - Capabilities model mutually exclusive providers of the same feature.

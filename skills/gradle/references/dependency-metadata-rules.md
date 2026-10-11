@@ -16,7 +16,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Artifact-only modules without Maven/Ivy metadata when repository metadata sources still create a component and the missing dependency or variant contract is known.
 - Missing capabilities when two modules are mutually exclusive providers and the metadata does not declare the conflict.
 - Cross-module alignment without a published platform only when the modules genuinely share a version family.
-- Status or status-scheme changes only when `latest.<status>` version selection semantics are the real owner.
+- Status repairs when `latest.<status>` selection or a dynamic version request filtered by `org.gradle.status` needs corrected component status; change the status scheme only when the ordered `latest.<status>` semantics need it.
 
 ## Prefer Another Owner When
 
@@ -56,7 +56,7 @@ Read this when: component metadata rules, Maven/Ivy metadata repair, classifier 
 - Ordinary Maven dependencies request library variants. `platform(...)` and `enforcedPlatform(...)` request the platform-derived variants and import constraints instead of ordinary dependencies.
 - POM dependency management is not converted into constraints for ordinary library variants.
 - Ivy has no single built-in variant derivation strategy. Use metadata rules to create compile/runtime variants from Ivy configurations when that mapping is correct for the module family.
-- Component-level `belongsTo` creates virtual-platform alignment; component-level status/status scheme affects `latest.<status>` version selection before variant selection. POM metadata defaults to `integration` for snapshots and `release` otherwise, so status rules are version-policy repairs, not variant fixes.
+- Component-level `belongsTo` creates virtual-platform alignment; component-level status supports `latest.<status>` selection and attribute filtering of dynamic version candidates before variant selection; the status scheme orders the statuses used by `latest.<status>`. POM metadata defaults to `integration` for snapshots and `release` otherwise, so status rules are version-policy repairs, not variant fixes.
 - Maven- or Ivy-specific descriptors are available to metadata rules when the repair depends on packaging, Ivy configurations, or traditional metadata details; guard those assumptions before applying a broad rule to modules that may publish Gradle Module Metadata.
 
 ## Repair Choices

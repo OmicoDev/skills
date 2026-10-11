@@ -28,6 +28,8 @@
 
 ## Source Code
 
+- `platforms/core-configuration/configuration-cache/src/integTest/groovy/org/gradle/internal/cc/impl/ConfigurationCacheGracefulDegradationIntegrationTest.groovy`
+- `platforms/core-configuration/configuration-cache/src/main/kotlin/org/gradle/internal/cc/impl/DefaultConfigurationCacheDegradationController.kt`
 - `platforms/documentation/docs/src/snippets/integration/customTest/groovy/src/main/java/com/example/CustomTest.java`
 - `platforms/ide/base-ide-plugins/src/main/java/org/gradle/plugins/ide/internal/IdePlugin.java`
 - `platforms/ide/ide-plugins/src/integTest/groovy/org/gradle/plugins/ide/eclipse/EclipseIntegrationTest.groovy`
@@ -47,6 +49,9 @@
 - `platforms/native/language-native/src/main/java/org/gradle/language/plugins/NativeBasePlugin.java`
 - `platforms/native/language-native/src/test/groovy/org/gradle/language/plugins/NativeBasePluginTest.groovy`
 - `platforms/software/ant-api/src/main/java/org/gradle/api/AntBuilder.java`
+- `platforms/software/ant-impl/src/integTest/groovy/org/gradle/api/internal/project/ant/ConfigurationCacheAntIntegrationTest.groovy`
+- `platforms/software/ant-impl/src/main/java/org/gradle/api/internal/project/DefaultAntBuilder.java`
+- `platforms/software/ant-impl/src/main/java/org/gradle/api/tasks/ant/AntTarget.java`
 - `platforms/software/testing-base/src/integTest/groovy/org/gradle/testing/TestEventReporterIntegrationTest.groovy`
 - `platforms/software/testing-base/src/main/java/org/gradle/api/internal/tasks/testing/DefaultRootTestEventReporter.java`
 - `platforms/software/testing-base/src/main/java/org/gradle/api/internal/tasks/testing/DefaultTestEventReporterFactory.java`
