@@ -8,10 +8,15 @@
 
 ## Source Code
 
+- `platforms/core-configuration/java-api-extractor/src/main/java/org/gradle/internal/tools/api/impl/ApiMemberSelector.java`
+- `platforms/core-configuration/java-api-extractor/src/main/java/org/gradle/internal/tools/api/impl/JavaApiMemberWriter.java`
+- `platforms/core-configuration/java-api-extractor/src/main/java/org/gradle/internal/tools/api/impl/TypeAnnotationMember.java`
+- `platforms/core-configuration/java-api-extractor/src/test/groovy/org/gradle/internal/tools/api/ApiClassExtractorAnnotationsTest.groovy`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/crossVersionTest/groovy/org/gradle/kotlin/dsl/plugins/PrecompiledKotlinPluginCrossVersionSpec.groovy`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/crossVersionTest/groovy/org/gradle/kotlin/dsl/plugins/ProjectTheExtensionCrossVersionSpec.groovy`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslJvmDefaultIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslJvmTargetIntegrationTest.kt`
+- `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslNullnessIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslPluginCustomKotlinOptionsIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/KotlinDslScriptCompilationIntegrationTest.kt`
 - `platforms/core-configuration/kotlin-dsl-integ-tests/src/integTest/kotlin/org/gradle/kotlin/dsl/integration/PrecompiledScriptPluginErrorsIntegrationTest.kt`

@@ -3,8 +3,11 @@
 ## Documentation
 
 - [Compatibility Matrix](https://docs.gradle.org/current/userguide/compatibility.html)
+- [Gradle Daemon](https://docs.gradle.org/current/userguide/gradle_daemon.html)
 - [Toolchains for JVM projects](https://docs.gradle.org/current/userguide/toolchains.html)
+- [Upgrading to Gradle 9.0.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
+- [ValidatePlugins toolchain deprecation in Gradle 8.1](https://docs.gradle.org/8.1/userguide/upgrading_version_8.html)
 
 ## Source Code
 
@@ -24,6 +27,7 @@
 - `platforms/extensibility/plugin-development/src/integTest/groovy/org/gradle/plugin/devel/tasks/ValidatePluginsPart2IntegrationTest.groovy`
 - `platforms/extensibility/plugin-development/src/main/java/org/gradle/plugin/devel/tasks/ValidatePlugins.java`
 - `platforms/ide/tooling-api/src/main/java/org/gradle/tooling/GradleConnector.java`
+- `platforms/jvm/jvm-compiler-worker/src/main/java/org/gradle/api/tasks/compile/CompileOptions.java`
 - `platforms/jvm/jvm-services/src/main/java/org/gradle/jvm/toolchain/internal/AutoInstalledInstallationSupplier.java`
 - `platforms/jvm/jvm-services/src/main/java/org/gradle/jvm/toolchain/internal/EnvironmentVariableListInstallationSupplier.java`
 - `platforms/jvm/jvm-services/src/main/java/org/gradle/jvm/toolchain/internal/LocationListInstallationSupplier.java`
