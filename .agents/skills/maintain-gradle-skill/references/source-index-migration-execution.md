@@ -3,6 +3,8 @@
 ## Documentation
 
 - [Avoiding Unnecessary Task Configuration](https://docs.gradle.org/current/userguide/task_configuration_avoidance.html)
+- [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
+- [Maven Publish Plugin](https://docs.gradle.org/current/userguide/publishing_maven.html)
 - [Migrating build logic from Groovy to Kotlin](https://docs.gradle.org/current/userguide/migrating_from_groovy_to_kotlin_dsl.html)
 - [Migrating Builds From Apache Ant](https://docs.gradle.org/current/userguide/migrating_from_ant.html)
 - [Migrating Builds From Apache Maven](https://docs.gradle.org/current/userguide/migrating_from_maven.html)
@@ -19,9 +21,14 @@
 
 ## Source Code
 
+- `platforms/software/ant-impl/src/integTest/groovy/org/gradle/api/internal/project/ant/ConfigurationCacheAntIntegrationTest.groovy`
+- `platforms/software/ant-impl/src/main/java/org/gradle/api/internal/project/DefaultAntBuilder.java`
+- `platforms/software/ant-impl/src/main/java/org/gradle/api/tasks/ant/AntTarget.java`
+- `platforms/software/ant-impl/src/test/groovy/org/gradle/api/internal/project/DefaultAntBuilderTest.groovy`
 - `platforms/software/build-init/src/integTest/groovy/org/gradle/buildinit/plugins/MavenConversionDynamicPomIntegrationTest.groovy`
 - `platforms/software/build-init/src/integTest/groovy/org/gradle/buildinit/plugins/MavenConversionIntegrationTest.groovy`
 - `platforms/software/build-init/src/main/java/org/gradle/buildinit/InsecureProtocolOption.java`
+- `platforms/software/build-init/src/main/java/org/gradle/buildinit/plugins/internal/BuildScriptBuilder.java`
 - `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/Dependency.java`
 - `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/ExternalDependency.java`
 - `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/Maven2Gradle.java`
@@ -30,3 +37,5 @@
 - `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/PomProjectInitDescriptor.java`
 - `platforms/software/build-init/src/main/java/org/gradle/unexported/buildinit/plugins/internal/maven/ProjectDependency.java`
 - `platforms/software/build-init/src/test/groovy/org/gradle/buildinit/plugins/internal/maven/MavenProjectsCreatorSpec.groovy`
+- `subprojects/core/src/main/java/org/gradle/execution/DryRunBuildExecutionAction.java`
+- `subprojects/core/src/test/groovy/org/gradle/execution/DryRunBuildExecutionActionTest.groovy`

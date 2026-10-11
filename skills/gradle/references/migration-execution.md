@@ -9,15 +9,15 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 3. Upgrade third-party plugins to versions compatible with current and target Gradle.
 4. Check runtime JVM, plugin bytecode, Android/Kotlin compatibility, and CI JDK.
 5. Upgrade wrapper in the smallest reasonable step.
-6. Run representative tasks: tests, publishing dry-runs, Android/native variants, custom plugin TestKit tests, and CI entrypoints.
+6. Run representative tasks: tests, local publication checks, Android/native variants, custom plugin TestKit tests, and CI entrypoints.
 7. Fix failures by owner and repeat.
 
 ## Representative Task Set
 
-- Always include startup (`help`) and at least one real verification task.
+- Always include startup (`help`) and at least one real verification task; run representative tasks with `--warning-mode=all` too, because `help` does not exercise execution-time deprecations.
 - Include custom task/plugin functional tests when build logic changed.
 - Include dependency reports when repository, lock, or platform policy changed.
-- Include publishing dry-runs when publications or signing changed.
+- When publications or signing change, use `--dry-run` only to inspect the selected task graph; it skips the publication and signing task actions. Generate and inspect artifacts and metadata, and test publishing/signing against an isolated local repository before treating the migration as verified; this does not prove remote credentials or server policy.
 - Include Android/native/frontend variants when those ecosystems are present.
 - Include CI entrypoints because local task success can miss CI init scripts, credentials, caches, and JDK differences.
 
@@ -39,7 +39,7 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 
 - Keep the old Maven and new Gradle builds side by side until critical artifacts, reports, published metadata, and deployment inputs compare cleanly.
 - Treat `gradle init` Maven conversion as a bootstrap for common JVM, WAR, and Maven Publish shapes; audit custom lifecycle phases and plugins afterward.
-- For Maven conversion, choose `--insecure-protocol=fail` or `upgrade` deliberately in automated runs; the default `warn` path leaves insecure repositories commented for manual opt-in, while `allow` commits an explicit insecure repository policy.
+- For Maven conversion on Gradle 7.3+, choose `--insecure-protocol=fail` or `upgrade` deliberately in automated runs. In Gradle 9.8, default `warn` retains the HTTP repository URL and comments only the `allowInsecureProtocol` opt-in, so using that repository can still fail; `allow` enables it explicitly, while `upgrade` rewrites the URL without proving the server supports HTTPS.
 - Do not assume Maven assemblies convert automatically. Rebuild them with Distribution/Application, archive tasks, or a purpose-built plugin after comparing produced layout and metadata.
 - Map Maven modules to Gradle projects before migrating plugin behavior.
 - Translate dependency management to platforms, constraints, catalogs, or BOM import as appropriate.
@@ -49,7 +49,9 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 ## Maven Detail Checks
 
 - Map Maven scopes to Gradle buckets deliberately; do not put everything on `implementation`.
-- When reviewing `gradle init` output, treat its scope mapping as a heuristic: Maven `compile` maps to `api`, `runtime` to `runtimeOnly`, `test` to `testImplementation`, and non-WAR `provided` to `compileOnly`; recheck WAR provided dependencies, project dependencies, and published metadata against the Maven build.
+- In Gradle 9.8 Maven conversion, `compile` maps to `api`, `runtime` to `runtimeOnly`, and `test` to `testImplementation`. External non-WAR `provided` maps to `compileOnly`, but WAR `provided` dependencies and reactor `provided` project dependencies retain `providedCompile`; a non-WAR reactor consumer can therefore need manual correction before the generated build configures. Verify compile, runtime, test and publication behavior against Maven rather than accepting scope names alone.
+- In Gradle 9.8 conversion, explicitly audit classifier, artifact type, optional dependencies and `systemPath`: generated dependency declarations do not preserve these semantics. Restore the intended artifact selection and consumer visibility; model local files explicitly if they are truly required.
+- Recheck compiler settings after conversion. Gradle 9.8 reads Maven compiler-plugin `source` and `target`, defaulting each to `1.8`; it does not translate `release` into `options.release` or a toolchain. Set the intended compiler toolchain and release explicitly instead of trusting successful generation.
 - Use `api` only for dependencies exposed to consumers at compile time; otherwise prefer `implementation`.
 - Translate Maven parent dependency management separately from module layout.
 - Replace Maven parent build logic with convention plugins or shared platforms, not broad `allprojects` mutation.
@@ -59,11 +61,12 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 - Use `publishToMavenLocal` only for Maven interop; prefer project dependencies or composite builds inside Gradle.
 - Convert parameter-only Maven mojos into typed Gradle tasks; rewrite mojos that depend on the Maven project object around Gradle's model instead of transcribing the code.
 - Validate generated `pom` conversion before deleting the Maven build.
-- Treat `--incubating` Build Init output as an explicit modernization choice, not a neutral conversion default; keep generated incubating APIs only when the migration plan owns their future churn.
+- Treat `--incubating` Build Init output as an explicit modernization choice, not a neutral conversion default; in Gradle 9.8 multi-module Maven conversion it also moves generated convention plugins from `buildSrc` to an included `build-logic` build. Review that structural change separately; Maven conversion itself remains incubating even without this option.
 
 ## Ant Migration
 
-- Treat `ant.importBuild()` and AntBuilder calls as migration bridges; imported Ant builds are not configuration-cache compatible.
+- Treat `ant.importBuild()` and AntBuilder calls as migration bridges. In Gradle 9.8, selecting an imported `AntTarget` disables Configuration Cache with a diagnostic; successful execution does not prove the imported build is cache-compatible.
+- In Gradle 9.8, importing an Ant build executes its top-level implicit target during Gradle configuration, even for `help` or `--dry-run`. Move side-effecting top-level work into explicit targets before relying on those commands for graph inspection.
 - Use imported Ant targets as a bridge, not the final architecture.
 - Move file work to Gradle task types and providers.
 - Translate Ivy/file dependencies into repositories and dependency declarations.
@@ -77,7 +80,7 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 - Translate Ant paths and filesets to `FileCollection` and `FileTree` before adding more Ant-only glue.
 - Move Ivy repositories and configurations into Gradle dependency management.
 - Do not mimic Ivy retrieve by copying every resolved dependency from Gradle's cache unless a package or external tool truly needs materialized libraries; otherwise consume resolved files directly through configurations.
-- Preserve target order only when Gradle task inputs/outputs cannot express the relationship yet.
+- In Gradle 9.8, imported target dependencies become task dependencies, while their sibling order is expressed with `shouldRunAfter` and can yield to conflicting dependencies. Model essential data dependencies explicitly; do not treat Ant dependency-list order as an unconditional execution guarantee.
 - Rename imported targets on collision and replace dependencies in stages so standard Gradle lifecycle tasks can take over.
 
 ## Legacy Gradle Modernization
@@ -86,7 +89,7 @@ Read this when: concrete Gradle upgrade, deprecation cleanup, DSL migration, Mav
 - For 5.x/6.x sources, treat settings and build logic isolation as migration owners: keep a real `settings.gradle(.kts)`, move settings classpath logic out of `buildSrc`, and do not expect root project properties to leak into included builds or `buildSrc`.
 - For 6.x/7.x sources, remove APIs that became hard errors: removed `compile`/`runtime`, legacy Maven/upload tasks, late `afterEvaluate`, invalid provider/file-collection mutation, and task validation problems.
 - For 7.x/8.x sources, fix warning-era validation before changing behavior: invalid toolchain specs, missing task dependencies, legacy artifact transforms, `IncrementalTaskInputs`, configurations used as dependencies, identical consumable variants, and non-consumable configurations.
-- For 8.x/9.x sources, separate runtime and DSL breaks: Java 17+ to run Gradle, Groovy 4/Kotlin 2.2 DSL changes, removed conventions, removed `Project.exec/javaexec`, Unix mode API removal, default reproducible archives, existing project-directory requirements, and `Test` tasks failing when sources produce no discovered tests.
+- For 8.x/9.x sources, separate runtime and DSL breaks: Java 17+ for the Gradle 9 daemon (distinct from the launcher JVM and compilation toolchains), Groovy 4/Kotlin 2.2 DSL changes, removed conventions, removed `Project.exec/javaexec`, Unix mode API removal, default reproducible archives, existing project-directory requirements, and `Test` tasks failing when sources produce no discovered tests.
 - For 9.x within-line upgrades, watch deprecations that point at the next owner cleanup: task actions reading Gradle model objects, project objects as dependency notation, implicit parent-project property/method lookup, Kotlin DSL delegated properties, map-style repository overloads, and legacy lifecycle tasks.
 - Remove broad `allprojects`/`subprojects` mutation in favor of convention plugins, move configuration-time IO/process work into tasks or provider/value-source APIs, and move subproject `gradle.properties` policy to root properties or typed extensions.
 - Check Isolated Projects only after configuration-cache, task validation, and cross-project coupling issues are understood.

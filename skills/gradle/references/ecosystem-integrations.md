@@ -4,7 +4,7 @@ Read this when: Gradle coordinates Android, native builds, frontend tools, IDE i
 
 ## General Rule
 
-Gradle should model external tools as tasks with declared inputs, outputs, tool versions, environment assumptions, and ownership boundaries. Do not run external tools during configuration.
+Gradle should model external build tools as tasks with declared inputs, outputs, tool versions, environment assumptions, and ownership boundaries. When configuration genuinely needs a process-derived input, follow the provider/`ValueSource` guidance in [external-processes.md](external-processes.md).
 
 ## Android
 
@@ -19,7 +19,7 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - Identify whether Gradle owns native compilation or delegates to an external native build; check components, binaries, target machines, and toolchains before task wiring.
 - Treat native variants as build type plus target machine, and for libraries also linkage. Inspect variant-derived tasks/configurations such as `compileDebugCpp`, `linkDebug`, `createRelease`, `installDebug`, `runTest`, or `xcTest` instead of assuming one binary.
 - `assemble` normally builds the development binary, usually the host debug variant. Use variant lifecycle tasks when CI or release needs a non-default target, release build, static library, or installed executable.
-- Keep C++ public headers in the exported contract and private headers internal. A native library dependency belongs in `api` when it is needed by public headers or unresolved static-library symbols; otherwise keep it in `implementation` to avoid leaking include roots and link libraries to consumers.
+- Keep C++ public headers in the exported contract and private headers internal. Use `api` for dependencies needed by public headers and `implementation` for private implementation dependencies. In Gradle 9.7.1, native link/runtime variants also carry implementation dependencies; unresolved static-library symbols alone do not require promoting a dependency to `api`. Diagnose consumer compile headers separately from link/runtime inputs.
 - Declare native dependencies on public declaration configurations such as `api`, `implementation`, and `main<Variant>Implementation`. Use internal resolvable configurations such as `cppCompile<Variant>`, `swiftCompile<Variant>`, `nativeLink<Variant>`, or `nativeRuntime<Variant>` to diagnose the actual compile, link, or runtime inputs.
 - Model cross-compilation through `targetMachines` and toolchain configuration. Gradle selects an available toolchain that can build the target machine; C++ generally discovers Visual Studio, Xcode/Clang, GCC, or Clang from the host environment, while Swift uses the official Swift toolchain on macOS/Linux.
 - Keep compiler arguments, linker arguments, macros, generated headers/resources, and native outputs on the owning component or variant tasks; avoid shell environment hacks and hard-coded compiler paths unless modeling a toolchain gap.
@@ -43,9 +43,9 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - IDE metadata plugins are integration aids, not the source of build truth.
 - Modern IDEA and Eclipse should usually import the Gradle build directly; apply `idea` or `eclipse` only when the build intentionally contributes IDE model customization or generated project files.
 - IDEA/Eclipse generated-file tasks are deprecated for removal in Gradle 10, but their DSL customization can still be consumed by IDE import. Keep generated-file hooks separate from build model fixes.
-- If Gradle 9.6+ warns about IDE file-generation tasks or types, remove `idea`, `openIdea`, `cleanIdea*`, `eclipse`, `cleanEclipse*`, and generated-file hooks such as `iml`, `ipr`, `workspace`, `eclipse.wtp`, or `EclipseJdt.file`; keep model settings that affect IDE import such as source directories, language levels, and dependency scopes.
-- Use `beforeMerged`, `whenMerged`, and `withXml` only for generated IDE metadata. These hooks do not change Gradle task execution, dependency resolution, or published metadata.
-- Eclipse WTP is web/enterprise IDE metadata: it is applied with War/Ear projects for generated Eclipse files, not a packaging substitute for the War/Ear plugins.
+- For Gradle 9.6+ IDE file-generation deprecations, migrate away from the generation/open/clean tasks and generated-file settings such as `iml`, `ipr`, `workspace`, `EclipseJdt.file`, and `withXml`. In 9.7.1, keep Eclipse project/classpath `beforeMerged` and `whenMerged` hooks and WTP component model settings used by IDE import; WTP facet and component `file` merging settings are deprecated, not the entire `eclipse.wtp` block.
+- `withXml` changes generated XML only. In Gradle 9.7.1, Eclipse project/classpath `beforeMerged` and `whenMerged` also customize the Tooling API import model. These model hooks do not replace Gradle task wiring, dependency declarations, or publication configuration.
+- Eclipse WTP is web/enterprise IDE metadata, not a packaging substitute for War/Ear. Applying `eclipse` to a War/Ear project also applies `eclipse-wtp`; utility Java projects need explicit WTP application when required. In Gradle 9.7.1, WTP component settings can supply classpath attributes consumed by Buildship without generating Eclipse files.
 - Visual Studio generation mirrors native components and linkages into solution/project files; inspect native component and binary modeling before patching generated `.sln` or `.vcxproj` output.
 - When IDE sync fails but CLI works, inspect import-specific models, JVMs, and Tooling API client behavior.
 
@@ -68,8 +68,9 @@ Gradle should model external tools as tasks with declared inputs, outputs, tool 
 - Put binary test results and HTML report directories under the task's `build/` ownership and model them as outputs when the custom test task should be cacheable or incremental.
 - Model the reporting hierarchy deliberately: root and group reporters can create child groups or leaf test reporters, while leaf test reporters cannot have children.
 - Emit events in lifecycle order: call `started(...)` once, record output or metadata only after start, finish with exactly one `succeeded(...)`, `skipped(...)`, or `failed(...)`, and close every reporter even when the underlying test engine fails.
-- Version-gate newer convenience entrypoints in cross-version plugins: `TestEventReporterFactory` is Gradle 8.12+, the three-argument root factory is 8.13+, the explicit `closeThrowsOnTestFailures` overload is 9.3+, and single key/value `metadata(...)` is 9.4+.
-- The default root reporter close behavior fails the task when the root test tree failed; use the explicit `closeThrowsOnTestFailures` overload only when task outcome is intentionally managed elsewhere and the supported Gradle version has that overload.
-- For Gradle 8.13 to 9.3 compatibility, prefer the map-form `metadata(...)`; omit metadata or isolate it behind a helper rather than binding custom test plugins to internal test result writers.
+- In Gradle 9.7.1, complete and close each child before completing its parent group, including the root; a child that has reported its result but remains open still blocks parent completion. Nest resource scopes so child closure precedes the parent's terminal event.
+- Version-gate entrypoints in cross-version plugins: `TestEventReporterFactory` is Gradle 8.12+, its three-argument root factory replaces the 8.12 single-name factory in 8.13, and the explicit `closeThrowsOnTestFailures` overload is 9.3+. Single key/value metadata existed in 8.13 with an `Object` value; 9.4 replaces that signature with a `String` value.
+- In Gradle 9.7.1, explicitly mark the root reporter failed when the custom engine's outcome should fail the task; reporting failed children alone does not make root closure throw. The default factory throws on close when the root was marked failed. Use the 9.3+ `closeThrowsOnTestFailures = false` overload only when task outcome is intentionally managed elsewhere; it does not turn failed report results into successes.
+- For one plugin binary spanning Gradle 8.13 and 9.4+, prefer map-form `metadata(...)` with string values: its erased signature survives the change from `Map<String, Object>` to `Map<String, String>`, while the single-value signature changes. Omit metadata on 8.12 or isolate it behind a version-specific helper; do not bind to internal result writers.
 - Keep test execution ownership in the custom task; the reporting API records results, it does not replace declaring task inputs, outputs, classpaths, or environment.
 - Empty or partial custom test report: check reporter hierarchy, `started(...)`, `succeeded(...)`/`failed(...)`, and resource closure before changing report directories.
