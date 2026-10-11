@@ -11,11 +11,19 @@
 - [Gradle 6.0 incremental task output requirement](https://docs.gradle.org/6.0/userguide/upgrading_version_5.html)
 - [Implementing Custom Tasks](https://docs.gradle.org/current/userguide/implementing_custom_tasks.html)
 - [Incremental Build](https://docs.gradle.org/current/userguide/incremental_build.html)
+- [InputChanges API](https://docs.gradle.org/current/javadoc/org/gradle/work/InputChanges.html)
 - [InputChanges API (Gradle 5.4.1)](https://docs.gradle.org/5.4.1/javadoc/org/gradle/work/InputChanges.html)
+- [NormalizeLineEndings API](https://docs.gradle.org/current/javadoc/org/gradle/work/NormalizeLineEndings.html)
+- [Optional API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/Optional.html)
+- [ServiceReference API](https://docs.gradle.org/current/javadoc/org/gradle/api/services/ServiceReference.html)
+- [TaskInputFilePropertyBuilder API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/TaskInputFilePropertyBuilder.html)
+- [TaskLocalState API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/TaskLocalState.html)
 - [Upgrading to Gradle 9.0.0](https://docs.gradle.org/current/userguide/upgrading_major_version_9.html)
 
 ## Source Code
 
+- `platforms/core-configuration/model-reflect/src/main/java/org/gradle/internal/reflect/annotations/impl/DefaultTypeAnnotationMetadataStore.java`
+- `platforms/core-configuration/model-reflect/src/test/groovy/org/gradle/internal/reflect/annotations/impl/DefaultTypeAnnotationMetadataStoreTest.groovy`
 - `platforms/core-configuration/model-reflect/src/test/groovy/org/gradle/internal/reflect/validation/ValidationMessageCheckerTest.groovy`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/WorkValidationUtils.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/history/changes/DefaultIncrementalInputProperties.java`
@@ -23,7 +31,9 @@
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/AbstractInputFilePropertyAnnotationHandler.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/InputDirectoryPropertyAnnotationHandler.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/model/annotations/ServiceReferencePropertyAnnotationHandler.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/BuildCacheStep.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/RemovePreviousOutputsStep.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/ResolveChangesStep.java`
 - `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/SkipEmptyMutableWorkStep.java`
 - `platforms/core-execution/execution/src/test/groovy/org/gradle/internal/execution/steps/SkipEmptyMutableWorkStepTest.groovy`
 - `platforms/documentation/docs/src/snippets/best-practices/preferPathSensitivityNone-avoid/kotlin/build.gradle.kts`
@@ -33,6 +43,7 @@
 - `platforms/documentation/docs/src/snippets/best-practices/uniqueOutputs-simple-do/kotlin/build.gradle.kts`
 - `subprojects/core-api/src/main/java/org/gradle/api/Task.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/model/ReplacedBy.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/services/ServiceReference.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/CacheableTask.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/Classpath.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/CompileClasspath.java`
@@ -55,6 +66,8 @@
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/PathSensitivity.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/SkipWhenEmpty.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskAction.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskInputFilePropertyBuilder.java`
+- `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskLocalState.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/TaskOutputs.java`
 - `subprojects/core-api/src/main/java/org/gradle/api/tasks/UntrackedTask.java`
 - `subprojects/core-api/src/main/java/org/gradle/work/DisableCachingByDefault.java`
@@ -66,13 +79,21 @@
 - `subprojects/core/src/integTest/groovy/org/gradle/api/internal/tasks/TaskCacheabilityReasonIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/services/BuildServiceIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/AbstractDirectorySensitivityIntegrationSpec.groovy`
+- `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/CachedCustomTaskExecutionIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/IncrementalInputsIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/SkipWhenEmptyIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/TaskValidationFailureRenderingIntegrationTest.groovy`
 - `subprojects/core/src/main/java/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolver.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/project/taskfactory/DefaultTaskClassInfoStore.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/DefaultTaskInputFilePropertyRegistration.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/DefaultTaskLocalState.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/DefaultTaskCacheabilityResolver.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/TaskExecution.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/properties/OutputUnpacker.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/properties/ValidationActions.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/WriteProperties.java`
 - `subprojects/core/src/main/java/org/gradle/execution/DefaultWorkValidationWarningRecorder.java`
+- `subprojects/core/src/main/java/org/gradle/execution/plan/ResolveMutationsNode.java`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolverTest.groovy`
 - `subprojects/core/src/test/groovy/org/gradle/api/internal/project/taskfactory/AnnotationProcessingTaskFactoryTest.groovy`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/project/taskfactory/DefaultTaskClassInfoStoreTest.groovy`

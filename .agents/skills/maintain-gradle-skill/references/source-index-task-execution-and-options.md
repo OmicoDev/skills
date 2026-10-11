@@ -7,6 +7,8 @@
 - [Command-Line Interface](https://docs.gradle.org/current/userguide/command_line_interface.html)
 - [Controlling Task Execution](https://docs.gradle.org/current/userguide/controlling_task_execution.html)
 - [Organizing Tasks](https://docs.gradle.org/current/userguide/organizing_tasks.html)
+- [Task API](https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html)
+- [Task Option API](https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/options/Option.html)
 - [Understanding Tasks](https://docs.gradle.org/current/userguide/more_about_tasks.html)
 - [Upgrading within Gradle 9.x.y](https://docs.gradle.org/current/userguide/upgrading_version_9.html)
 
@@ -18,6 +20,7 @@
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/TaskDetails.java`
 - `platforms/core-configuration/base-diagnostics/src/main/java/org/gradle/api/tasks/diagnostics/internal/TaskReportRenderer.java`
 - `platforms/core-configuration/model-core/src/main/java/org/gradle/api/internal/tasks/DefaultTaskDependency.java`
+- `platforms/core-execution/execution/src/main/java/org/gradle/internal/execution/steps/ExecuteStep.java`
 - `platforms/core-runtime/start-parameter/src/main/java/org/gradle/StartParameter.java`
 - `platforms/core-runtime/start-parameter/src/main/java/org/gradle/initialization/StartParameterBuildOptions.java`
 - `platforms/documentation/docs/src/snippets/best-practices/avoidDependsOn-avoid/kotlin/build.gradle.kts`
@@ -44,16 +47,23 @@
 - `subprojects/core/src/integTest/groovy/org/gradle/api/tasks/options/TaskOptionIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/execution/VerificationFailureHandlingIntegrationTest.groovy`
 - `subprojects/core/src/integTest/groovy/org/gradle/execution/taskgraph/ParallelTaskExecutionIntegrationTest.groovy`
+- `subprojects/core/src/main/java/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionMode.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolver.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/TaskOptionsGenerator.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/TaskProvenanceUtil.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/SkipOnlyIfTaskExecuter.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/SkipTaskWithNoActionsExecuter.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/execution/TaskExecution.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/AbstractOptionElement.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/BooleanOptionElement.java`
+- `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/FieldOptionElement.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/MethodOptionElement.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/OptionReader.java`
 - `subprojects/core/src/main/java/org/gradle/api/internal/tasks/options/OptionValueNotationParserFactory.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/GradleBuild.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/StopActionException.java`
 - `subprojects/core/src/main/java/org/gradle/api/tasks/VerificationException.java`
+- `subprojects/core/src/main/java/org/gradle/api/tasks/options/Option.java`
 - `subprojects/core/src/main/java/org/gradle/execution/plan/CompositeNodeGroup.java`
 - `subprojects/core/src/main/java/org/gradle/execution/plan/DefaultExecutionPlan.java`
 - `subprojects/core/src/main/java/org/gradle/execution/plan/DefaultFinalizedExecutionPlan.java`
@@ -66,6 +76,10 @@
 - `subprojects/core/src/main/java/org/gradle/execution/plan/TaskNode.java`
 - `subprojects/core/src/main/java/org/gradle/initialization/ProjectPropertySettingBuildLoader.java`
 - `subprojects/core/src/main/java/org/gradle/internal/execution/TaskGraphBuildExecutionAction.java`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/changedetection/changes/DefaultTaskExecutionModeResolverTest.groovy`
 - `subprojects/core/src/test/groovy/org/gradle/api/internal/tasks/TaskProvenanceUtilTest.groovy`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/tasks/execution/ExecuteActionsTaskExecuterTest.groovy`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/tasks/execution/SkipOnlyIfTaskExecuterTest.groovy`
+- `subprojects/core/src/test/groovy/org/gradle/api/internal/tasks/execution/SkipTaskWithNoActionsExecuterTest.groovy`
 - `subprojects/core/src/test/groovy/org/gradle/api/internal/tasks/options/OptionReaderTest.groovy`
 - `subprojects/core/src/test/groovy/org/gradle/execution/plan/DefaultExecutionPlanParallelTest.groovy`

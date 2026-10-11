@@ -29,7 +29,7 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - Use `throwing(...)` with an explicit exception for fatal problems that should fail the build with rich failure details; write `throw reporter.throwing(...)` at the call site so local control flow stays obvious.
 - Do not set `ProblemSpec.severity()` for new code; severity follows the reporting method: `report(...)` is warning-like and `throwing(...)` is error-like.
 - Set a useful `contextualLabel` for fatal problems; CLI failure output falls back to the supplied exception message when no contextual label is present.
-- Use `withException(...)` to preserve a causal exception when it helps diagnostics, but keep the user-facing label, details, and solutions understandable without reading a stack trace.
+- In Gradle 9.8, `withException(...)` inside the `report(...)` configuration action attaches an exception to a recoverable warning; it does not throw or fail the build. Use `throwing(...)` for a fatal outcome, and keep the label, details, and solutions understandable without the stack trace.
 - When a problem points at user-authored content, set `fileLocation`, `lineInFileLocation`, or `offsetInFileLocation` instead of burying paths in text; line and column locations are one-indexed, while global offsets are zero-indexed.
 - Use `stackLocation()` only when the reporting call stack is the actual problem location; explicit file locations are better for scripts, catalog files, generated inputs, or external configuration.
 - Put required user action in labels, details, `documentedAt(...)` links, locations, and solutions. Use stable documentation URLs for reusable explanations, and additional data for tool clients rather than the only human-readable fix.
@@ -45,15 +45,15 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - Treat `org.gradle.api.problems.internal.*` and other Problems internals as incompatible with modern Gradle; update the plugin or pin Gradle rather than binding to removed internals.
 - If a build fails because a plugin injects removed `InternalProblems`, treat it as a plugin compatibility defect and upgrade or replace the plugin; do not migrate the build to another Problems internal package.
 - Prefer stable plugin-owned problem IDs over text matching in tests.
-- When a plugin reports many repeated instances, expect Gradle to show early instances and summarize later duplicates.
+- In Gradle 9.8, reporting deduplicates by problem hash within each ID before applying a per-ID event threshold; only new hashes beyond that threshold enter the summary. Keep meaningful occurrence context in labels or details, but do not vary IDs or add artificial data merely to bypass deduplication.
 - Tooling API clients can receive problem events and failure-attached problems; keep IDs and groups stable across plugin releases.
 
 ## Verification
 
 - Use `--warning-mode=all` when verifying console rendering for recoverable plugin-reported problems.
-- On Gradle 9.7+, the first 50 problems in a Vintage build receive full stack traces and up to 2000 more receive cheaper inferred source locations; `--warning-mode=all` removes the location-count limit but not the full-stack cap. Do not assert exact stack depth or total located-problem counts across modes such as Isolated Projects, whose internal caps differ.
+- In Gradle 9.8, implicit caller capture in a normal Vintage diagnostics stream has a budget of 50 full traces, then up to 2000 bounded captures; `--warning-mode=all` lifts the bounded-capture limit, not the full-trace cap. These are capture budgets, not a count of every reported problem: explicit locations can avoid inference, and supplied exceptions bypass implicit capture. Do not assert exact stack depth or global located-problem counts across streams or Isolated Projects.
 - Preserve the console problem text, problem ID/group when visible, and the exact HTML report path Gradle prints when diagnosing.
-- The HTML problems report is generated only when problems are reported; generation is enabled by default and can be disabled with `--no-problems-report` or `org.gradle.problems.report=false`.
+- The HTML problems report is generated only when problems are reported; generation is enabled by default and can be disabled with `--no-problems-report` or `org.gradle.problems.report=false`. In Gradle 9.8, disabling the HTML report still delivers problem events; do not use that switch to suppress plugin diagnostics or change build outcome.
 - `--warning-mode=none` can hide the console problem text and the printed problems-report path while the HTML report and problem events still exist; verify with report files or `OperationType.PROBLEMS` before treating a recoverable problem as unreported.
 - `AdditionalData` is for client integration and is not rendered in CLI or HTML problem output.
 - For Tooling API checks, register `OperationType.PROBLEMS` when you need `SingleProblemEvent`/`ProblemSummariesEvent`; for fatal failure details, use incubating `LongRunningOperation.withDetailedFailure()` or `OperationType.ROOT`, inspect `FailureResult.getFailures()` or `GradleConnectionException.getFailures()` recursively, then read each `Failure.getProblems()`.
@@ -63,7 +63,7 @@ Read this when: Problems API, structured plugin warnings, rich plugin failures, 
 - For Tooling API location assertions, prefer `originLocations` and `contextualLocations` when the client API exposes them; use a combined legacy location list only for older client/target pairs.
 - When asserting Tooling API severity, treat Gradle 9.6+ severities as outcome-derived: recoverable reported problems are warnings and fatal problems are errors; `ADVICE` or explicit warning/error configuration points to an older target Gradle, so keep cross-version assertions tolerant.
 - Test fatal and recoverable paths separately because `throwing(...)` changes task/build outcome.
-- For duplicate problems, assert representative `SingleProblemEvent`s plus `ProblemSummariesEvent`; Gradle sends the summary event before build finish even when empty, and each `ProblemSummary.count` is the follow-up occurrence count beyond Gradle's event threshold, not the total number of matching problems.
+- For duplicate problems, assert representative `SingleProblemEvent`s plus `ProblemSummariesEvent`; Gradle sends the summary event before build finish even when empty. In Gradle 9.8, `ProblemSummary.count` counts distinct problem hashes beyond the per-ID event threshold; re-reporting the same problem hash does not increase it. Do not treat individual-event counts plus summaries as an occurrence counter.
 
 ## Failure Map
 
